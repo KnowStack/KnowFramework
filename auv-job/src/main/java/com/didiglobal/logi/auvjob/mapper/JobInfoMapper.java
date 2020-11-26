@@ -1,6 +1,6 @@
 package com.didiglobal.logi.auvjob.mapper;
 
-import com.didiglobal.logi.auvjob.bean.JobInfo;
+import com.didiglobal.logi.auvjob.common.bean.JobInfo;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 
 /**

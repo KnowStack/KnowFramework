@@ -1,4 +1,4 @@
-package com.didiglobal.logi.auvjob.bean;
+package com.didiglobal.logi.auvjob.common.bean;
 
 /**
  * 心跳信息

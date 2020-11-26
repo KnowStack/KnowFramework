@@ -1,6 +1,6 @@
 package com.didiglobal.logi.auvjob.core.job;
 
-import com.didiglobal.logi.auvjob.bean.TaskInfo;
+import com.didiglobal.logi.auvjob.common.bean.TaskInfo;
 
 /**
  * @author dengshan

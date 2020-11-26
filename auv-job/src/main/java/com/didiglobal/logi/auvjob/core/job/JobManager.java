@@ -1,13 +1,14 @@
 package com.didiglobal.logi.auvjob.core.job;
 
-import com.didiglobal.logi.auvjob.bean.JobInfo;
-import com.didiglobal.logi.auvjob.bean.JobLog;
+import com.didiglobal.logi.auvjob.common.bean.JobInfo;
+import com.didiglobal.logi.auvjob.common.bean.JobLog;
 import com.didiglobal.logi.auvjob.query.JobLogQuery;
 
 import java.util.List;
+import java.util.concurrent.Future;
 
 /**
- * job管理器，负责创建、启动、暂停job
+ * job管理器，负责CRUD、启动、暂停job
  * @author dengshan
  */
 public interface JobManager {
@@ -17,7 +18,7 @@ public interface JobManager {
    * @param o todo 参数待定
    * @return
    */
-  boolean start(Job job);
+  Future<Object> start(Job job);
 
   /**
    * 停止任务

@@ -1,6 +1,6 @@
 package com.didiglobal.logi.auvjob.core;
 
-import com.didiglobal.logi.auvjob.bean.TaskInfo;
+import com.didiglobal.logi.auvjob.common.bean.TaskInfo;
 
 /**
  *
@@ -14,6 +14,6 @@ public class RandomConsensual implements Consensual {
   @Override
   public boolean canClaim(TaskInfo taskInfo) {
 
-    return false;
+    return true;
   }
 }

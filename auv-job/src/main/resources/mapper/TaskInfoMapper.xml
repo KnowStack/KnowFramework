@@ -3,7 +3,7 @@
 <mapper namespace="com.didiglobal.logi.auvjob.mapper.TaskInfoMapper">
 
     <!-- 通用查询映射结果 -->
-    <resultMap id="BaseResultMap" type="com.didiglobal.logi.auvjob.bean.TaskInfo">
+    <resultMap id="BaseResultMap" type="com.didiglobal.logi.auvjob.common.bean.TaskInfo">
         <id column="id" property="id" />
         <result column="code" property="code" />
         <result column="name" property="name" />

@@ -1,10 +1,11 @@
 package com.didiglobal.logi.auvjob.core.task;
 
-import com.didiglobal.logi.auvjob.bean.TaskInfo;
+import com.didiglobal.logi.auvjob.common.bean.TaskInfo;
 
 import java.util.List;
 
 /**
+ * 任务的CRUD及执行管控
  * @author dengshan
  */
 public interface TaskManager {
@@ -39,18 +40,19 @@ public interface TaskManager {
   List<TaskInfo> nextTriggers(long intervalTime);
 
   /**
-   * 执行任务 todo 名字不一定合适，考虑修改
-   * @param taskId
-   * @return
-   */
-  boolean execute(long taskId);
-
-  /**
-   * 执行任务 todo 同样考虑修改名字
+   * 执行任务, 默认会执行子任务如果有配置
    * @param taskInfo
    * @return
    */
-  boolean execute(TaskInfo taskInfo);
+  void execute(TaskInfo taskInfo);
+
+  /**
+   * 执行任务
+   * @param taskInfo 任务信息
+   * @param executeSubs 是否执行子任务
+   * @return
+   */
+  void execute(TaskInfo taskInfo, Boolean executeSubs);
 
   boolean pause(long taskId);
 

@@ -1,4 +1,4 @@
-package com.didiglobal.logi.auvjob.bean;
+package com.didiglobal.logi.auvjob.common.bean;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
@@ -10,7 +10,7 @@ import lombok.experimental.Accessors;
 
 /**
  * <p>
- * 正在执行的job信息
+ * worker信息
  * </p>
  *
  * @author dengshan
@@ -19,7 +19,7 @@ import lombok.experimental.Accessors;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @Accessors(chain = true)
-public class JobInfo implements Serializable {
+public class WorkerInfo implements Serializable {
 
   private static final long serialVersionUID = 1L;
 
@@ -27,29 +27,54 @@ public class JobInfo implements Serializable {
   private Long id;
 
   /**
-   * task code
+   * job log code
    */
   private String code;
 
   /**
-   * 任务code
+   * worker名
    */
-  private String taskCode;
+  private String name;
 
   /**
-   * 类的全限定名
+   * cpu
    */
-  private String className;
+  private String cpu;
 
   /**
-   * 第几次重试
+   * cpu使用
    */
-  private Integer retryTimes;
+  private String cpuUsed;
 
   /**
-   * 开始时间
+   * 内存
    */
-  private LocalDateTime startTime;
+  private String memory;
+
+  /**
+   * 内存使用
+   */
+  private String memoryUsed;
+
+  /**
+   * jvm堆大小
+   */
+  private String jvmHeap;
+
+  /**
+   * jvm堆使用
+   */
+  private String jvmHeapUsed;
+
+  /**
+   * 正在执行job数
+   */
+  private Integer jobNum;
+
+  /**
+   * 心跳时间
+   */
+  private LocalDateTime heartbeat;
 
 
 }

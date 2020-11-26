@@ -1,6 +1,6 @@
 package com.didiglobal.logi.auvjob.mapper;
 
-import com.didiglobal.logi.auvjob.bean.TaskLock;
+import com.didiglobal.logi.auvjob.common.bean.TaskLock;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 
 /**

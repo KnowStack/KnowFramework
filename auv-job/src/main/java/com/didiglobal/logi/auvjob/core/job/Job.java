@@ -5,5 +5,5 @@ package com.didiglobal.logi.auvjob.core.job;
  */
 public interface Job {
 
-  void execute(JobContext jobContext);
+  Object execute(JobContext jobContext);
 }

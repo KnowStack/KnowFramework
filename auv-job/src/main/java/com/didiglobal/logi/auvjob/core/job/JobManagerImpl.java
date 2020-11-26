@@ -1,13 +1,16 @@
 package com.didiglobal.logi.auvjob.core.job;
 
-import com.didiglobal.logi.auvjob.bean.JobInfo;
-import com.didiglobal.logi.auvjob.bean.JobLog;
+import com.didiglobal.logi.auvjob.common.bean.JobInfo;
+import com.didiglobal.logi.auvjob.common.bean.JobLog;
 import com.didiglobal.logi.auvjob.mapper.JobInfoMapper;
 import com.didiglobal.logi.auvjob.mapper.JobLogMapper;
 import com.didiglobal.logi.auvjob.query.JobLogQuery;
 import org.apache.ibatis.session.SqlSession;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Callable;
+import java.util.concurrent.Future;
 
 /**
  * @author dengshan
@@ -19,6 +22,7 @@ public class JobManagerImpl implements JobManager {
 
   private JobInfoMapper jobInfoMapper;
   private JobLogMapper jobLogMapper;
+  private List<Future<Object>> futures = new ArrayList<>(100);
 
   public JobManagerImpl(JobThreadPoolExecutor threadPoolExecutor, SqlSession session) {
     this.threadPoolExecutor = threadPoolExecutor;
@@ -32,9 +36,12 @@ public class JobManagerImpl implements JobManager {
   }
 
   @Override
-  public boolean start(Job job) {
-    threadPoolExecutor.submmit(new JobThread(job));
-    return false;
+  public Future<Object> start(Job job) {
+    final Future jobFuture = threadPoolExecutor.submmit(new JobHandler(job));
+    futures.add(jobFuture);
+    // todo task execute / job start?
+    // todo 成功，失败怎么打日志；超时怎么退出并打日志
+    return jobFuture;
   }
 
   @Override
@@ -79,19 +86,18 @@ public class JobManagerImpl implements JobManager {
 
   /**
    * job 执行线程
-   * todo 是否有返回值待定
    */
-  class JobThread implements Runnable {
+  class JobHandler implements Callable {
 
     private Job job;
 
-    public JobThread(Job job) {
+    public JobHandler(Job job) {
       this.job = job;
     }
 
     @Override
-    public void run() {
-      // job.execute();
+    public Object call() throws Exception {
+      return job.execute(null);
     }
   }
 

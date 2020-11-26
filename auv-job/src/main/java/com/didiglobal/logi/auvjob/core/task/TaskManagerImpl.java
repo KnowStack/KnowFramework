@@ -1,18 +1,25 @@
 package com.didiglobal.logi.auvjob.core.task;
 
-import com.didiglobal.logi.auvjob.bean.TaskInfo;
+import com.didiglobal.logi.auvjob.common.bean.TaskInfo;
 import com.didiglobal.logi.auvjob.core.job.Job;
 import com.didiglobal.logi.auvjob.core.job.JobFactory;
 import com.didiglobal.logi.auvjob.core.job.JobManager;
 import com.didiglobal.logi.auvjob.mapper.TaskInfoMapper;
 import org.apache.ibatis.session.SqlSession;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 /**
  * @author dengshan
  */
 public class TaskManagerImpl implements TaskManager {
+  private static final Logger logger = LoggerFactory.getLogger(TaskManagerImpl.class);
 
   private JobManager jobManager;
   private JobFactory jobFactory;
@@ -53,15 +60,22 @@ public class TaskManagerImpl implements TaskManager {
   }
 
   @Override
-  public boolean execute(long taskId) {
-    return false;
+  public void execute(TaskInfo taskInfo) {
+    execute(taskInfo, false);
   }
 
   @Override
-  public boolean execute(TaskInfo taskInfo) {
+  public void execute(TaskInfo taskInfo, Boolean executeSubs) {
     final Job job = jobFactory.newJob(taskInfo);
-    jobManager.start(job);
-    return false;
+    // jobManager 将job管理起来，超时时推出跑异常
+    final Future<Object> jobFuture = jobManager.start(job);
+    if (executeSubs) {
+      try {
+        jobFuture.get(taskInfo.getTimeout(), TimeUnit.NANOSECONDS);
+      } catch (InterruptedException | ExecutionException | TimeoutException e) {
+        logger.error("", e);
+      }
+    }
   }
 
   @Override

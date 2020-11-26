@@ -1,11 +1,10 @@
-package com.didiglobal.logi.auvjob.bean;
+package com.didiglobal.logi.auvjob.common.bean;
 
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 
 import java.sql.Timestamp;
-import java.time.LocalDateTime;
 import java.io.Serializable;
 import lombok.Data;
 import lombok.EqualsAndHashCode;

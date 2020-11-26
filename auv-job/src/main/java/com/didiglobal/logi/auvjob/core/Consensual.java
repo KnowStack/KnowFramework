@@ -1,6 +1,6 @@
 package com.didiglobal.logi.auvjob.core;
 
-import com.didiglobal.logi.auvjob.bean.TaskInfo;
+import com.didiglobal.logi.auvjob.common.bean.TaskInfo;
 
 /**
  * 任务执行策略，实现为全局而不是任务的主要考虑：每个任务配置成本高

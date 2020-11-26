@@ -1,7 +1,8 @@
 package com.didiglobal.logi.auvjob.core.monitor;
 
-import com.didiglobal.logi.auvjob.bean.TaskInfo;
+import com.didiglobal.logi.auvjob.common.bean.TaskInfo;
 import com.didiglobal.logi.auvjob.core.Consensual;
+import com.didiglobal.logi.auvjob.core.TaskLockService;
 import com.didiglobal.logi.auvjob.core.task.TaskManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,6 +32,11 @@ public class SimpleTaskMonitor implements TaskMonitor {
    * 任务监听器执行线程
    */
   private Thread taskMonitorThread;
+
+  /**
+   * 任务锁
+   */
+  private TaskLockService taskLockService;
 
   public SimpleTaskMonitor(TaskManager taskManager) {
     this.taskManager = taskManager;
@@ -80,10 +86,14 @@ public class SimpleTaskMonitor implements TaskMonitor {
               TimeUnit.MILLISECONDS.sleep(executeTime - currentTimeMillis);
             }
 
-            // todo 尝试抢占锁和释放锁
+            // 尝试抢占锁,没有获取证明其他机器已经获取并执行了
+            if (!taskLockService.tryAcquire()) {
+              continue;
+            }
             // 执行任务
             taskManager.execute(taskInfo);
             // todo 执行子任务
+
             //
           }
 
@@ -95,3 +105,5 @@ public class SimpleTaskMonitor implements TaskMonitor {
     }
   }
 }
+// tryAcquire
+// tryRelease
