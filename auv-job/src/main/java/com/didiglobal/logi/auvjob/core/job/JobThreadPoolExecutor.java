@@ -7,6 +7,8 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 /**
+ * job thread pool executor.
+ *
  * @author dengshan
  */
 public class JobThreadPoolExecutor {

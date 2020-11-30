@@ -1,16 +1,16 @@
 package com.didiglobal.logi.auvjob.mapper;
 
-import com.didiglobal.logi.auvjob.common.bean.TaskLock;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.didiglobal.logi.auvjob.common.bean.AuvWorker;
 
 /**
  * <p>
- * 任务锁 Mapper 接口
+ * worker信息 Mapper 接口.
  * </p>
  *
  * @author dengshan
  * @since 2020-11-10
  */
-public interface TaskLockMapper extends BaseMapper<TaskLock> {
+public interface AuvWorkerMapper extends BaseMapper<AuvWorker> {
 
 }

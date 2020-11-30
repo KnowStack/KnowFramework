@@ -2,15 +2,17 @@ package com.didiglobal.logi.auvjob.common.bean;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
-import java.time.LocalDateTime;
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
 
 /**
  * <p>
- * job执行历史日志
+ *
+ * 正在执行的job信息.
+ *
  * </p>
  *
  * @author dengshan
@@ -19,57 +21,46 @@ import lombok.experimental.Accessors;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @Accessors(chain = true)
-public class JobLog implements Serializable {
+public class AuvJob implements Serializable {
 
   private static final long serialVersionUID = 1L;
 
-  @TableId(value = "id", type = IdType.AUTO)
   private Long id;
 
-  /**
-   * job log code
+  /*
+   * task code
    */
+  @TableId(value = "code", type = IdType.ID_WORKER_STR)
   private String code;
 
-  /**
-   * job code
-   */
-  private String jobCode;
-
-  /**
+  /*
    * 任务code
    */
   private String taskCode;
 
-  /**
+  /*
    * 类的全限定名
    */
   private String className;
 
-  /**
+  /*
    * 第几次重试
    */
-  private Integer retryTimes;
+  private Integer tryTimes;
 
-  /**
+  /*
    * 开始时间
    */
   private LocalDateTime startTime;
 
-  /**
-   * 结束时间
+  /*
+   * 开始时间
    */
-  private LocalDateTime endTime;
+  private LocalDateTime createTime;
 
-  /**
-   * 执行结果 1成功 2失败
+  /*
+   * 更新时间
    */
-  private Integer status;
-
-  /**
-   * 错误信息
-   */
-  private String error;
-
+  private LocalDateTime updateTime;
 
 }

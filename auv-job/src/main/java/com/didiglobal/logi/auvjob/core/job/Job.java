@@ -1,7 +1,7 @@
 package com.didiglobal.logi.auvjob.core.job;
 
 /**
- * @author dengshan
+ * job.
  */
 public interface Job {
 

@@ -1,6 +1,8 @@
 package com.didiglobal.logi.auvjob.core.monitor;
 
 /**
+ * simple beat monitor.
+ *
  * @author dengshan
  */
 public class SimpleBeatMonitor implements BeatMonitor {

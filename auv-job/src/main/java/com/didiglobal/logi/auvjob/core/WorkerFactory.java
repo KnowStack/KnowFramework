@@ -1,12 +1,15 @@
 package com.didiglobal.logi.auvjob.core;
 
+import com.didiglobal.logi.auvjob.common.domain.WorkerInfo;
+
 /**
- * worker创建工厂
+ * worker创建工厂.
+ *
  * @author dengshan
  */
 public interface WorkerFactory {
 
-  Worker instantiate();
+  Scheduler instantiate();
 
-  Worker getWorker();
+  WorkerInfo newWorker();
 }

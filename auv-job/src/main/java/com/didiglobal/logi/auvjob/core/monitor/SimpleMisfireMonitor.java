@@ -1,6 +1,8 @@
 package com.didiglobal.logi.auvjob.core.monitor;
 
 /**
+ * simple misfire monitor.
+ *
  * @author dengshan
  */
 public class SimpleMisfireMonitor implements MisfireMonitor {
