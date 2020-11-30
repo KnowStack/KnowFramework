@@ -5,6 +5,7 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.text.DecimalFormat;
 import java.time.LocalDateTime;
+import java.util.concurrent.TimeUnit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import oshi.SystemInfo;
@@ -34,8 +35,8 @@ public class SimpleWorkerFactory implements WorkerFactory {
       logger.error("class=SimpleWorkerFactory||method=newWorker||url=||msg={}", e);
     }
 
-    workerInfo.setCode(inetAddress.getHostAddress());
-    workerInfo.setName(inetAddress.getHostName());
+    workerInfo.setCode(inetAddress == null ? "WITHOUT INETADDRESS" : inetAddress.getHostAddress());
+    workerInfo.setName(inetAddress == null ? "WITHOUT INETADDRESS" : inetAddress.getHostName());
 
     DecimalFormat df = new DecimalFormat("#.000");
 

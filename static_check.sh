@@ -9,7 +9,7 @@
  
 mvn validate
 if [ $? -eq 0   ]; then
-    echo "checkstyle OK"
+    echo "Static check OK!!"
 else
     exit 1
 fi

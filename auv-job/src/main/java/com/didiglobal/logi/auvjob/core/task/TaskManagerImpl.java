@@ -101,6 +101,9 @@ public class TaskManagerImpl implements TaskManager {
       } catch (Exception e) {
         logger.error("class=TaskManagerImpl||method=nextTrigger||url=||msg={}", e);
       }
+      if (cronExpression == null) {
+        return;
+      }
       Date nextTime = cronExpression.getNextValidTimeAfter(DateUtil.toDate(taskInfo
               .getLastFireTime()));
       taskInfo.setNextFireTime(DateUtil.toLocalDateTime(nextTime));
