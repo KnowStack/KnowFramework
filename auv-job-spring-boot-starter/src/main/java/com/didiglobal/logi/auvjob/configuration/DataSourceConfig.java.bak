@@ -1,0 +1,62 @@
+package com.didiglobal.logi.auvjob.configuration;
+
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.core.MybatisConfiguration;
+import com.baomidou.mybatisplus.extension.plugins.PaginationInterceptor;
+import com.zaxxer.hikari.HikariDataSource;
+import javax.sql.DataSource;
+import org.apache.ibatis.plugin.Interceptor;
+import org.apache.ibatis.session.SqlSessionFactory;
+import org.mybatis.spring.SqlSessionFactoryBean;
+import org.mybatis.spring.annotation.MapperScan;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
+import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
+import org.springframework.core.io.support.ResourcePatternResolver;
+
+/**
+ * datasource config.
+ *
+ */
+@Configuration
+@MapperScan("com.didiglobal.logi.auvjob.mapper")
+public class DataSourceConfig {
+  @Bean
+  @ConfigurationProperties(prefix = "spring.datasource.hikari")
+  public DataSource dataSource() {
+    return new HikariDataSource();
+  }
+
+  private static final String PACKAGE_DOMAIN = "com.didiglobal.logi.auvjob.common.bean";
+  private static final String LOCATION_MAPPER = "classpath:mapper/*.xml";
+
+  @Primary
+  @Bean("sqlSessionFactory")
+  public SqlSessionFactory sqlSessionFactory(
+          @Qualifier("dataSource") DataSource dataSource) throws Exception {
+    SqlSessionFactoryBean bean = new SqlSessionFactoryBean();
+    bean.setDataSource(dataSource);
+    bean.setTypeAliasesPackage(PACKAGE_DOMAIN);
+    ResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
+    bean.setMapperLocations(resolver.getResources(LOCATION_MAPPER));
+    bean.setPlugins(new Interceptor[]{new PaginationInterceptor()});
+    MybatisConfiguration configuration = mybatisConfiguration();
+    bean.setConfiguration(configuration);
+
+    SqlSessionFactory sqlSessionFactory = bean.getObject();
+    return sqlSessionFactory;
+  }
+
+  private MybatisConfiguration mybatisConfiguration() {
+    MybatisConfiguration configuration = new MybatisConfiguration();
+    configuration.setCacheEnabled(false);
+    configuration.setMapUnderscoreToCamelCase(true);
+    configuration.setUseGeneratedKeys(true);
+    configuration.setDefaultStatementTimeout(3000);
+    configuration.getGlobalConfig().getDbConfig().setIdType(IdType.AUTO);
+    return configuration;
+  }
+}

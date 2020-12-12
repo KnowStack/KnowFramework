@@ -9,7 +9,6 @@
     <packaging>pom</packaging>
     <version>1.0-SNAPSHOT</version>
     <modules>
-        <module>auv-job</module>
         <module>auv-job-spring-boot-starter</module>
         <module>auv-job-examples</module>
     </modules>
