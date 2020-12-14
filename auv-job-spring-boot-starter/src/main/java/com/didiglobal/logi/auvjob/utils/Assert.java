@@ -14,6 +14,9 @@ public class Assert {
     }
   }
 
+  /**
+   * isTrue.
+   */
   public static void isTrue(boolean test, String msg) {
     if (!test) {
       throw new IllegalStateException(msg);

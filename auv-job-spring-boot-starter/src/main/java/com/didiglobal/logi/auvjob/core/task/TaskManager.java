@@ -17,8 +17,6 @@ public interface TaskManager {
   /**
    * 新增任务.
    *
-   * @param auvTask todo 参数待定
-   * @return true/false
    */
   boolean add(TaskDto taskDto);
 
@@ -33,8 +31,6 @@ public interface TaskManager {
   /**
    * 更新任务.
    *
-   * @param taskDto
-   * @return true/false
    */
   boolean update(TaskDto taskDto);
 
@@ -65,11 +61,10 @@ public interface TaskManager {
   void submit(List<TaskInfo> taskInfoList);
 
   /**
-   * 根据 task code 执行任务
+   * 根据 task code 执行任务.
    *
    * @param taskCode task code
    * @param executeSubs 是否执行子任务
-   * @return
    */
   void execute(String taskCode, Boolean executeSubs);
 

@@ -35,13 +35,6 @@ public class SimpleJobFactory implements JobFactory {
     jobInfo.setStatus(JobStatusEnum.STARTED.getValue());
     jobInfo.setTimeout(taskInfo.getTimeout());
     jobInfo.setJob(jobMap.get(taskInfo.getClassName()));
-//    jobInfo.setJob(new Job() {
-//      @Override
-//      public Object execute(JobContext jobContext) {
-//        ThreadUtil.sleep(10L, TimeUnit.SECONDS);
-//        return "hello world";
-//      }
-//    });
     return jobInfo;
   }
 }

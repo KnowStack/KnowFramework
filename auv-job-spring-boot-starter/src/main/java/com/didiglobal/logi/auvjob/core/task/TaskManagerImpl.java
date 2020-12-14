@@ -136,12 +136,16 @@ public class TaskManagerImpl implements TaskManager {
     }
   }
 
+  /**
+   * execute.
+   */
   public void execute(String taskCode, Boolean executeSubs) {
     Assert.notNull(taskCode, "taskCode can not be null");
     AuvTask auvTask = auvTaskMapper.selectList(new QueryWrapper<AuvTask>().eq("code", taskCode)
             .eq("status", TaskStatusEnum.WAITING.getValue())).stream().findFirst().orElseGet(null);
     Assert.notNull(auvTask, "taskCode is invalid!");
-    Assert.isTrue(taskLockService.tryAcquire(taskCode), "can not get lock, may be task is running.");
+    Assert.isTrue(taskLockService.tryAcquire(taskCode), "can not get lock, may be task is "
+            + "running.");
 
     /* 获取到锁 */
     // 更新任务状态，最近更新时间

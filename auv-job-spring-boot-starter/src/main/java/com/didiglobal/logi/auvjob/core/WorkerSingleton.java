@@ -44,11 +44,6 @@ public class WorkerSingleton {
     return workerInfo;
   }
 
-  public static void main(String[] args) {
-    WorkerSingleton instance = WorkerSingleton.getInstance();
-    instance.updateInstanceMetrics();
-    System.out.println(instance.getWorkerInfo().toString());
-  }
   public void setWorkerInfo(WorkerInfo workerInfo) {
     this.workerInfo = workerInfo;
   }
@@ -73,7 +68,6 @@ public class WorkerSingleton {
 
     public static WorkerSingleton updateWorkerMetrics() {
       WorkerInfo workerInfo = singleton.getWorkerInfo();
-      DecimalFormat df = new DecimalFormat("#.000");
 
       SystemInfo systemInfo = new SystemInfo();
       // cpu
@@ -106,6 +100,7 @@ public class WorkerSingleton {
       // memory
       GlobalMemory memory = systemInfo.getHardware().getMemory();
       Double totalMemory = memory.getTotal() * 1.0 / 1024 / 1024;
+      DecimalFormat df = new DecimalFormat("#.000");
       workerInfo.setMemory(Double.valueOf(df.format(totalMemory)));
       Double memoryUsed = (memory.getTotal() - memory.getAvailable()) * 1.0 / memory.getTotal();
       workerInfo.setMemoryUsed(Double.valueOf(df.format(memoryUsed)));

@@ -26,7 +26,6 @@ public class TaskLockServiceImpl implements TaskLockService {
   /**
    * constructor.
    *
-   * @param AuvTaskLockMapper task lock mapper
    */
   @Autowired
   public TaskLockServiceImpl(AuvTaskLockMapper auvTaskLockMapper) {
@@ -55,7 +54,8 @@ public class TaskLockServiceImpl implements TaskLockService {
               + "lock, taskCode [{}]", taskCode);
       return false;
     }
-    int result = auvTaskLockMapper.delete(new QueryWrapper<AuvTaskLock>().eq("task_code", taskCode));
+    int result = auvTaskLockMapper.delete(new QueryWrapper<AuvTaskLock>().eq("task_code",
+            taskCode));
     return result > 0 ? true : false;
   }
 }

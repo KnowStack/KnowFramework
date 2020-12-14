@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
- * job 的启动、暂停、job信息、job日志相关操作
+ * job 的启动、暂停、job信息、job日志相关操作.
  *
  * @author dengshan
  */

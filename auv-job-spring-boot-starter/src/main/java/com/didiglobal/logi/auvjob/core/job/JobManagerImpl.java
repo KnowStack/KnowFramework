@@ -10,7 +10,6 @@ import com.didiglobal.logi.auvjob.common.dto.JobDto;
 import com.didiglobal.logi.auvjob.common.dto.JobLogDto;
 import com.didiglobal.logi.auvjob.common.enums.JobStatusEnum;
 import com.didiglobal.logi.auvjob.core.task.TaskCallback;
-import com.didiglobal.logi.auvjob.core.task.TaskLockService;
 import com.didiglobal.logi.auvjob.mapper.AuvJobLogMapper;
 import com.didiglobal.logi.auvjob.mapper.AuvJobMapper;
 import com.didiglobal.logi.auvjob.utils.Assert;
@@ -44,24 +43,21 @@ public class JobManagerImpl implements JobManager {
   private JobFactory jobFactory;
   private AuvJobMapper auvJobMapper;
   private AuvJobLogMapper auvJobLogMapper;
-  private TaskLockService taskLockService;
+  private JobExecutor jobExecutor;
 
   private List<Tuple<JobInfo, Future>> jobFutures = new ArrayList<>(100);
 
   /**
    * constructor.
    *
-   * @param jobFactory
-   * @param auvJobMapper
-   * @param auvJobLogMapper
    */
   @Autowired
   public JobManagerImpl(JobFactory jobFactory, AuvJobMapper auvJobMapper,
-                        AuvJobLogMapper auvJobLogMapper, TaskLockService taskLockService) {
+                        AuvJobLogMapper auvJobLogMapper, JobExecutor jobExecutor) {
     this.jobFactory = jobFactory;
     this.auvJobMapper = auvJobMapper;
     this.auvJobLogMapper = auvJobLogMapper;
-    this.taskLockService = taskLockService;
+    this.jobExecutor = jobExecutor;
     initialize();
   }
 
@@ -77,7 +73,7 @@ public class JobManagerImpl implements JobManager {
     auvJobMapper.insert(job);
     jobInfo.setJobCode(job.getCode());
 
-    Future jobFuture = JobThreadPoolExecutor.submit(new JobHandler(jobInfo,
+    Future jobFuture = jobExecutor.submit(new JobHandler(jobInfo,
             taskInfo.getTaskCallback()));
     jobFutures.add(new Tuple<>(jobInfo, jobFuture));
     return jobFuture;

@@ -1,7 +1,7 @@
 package com.didiglobal.logi.auvjob;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.didiglobal.logi.auvjob.annotation.Schedule;
+import com.didiglobal.logi.auvjob.annotation.Task;
 import com.didiglobal.logi.auvjob.common.bean.AuvTask;
 import com.didiglobal.logi.auvjob.common.enums.TaskStatusEnum;
 import com.didiglobal.logi.auvjob.core.job.Job;
@@ -22,9 +22,9 @@ import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.stereotype.Component;
 
 @Component
-public class ScheduleBeanPostProcessor implements BeanPostProcessor {
+public class TaskBeanPostProcessor implements BeanPostProcessor {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(ScheduleBeanPostProcessor.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(TaskBeanPostProcessor.class);
 
   private static Map<String, AuvTask> taskMap = new HashMap<>();
 
@@ -46,16 +46,16 @@ public class ScheduleBeanPostProcessor implements BeanPostProcessor {
 
     // check and register to db
 
-    Schedule scheduleAnnotation = beanClass.getAnnotation(Schedule.class);
-    if (scheduleAnnotation == null || !scheduleAnnotation.autoRegister()) {
+    Task taskAnnotation = beanClass.getAnnotation(Task.class);
+    if (taskAnnotation == null || !taskAnnotation.autoRegister()) {
       return bean;
     }
     // check
-    if (!check(scheduleAnnotation)) {
-      LOGGER.error("invalid schedule {}", scheduleAnnotation.toString());
+    if (!check(taskAnnotation)) {
+      LOGGER.error("invalid schedule {}", taskAnnotation.toString());
     }
     // not exists register
-    AuvTask task = getAuvTask(beanClass, scheduleAnnotation);
+    AuvTask task = getAuvTask(beanClass, taskAnnotation);
     if (!contains(task)) {
       auvTaskMapper.insert(task);
     }
@@ -64,11 +64,11 @@ public class ScheduleBeanPostProcessor implements BeanPostProcessor {
 
   //########################## private method #################################
 
-  private boolean check(Schedule schedule) {
+  private boolean check(Task schedule) {
     return CronExpression.isValidExpression(schedule.cron());
   }
 
-  private AuvTask getAuvTask(Class<?> beanClass, Schedule schedule) {
+  private AuvTask getAuvTask(Class<?> beanClass, Task schedule) {
     AuvTask auvTask = new AuvTask();
     auvTask.setName(schedule.name());
     auvTask.setDescription(schedule.description());

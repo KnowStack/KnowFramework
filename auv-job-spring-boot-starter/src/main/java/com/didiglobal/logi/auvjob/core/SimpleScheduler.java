@@ -3,6 +3,7 @@ package com.didiglobal.logi.auvjob.core;
 import com.didiglobal.logi.auvjob.core.monitor.BeatMonitor;
 import com.didiglobal.logi.auvjob.core.monitor.MisfireMonitor;
 import com.didiglobal.logi.auvjob.core.monitor.TaskMonitor;
+import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * 默认worker实现.
@@ -22,6 +23,7 @@ public class SimpleScheduler implements Scheduler {
    * @param taskMonitor task monitor
    * @param misfireMonitor misfire monitor
    */
+  @Autowired
   public SimpleScheduler(BeatMonitor beatMonitor, TaskMonitor taskMonitor,
                          MisfireMonitor misfireMonitor) {
     this.beatMonitor = beatMonitor;
