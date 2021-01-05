@@ -1,11 +1,10 @@
 package com.didiglobal.logi.auvjob.mapper;
 
-import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.didiglobal.logi.auvjob.common.bean.AuvWorker;
-import java.util.Date;
+import org.apache.ibatis.annotations.Delete;
+import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Update;
-import org.springframework.stereotype.Repository;
 
 /**
  * <p>
@@ -15,7 +14,12 @@ import org.springframework.stereotype.Repository;
  * @author dengshan
  * @since 2020-11-10
  */
-public interface AuvWorkerMapper extends BaseMapper<AuvWorker> {
+public interface AuvWorkerMapper {
+
+  @Insert("INSERT INTO auv_worker(code, name, cpu, cpu_used, memory, memory_used, jvm_memory, "
+          + "jvm_memory_used, job_num, heartbeat) VALUES(#{code}, #{name}, #{cpu}, #{cpuUsed}, "
+          + "#{memory}, #{memoryUsed}, #{jvmMemory}, #{jvmMemoryUsed}, #{job_num}, #{heartbeat})")
+  int insert(AuvWorker auvWorker);
 
   @Update("INSERT INTO auv_worker(code, name, cpu, cpu_used, memory, memory_used, jvm_memory, "
           + "jvm_memory_used, job_num, heartbeat) VALUES(#{code}, #{name}, #{cpu}, #{cpuUsed}, "
@@ -24,4 +28,8 @@ public interface AuvWorkerMapper extends BaseMapper<AuvWorker> {
           + "memory=#{memory}, memory_used=#{memoryUsed}, jvm_memory=#{jvmMemory}, "
           + "jvm_memory_used=#{jvmMemoryUsed}, job_num=#{jobNum}, heartbeat=#{heartbeat}")
   int saveOrUpdateById(AuvWorker auvWorker);
+
+  @Delete("delete from auv_worker where code=#{code}")
+  int deleteByCode(@Param("code") String code);
+
 }

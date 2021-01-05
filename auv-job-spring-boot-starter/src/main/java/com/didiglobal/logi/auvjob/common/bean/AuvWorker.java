@@ -1,9 +1,7 @@
 package com.didiglobal.logi.auvjob.common.bean;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableId;
 import java.io.Serializable;
-import java.time.LocalDateTime;
+import java.sql.Timestamp;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
@@ -28,7 +26,6 @@ public class AuvWorker implements Serializable {
   /*
    * auv task code
    */
-  @TableId
   private String code;
 
   /*
@@ -74,7 +71,6 @@ public class AuvWorker implements Serializable {
   /*
    * 心跳时间
    */
-  private LocalDateTime heartbeat;
-
+  private Timestamp heartbeat;
 
 }

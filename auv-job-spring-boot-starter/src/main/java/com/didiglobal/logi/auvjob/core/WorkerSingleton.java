@@ -4,8 +4,8 @@ import com.didiglobal.logi.auvjob.common.domain.WorkerInfo;
 import com.didiglobal.logi.auvjob.utils.ThreadUtil;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.sql.Timestamp;
 import java.text.DecimalFormat;
-import java.time.LocalDateTime;
 import java.util.concurrent.TimeUnit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -83,8 +83,9 @@ public class WorkerSingleton {
               - prevTicks[CentralProcessor.TickType.IRQ.getIndex()];
       long softIrq = ticks[CentralProcessor.TickType.SOFTIRQ.getIndex()]
               - prevTicks[CentralProcessor.TickType.SOFTIRQ.getIndex()];
-      long steal = ticks[CentralProcessor.TickType.STEAL.getIndex()]
-              - prevTicks[CentralProcessor.TickType.STEAL.getIndex()];
+      // long steal = ticks[CentralProcessor.TickType.STEAL.getIndex()]
+      //     - prevTicks[CentralProcessor.TickType.STEAL.getIndex()];
+      long steal = 0;
       long csys = ticks[CentralProcessor.TickType.SYSTEM.getIndex()]
               - prevTicks[CentralProcessor.TickType.SYSTEM.getIndex()];
       long user = ticks[CentralProcessor.TickType.USER.getIndex()]
@@ -114,7 +115,7 @@ public class WorkerSingleton {
 
       // workerInfo.setJobNum();
 
-      workerInfo.setHeartbeat(LocalDateTime.now());
+      workerInfo.setHeartbeat(new Timestamp(System.currentTimeMillis()));
       singleton.setWorkerInfo(workerInfo);
       return singleton;
     }

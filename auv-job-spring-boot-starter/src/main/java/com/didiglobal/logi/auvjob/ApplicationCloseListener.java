@@ -1,8 +1,5 @@
 package com.didiglobal.logi.auvjob;
 
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.didiglobal.logi.auvjob.common.bean.AuvTaskLock;
-import com.didiglobal.logi.auvjob.common.bean.AuvWorker;
 import com.didiglobal.logi.auvjob.common.domain.WorkerInfo;
 import com.didiglobal.logi.auvjob.core.SimpleScheduler;
 import com.didiglobal.logi.auvjob.core.WorkerSingleton;
@@ -35,12 +32,10 @@ public class ApplicationCloseListener implements ApplicationListener<ContextClos
     // clean lock
     WorkerSingleton workerSingleton = WorkerSingleton.getInstance();
     WorkerInfo workerInfo = workerSingleton.getWorkerInfo();
-    auvTaskLockMapper.delete(new QueryWrapper<AuvTaskLock>().eq("worker_code",
-            workerInfo.getCode()));
+    auvTaskLockMapper.deleteByWorkerCode(workerInfo.getCode());
 
     // clean worker
-    auvWorkerMapper.delete(new QueryWrapper<AuvWorker>().eq("code",
-            workerInfo.getCode()));
+    auvWorkerMapper.deleteByCode(workerInfo.getCode());
 
     Object source = event.getSource();
     if (source != null && source instanceof SimpleScheduler) {

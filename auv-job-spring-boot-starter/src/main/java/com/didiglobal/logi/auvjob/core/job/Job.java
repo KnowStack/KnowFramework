@@ -5,5 +5,5 @@ package com.didiglobal.logi.auvjob.core.job;
  */
 public interface Job {
 
-  Object execute(JobContext jobContext);
+  Object execute(JobContext jobContext) throws Exception;
 }

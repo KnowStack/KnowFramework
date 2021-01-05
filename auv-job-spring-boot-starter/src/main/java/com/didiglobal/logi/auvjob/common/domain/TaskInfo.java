@@ -1,7 +1,7 @@
 package com.didiglobal.logi.auvjob.common.domain;
 
 import com.didiglobal.logi.auvjob.core.task.TaskCallback;
-import java.time.LocalDateTime;
+import java.sql.Timestamp;
 import lombok.Data;
 
 @Data
@@ -17,13 +17,13 @@ public class TaskInfo {
    */
   private String params;
   private Integer retryTimes;
-  private LocalDateTime lastFireTime;
-  private LocalDateTime nextFireTime;
+  private Timestamp lastFireTime;
+  private Timestamp nextFireTime;
   private Long timeout;
   private Integer status;
   private String subTaskCodes;
-  private LocalDateTime createTime;
-  private LocalDateTime updateTime;
+  private Timestamp createTime;
+  private Timestamp updateTime;
 
   private TaskCallback taskCallback;
 }

@@ -1,8 +1,11 @@
 package com.didiglobal.logi.auvjob.mapper;
 
-import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.didiglobal.logi.auvjob.common.bean.AuvTaskLock;
-import org.springframework.stereotype.Repository;
+import java.util.List;
+import org.apache.ibatis.annotations.Delete;
+import org.apache.ibatis.annotations.Insert;
+import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Select;
 
 /**
  * <p>
@@ -12,6 +15,19 @@ import org.springframework.stereotype.Repository;
  * @author dengshan
  * @since 2020-11-10
  */
-public interface AuvTaskLockMapper extends BaseMapper<AuvTaskLock> {
+public interface AuvTaskLockMapper {
+
+  @Insert("INSERT INTO auv_task_lock(task_code, worker_code) VALUES(#{taskCode}, #{workerCode})")
+  int insert(AuvTaskLock auvTaskLock);
+
+  @Select("select id, task_code, worker_code, create_time, update_time from auv_task_lock where "
+          + "task_code=#{taskCode}")
+  List<AuvTaskLock> selectByTaskCode(@Param("taskCode") String taskCode);
+
+  @Delete("delete from auv_task_lock where task_code=#{taskCode}")
+  int deleteByTaskCode(@Param("taskCode") String taskCode);
+
+  @Delete("delete from auv_task_lock where worker_code=#{workerCode}")
+  int deleteByWorkerCode(@Param("workerCode") String workerCode);
 
 }

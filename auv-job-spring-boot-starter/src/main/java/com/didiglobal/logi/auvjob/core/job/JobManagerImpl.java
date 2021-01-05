@@ -1,6 +1,5 @@
 package com.didiglobal.logi.auvjob.core.job;
 
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.didiglobal.logi.auvjob.common.Tuple;
 import com.didiglobal.logi.auvjob.common.bean.AuvJob;
 import com.didiglobal.logi.auvjob.common.bean.AuvJobLog;
@@ -14,10 +13,9 @@ import com.didiglobal.logi.auvjob.mapper.AuvJobLogMapper;
 import com.didiglobal.logi.auvjob.mapper.AuvJobMapper;
 import com.didiglobal.logi.auvjob.utils.Assert;
 import com.didiglobal.logi.auvjob.utils.BeanUtil;
+import com.didiglobal.logi.auvjob.utils.IdWorker;
 import com.didiglobal.logi.auvjob.utils.ThreadUtil;
-import java.time.Duration;
-import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -69,9 +67,10 @@ public class JobManagerImpl implements JobManager {
   public Future<Object> start(TaskInfo taskInfo) {
     // 添加job信息
     JobInfo jobInfo = jobFactory.newJob(taskInfo);
+    jobInfo.setCode(IdWorker.getIdStr());
     AuvJob job = jobInfo.getAuvJob();
+    job.setStartTime(new Timestamp(System.currentTimeMillis()));
     auvJobMapper.insert(job);
-    jobInfo.setJobCode(job.getCode());
 
     Future jobFuture = jobExecutor.submit(new JobHandler(jobInfo,
             taskInfo.getTaskCallback()));
@@ -88,7 +87,7 @@ public class JobManagerImpl implements JobManager {
   public boolean stop(String jobCode) {
     Assert.notNull(jobCode, "jobCode can not be null!");
     for (Tuple<JobInfo, Future> jobFuture : jobFutures) {
-      if (jobCode.equals(jobFuture.getV1().getJobCode())) {
+      if (jobCode.equals(jobFuture.getV1().getCode())) {
         Future future = jobFuture.getV2();
         if (!future.isDone()) {
           return future.cancel(true);
@@ -112,7 +111,7 @@ public class JobManagerImpl implements JobManager {
 
   @Override
   public List<JobDto> getJobs() {
-    List<AuvJob> auvJobs = auvJobMapper.selectList(new QueryWrapper<>());
+    List<AuvJob> auvJobs = auvJobMapper.selectAll();
     if (CollectionUtils.isEmpty(auvJobs)) {
       return null;
     }
@@ -123,8 +122,7 @@ public class JobManagerImpl implements JobManager {
 
   @Override
   public List<JobLogDto> getJobLogs(String taskCode, Integer limit) {
-    List<AuvJobLog> auvJobLogs = auvJobLogMapper.selectList(new QueryWrapper<AuvJobLog>()
-            .eq("taskCode", taskCode).last("limit " + limit));
+    List<AuvJobLog> auvJobLogs = auvJobLogMapper.selectByTaskCode(taskCode, limit);
     if (CollectionUtils.isEmpty(auvJobLogs)) {
       return null;
     }
@@ -150,7 +148,7 @@ public class JobManagerImpl implements JobManager {
     public Object call() throws Exception {
       Object object = null;
       try {
-        jobInfo.setStartTime(LocalDateTime.now());
+        jobInfo.setStartTime(new Timestamp(System.currentTimeMillis()));
         object = jobInfo.getJob().execute(null);
         jobInfo.setStatus(JobStatusEnum.SUCCEED.getValue());
         jobInfo.setError("");
@@ -165,7 +163,7 @@ public class JobManagerImpl implements JobManager {
         // job callback, 释放任务锁
         taskCallback.callback(jobInfo.getTaskCode());
       }
-      jobInfo.setEndTime(LocalDateTime.now());
+      jobInfo.setEndTime(new Timestamp(System.currentTimeMillis()));
       jobInfo.setError(jobInfo.getError() == null ? "" : jobInfo.getError());
       jobInfo.setResult(object);
       return object;
@@ -194,7 +192,7 @@ public class JobManagerImpl implements JobManager {
           if (future.isDone()) {
             // 删除auvJob
             JobInfo jobInfo = jobFuture.getV1();
-            auvJobMapper.deleteById(jobInfo.getJobCode());
+            auvJobMapper.deleteByCode(jobInfo.getCode());
 
             // 增加auvJobLog
             AuvJobLog auvJobLog = jobInfo.getAuvJobLog();
@@ -209,13 +207,13 @@ public class JobManagerImpl implements JobManager {
         for (Tuple<JobInfo, Future> jobFuture : jobFutures) {
           JobInfo jobInfo = jobFuture.getV1();
 
-          LocalDateTime startTime = jobInfo.getStartTime();
-          LocalDateTime now = LocalDateTime.now();
-          Duration between = Duration.between(startTime, now);
+          Long startTime = jobInfo.getStartTime().getTime();
+          Long now = System.currentTimeMillis();
+          Long between = startTime - now;
           Long timeout = jobInfo.getTimeout();
 
           Future future = jobFuture.getV2();
-          if (between.get(ChronoUnit.SECONDS) > timeout && !future.isDone()) {
+          if (between / 1000 > timeout && !future.isDone()) {
             future.cancel(true);
             jobInfo.setStatus(JobStatusEnum.CANCELED.getValue());
           }

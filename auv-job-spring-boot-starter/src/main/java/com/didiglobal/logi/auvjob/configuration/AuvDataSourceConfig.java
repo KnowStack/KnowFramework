@@ -1,16 +1,20 @@
 package com.didiglobal.logi.auvjob.configuration;
 
-import com.baomidou.mybatisplus.extension.plugins.PaginationInterceptor;
-import com.baomidou.mybatisplus.extension.spring.MybatisSqlSessionFactoryBean;
 import com.didiglobal.logi.auvjob.AuvJobProperties;
 import com.zaxxer.hikari.HikariDataSource;
 import javax.sql.DataSource;
+import org.apache.ibatis.session.SqlSessionFactory;
+import org.mybatis.spring.SqlSessionFactoryBean;
+import org.mybatis.spring.SqlSessionTemplate;
 import org.mybatis.spring.annotation.MapperScan;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 
 @Configuration
-@MapperScan("com.didiglobal.logi.auvjob.mapper")
+@MapperScan(value = "com.didiglobal.logi.auvjob.mapper",
+        sqlSessionFactoryRef = "auvSqlSessionFactory")
 public class AuvDataSourceConfig {
 
   /**
@@ -18,7 +22,7 @@ public class AuvDataSourceConfig {
    *
    * @return 数据源
    */
-  @Bean
+  @Bean("auvDataSource")
   public DataSource dataSource(AuvJobProperties properties) {
     HikariDataSource dataSource = new HikariDataSource();
     dataSource.setUsername(properties.getUsername());
@@ -30,26 +34,29 @@ public class AuvDataSourceConfig {
   }
 
   /**
-   * 获得getMybatisSqlSessionFactoryBean.
+   * 配置SqlSessionFactory.
    *
-   * @return mybatis-plus sql session
+   * @param dataSource dataSource
+   * @return SqlSessionFactory
+   * @throws Exception Exception
    */
-  @Bean
-  public MybatisSqlSessionFactoryBean sqlSessionFactory(DataSource dataSource) {
-    MybatisSqlSessionFactoryBean mybatisPlus  = new MybatisSqlSessionFactoryBean();
-    mybatisPlus.setDataSource(dataSource);
-    return mybatisPlus;
+  @Bean("auvSqlSessionFactory")
+  public SqlSessionFactory sqlSessionFactory(
+          @Qualifier("auvDataSource") DataSource dataSource) throws Exception {
+    SqlSessionFactoryBean bean = new SqlSessionFactoryBean();
+    bean.setDataSource(dataSource);
+    bean.setMapperLocations(new PathMatchingResourcePatternResolver()
+            .getResources("classpath:mapper/auv-job/*.xml"));
+    org.apache.ibatis.session.Configuration configuration =
+            new org.apache.ibatis.session.Configuration();
+    configuration.setMapUnderscoreToCamelCase(true);
+    bean.setConfiguration(configuration);
+    return bean.getObject(); // 设置mybatis的xml所在位置
   }
 
-  /**
-   * 分页插件.
-   *
-   * @return pagination interceptor
-   */
-  @Bean
-  public PaginationInterceptor getPaginationInterceptor() {
-    PaginationInterceptor paginationInterceptor = new PaginationInterceptor();
-    return paginationInterceptor;
+  @Bean("auvSqlSessionTemplate")
+  public SqlSessionTemplate primarySqlSessionTemplate(
+          @Qualifier("auvSqlSessionFactory") SqlSessionFactory sessionfactory) {
+    return new SqlSessionTemplate(sessionfactory);
   }
-
 }

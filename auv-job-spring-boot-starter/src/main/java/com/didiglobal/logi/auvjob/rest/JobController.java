@@ -4,6 +4,8 @@ import com.didiglobal.logi.auvjob.core.job.JobManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -11,11 +13,12 @@ import org.springframework.web.bind.annotation.RestController;
  *
  * @author dengshan
  */
-@RestController(Constants.V1 + "/auv-job/job")
+@RestController
+@RequestMapping(Constants.V1 + "/auv-job/job")
 public class JobController {
 
   @Autowired
-  private static JobManager jobManager;
+  private JobManager jobManager;
 
   @PutMapping("/stop")
   public Object stop(String jobCode) {
@@ -33,7 +36,8 @@ public class JobController {
   }
 
   @GetMapping("/jobLogs")
-  public Object getJobLogs(String taskCode, Integer limit) {
+  public Object getJobLogs(String taskCode,
+                           @RequestParam(defaultValue = "10", required = false) Integer limit) {
     return jobManager.getJobLogs(taskCode, limit);
   }
 }

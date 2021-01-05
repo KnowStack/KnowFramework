@@ -1,9 +1,10 @@
 package com.didiglobal.logi.auvjob.mapper;
 
-import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.didiglobal.logi.auvjob.common.bean.AuvJob;
-import org.apache.ibatis.annotations.Mapper;
-import org.springframework.stereotype.Repository;
+import java.util.List;
+import org.apache.ibatis.annotations.Delete;
+import org.apache.ibatis.annotations.Insert;
+import org.apache.ibatis.annotations.Select;
 
 /**
  * <p>
@@ -13,6 +14,17 @@ import org.springframework.stereotype.Repository;
  * @author dengshan
  * @since 2020-11-10
  */
-public interface AuvJobMapper extends BaseMapper<AuvJob> {
+public interface AuvJobMapper {
+
+  @Delete("delete from auv_job where code=#{code}")
+  int deleteByCode(String code);
+
+  @Insert("INSERT INTO auv_job(code, task_code, class_name, try_times, start_time) "
+          + "VALUES(#{code}, #{taskCode}, #{className}, #{tryTimes}, #{startTime})")
+  int insert(AuvJob auvJob);
+
+  @Select("select id, code, task_code, class_name, try_times, start_time, create_time, update_time"
+          + " from auv_job")
+  List<AuvJob> selectAll();
 
 }

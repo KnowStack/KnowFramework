@@ -1,7 +1,7 @@
 package com.didiglobal.logi.auvjob.common.domain;
 
 import com.didiglobal.logi.auvjob.common.bean.AuvWorker;
-import java.time.LocalDateTime;
+import java.sql.Timestamp;
 import lombok.Data;
 
 @Data
@@ -30,7 +30,7 @@ public class WorkerInfo {
 
   private Integer jobNum;
 
-  private LocalDateTime heartbeat;
+  private Timestamp heartbeat;
 
   /**
    * get auv worker.
@@ -48,7 +48,7 @@ public class WorkerInfo {
     auvWorker.setJvmMemory(this.jvmMemory);
     auvWorker.setJvmMemoryUsed(this.jvmMemoryUsed);
     auvWorker.setJobNum(this.jobNum);
-    auvWorker.setHeartbeat(LocalDateTime.now());
+    auvWorker.setHeartbeat(new Timestamp(System.currentTimeMillis()));
     return auvWorker;
   }
 }

@@ -1,9 +1,5 @@
 package com.didiglobal.logi.auvjob.core.task;
 
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
-import com.baomidou.mybatisplus.core.toolkit.CollectionUtils;
-import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.didiglobal.logi.auvjob.common.bean.AuvTask;
 import com.didiglobal.logi.auvjob.common.domain.TaskInfo;
 import com.didiglobal.logi.auvjob.common.dto.TaskDto;
@@ -14,21 +10,22 @@ import com.didiglobal.logi.auvjob.mapper.AuvTaskMapper;
 import com.didiglobal.logi.auvjob.utils.Assert;
 import com.didiglobal.logi.auvjob.utils.BeanUtil;
 import com.didiglobal.logi.auvjob.utils.CronExpression;
-import com.didiglobal.logi.auvjob.utils.DateUtil;
 import com.didiglobal.logi.auvjob.utils.ThreadUtil;
-import java.time.LocalDateTime;
-import java.time.temporal.TemporalUnit;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
+import org.springframework.util.StringUtils;
 
 /**
  * task manager impl.
@@ -69,30 +66,29 @@ public class TaskManagerImpl implements TaskManager {
 
   @Override
   public TaskDto delete(String taskCode) {
-    AuvTask auvTask = auvTaskMapper.selectById(taskCode);
+    AuvTask auvTask = auvTaskMapper.selectByCode(taskCode);
     if (auvTask == null) {
       return null;
     }
-    auvTaskMapper.deleteById(taskCode);
+    auvTaskMapper.deleteByCode(taskCode);
     return BeanUtil.convertTo(auvTask, TaskDto.class);
   }
 
   @Override
   public boolean update(TaskDto taskDto) {
     AuvTask auvTask = BeanUtil.convertTo(taskDto, AuvTask.class);
-    return auvTaskMapper.updateById(auvTask) > 0 ? true : false;
+    return auvTaskMapper.updateByCode(auvTask) > 0 ? true : false;
   }
 
   @Override
-  public List<TaskInfo> nextTriggers(Long interval, TemporalUnit timeUnit) {
-    return nextTriggers(LocalDateTime.now(), interval, timeUnit);
+  public List<TaskInfo> nextTriggers(Long interval) {
+    return nextTriggers(System.currentTimeMillis(), interval);
   }
 
   @Override
-  public List<TaskInfo> nextTriggers(LocalDateTime fromTime, Long interval, TemporalUnit timeUnit) {
+  public List<TaskInfo> nextTriggers(Long fromTime, Long interval) {
     List<TaskInfo> taskInfoList = new ArrayList<>();
-    List<AuvTask> auvTaskList = auvTaskMapper.selectList(new QueryWrapper<AuvTask>()
-            .ne("status", TaskStatusEnum.STOPPED.getValue()));
+    List<AuvTask> auvTaskList = auvTaskMapper.selectByNeStatus(TaskStatusEnum.STOPPED.getValue());
     if (CollectionUtils.isEmpty(auvTaskList)) {
       return taskInfoList;
     }
@@ -110,13 +106,13 @@ public class TaskManagerImpl implements TaskManager {
       if (cronExpression == null) {
         return;
       }
-      Date nextTime = cronExpression.getNextValidTimeAfter(DateUtil.toDate(taskInfo
-              .getLastFireTime()));
-      taskInfo.setNextFireTime(DateUtil.toLocalDateTime(nextTime));
+      Date nextTime = cronExpression.getNextValidTimeAfter(taskInfo.getLastFireTime());
+      taskInfo.setNextFireTime(new Timestamp(nextTime.getTime()));
     });
     // filter
-    taskInfoList = taskInfoList.stream().filter(taskInfo -> fromTime.plus(interval, timeUnit)
-            .isAfter(taskInfo.getNextFireTime())).collect(Collectors.toList());
+    taskInfoList = taskInfoList.stream().filter(taskInfo ->
+            new Timestamp(fromTime + interval * 1000).after(taskInfo.getNextFireTime()))
+            .collect(Collectors.toList());
     // sort
     taskInfoList.sort(Comparator.comparing(TaskInfo::getNextFireTime));
     return taskInfoList;
@@ -141,17 +137,18 @@ public class TaskManagerImpl implements TaskManager {
    */
   public void execute(String taskCode, Boolean executeSubs) {
     Assert.notNull(taskCode, "taskCode can not be null");
-    AuvTask auvTask = auvTaskMapper.selectList(new QueryWrapper<AuvTask>().eq("code", taskCode)
-            .eq("status", TaskStatusEnum.WAITING.getValue())).stream().findFirst().orElseGet(null);
-    Assert.notNull(auvTask, "taskCode is invalid!");
+    AuvTask auvTask = auvTaskMapper.selectByCode(taskCode);
+    Assert.isTrue(auvTask != null, "taskCode is invalid!");
+    Assert.isTrue(Objects.equals(auvTask.getStatus(), TaskStatusEnum.WAITING.getValue()),
+            "taskCode is invalid!");
     Assert.isTrue(taskLockService.tryAcquire(taskCode), "can not get lock, may be task is "
             + "running.");
 
     /* 获取到锁 */
     // 更新任务状态，最近更新时间
-    auvTaskMapper.update(null, new UpdateWrapper<AuvTask>()
-            .eq("code", taskCode).set("status", TaskStatusEnum.RUNNING.getValue())
-            .set("last_fire_time", LocalDateTime.now()));
+    auvTask.setStatus(TaskStatusEnum.RUNNING.getValue());
+    auvTask.setLastFireTime(new Timestamp(System.currentTimeMillis()));
+    auvTaskMapper.updateByCode(auvTask);
     // 添加回调函数，执行
     TaskInfo taskInfo = BeanUtil.convertTo(auvTask, TaskInfo.class);
     taskInfo.setTaskCallback(code -> taskLockService.tryRelease(code));
@@ -161,10 +158,12 @@ public class TaskManagerImpl implements TaskManager {
   @Override
   public void execute(TaskInfo taskInfo, Boolean executeSubs) {
     if (taskLockService.tryAcquire(taskInfo.getCode())) {
+      AuvTask auvTask = BeanUtil.convertTo(taskInfo, AuvTask.class);
+      auvTask.setStatus(TaskStatusEnum.RUNNING.getValue());
+      auvTask.setLastFireTime(new Timestamp(System.currentTimeMillis()));
+
       // 更新任务状态，最近更新时间
-      auvTaskMapper.update(null, new UpdateWrapper<AuvTask>()
-              .eq("code", taskInfo.getCode()).set("status", TaskStatusEnum.RUNNING.getValue())
-              .set("last_fire_time", LocalDateTime.now()));
+      auvTaskMapper.updateByCode(auvTask);
       // 添加回调函数
       taskInfo.setTaskCallback(taskCode -> taskLockService.tryRelease(taskCode));
       // 执行
@@ -174,30 +173,24 @@ public class TaskManagerImpl implements TaskManager {
 
   @Override
   public boolean pause(String taskCode) {
-    return auvTaskMapper.update(null, new UpdateWrapper<AuvTask>()
-            .eq("code", taskCode)
-            .set("status", TaskStatusEnum.STOPPED.getValue())) > 0;
+    return auvTaskMapper.updateStatusByCode(taskCode, TaskStatusEnum.STOPPED.getValue()) > 0;
   }
 
   @Override
   public int pauseAll() {
-    return auvTaskMapper.update(null, new UpdateWrapper<AuvTask>()
-            .eq("status", TaskStatusEnum.WAITING.getValue())
-            .set("status", TaskStatusEnum.STOPPED.getValue()));
+    return auvTaskMapper.updateStatusByStatus(TaskStatusEnum.WAITING.getValue(),
+            TaskStatusEnum.STOPPED.getValue());
   }
 
   @Override
   public boolean resume(String taskCode) {
-    return auvTaskMapper.update(null, new UpdateWrapper<AuvTask>()
-            .eq("code", taskCode)
-            .set("status", TaskStatusEnum.WAITING.getValue())) > 0;
+    return auvTaskMapper.updateStatusByCode(taskCode, TaskStatusEnum.WAITING.getValue()) > 0;
   }
 
   @Override
   public int resumeAll() {
-    return auvTaskMapper.update(null, new UpdateWrapper<AuvTask>()
-            .eq("status", TaskStatusEnum.WAITING.getValue())
-            .set("status", TaskStatusEnum.WAITING.getValue()));
+    return auvTaskMapper.updateStatusByStatus(TaskStatusEnum.STOPPED.getValue(),
+            TaskStatusEnum.WAITING.getValue());
   }
 
   // ################################## private method #######################################
@@ -213,9 +206,9 @@ public class TaskManagerImpl implements TaskManager {
       ThreadUtil.sleep(WAIT_INTERVAL_SECONDS, TimeUnit.SECONDS);
     }
     // 递归拉起子任务
-    if (StringUtils.isNotEmpty(taskInfo.getSubTaskCodes())) {
+    if (!StringUtils.isEmpty(taskInfo.getSubTaskCodes())) {
       String[] subTaskCodeArray = taskInfo.getSubTaskCodes().split(",");
-      List<AuvTask> subTasks = auvTaskMapper.selectBatchIds(Arrays.asList(subTaskCodeArray));
+      List<AuvTask> subTasks = auvTaskMapper.selectByCodes(Arrays.asList(subTaskCodeArray));
       List<TaskInfo> subTaskInfoList = subTasks.stream().map(auvTask -> BeanUtil.convertTo(auvTask,
               TaskInfo.class)).collect(Collectors.toList());
       for (TaskInfo subTaskInfo : subTaskInfoList) {

@@ -12,6 +12,7 @@ import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.transaction.PlatformTransactionManager;
 
@@ -24,6 +25,7 @@ import org.springframework.transaction.PlatformTransactionManager;
 @ConditionalOnClass({Scheduler.class, PlatformTransactionManager.class})
 @EnableConfigurationProperties({AuvJobProperties.class})
 @AutoConfigureAfter({DataSourceAutoConfiguration.class})
+@ComponentScan(basePackages = "com.didiglobal.logi.auvjob")
 public class AuvJobAutoConfiguration {
 
   /**

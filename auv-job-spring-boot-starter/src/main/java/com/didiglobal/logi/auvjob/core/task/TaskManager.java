@@ -1,10 +1,7 @@
 package com.didiglobal.logi.auvjob.core.task;
 
-import com.didiglobal.logi.auvjob.common.bean.AuvTask;
 import com.didiglobal.logi.auvjob.common.domain.TaskInfo;
 import com.didiglobal.logi.auvjob.common.dto.TaskDto;
-import java.time.LocalDateTime;
-import java.time.temporal.TemporalUnit;
 import java.util.List;
 
 /**
@@ -37,21 +34,19 @@ public interface TaskManager {
   /**
    * 接下来需要执行的任务,按时间先后顺序排序.
    *
-   * @param interval 从现在开始下次执行时间间隔
-   * @param timeUnit 时间单位
+   * @param interval 从现在开始下次执行时间间隔 毫秒
    * @return task info list
    */
-  List<TaskInfo> nextTriggers(Long interval, TemporalUnit timeUnit);
+  List<TaskInfo> nextTriggers(Long interval);
 
   /**
    * 接下来需要执行的任务,按时间先后顺序排序.
    *
-   * @param fromTime 开始时间
-   * @param interval 从指定开始时间，下次执行时间间隔
-   * @param timeUnit 时间单位
+   * @param fromTime fromTime
+   * @param interval interval
    * @return task info list
    */
-  List<TaskInfo> nextTriggers(LocalDateTime fromTime, Long interval, TemporalUnit timeUnit);
+  List<TaskInfo> nextTriggers(Long fromTime, Long interval);
 
   /**
    * 提交任务，执行器会根据一致性协同算法判断是否执行.

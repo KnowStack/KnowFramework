@@ -1,9 +1,7 @@
 package com.didiglobal.logi.auvjob.common.bean;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableId;
 import java.io.Serializable;
-import java.time.LocalDateTime;
+import java.sql.Timestamp;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
@@ -30,7 +28,6 @@ public class AuvJob implements Serializable {
   /*
    * task code
    */
-  @TableId(value = "code", type = IdType.ID_WORKER_STR)
   private String code;
 
   /*
@@ -51,16 +48,16 @@ public class AuvJob implements Serializable {
   /*
    * 开始时间
    */
-  private LocalDateTime startTime;
+  private Timestamp startTime;
 
   /*
    * 开始时间
    */
-  private LocalDateTime createTime;
+  private Timestamp createTime;
 
   /*
    * 更新时间
    */
-  private LocalDateTime updateTime;
+  private Timestamp updateTime;
 
 }

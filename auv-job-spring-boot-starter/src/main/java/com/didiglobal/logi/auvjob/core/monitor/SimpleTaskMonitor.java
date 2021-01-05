@@ -3,9 +3,6 @@ package com.didiglobal.logi.auvjob.core.monitor;
 import com.didiglobal.logi.auvjob.common.domain.TaskInfo;
 import com.didiglobal.logi.auvjob.core.task.TaskManager;
 import com.didiglobal.logi.auvjob.utils.ThreadUtil;
-import java.time.Duration;
-import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 import org.slf4j.Logger;
@@ -57,8 +54,7 @@ public class SimpleTaskMonitor implements TaskMonitor {
     @Override
     public void run() {
       while (true) {
-        List<TaskInfo> taskInfoList = taskManager.nextTriggers(INTERVAL_SECONDS,
-                ChronoUnit.SECONDS);
+        List<TaskInfo> taskInfoList = taskManager.nextTriggers(INTERVAL_SECONDS);
 
         if (taskInfoList == null || taskInfoList.size() == 0) {
           ThreadUtil.sleep(INTERVAL_SECONDS, TimeUnit.SECONDS);
@@ -66,10 +62,11 @@ public class SimpleTaskMonitor implements TaskMonitor {
         }
 
         // 未到执行时间，等待
-        LocalDateTime firstFireTime = taskInfoList.stream().findFirst().get().getNextFireTime();
-        if (LocalDateTime.now().isBefore(firstFireTime)) {
-          Duration between = Duration.between(LocalDateTime.now(), firstFireTime);
-          ThreadUtil.sleep(between.getSeconds(), TimeUnit.SECONDS);
+        Long firstFireTime = taskInfoList.stream().findFirst().get().getNextFireTime().getTime();
+        Long nowTime = System.currentTimeMillis();
+        if (nowTime < firstFireTime) {
+          Long between = firstFireTime - nowTime;
+          ThreadUtil.sleep(between / 1000, TimeUnit.SECONDS);
         }
 
         // 提交任务

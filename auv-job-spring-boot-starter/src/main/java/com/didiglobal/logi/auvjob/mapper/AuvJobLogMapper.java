@@ -1,8 +1,10 @@
 package com.didiglobal.logi.auvjob.mapper;
 
-import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.didiglobal.logi.auvjob.common.bean.AuvJobLog;
-import org.springframework.stereotype.Repository;
+import java.util.List;
+import org.apache.ibatis.annotations.Insert;
+import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Select;
 
 /**
  * <p>
@@ -12,6 +14,17 @@ import org.springframework.stereotype.Repository;
  * @author dengshan
  * @since 2020-11-10
  */
-public interface AuvJobLogMapper extends BaseMapper<AuvJobLog> {
+public interface AuvJobLogMapper {
+
+  @Insert("INSERT INTO auv_job_log(job_code, task_code, class_name, try_times, start_time, end_time"
+          + ", status, error, result) VALUES(#{jobCode}, #{taskCode}, #{className}, #{tryTimes}, "
+          + "#{startTime}, #{endTime}, #{status}, #{error}, #{result})")
+  int insert(AuvJobLog auvJobLog);
+
+  @Select("select id, job_code, task_code, class_name, try_times, start_time, end_time, status, "
+          + "error, result, create_time, update_time from auv_job_log where task_code=#{taskCode} "
+          + "limit #{limit} order by create_time desc")
+  List<AuvJobLog> selectByTaskCode(@Param("taskCode") String taskCode,
+                                   @Param("limit") Integer limit);
 
 }

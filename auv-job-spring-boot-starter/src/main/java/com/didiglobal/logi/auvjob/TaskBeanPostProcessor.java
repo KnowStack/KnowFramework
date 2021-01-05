@@ -1,6 +1,5 @@
 package com.didiglobal.logi.auvjob;
 
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.didiglobal.logi.auvjob.annotation.Task;
 import com.didiglobal.logi.auvjob.common.bean.AuvTask;
 import com.didiglobal.logi.auvjob.common.enums.TaskStatusEnum;
@@ -8,7 +7,8 @@ import com.didiglobal.logi.auvjob.core.job.Job;
 import com.didiglobal.logi.auvjob.core.job.JobFactory;
 import com.didiglobal.logi.auvjob.mapper.AuvTaskMapper;
 import com.didiglobal.logi.auvjob.utils.CronExpression;
-import java.time.LocalDateTime;
+import com.didiglobal.logi.auvjob.utils.IdWorker;
+import java.sql.Timestamp;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -56,6 +56,8 @@ public class TaskBeanPostProcessor implements BeanPostProcessor {
     }
     // not exists register
     AuvTask task = getAuvTask(beanClass, taskAnnotation);
+    task.setCode(IdWorker.getIdStr());
+    task.setStatus(TaskStatusEnum.WAITING.getValue());
     if (!contains(task)) {
       auvTaskMapper.insert(task);
     }
@@ -76,7 +78,7 @@ public class TaskBeanPostProcessor implements BeanPostProcessor {
     auvTask.setClassName(beanClass.getCanonicalName());
     auvTask.setParams("");
     auvTask.setRetryTimes(schedule.retryTimes());
-    auvTask.setLastFireTime(LocalDateTime.now());
+    auvTask.setLastFireTime(new Timestamp(System.currentTimeMillis()));
     auvTask.setTimeout(schedule.timeout());
     auvTask.setSubTaskCodes("");
     return auvTask;
@@ -84,8 +86,7 @@ public class TaskBeanPostProcessor implements BeanPostProcessor {
 
   private boolean contains(AuvTask task) {
     if (taskMap.isEmpty()) {
-      List<AuvTask> auvTasks = auvTaskMapper.selectList(new QueryWrapper<AuvTask>().ne("status",
-              TaskStatusEnum.STOPPED.getValue()));
+      List<AuvTask> auvTasks = auvTaskMapper.selectByNeStatus(TaskStatusEnum.STOPPED.getValue());
       taskMap = auvTasks.stream().collect(Collectors.toMap(AuvTask::getClassName,
               Function.identity()));
     }

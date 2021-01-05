@@ -1,16 +1,14 @@
 package com.didiglobal.logi.auvjob.core.task;
 
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.core.toolkit.CollectionUtils;
 import com.didiglobal.logi.auvjob.common.bean.AuvTaskLock;
 import com.didiglobal.logi.auvjob.core.WorkerSingleton;
 import com.didiglobal.logi.auvjob.mapper.AuvTaskLockMapper;
 import java.util.List;
-import org.apache.ibatis.session.SqlSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 /**
  * task lock service.
@@ -34,9 +32,8 @@ public class TaskLockServiceImpl implements TaskLockService {
 
   @Override
   public Boolean tryAcquire(String taskCode) {
-    List<AuvTaskLock> auvTaskLockList = auvTaskLockMapper.selectList(new QueryWrapper<AuvTaskLock>()
-            .eq("task_code", taskCode));
-    if (CollectionUtils.isNotEmpty(auvTaskLockList)) {
+    List<AuvTaskLock> auvTaskLockList = auvTaskLockMapper.selectByTaskCode(taskCode);
+    if (!CollectionUtils.isEmpty(auvTaskLockList)) {
       return false;
     }
     AuvTaskLock taskLock = new AuvTaskLock();
@@ -47,15 +44,13 @@ public class TaskLockServiceImpl implements TaskLockService {
 
   @Override
   public Boolean tryRelease(String taskCode) {
-    List<AuvTaskLock> auvTaskLockList = auvTaskLockMapper.selectList(new QueryWrapper<AuvTaskLock>()
-            .eq("task_code", taskCode));
+    List<AuvTaskLock> auvTaskLockList = auvTaskLockMapper.selectByTaskCode(taskCode);
     if (CollectionUtils.isEmpty(auvTaskLockList)) {
       logger.error("class=TaskLockServiceImpl||method=tryRelease||url=||msg=not exists task "
               + "lock, taskCode [{}]", taskCode);
       return false;
     }
-    int result = auvTaskLockMapper.delete(new QueryWrapper<AuvTaskLock>().eq("task_code",
-            taskCode));
+    int result = auvTaskLockMapper.deleteByTaskCode(taskCode);
     return result > 0 ? true : false;
   }
 }

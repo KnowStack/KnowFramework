@@ -1,7 +1,7 @@
 package com.didiglobal.logi.auvjob.common.bean;
 
 import java.io.Serializable;
-import java.time.LocalDateTime;
+import java.sql.Timestamp;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
@@ -36,11 +36,11 @@ public class AuvTaskLock implements Serializable {
   /*
    * 开始时间
    */
-  private LocalDateTime createTime;
+  private Timestamp createTime;
 
   /*
    * 开始时间
    */
-  private LocalDateTime updateTime;
+  private Timestamp updateTime;
 
 }

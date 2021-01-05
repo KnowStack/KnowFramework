@@ -1,9 +1,7 @@
 package com.didiglobal.logi.auvjob.common.bean;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableId;
 import java.io.Serializable;
-import java.time.LocalDateTime;
+import java.sql.Timestamp;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
@@ -23,7 +21,6 @@ public class AuvJobLog implements Serializable {
 
   private static final long serialVersionUID = 1L;
 
-  @TableId(value = "id", type = IdType.AUTO)
   private Long id;
 
   /*
@@ -49,12 +46,12 @@ public class AuvJobLog implements Serializable {
   /*
    * 开始时间
    */
-  private LocalDateTime startTime;
+  private Timestamp startTime;
 
   /*
    * 结束时间
    */
-  private LocalDateTime endTime;
+  private Timestamp endTime;
 
   /*
    * 执行结果 1成功 2失败 3取消
@@ -69,12 +66,12 @@ public class AuvJobLog implements Serializable {
   /*
    * 开始时间
    */
-  private LocalDateTime createTime;
+  private Timestamp createTime;
 
   /*
    * 开始时间
    */
-  private LocalDateTime updateTime;
+  private Timestamp updateTime;
 
   /*
    * 执行结果

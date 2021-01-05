@@ -22,4 +22,10 @@ public class Assert {
       throw new IllegalStateException(msg);
     }
   }
+
+
+  public static void isFalse(boolean test, String message) {
+    isTrue(!test, message);
+  }
+
 }
