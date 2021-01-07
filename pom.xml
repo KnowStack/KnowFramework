@@ -25,6 +25,7 @@
         <spring-boot.version>2.2.11.RELEASE</spring-boot.version>
         <mysql.version>5.1.41</mysql.version>
         <mybatis-plus.version>3.3.2</mybatis-plus.version>
+        <mybatis.version>2.1.0</mybatis.version>
         <freemarker.version>2.3.29</freemarker.version>
         <slf4j.version>1.7.30</slf4j.version>
         <logback.version>1.1.11</logback.version>
@@ -62,21 +63,11 @@
                 <version>${mysql.version}</version>
             </dependency>
 
-            <!-- mybatis-plus  -->
+            <!-- mybatis  -->
             <dependency>
-                <groupId>com.baomidou</groupId>
-                <artifactId>mybatis-plus-boot-starter</artifactId>
-                <version>${mybatis-plus.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.baomidou</groupId>
-                <artifactId>mybatis-plus-generator</artifactId>
-                <version>${mybatis-plus.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.freemarker</groupId>
-                <artifactId>freemarker</artifactId>
-                <version>${freemarker.version}</version>
+                <groupId>org.mybatis.spring.boot</groupId>
+                <artifactId>mybatis-spring-boot-starter</artifactId>
+                <version>${mybatis.version}</version>
             </dependency>
 
             <!-- slf4j & logback -->
