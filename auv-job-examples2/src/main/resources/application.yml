@@ -2,12 +2,6 @@ server:
   port: 8081
 
 spring:
-  datasource:
-    hikari:
-      jdbc-url: jdbc:mysql://10.96.80.17:3306/auv_job?useUnicode=true&useSSL=false&autoReconnect=true&failOverReadOnly=false
-      username: root
-      password: liuwu_test_001
-      driver-class-name: com.mysql.jdbc.Driver
   auv-job:
     jdbc-url: jdbc:mysql://10.96.80.17:3306/auv_job?useUnicode=true&useSSL=false&autoReconnect=true&failOverReadOnly=false
     username: root

@@ -23,13 +23,13 @@ public class AuvDataSourceConfig {
    * @return 数据源
    */
   @Bean("auvDataSource")
-  public DataSource dataSource(AuvJobProperties properties) {
+  public DataSource dataSource(AuvJobProperties auvJobProperties) {
     HikariDataSource dataSource = new HikariDataSource();
-    dataSource.setUsername(properties.getUsername());
-    dataSource.setPassword(properties.getPassword());
-    dataSource.setJdbcUrl(properties.getJdbcUrl());
-    dataSource.setDriverClassName(properties.getDriverClassName());
-    dataSource.setMaxLifetime(properties.getMaxLifetime());
+    dataSource.setUsername(auvJobProperties.getUsername());
+    dataSource.setPassword(auvJobProperties.getPassword());
+    dataSource.setJdbcUrl(auvJobProperties.getJdbcUrl());
+    dataSource.setDriverClassName(auvJobProperties.getDriverClassName());
+    dataSource.setMaxLifetime(auvJobProperties.getMaxLifetime());
     return dataSource;
   }
 
