@@ -88,7 +88,7 @@ public class TaskManagerImpl implements TaskManager {
   @Override
   public List<TaskInfo> nextTriggers(Long fromTime, Long interval) {
     List<TaskInfo> taskInfoList = new ArrayList<>();
-    List<AuvTask> auvTaskList = auvTaskMapper.selectByNeStatus(TaskStatusEnum.STOPPED.getValue());
+    List<AuvTask> auvTaskList = auvTaskMapper.selectByStatus(TaskStatusEnum.WAITING.getValue());
     if (CollectionUtils.isEmpty(auvTaskList)) {
       return taskInfoList;
     }

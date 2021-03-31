@@ -1,6 +1,5 @@
 package com.didiglobal.logi.auvjob.core.job;
 
-import com.didiglobal.logi.auvjob.common.Tuple;
 import com.didiglobal.logi.auvjob.common.bean.AuvJob;
 import com.didiglobal.logi.auvjob.common.bean.AuvJobLog;
 import com.didiglobal.logi.auvjob.common.domain.JobInfo;
@@ -16,12 +15,14 @@ import com.didiglobal.logi.auvjob.utils.BeanUtil;
 import com.didiglobal.logi.auvjob.utils.IdWorker;
 import com.didiglobal.logi.auvjob.utils.ThreadUtil;
 import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.Callable;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -43,7 +44,7 @@ public class JobManagerImpl implements JobManager {
   private AuvJobLogMapper auvJobLogMapper;
   private JobExecutor jobExecutor;
 
-  private List<Tuple<JobInfo, Future>> jobFutures = new ArrayList<>(100);
+  private ConcurrentHashMap<JobInfo, Future> jobFutureMap = new ConcurrentHashMap<>();
 
   /**
    * constructor.
@@ -60,7 +61,7 @@ public class JobManagerImpl implements JobManager {
   }
 
   private void initialize() {
-    new Thread(new JobFutureHandler(jobFutures), "JobFutureHandler Thread").start();
+    new Thread(new JobFutureHandler(jobFutureMap), "JobFutureHandler Thread").start();
   }
 
   @Override
@@ -72,23 +73,22 @@ public class JobManagerImpl implements JobManager {
     job.setStartTime(new Timestamp(System.currentTimeMillis()));
     auvJobMapper.insert(job);
 
-    Future jobFuture = jobExecutor.submit(new JobHandler(jobInfo,
-            taskInfo.getTaskCallback()));
-    jobFutures.add(new Tuple<>(jobInfo, jobFuture));
+    Future jobFuture = jobExecutor.submit(new JobHandler(jobInfo, taskInfo.getTaskCallback()));
+    jobFutureMap.put(jobInfo, jobFuture);
     return jobFuture;
   }
 
   @Override
   public Integer runningJobSize() {
-    return this.jobFutures.size();
+    return jobFutureMap.size();
   }
 
   @Override
   public boolean stop(String jobCode) {
     Assert.notNull(jobCode, "jobCode can not be null!");
-    for (Tuple<JobInfo, Future> jobFuture : jobFutures) {
-      if (jobCode.equals(jobFuture.getV1().getCode())) {
-        Future future = jobFuture.getV2();
+    for (Map.Entry<JobInfo, Future> jobFuture : jobFutureMap.entrySet()) {
+      if (Objects.equals(jobCode, jobFuture.getKey().getCode())) {
+        Future future = jobFuture.getValue();
         if (!future.isDone()) {
           return future.cancel(true);
         }
@@ -99,14 +99,13 @@ public class JobManagerImpl implements JobManager {
 
   @Override
   public int stopAll() {
-    int succeedNum = 0;
-    for (Tuple<JobInfo, Future> jobFuture : jobFutures) {
-      Future future = jobFuture.getV2();
+    AtomicInteger succeedNum = new AtomicInteger();
+    jobFutureMap.values().forEach(future -> {
       if (!future.isDone() && future.cancel(true)) {
-        succeedNum++;
+        succeedNum.addAndGet(1);
       }
-    }
-    return succeedNum;
+    });
+    return succeedNum.get();
   }
 
   @Override
@@ -175,23 +174,19 @@ public class JobManagerImpl implements JobManager {
    */
   class JobFutureHandler implements Runnable {
     private static final long JOB_FUTURE_CLEAN_INTERVAL = 10L;
-    private List<Tuple<JobInfo, Future>> jobFutures;
+    private ConcurrentHashMap<JobInfo, Future> jobFutureMap;
 
-    public JobFutureHandler(List<Tuple<JobInfo, Future>> jobFutures) {
-      this.jobFutures = jobFutures;
+    public JobFutureHandler(ConcurrentHashMap<JobInfo, Future> jobFutureMap) {
+      this.jobFutureMap = jobFutureMap;
     }
 
     @Override
     public void run() {
       while (true) {
         // 处理已完成任务
-        Iterator<Tuple<JobInfo, Future>> iterator = jobFutures.iterator();
-        while (iterator.hasNext()) {
-          Tuple<JobInfo, Future> jobFuture = iterator.next();
-          Future future = jobFuture.getV2();
+        jobFutureMap.forEach(((jobInfo, future) -> {
           if (future.isDone()) {
             // 删除auvJob
-            JobInfo jobInfo = jobFuture.getV1();
             auvJobMapper.deleteByCode(jobInfo.getCode());
 
             // 增加auvJobLog
@@ -199,25 +194,22 @@ public class JobManagerImpl implements JobManager {
             auvJobLogMapper.insert(auvJobLog);
 
             // 移除记录
-            iterator.remove();
+            jobFutureMap.remove(jobInfo);
           }
-        }
+        }));
 
         // 处理超时任务
-        for (Tuple<JobInfo, Future> jobFuture : jobFutures) {
-          JobInfo jobInfo = jobFuture.getV1();
-
+        jobFutureMap.forEach(((jobInfo, future) -> {
           Long startTime = jobInfo.getStartTime().getTime();
           Long now = System.currentTimeMillis();
           Long between = startTime - now;
           Long timeout = jobInfo.getTimeout();
 
-          Future future = jobFuture.getV2();
           if (between / 1000 > timeout && !future.isDone()) {
             future.cancel(true);
             jobInfo.setStatus(JobStatusEnum.CANCELED.getValue());
           }
-        }
+        }));
 
         // 间隔一段时间执行一次
         ThreadUtil.sleep(JOB_FUTURE_CLEAN_INTERVAL, TimeUnit.SECONDS);

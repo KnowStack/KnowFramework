@@ -61,4 +61,9 @@ public interface AuvTaskMapper {
           + "from auv_task where status<>#{status}")
   List<AuvTask> selectByNeStatus(@Param("status") Integer status);
 
+  @Select("select id, code, name, description, cron, class_name, params, retry_times, "
+          + "last_fire_time, timeout, status, sub_task_codes, create_time, update_time "
+          + "from auv_task where status=#{status}")
+  List<AuvTask> selectByStatus(@Param("status") Integer status);
+
 }
