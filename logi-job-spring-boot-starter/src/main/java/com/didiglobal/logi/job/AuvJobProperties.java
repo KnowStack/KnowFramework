@@ -8,7 +8,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
  *
  * @author dengshan
  */
-@ConfigurationProperties("spring.auv-job")
+@ConfigurationProperties("spring.logi-job")
 @Data
 public class AuvJobProperties {
   private String username;
@@ -20,5 +20,5 @@ public class AuvJobProperties {
   private Integer initThreadNum;
   private Integer maxThreadNum;
   private Integer logExpire;
-
+  private String  appName;
 }

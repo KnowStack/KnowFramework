@@ -11,7 +11,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 @Component
-@Task(name = "cc broad", description = "hello broad", cron = "0 /2 * * * ? ", autoRegister = true,
+@Task(name = "cc broad", description = "hello broad", cron = "0 0/1 * * * ? *", autoRegister = true,
         consensual = ConsensualConstant.BROADCAST, timeout = 300)
 public class JobBroadcastTest implements Job {
   private static final Logger logger = LoggerFactory.getLogger(JobBroadcastTest.class);
@@ -19,7 +19,7 @@ public class JobBroadcastTest implements Job {
   @Override
   public Object execute(JobContext jobContext) {
     for (int i = 0; i < 500; i++) {
-      ThreadUtil.sleep(1, TimeUnit.SECONDS);
+//      ThreadUtil.sleep(1, TimeUnit.SECONDS);
       logger.info("hihi broad broad");
       System.out.println("hello world broad broad");
     }

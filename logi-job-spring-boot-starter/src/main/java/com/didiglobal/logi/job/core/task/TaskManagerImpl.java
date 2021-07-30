@@ -1,5 +1,6 @@
 package com.didiglobal.logi.job.core.task;
 
+import com.didiglobal.logi.job.AuvJobProperties;
 import com.didiglobal.logi.job.common.Result;
 import com.didiglobal.logi.job.common.bean.AuvTask;
 import com.didiglobal.logi.job.common.domain.TaskInfo;
@@ -41,10 +42,12 @@ public class TaskManagerImpl implements TaskManager {
 
   private static final long WAIT_INTERVAL_SECONDS = 10L;
 
-  private JobManager jobManager;
-  private ConsensualFactory consensualFactory;
-  private TaskLockService taskLockService;
-  private AuvTaskMapper auvTaskMapper;
+  private JobManager            jobManager;
+  private ConsensualFactory     consensualFactory;
+  private TaskLockService       taskLockService;
+  private AuvTaskMapper         auvTaskMapper;
+  private AuvJobProperties      auvJobProperties;
+
 
   /**
    * constructor.
@@ -54,11 +57,13 @@ public class TaskManagerImpl implements TaskManager {
    * @param auvTaskMapper   auvTaskMapper
    */
   public TaskManagerImpl(JobManager jobManager, ConsensualFactory consensualFactory,
-                         TaskLockService taskLockService, AuvTaskMapper auvTaskMapper) {
-    this.jobManager = jobManager;
-    this.consensualFactory = consensualFactory;
-    this.taskLockService = taskLockService;
-    this.auvTaskMapper = auvTaskMapper;
+                         TaskLockService taskLockService, AuvTaskMapper auvTaskMapper, AuvJobProperties auvJobProperties) {
+    this.jobManager         = jobManager;
+    this.consensualFactory  = consensualFactory;
+    this.taskLockService    = taskLockService;
+    this.auvTaskMapper      = auvTaskMapper;
+    this.auvJobProperties   = auvJobProperties;
+
   }
 
   @Override
@@ -141,6 +146,7 @@ public class TaskManagerImpl implements TaskManager {
   /**
    * execute.
    */
+  @Override
   public Result execute(String taskCode, Boolean executeSubs) {
     AuvTask auvTask = auvTaskMapper.selectByCode(taskCode);
     if (auvTask == null) {
@@ -196,7 +202,7 @@ public class TaskManagerImpl implements TaskManager {
   @Override
   public List<TaskInfo> getAll() {
     List<TaskInfo> taskInfoList = new ArrayList<>();
-    List<AuvTask> auvTaskList = auvTaskMapper.selectAll();
+    List<AuvTask> auvTaskList = auvTaskMapper.selectByAppName(auvJobProperties.getAppName());
     if (CollectionUtils.isEmpty(auvTaskList)) {
       return taskInfoList;
     }

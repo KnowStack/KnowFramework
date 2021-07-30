@@ -1,5 +1,6 @@
 package com.didiglobal.logi.job.core.beat;
 
+import com.didiglobal.logi.job.AuvJobProperties;
 import com.didiglobal.logi.job.common.domain.WorkerInfo;
 import com.didiglobal.logi.job.core.WorkerSingleton;
 import com.didiglobal.logi.job.core.job.JobManager;
@@ -15,6 +16,7 @@ public class BeatManagerImpl implements BeatManager {
 
   private JobManager jobManager;
   private AuvWorkerMapper auvWorkerMapper;
+  private AuvJobProperties auvJobProperties;
 
   /**
    * constructor.
@@ -23,9 +25,10 @@ public class BeatManagerImpl implements BeatManager {
    * @param auvWorkerMapper worker mapper
    */
   @Autowired
-  public BeatManagerImpl(JobManager jobManager, AuvWorkerMapper auvWorkerMapper) {
+  public BeatManagerImpl(JobManager jobManager, AuvWorkerMapper auvWorkerMapper, AuvJobProperties auvJobProperties) {
     this.jobManager = jobManager;
     this.auvWorkerMapper = auvWorkerMapper;
+    this.auvJobProperties = auvJobProperties;
   }
 
   @Override
@@ -35,6 +38,7 @@ public class BeatManagerImpl implements BeatManager {
     workerSingleton.updateInstanceMetrics();
     WorkerInfo workerInfo = workerSingleton.getWorkerInfo();
     workerInfo.setJobNum(jobManager.runningJobSize());
+    workerInfo.setAppName(auvJobProperties.getAppName());
     return auvWorkerMapper.saveOrUpdateById(workerInfo.getWorker()) > 0 ? true : false;
   }
 

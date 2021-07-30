@@ -1,5 +1,6 @@
 package com.didiglobal.logi.job.core.task;
 
+import com.didiglobal.logi.job.AuvJobProperties;
 import com.didiglobal.logi.job.common.bean.AuvTaskLock;
 import com.didiglobal.logi.job.common.dto.TaskLockDto;
 import com.didiglobal.logi.job.core.WorkerSingleton;
@@ -26,14 +27,16 @@ public class TaskLockServiceImpl implements TaskLockService {
   private static final Long EXPIRE_TIME_SECONDS = 300L;
 
   private AuvTaskLockMapper auvTaskLockMapper;
+  private AuvJobProperties  auvJobProperties;
 
   /**
    * constructor.
    *
    */
   @Autowired
-  public TaskLockServiceImpl(AuvTaskLockMapper auvTaskLockMapper) {
+  public TaskLockServiceImpl(AuvTaskLockMapper auvTaskLockMapper, AuvJobProperties auvJobProperties) {
     this.auvTaskLockMapper = auvTaskLockMapper;
+    this.auvJobProperties  = auvJobProperties;
   }
 
   @Override
@@ -63,6 +66,7 @@ public class TaskLockServiceImpl implements TaskLockService {
       taskLock.setExpireTime(expireTime);
       taskLock.setCreateTime(new Timestamp(System.currentTimeMillis()));
       taskLock.setUpdateTime(new Timestamp(System.currentTimeMillis()));
+      taskLock.setAppName(auvJobProperties.getAppName());
       try {
         return auvTaskLockMapper.insert(taskLock) > 0 ? true : false;
       } catch (Exception e) {
@@ -97,7 +101,7 @@ public class TaskLockServiceImpl implements TaskLockService {
 
   @Override
   public List<TaskLockDto> getAll() {
-    List<AuvTaskLock> auvTaskLocks = auvTaskLockMapper.selectAll();
+    List<AuvTaskLock> auvTaskLocks = auvTaskLockMapper.selectByAppName(auvJobProperties.getAppName());
     if (CollectionUtils.isEmpty(auvTaskLocks)) {
       return null;
     }

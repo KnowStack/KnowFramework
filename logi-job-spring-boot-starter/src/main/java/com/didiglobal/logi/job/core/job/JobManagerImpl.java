@@ -160,7 +160,7 @@ public class JobManagerImpl implements JobManager {
 
   @Override
   public List<JobDto> getJobs() {
-    List<AuvJob> auvJobs = auvJobMapper.selectAll();
+    List<AuvJob> auvJobs = auvJobMapper.selectByAppName(auvJobProperties.getAppName());
     if (CollectionUtils.isEmpty(auvJobs)) {
       return null;
     }
@@ -371,10 +371,12 @@ public class JobManagerImpl implements JobManager {
           }
 
           // 间隔一段时间执行一次
-          ThreadUtil.sleep(JOB_INTERVAL, TimeUnit.SECONDS);
+//          ThreadUtil.sleep(JOB_INTERVAL, TimeUnit.SECONDS);
         } catch (Exception e) {
           logger.error("class=LockRenewHandler||method=run||url=||msg=", e);
         }
+
+        ThreadUtil.sleep(JOB_INTERVAL, TimeUnit.SECONDS);
       }
     }
   }

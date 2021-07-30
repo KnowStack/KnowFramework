@@ -15,7 +15,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 @EnableTransactionManagement
 @Configuration
-@MapperScan(value = "com.didiglobal.logi.auvjob.mapper",
+@MapperScan(value = "com.didiglobal.logi.job.mapper",
         sqlSessionFactoryRef = "auvSqlSessionFactory")
 public class AuvDataSourceConfig {
 

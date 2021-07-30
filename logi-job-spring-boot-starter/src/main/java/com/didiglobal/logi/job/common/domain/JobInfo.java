@@ -24,6 +24,7 @@ public class JobInfo {
   private Object result;
   private Job job;
   private TaskCallback taskCallback;
+  private String appName;
 
   /**
    * auv job.
@@ -37,6 +38,7 @@ public class JobInfo {
     job.setClassName(getClassName());
     job.setTryTimes(getTryTimes());
     job.setWorkerCode(getWorkerCode());
+    job.setAppName(getAppName());
     job.setStartTime(new Timestamp(System.currentTimeMillis()));
     job.setCreateTime(new Timestamp(System.currentTimeMillis()));
     job.setUpdateTime(new Timestamp(System.currentTimeMillis()));
@@ -62,6 +64,7 @@ public class JobInfo {
     auvJobLog.setResult(getResult() == null ? "" : getResult().toString());
     auvJobLog.setCreateTime(new Timestamp(System.currentTimeMillis()));
     auvJobLog.setUpdateTime(new Timestamp(System.currentTimeMillis()));
+    auvJobLog.setAppName(this.getAppName());
     return auvJobLog;
   }
 

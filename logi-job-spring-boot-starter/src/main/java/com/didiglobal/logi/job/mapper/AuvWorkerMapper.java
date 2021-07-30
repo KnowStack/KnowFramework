@@ -17,16 +17,16 @@ import org.apache.ibatis.annotations.Update;
 public interface AuvWorkerMapper {
 
   @Insert("INSERT INTO auv_worker(code, name, cpu, cpu_used, memory, memory_used, jvm_memory, "
-          + "jvm_memory_used, job_num, heartbeat) VALUES(#{code}, #{name}, #{cpu}, #{cpuUsed}, "
-          + "#{memory}, #{memoryUsed}, #{jvmMemory}, #{jvmMemoryUsed}, #{job_num}, #{heartbeat})")
+          + "jvm_memory_used, job_num, heartbeat, app_name) VALUES(#{code}, #{name}, #{cpu}, #{cpuUsed}, "
+          + "#{memory}, #{memoryUsed}, #{jvmMemory}, #{jvmMemoryUsed}, #{job_num}, #{heartbeat}, #{appName})")
   int insert(AuvWorker auvWorker);
 
   @Update("INSERT INTO auv_worker(code, name, cpu, cpu_used, memory, memory_used, jvm_memory, "
-          + "jvm_memory_used, job_num, heartbeat) VALUES(#{code}, #{name}, #{cpu}, #{cpuUsed}, "
-          + "#{memory}, #{memoryUsed}, #{jvmMemory}, #{jvmMemoryUsed}, #{jobNum}, #{heartbeat}) "
+          + "jvm_memory_used, job_num, heartbeat, app_name) VALUES(#{code}, #{name}, #{cpu}, #{cpuUsed}, "
+          + "#{memory}, #{memoryUsed}, #{jvmMemory}, #{jvmMemoryUsed}, #{jobNum}, #{heartbeat}, #{appName}) "
           + "ON DUPLICATE KEY UPDATE cpu=#{cpu}, name=#{name}, cpu_used=#{cpuUsed}, "
           + "memory=#{memory}, memory_used=#{memoryUsed}, jvm_memory=#{jvmMemory}, "
-          + "jvm_memory_used=#{jvmMemoryUsed}, job_num=#{jobNum}, heartbeat=#{heartbeat}")
+          + "jvm_memory_used=#{jvmMemoryUsed}, job_num=#{jobNum}, heartbeat=#{heartbeat}, app_name=#{appName}")
   int saveOrUpdateById(AuvWorker auvWorker);
 
   @Delete("delete from auv_worker where code=#{code}")
