@@ -9,8 +9,10 @@
     <packaging>pom</packaging>
     <version>1.0-SNAPSHOT</version>
     <modules>
-        <module>auv-job-spring-boot-starter</module>
-        <module>auv-job-examples2</module>
+        <module>logi-job-spring-boot-starter</module>
+        <module>logi-job-test</module>
+        <module>logi-security-test</module>
+        <module>logi-security-spring-boot-starter</module>
     </modules>
 
     <properties>
@@ -33,9 +35,10 @@
         <commons-lang3.version>3.11</commons-lang3.version>
         <commons-codec.version>1.15</commons-codec.version>
         <commons-collections.version>3.2.2</commons-collections.version>
-        <swagger.version>2.9.2</swagger.version>
+        <swagger.version>2.8.0</swagger.version>
         <lombok.version>1.18.16</lombok.version>
         <jackson.version>2.10.5</jackson.version>
+        <oshi-core.version>5.3.6</oshi-core.version>
     </properties>
 
     <dependencyManagement>
@@ -43,7 +46,7 @@
             <!-- self -->
             <dependency>
                 <groupId>com.didiglobal.logi</groupId>
-                <artifactId>auv-job-spring-boot-starter</artifactId>
+                <artifactId>logi-job-spring-boot-starter</artifactId>
                 <version>${logi.version}</version>
             </dependency>
 
@@ -149,6 +152,12 @@
                 <version>${jackson.version}</version>
             </dependency>
 
+            <!-- oshi-core -->
+            <dependency>
+                <groupId>com.github.oshi</groupId>
+                <artifactId>oshi-core</artifactId>
+                <version>${oshi-core.version}</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
@@ -163,47 +172,6 @@
                         <source>1.8</source>
                         <target>1.8</target>
                     </configuration>
-                </plugin>
-
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-checkstyle-plugin</artifactId>
-                    <version>3.1.1</version>
-                    <executions>
-                        <execution>
-                            <id>validate</id>
-                            <phase>validate</phase>
-                            <configuration>
-                                <configLocation>google_checks.xml</configLocation>
-                                <encoding>UTF-8</encoding>
-                                <consoleOutput>true</consoleOutput>
-                                <failOnViolation>true</failOnViolation>
-                                <violationSeverity>warning</violationSeverity>
-                            </configuration>
-                            <goals>
-                                <goal>check</goal>
-                            </goals>
-                        </execution>
-                    </executions>
-                </plugin>
-                <plugin>
-                    <groupId>com.github.spotbugs</groupId>
-                    <artifactId>spotbugs-maven-plugin</artifactId>
-                    <version>4.1.3</version>
-                    <configuration>
-                        <effort>Default</effort>
-                        <threshold>Low</threshold>
-                        <maxRank>14</maxRank>
-                    </configuration>
-                    <executions>
-                        <execution>
-                            <id>spotbugs</id>
-                            <phase>validate</phase>
-                            <goals>
-                                <goal>check</goal>
-                            </goals>
-                        </execution>
-                    </executions>
                 </plugin>
             </plugins>
         </pluginManagement>
