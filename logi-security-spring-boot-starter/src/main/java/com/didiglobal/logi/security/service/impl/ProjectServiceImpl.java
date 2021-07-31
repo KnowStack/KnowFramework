@@ -94,6 +94,7 @@ public class ProjectServiceImpl implements ProjectService {
         }
 
         projectWrapper
+                .eq(queryVo.getDeptId() != null, "dept_id", queryVo.getDeptId())
                 .eq(queryVo.getProjectCode() != null, "project_code", queryVo.getProjectCode())
                 .eq(queryVo.getIsRunning() != null, "is_running", queryVo.getIsRunning())
                 .like(queryVo.getProjectName() != null, "project_name", queryVo.getProjectName());

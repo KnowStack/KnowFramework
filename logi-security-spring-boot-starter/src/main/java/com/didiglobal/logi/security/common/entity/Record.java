@@ -5,7 +5,8 @@ import lombok.EqualsAndHashCode;
 
 /**
  * @author cjm
- * 操作日志
+ *
+ * 操作日志信息
  */
 @EqualsAndHashCode(callSuper = true)
 @Data

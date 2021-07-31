@@ -5,6 +5,8 @@ import lombok.Data;
 
 /**
  * @author cjm
+ *
+ * 权限信息
  */
 @Data
 @TableName(value = "logi_permission")

@@ -5,6 +5,8 @@ import lombok.Data;
 
 /**
  * @author cjm
+ *
+ * 角色权限关系
  */
 @Data
 @TableName(value = "logi_role_permission")

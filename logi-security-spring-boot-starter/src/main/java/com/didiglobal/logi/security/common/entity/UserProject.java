@@ -5,6 +5,8 @@ import lombok.Data;
 
 /**
  * @author cjm
+ *
+ * 用户项目关系
  */
 @Data
 @TableName(value = "logi_user_project")

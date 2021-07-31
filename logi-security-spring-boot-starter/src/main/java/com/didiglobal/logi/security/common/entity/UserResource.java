@@ -5,6 +5,8 @@ import lombok.Data;
 
 /**
  * @author cjm
+ *
+ * 用户资源关系
  */
 @Data
 @TableName(value = "logi_user_resource")
@@ -19,6 +21,16 @@ public class UserResource {
      * 资源id
      */
     private Integer resourceId;
+
+    /**
+     * 项目id
+     */
+    private Integer projectId;
+
+    /**
+     * 资源类别Id
+     */
+    private Integer resourceTypeId;
 
     /**
      * 资源管理级别：

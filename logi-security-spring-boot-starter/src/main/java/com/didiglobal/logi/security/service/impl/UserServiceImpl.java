@@ -146,14 +146,10 @@ public class UserServiceImpl implements UserService {
     @Override
     public List<UserVo> getListByDeptId(Integer deptId) {
         QueryWrapper<User> userWrapper = new QueryWrapper<>();
-        // 根据部门id查找用户，治不好
+        // 根据部门id查找用户
         userWrapper.select("id", "real_name").eq("dept_id", deptId);
         List<User> userList = userMapper.selectList(userWrapper);
-        List<UserVo> userVoList = CopyBeanUtil.copyList(userList, UserVo.class);
-        for (int i = 0; i < userVoList.size(); i++) {
-            userVoList.get(i).setUpdateTime(userList.get(i).getUpdateTime().getTime());
-        }
-        return userVoList;
+        return CopyBeanUtil.copyList(userList, UserVo.class);
     }
 
     /**
@@ -162,6 +158,9 @@ public class UserServiceImpl implements UserService {
      * @param userVo 返回给页面的用户信息
      */
     private void privacyProcessing(UserVo userVo) {
-
+        String phone = userVo.getPhone();
+        userVo.setPhone(phone.replaceAll("(\\d{3})\\d{4}(\\d{4})","$1****$2"));
     }
+
+
 }

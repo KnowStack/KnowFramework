@@ -5,6 +5,8 @@ import lombok.Data;
 
 /**
  * @author cjm
+ *
+ * 部门信息
  */
 @Data
 @TableName(value = "logi_dept")

@@ -35,6 +35,12 @@ public class ProjectQueryVo extends PageParamVo {
     private String chargeUsername;
 
     /**
+     * 所属部门id
+     */
+    @ApiModelProperty(value = "所属部门id", dataType = "Integer", required = false)
+    private Integer deptId;
+
+    /**
      * 如果isRunning为null，则表示所有状态
      */
     @ApiModelProperty(value = "项目运行状态", dataType = "Boolean", required = false)

@@ -12,6 +12,8 @@ import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 
 /**
  * @author cjm
@@ -37,6 +39,14 @@ public class UserController {
     public PagingResult<UserVo> page(UserQueryVo queryVo) {
         IPage<UserVo> pageUser = userService.getPageUser(queryVo);
         return PagingResult.success(pageUser);
+    }
+
+    @GetMapping("/list")
+    @ApiOperation(value = "根据部门id获取用户list", notes = "根据部门id获取用户list")
+    @ApiImplicitParam(name = "deptId", value = "部门id", dataType = "int", required = true)
+    public Result<List<UserVo>> listByDept(@RequestParam Integer deptId) {
+        List<UserVo> userVoList = userService.getListByDeptId(deptId);
+        return Result.success(userVoList);
     }
 }
 

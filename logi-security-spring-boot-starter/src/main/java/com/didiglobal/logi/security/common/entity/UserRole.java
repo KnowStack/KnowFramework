@@ -7,6 +7,8 @@ import java.sql.Timestamp;
 
 /**
  * @author cjm
+ *
+ * 用户角色关系
  */
 @Data
 @TableName(value = "logi_user_role")

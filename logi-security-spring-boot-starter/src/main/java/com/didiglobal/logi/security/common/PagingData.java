@@ -25,7 +25,7 @@ public class PagingData<T> {
     @Data
     @Builder
     @ApiModel(description = "分页基本信息")
-    protected static class Pagination {
+    public static class Pagination {
         @ApiModelProperty(value = "总记录数")
         private long total;
 
@@ -37,6 +37,12 @@ public class PagingData<T> {
 
         @ApiModelProperty(value = "单页大小")
         private long pageSize;
+    }
+
+    public static Pagination buildPagination(long total, long pages, long pageNo, long pageSize) {
+        return Pagination.builder()
+                .total(total).pages(pages).pageNo(pageNo).pageSize(pageSize)
+                .build();
     }
 
 }
