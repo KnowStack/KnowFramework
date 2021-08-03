@@ -19,9 +19,9 @@ public class ResourceVo {
     @ApiModelProperty(value = "资源名", dataType = "String", required = false)
     private String resourceName;
 
-    @ApiModelProperty(value = "项目id（分配资源权限给用户必备）", dataType = "Integer", required = true)
+    @ApiModelProperty(value = "项目id", dataType = "Integer", required = true)
     private Integer projectId;
 
-    @ApiModelProperty(value = "资源类别id（分配资源权限给用户必备）", dataType = "Integer", required = true)
+    @ApiModelProperty(value = "资源类别id", dataType = "Integer", required = true)
     private Integer resourceTypeId;
 }

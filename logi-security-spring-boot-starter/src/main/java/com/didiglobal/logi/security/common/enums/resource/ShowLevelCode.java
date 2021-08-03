@@ -6,10 +6,10 @@ import lombok.Getter;
  * @author cjm
  *
  * 这个主要是为了服务：
- * 资源权限管理 > 按资源管理 > 管理权限用户数、查看权限用户数
+ * 资源权限管理 > 按资源管理 > 列表展示 > 管理权限用户数、查看权限用户数
  */
 @Getter
-public enum ManageByResourceCode {
+public enum ShowLevelCode {
 
     /**
      * 项目级别：具体某个项目的管理权限用户数、查看权限用户数
@@ -30,16 +30,16 @@ public enum ManageByResourceCode {
 
     private final String info;
 
-    ManageByResourceCode(Integer type, String info) {
+    ShowLevelCode(Integer type, String info) {
         this.type = type;
         this.info = info;
     }
 
-    public static ManageByResourceCode getByType(Integer type) {
-        ManageByResourceCode[] manageByResourceCodes = ManageByResourceCode.values();
-        for(ManageByResourceCode manageByResourceCode : manageByResourceCodes) {
-            if(manageByResourceCode.type.equals(type)) {
-                return manageByResourceCode;
+    public static ShowLevelCode getByType(Integer type) {
+        ShowLevelCode[] showLevelCodes = ShowLevelCode.values();
+        for(ShowLevelCode showLevelCode : showLevelCodes) {
+            if(showLevelCode.type.equals(type)) {
+                return showLevelCode;
             }
         }
         return null;

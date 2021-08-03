@@ -19,14 +19,22 @@ public class ManageByResourceQueryVo extends PageParamVo {
     /**
      * 项目id
      */
-    @ApiModelProperty(value = "项目id", dataType = "Integer", required = false)
+    @ApiModelProperty(value = "项目id（2，3展示级别不可为null）", dataType = "Integer", required = false)
     private Integer projectId;
 
     /**
      * 资源类别id
      */
-    @ApiModelProperty(value = "资源类别id（资源类别id不为null，则项目id定不为null）", dataType = "Integer", required = false)
+    @ApiModelProperty(value = "资源类别id（3展示级别不可为null）", dataType = "Integer", required = false)
     private Integer resourceTypeId;
+
+    /**
+     * 按资源管理列表展示级别
+     */
+    @ApiModelProperty(
+            value = "按资源管理列表展示级别：1 项目展示级别、2 资源类别展示级别、3 具体资源展示级别",
+            dataType = "Integer", required = false)
+    private Integer showLevel;
 
     /**
      * 如果projectId为null，则name表示项目名称
@@ -35,9 +43,9 @@ public class ManageByResourceQueryVo extends PageParamVo {
      */
     @ApiModelProperty(
             value =
-            "名称（如果projectId为null，则name表示项目名称、" +
-            "如果projectId不为null，resourceTypeId为null，则name表示资源类别名称、" +
-            "如果projectId不为null，resourceTypeId不为null，则name表示具体资源名称）",
+            "项目展示级别，则name表示项目名称、" +
+            "资源类别展示级别，则name表示资源类别名称、" +
+            "具体资源展示级别，则name表示具体资源名称）",
             dataType = "Integer", required = false
     )
     private String name;
