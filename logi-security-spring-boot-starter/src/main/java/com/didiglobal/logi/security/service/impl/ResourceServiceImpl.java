@@ -64,10 +64,44 @@ public class ResourceServiceImpl implements ResourceService {
         if(userId == null || userMapper.selectById(userId) == null) {
             throw new SecurityException(ResultCode.USER_ACCOUNT_NOT_EXIST);
         }
+        Integer projectId = assignToOneUserVo.getProjectId();
+        Integer resourceTypeId = assignToOneUserVo.getResourceTypeId();
 
+        QueryWrapper<UserResource> userResourceWrapper = new QueryWrapper<>();
+        userResourceWrapper
+                .eq("user_id", userId)
+                .eq(projectId != null, "project_id", projectId)
+                .eq(resourceTypeId != null, "resource_type_id", resourceTypeId);
+        // 删除old的关联信息
+        userResourceMapper.delete(userResourceWrapper);
+
+        List<Integer> idList = assignToOneUserVo.getIdList();
         List<UserResource> userResourceList = new ArrayList<>();
-
-
+        for(int id : idList) {
+            List<ResourceDto> resourceDtoList;
+            if(projectId == null) {
+                // idList为项目idList
+                resourceDtoList = resourceExtend.getResourceList(id, null);
+            } else if(resourceTypeId == null) {
+                // idList为资源类别idList
+                resourceDtoList = resourceExtend.getResourceList(projectId, id);
+            } else {
+                // idList为具体资源idList
+                resourceDtoList = new ArrayList<>();
+                ResourceDto resourceDto = new ResourceDto();
+                resourceDto.setProjectId(projectId);
+                resourceDto.setResourceTypeId(resourceTypeId);
+                resourceDto.setResourceId(id);
+                resourceDtoList.add(resourceDto);
+            }
+            for(ResourceDto resourceDto : resourceDtoList) {
+                UserResource userResource = new UserResource(resourceDto);
+                userResource.setUserId(userId);
+                userResourceList.add(userResource);
+            }
+        }
+        // 插入new关联信息
+        userResourceMapper.insertBatchSomeColumn(userResourceList);
     }
 
     @Override
