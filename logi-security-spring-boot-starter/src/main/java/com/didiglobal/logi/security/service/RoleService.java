@@ -1,6 +1,7 @@
 package com.didiglobal.logi.security.service;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.didiglobal.logi.security.common.PagingData;
 import com.didiglobal.logi.security.common.entity.Permission;
 import com.didiglobal.logi.security.common.vo.permission.PermissionVo;
 import com.didiglobal.logi.security.common.vo.role.RoleAssignVo;
@@ -29,7 +30,7 @@ public interface RoleService {
      * @param queryVo 查询角色列表条件
      * @return 角色列表
      */
-    IPage<RoleVo> getPageRole(RoleQueryVo queryVo);
+    PagingData<RoleVo> getRolePage(RoleQueryVo queryVo);
 
     /**
      * 保存角色

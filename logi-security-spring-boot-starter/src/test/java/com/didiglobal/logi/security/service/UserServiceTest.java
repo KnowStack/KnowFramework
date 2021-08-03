@@ -26,8 +26,8 @@ public class UserServiceTest extends BaseTest {
         queryVo.setRoleName("组长");
         queryVo.setUsername("cai");
         queryVo.setRealName("蔡");
-        IPage<UserVo> pageUser = userService.getPageUser(queryVo);
-        System.out.println(pageUser);
+        // IPage<UserVo> pageUser = userService.getPageUser(queryVo);
+        // System.out.println(pageUser);
     }
 
     @Test

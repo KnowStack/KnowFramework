@@ -54,13 +54,23 @@ public enum ResultCode implements CodeMsg {
 
     /* 项目错误 */
     PROJECT_NAME_EXIST(5001, "项目名已存在"),
-    PROJECT_NOT_EXISTS(5002, "项目不存在"),
+    PROJECT_NOT_EXIST(5002, "项目不存在"),
+    PROJECT_ID_CANNOT_BE_NULL(5003, "项目id不可为空"),
 
     /* 操作日志错误 */
     RECORD_NOT_EXIST(6001, "操作日志不存在"),
 
     /* 消息错误 */
-    MESSAGE_NOT_EXIST(7001, "消息不存在")
+    MESSAGE_NOT_EXIST(7001, "消息不存在"),
+
+    /* 页面权限错误 */
+    PERMISSION_DATA_ERROR(8001, "获取权限数据异常"),
+
+    /* 部门错误 */
+    DEPT_DATA_ERROR(9001, "获取部门数据异常"),
+
+    /* 资源权限管理错误 */
+    RESOURCE_PERMISSION_ASSIGN_ERROR(10001, "资源权限分配异常（具体资源id不为null，则资源类别id不可为null）")
     ;
 
     private final Integer code;

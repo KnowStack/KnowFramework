@@ -1,6 +1,7 @@
 package com.didiglobal.logi.security.service;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.didiglobal.logi.security.common.PagingData;
 import com.didiglobal.logi.security.common.vo.project.ProjectQueryVo;
 import com.didiglobal.logi.security.common.vo.project.ProjectSaveVo;
 import com.didiglobal.logi.security.common.vo.project.ProjectVo;
@@ -27,9 +28,9 @@ public interface ProjectService {
     /**
      * 条件分页查询项目信息
      * @param queryVo 条件信息
-     * @return List<ProjectVo>
+     * @return PagingData<ProjectVo>
      */
-    IPage<ProjectVo> getPageProject(ProjectQueryVo queryVo);
+    PagingData<ProjectVo> getProjectPage(ProjectQueryVo queryVo);
 
     /**
      * 删除项目

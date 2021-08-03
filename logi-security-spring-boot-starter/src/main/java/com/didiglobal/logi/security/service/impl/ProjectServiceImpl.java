@@ -3,6 +3,7 @@ package com.didiglobal.logi.security.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.didiglobal.logi.security.common.PagingData;
 import com.didiglobal.logi.security.common.entity.*;
 import com.didiglobal.logi.security.common.enums.ResultCode;
 import com.didiglobal.logi.security.common.vo.dept.DeptVo;
@@ -51,7 +52,7 @@ public class ProjectServiceImpl implements ProjectService {
         }
         Project project = projectMapper.selectById(projectId);
         if(project == null) {
-            throw new SecurityException(ResultCode.PROJECT_NOT_EXISTS);
+            throw new SecurityException(ResultCode.PROJECT_NOT_EXIST);
         }
         ProjectVo projectVo = CopyBeanUtil.copy(project, ProjectVo.class);
         // 根据项目id去查负责人
@@ -72,7 +73,7 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
-    public IPage<ProjectVo> getPageProject(ProjectQueryVo queryVo) {
+    public PagingData<ProjectVo> getProjectPage(ProjectQueryVo queryVo) {
         QueryWrapper<Project> projectWrapper = new QueryWrapper<>();
         // 分页查询
         IPage<Project> projectPage = new Page<>(queryVo.getPage(), queryVo.getSize());
@@ -84,7 +85,7 @@ public class ProjectServiceImpl implements ProjectService {
             List<Object> userIdList = userMapper.selectObjs(userWrapper);
             if(CollectionUtils.isEmpty(userIdList)) {
                 // 数据库没类似该条件的用户名
-                return CopyBeanUtil.copyPage(projectPage, ProjectVo.class);
+                return new PagingData<>(projectPage);
             }
             // 根据用户idList查找项目idList
             QueryWrapper<UserProject> userProjectWrapper = new QueryWrapper<>();
@@ -101,11 +102,12 @@ public class ProjectServiceImpl implements ProjectService {
         projectMapper.selectPage(projectPage, projectWrapper);
 
         // 转成vo
-        IPage<ProjectVo> projectVoPage = CopyBeanUtil.copyPage(projectPage, ProjectVo.class);
+        List<ProjectVo> projectVoList = CopyBeanUtil.copyList(projectPage.getRecords(), ProjectVo.class);
+        PagingData<ProjectVo> pagingData = new PagingData<>(projectVoList, projectPage);
 
-        for(int i = 0; i < projectVoPage.getRecords().size(); i++) {
+        for(int i = 0; i < projectVoList.size(); i++) {
             // 查找项目列表每个项目的负责人
-            ProjectVo projectVo = projectVoPage.getRecords().get(i);
+            ProjectVo projectVo = projectVoList.get(i);
             projectVo.setChargeUserIdList(getUserVoListByProjectId(projectVo.getId()));
 
             // 查找项目列表每个项目的使用部门信息
@@ -113,14 +115,14 @@ public class ProjectServiceImpl implements ProjectService {
             projectVo.setDeptVo(CopyBeanUtil.copy(dept, DeptVo.class));
             projectVo.setCreateTime(projectPage.getRecords().get(i).getCreateTime().getTime());
         }
-        return projectVoPage;
+        return pagingData;
     }
 
     @Override
     public void deleteProjectById(Integer projectId) {
         Project project = projectMapper.selectById(projectId);
         if(project == null) {
-            throw new SecurityException(ResultCode.PROJECT_NOT_EXISTS);
+            throw new SecurityException(ResultCode.PROJECT_NOT_EXIST);
         }
         // TODO 删除前要判断一下有没有服务引用了这个项目
         // 删除项目与负责人的联系
@@ -134,7 +136,7 @@ public class ProjectServiceImpl implements ProjectService {
     @Override
     public void updateProjectBy(ProjectSaveVo saveVo) {
         if(saveVo == null || projectMapper.selectById(saveVo.getId()) == null) {
-            throw new SecurityException(ResultCode.PROJECT_NOT_EXISTS);
+            throw new SecurityException(ResultCode.PROJECT_NOT_EXIST);
         }
         checkParam(saveVo);
         // 先更新项目基本信息
@@ -152,7 +154,7 @@ public class ProjectServiceImpl implements ProjectService {
     public void changeProjectStatus(Integer id) {
         Project project = projectMapper.selectById(id);
         if (project == null) {
-            throw new SecurityException(ResultCode.PROJECT_NOT_EXISTS);
+            throw new SecurityException(ResultCode.PROJECT_NOT_EXIST);
         }
         // 状态取反
         project.setIsRunning(!project.getIsRunning());

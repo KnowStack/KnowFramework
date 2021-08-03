@@ -5,8 +5,8 @@ import lombok.Getter;
 /**
  * @author cjm
  *
- * 资源权限管理 > 按资源管理等级
- * 这个主要是为了服务：管理权限用户数、查看权限用户数
+ * 这个主要是为了服务：
+ * 资源权限管理 > 按资源管理 > 管理权限用户数、查看权限用户数
  */
 @Getter
 public enum ManageByResourceCode {

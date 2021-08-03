@@ -3,6 +3,7 @@ package com.didiglobal.logi.security.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.didiglobal.logi.security.common.PagingData;
 import com.didiglobal.logi.security.common.entity.*;
 import com.didiglobal.logi.security.common.vo.permission.PermissionVo;
 import com.didiglobal.logi.security.common.vo.role.RoleAssignVo;
@@ -59,7 +60,7 @@ public class RoleServiceImpl implements RoleService {
     }
 
     @Override
-    public IPage<RoleVo> getPageRole(RoleQueryVo queryVo) {
+    public PagingData<RoleVo> getRolePage(RoleQueryVo queryVo) {
         // 分页查询
         IPage<Role> rolePage = new Page<>(queryVo.getPage(), queryVo.getSize());
         QueryWrapper<Role> roleWrapper = new QueryWrapper<>();
@@ -68,18 +69,19 @@ public class RoleServiceImpl implements RoleService {
                 .like(queryVo.getRoleName() != null, "role_name", queryVo.getRoleName())
                 .like(queryVo.getDescription() != null, "description", queryVo.getDescription());
         roleMapper.selectPage(rolePage, roleWrapper);
-
-        IPage<RoleVo> roleVoPage = CopyBeanUtil.copyPage(rolePage, RoleVo.class);
+        // 转vo
+        List<RoleVo> roleVoList = CopyBeanUtil.copyList(rolePage.getRecords(), RoleVo.class);
         // 统计角色关联用户数
         QueryWrapper<UserRole> userRoleWrapper = new QueryWrapper<>();
-        for(int i = 0; i < roleVoPage.getRecords().size(); i++) {
-            RoleVo roleVo = roleVoPage.getRecords().get(i);
+        for(int i = 0; i < roleVoList.size(); i++) {
+            RoleVo roleVo = roleVoList.get(i);
+            // 获取该角色已分配给的用户数
             userRoleWrapper.eq("role_id", roleVo.getId());
             roleVo.setAuthedUserCnt(userRoleMapper.selectCount(userRoleWrapper));
             roleVo.setCreateTime(rolePage.getRecords().get(i).getCreateTime().getTime());
             userRoleWrapper.clear();
         }
-        return roleVoPage;
+        return new PagingData<>(roleVoList, rolePage);
     }
 
     @Override

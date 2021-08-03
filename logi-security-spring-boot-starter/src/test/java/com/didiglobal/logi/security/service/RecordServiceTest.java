@@ -19,6 +19,6 @@ public class RecordServiceTest extends BaseTest {
         RecordQueryVo queryVo = new RecordQueryVo();
         queryVo.setSize(5);
         queryVo.setPage(1);
-        recordService.getPageRecord(queryVo);
+        recordService.getRecordPage(queryVo);
     }
 }

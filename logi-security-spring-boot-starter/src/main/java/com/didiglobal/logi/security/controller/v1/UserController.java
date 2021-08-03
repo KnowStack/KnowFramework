@@ -1,6 +1,7 @@
 package com.didiglobal.logi.security.controller.v1;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.didiglobal.logi.security.common.PagingData;
 import com.didiglobal.logi.security.common.PagingResult;
 import com.didiglobal.logi.security.common.Result;
 import com.didiglobal.logi.security.common.vo.user.UserQueryVo;
@@ -37,7 +38,7 @@ public class UserController {
     @PostMapping("/page")
     @ApiOperation(value = "查询用户列表", notes = "分页和条件查询")
     public PagingResult<UserVo> page(UserQueryVo queryVo) {
-        IPage<UserVo> pageUser = userService.getPageUser(queryVo);
+        PagingData<UserVo> pageUser = userService.getUserPage(queryVo);
         return PagingResult.success(pageUser);
     }
 

@@ -1,6 +1,7 @@
 package com.didiglobal.logi.security.controller.v1;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.didiglobal.logi.security.common.PagingData;
 import com.didiglobal.logi.security.common.PagingResult;
 import com.didiglobal.logi.security.common.Result;
 import com.didiglobal.logi.security.common.vo.record.RecordQueryVo;
@@ -30,7 +31,7 @@ public class RecordController {
     @PostMapping("/page")
     @ApiOperation(value = "查询操作日志列表", notes = "分页和条件查询")
     public PagingResult<RecordVo> page(RecordQueryVo queryVo) {
-        IPage<RecordVo> pageRecord = recordService.getPageRecord(queryVo);
+        PagingData<RecordVo> pageRecord = recordService.getRecordPage(queryVo);
         return PagingResult.success(pageRecord);
     }
 

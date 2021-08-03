@@ -1,6 +1,7 @@
 package com.didiglobal.logi.security.controller.v1;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.didiglobal.logi.security.common.PagingData;
 import com.didiglobal.logi.security.common.PagingResult;
 import com.didiglobal.logi.security.common.Result;
 import com.didiglobal.logi.security.common.vo.role.RoleAssignVo;
@@ -56,7 +57,7 @@ public class RoleController {
     @PostMapping("/page")
     @ApiOperation(value = "查询角色列表", notes = "分页和条件查询")
     public PagingResult<RoleVo> page(RoleQueryVo queryVo) {
-        IPage<RoleVo> pageRole = roleService.getPageRole(queryVo);
+        PagingData<RoleVo> pageRole = roleService.getRolePage(queryVo);
         return PagingResult.success(pageRole);
     }
 

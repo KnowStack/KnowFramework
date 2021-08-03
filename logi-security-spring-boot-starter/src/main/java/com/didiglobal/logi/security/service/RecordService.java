@@ -1,6 +1,7 @@
 package com.didiglobal.logi.security.service;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.didiglobal.logi.security.common.PagingData;
 import com.didiglobal.logi.security.common.vo.record.RecordQueryVo;
 import com.didiglobal.logi.security.common.vo.record.RecordTypeVo;
 import com.didiglobal.logi.security.common.vo.record.RecordVo;
@@ -18,7 +19,7 @@ public interface RecordService {
      * @param queryVo 查询条件
      * @return 分页信息
      */
-    IPage<RecordVo> getPageRecord(RecordQueryVo queryVo);
+    PagingData<RecordVo> getRecordPage(RecordQueryVo queryVo);
 
     /**
      * 根据id查找操作日志详情

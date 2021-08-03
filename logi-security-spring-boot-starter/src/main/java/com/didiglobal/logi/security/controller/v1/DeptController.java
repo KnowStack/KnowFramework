@@ -1,7 +1,6 @@
 package com.didiglobal.logi.security.controller.v1;
 
 import com.didiglobal.logi.security.common.Result;
-import com.didiglobal.logi.security.common.entity.Dept;
 import com.didiglobal.logi.security.common.vo.dept.DeptVo;
 import com.didiglobal.logi.security.service.DeptService;
 import io.swagger.annotations.Api;
@@ -25,10 +24,10 @@ public class DeptController {
     @Autowired
     private DeptService deptService;
 
-    @GetMapping("/list")
-    @ApiOperation(value = "获取所有部门", notes = "")
-    public Result<List<DeptVo>> list() {
-        List<DeptVo> deptList = deptService.getAllDept();
-        return Result.success(deptList);
+    @GetMapping("/tree")
+    @ApiOperation(value = "获取所有部门", notes = "以树的形式返回所有部门")
+    public Result<DeptVo> list() {
+        DeptVo deptVo = deptService.buildDeptTree();
+        return Result.success(deptVo);
     }
 }

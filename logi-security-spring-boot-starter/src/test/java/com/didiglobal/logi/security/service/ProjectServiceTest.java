@@ -53,8 +53,8 @@ public class ProjectServiceTest extends BaseTest {
         queryVo.setSize(5);
         // queryVo.setProjectName("rr");
         queryVo.setChargeUsername("caijiamin");
-        IPage<ProjectVo> pageProject = projectService.getPageProject(queryVo);
-        System.out.println(pageProject);
+        // IPage<ProjectVo> pageProject = projectService.getPageProject(queryVo);
+        // System.out.println(pageProject);
     }
 
     @Test

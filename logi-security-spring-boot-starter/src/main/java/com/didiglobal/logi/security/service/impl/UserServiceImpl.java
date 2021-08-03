@@ -3,6 +3,7 @@ package com.didiglobal.logi.security.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.didiglobal.logi.security.common.PagingData;
 import com.didiglobal.logi.security.common.entity.*;
 import com.didiglobal.logi.security.common.vo.dept.DeptVo;
 import com.didiglobal.logi.security.common.vo.role.RoleVo;
@@ -11,6 +12,7 @@ import com.didiglobal.logi.security.common.enums.ResultCode;
 import com.didiglobal.logi.security.common.vo.user.UserVo;
 import com.didiglobal.logi.security.exception.SecurityException;
 import com.didiglobal.logi.security.mapper.*;
+import com.didiglobal.logi.security.service.DeptService;
 import com.didiglobal.logi.security.service.PermissionService;
 import com.didiglobal.logi.security.service.RoleService;
 import com.didiglobal.logi.security.util.CopyBeanUtil;
@@ -53,8 +55,11 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private RolePermissionMapper rolePermissionMapper;
 
+    @Autowired
+    private DeptService deptService;
+
     @Override
-    public IPage<UserVo> getPageUser(UserQueryVo queryVo) {
+    public PagingData<UserVo> getUserPage(UserQueryVo queryVo) {
         QueryWrapper<User> userWrapper = new QueryWrapper<>();
         // 分页查询
         IPage<User> userPage = new Page<>(queryVo.getPage(), queryVo.getSize());
@@ -64,7 +69,7 @@ public class UserServiceImpl implements UserService {
             Role role = roleMapper.selectOne(new QueryWrapper<Role>().eq("role_name", queryVo.getRoleName()));
             if (role == null) {
                 // 数据库没该角色名字
-                return CopyBeanUtil.copyPage(userPage, UserVo.class);
+                return new PagingData<>(userPage);
             }
             // 根据角色id查找用户idList
             QueryWrapper<UserRole> wrapper = new QueryWrapper<>();
@@ -80,15 +85,15 @@ public class UserServiceImpl implements UserService {
 
         userMapper.selectPage(userPage, userWrapper);
         // 转成vo
-        IPage<UserVo> userVoPage = CopyBeanUtil.copyPage(userPage, UserVo.class);
+        List<UserVo> userVoList = CopyBeanUtil.copyList(userPage.getRecords(), UserVo.class);
 
         // 获取所有角色，并转换成 roleId-Role对象 形式
         Map<Integer, Role> roleMap = roleMapper.selectList(null)
                 .stream().collect(Collectors.toMap(Role::getId, role -> role));
 
         QueryWrapper<UserRole> userRoleWrapper = new QueryWrapper<>();
-        for (int i = 0; i < userVoPage.getRecords().size(); i++) {
-            UserVo userVo = userVoPage.getRecords().get(i);
+        for (int i = 0; i < userVoList.size(); i++) {
+            UserVo userVo = userVoList.get(i);
             // 查询用户关联的角色
             userRoleWrapper.select("role_id").eq("user_id", userVo.getId());
             List<Object> roleIdList = userRoleMapper.selectObjs(userRoleWrapper);
@@ -101,13 +106,12 @@ public class UserServiceImpl implements UserService {
             userRoleWrapper.clear();
 
             // 查找用户所在部门信息
-            Dept dept = deptMapper.selectById(userPage.getRecords().get(i).getDeptId());
-            userVo.setDeptVo(CopyBeanUtil.copy(dept, DeptVo.class));
+            userVo.setDeptInfo(deptService.spliceDeptInfo(userPage.getRecords().get(i).getDeptId()));
             userVo.setUpdateTime(userPage.getRecords().get(i).getUpdateTime().getTime());
             // 隐私信息处理
             privacyProcessing(userVo);
         }
-        return userVoPage;
+        return new PagingData<>(userVoList, userPage);
     }
 
     @Override
@@ -146,8 +150,9 @@ public class UserServiceImpl implements UserService {
     @Override
     public List<UserVo> getListByDeptId(Integer deptId) {
         QueryWrapper<User> userWrapper = new QueryWrapper<>();
-        // 根据部门id查找用户
-        userWrapper.select("id", "real_name").eq("dept_id", deptId);
+        List<Integer> deptIdList = deptService.getChildDeptIdListByParentId(deptId);
+        // 根据部门id查找用户，该部门的子部门的用户都属于该部门
+        userWrapper.select("id", "username", "real_name").in("dept_id", deptIdList);
         List<User> userList = userMapper.selectList(userWrapper);
         return CopyBeanUtil.copyList(userList, UserVo.class);
     }

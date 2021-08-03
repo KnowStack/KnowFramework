@@ -65,8 +65,8 @@ public class RoleServiceTest extends BaseTest {
         queryVo.setSize(3);
         queryVo.setRoleName("管");
         queryVo.setRoleCode("role11608");
-        IPage<RoleVo> pageRole = roleService.getPageRole(queryVo);
-        System.out.println(pageRole);
+        // IPage<RoleVo> pageRole = roleService.getPageRole(queryVo);
+        // System.out.println(pageRole);
     }
 
     @Test

@@ -8,11 +8,13 @@ import lombok.EqualsAndHashCode;
 
 /**
  * @author cjm
+ *
+ * 资源权限管理>按资源管理的列表查询条件
  */
 @EqualsAndHashCode(callSuper = true)
 @Data
-@ApiModel(description = "资源权限管理分页查找")
-public class ResourceQueryVo extends PageParamVo {
+@ApiModel(description = "资源权限管理（按资源管理的列表查询条件）")
+public class ManageByResourceQueryVo extends PageParamVo {
 
     /**
      * 项目id

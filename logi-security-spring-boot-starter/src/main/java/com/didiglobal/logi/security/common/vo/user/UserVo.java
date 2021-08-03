@@ -35,8 +35,8 @@ public class UserVo {
     @ApiModelProperty(value = "更新时间（时间戳ms）", dataType = "Long", required = false)
     private Long updateTime;
 
-    @ApiModelProperty(value = "部门信息", dataType = "DeptVo", required = false)
-    private DeptVo deptVo;
+    @ApiModelProperty(value = "部门信息", dataType = "String", required = false)
+    private String deptInfo;
 
     @ApiModelProperty(value = "角色信息", dataType = "List<RoleVo>", required = false)
     private List<RoleVo> roleVoList;

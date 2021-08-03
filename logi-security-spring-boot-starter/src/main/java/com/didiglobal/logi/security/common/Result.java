@@ -58,5 +58,4 @@ public class Result<T> extends BaseResult {
         ret.setMessage(msg);
         return ret;
     }
-
 }

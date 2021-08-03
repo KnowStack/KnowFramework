@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.didiglobal.logi.security.common.PagingData;
 import com.didiglobal.logi.security.common.entity.Record;
 import com.didiglobal.logi.security.common.enums.ResultCode;
 import com.didiglobal.logi.security.common.enums.record.RecordPageCode;
@@ -33,7 +34,7 @@ public class RecordServiceImpl implements RecordService {
     private RecordMapper recordMapper;
 
     @Override
-    public IPage<RecordVo> getPageRecord(RecordQueryVo queryVo) {
+    public PagingData<RecordVo> getRecordPage(RecordQueryVo queryVo) {
         QueryWrapper<Record> queryWrapper = new QueryWrapper<>();
         // 分页查询
         IPage<Record> recordPage = new Page<>(queryVo.getPage(), queryVo.getSize());
@@ -50,8 +51,10 @@ public class RecordServiceImpl implements RecordService {
                 .like(queryVo.getRecordUsername() != null, "record_username", queryVo.getRecordUsername());
 
         recordMapper.selectPage(recordPage, queryWrapper);
+        // 转成vo
+        List<RecordVo> recordVoList = CopyBeanUtil.copyList(recordPage.getRecords(), RecordVo.class);
 
-        return CopyBeanUtil.copyPage(recordPage, RecordVo.class);
+        return new PagingData<>(recordVoList, recordPage);
     }
 
     @Override

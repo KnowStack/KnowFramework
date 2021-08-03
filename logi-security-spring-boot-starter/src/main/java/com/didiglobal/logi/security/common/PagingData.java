@@ -1,10 +1,13 @@
 package com.didiglobal.logi.security.common;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.didiglobal.logi.security.common.entity.Project;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Builder;
 import lombok.Data;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -22,6 +25,24 @@ public class PagingData<T> {
     @ApiModelProperty(value = "分页信息")
     private Pagination pagination;
 
+    public PagingData() {}
+
+    public PagingData(List<T> bizData, IPage iPage) {
+        this.pagination = Pagination.builder()
+                .total(iPage.getTotal()).pages(iPage.getPages())
+                .pageNo(iPage.getCurrent()).pageSize(iPage.getSize())
+                .build();
+        this.bizData = bizData;
+    }
+
+    public PagingData(IPage iPage) {
+        this.pagination = Pagination.builder()
+                .total(iPage.getTotal()).pages(iPage.getPages())
+                .pageNo(iPage.getCurrent()).pageSize(iPage.getSize())
+                .build();
+        this.bizData = new ArrayList<>();
+    }
+
     @Data
     @Builder
     @ApiModel(description = "分页基本信息")
@@ -38,11 +59,4 @@ public class PagingData<T> {
         @ApiModelProperty(value = "单页大小")
         private long pageSize;
     }
-
-    public static Pagination buildPagination(long total, long pages, long pageNo, long pageSize) {
-        return Pagination.builder()
-                .total(total).pages(pages).pageNo(pageNo).pageSize(pageSize)
-                .build();
-    }
-
 }

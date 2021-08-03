@@ -1,6 +1,7 @@
 package com.didiglobal.logi.security.controller.v1;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.didiglobal.logi.security.common.PagingData;
 import com.didiglobal.logi.security.common.PagingResult;
 import com.didiglobal.logi.security.common.Result;
 import com.didiglobal.logi.security.common.vo.project.ProjectQueryVo;
@@ -63,7 +64,7 @@ public class ProjectController {
     @PostMapping("/page")
     @ApiOperation(value = "查询项目列表", notes = "分页和条件查询")
     public PagingResult<ProjectVo> page(@RequestBody ProjectQueryVo queryVo) {
-        IPage<ProjectVo> pageProject = projectService.getPageProject(queryVo);
+        PagingData<ProjectVo> pageProject = projectService.getProjectPage(queryVo);
         return PagingResult.success(pageProject);
     }
 

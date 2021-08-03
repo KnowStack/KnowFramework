@@ -23,4 +23,19 @@ public class Dept {
      * 描述
      */
     private String description;
+
+    /**
+     * 父部门id（根部门parentId为0）
+     */
+    private Integer parentId;
+
+    /**
+     * 是否是叶子部门
+     */
+    private Boolean isLeaf;
+
+    /**
+     * 部门的层级（parentId为0的层级为1）
+     */
+    private Integer level;
 }
