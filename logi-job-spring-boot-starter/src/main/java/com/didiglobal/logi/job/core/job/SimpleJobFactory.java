@@ -38,6 +38,7 @@ public class SimpleJobFactory implements JobFactory {
     jobInfo.setTimeout(taskInfo.getTimeout());
     jobInfo.setJob(jobMap.get(taskInfo.getClassName()));
     jobInfo.setTaskCallback(taskInfo.getTaskCallback());
+    jobInfo.setAppName(taskInfo.getAppName());
     return jobInfo;
   }
 }

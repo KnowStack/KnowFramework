@@ -19,10 +19,10 @@ import org.apache.ibatis.annotations.Update;
 public interface AuvTaskMapper {
 
   @Insert("INSERT INTO auv_task(code, name, description, cron, class_name, params, retry_times,"
-          + " last_fire_time, timeout, status, sub_task_codes, consensual, task_worker_str) "
+          + " last_fire_time, timeout, status, sub_task_codes, consensual, task_worker_str, app_name) "
           + "VALUES(#{code}, #{name}, #{description}, #{cron}, #{className}, #{params}, "
           + "#{retryTimes}, #{lastFireTime}, #{timeout}, #{status}, #{subTaskCodes}, "
-          + "#{consensual}, #{taskWorkerStr})")
+          + "#{consensual}, #{taskWorkerStr}, #{appName})")
   int insert(AuvTask auvTask);
 
   @Delete("delete from auv_task where code=#{code}")
@@ -36,13 +36,13 @@ public interface AuvTaskMapper {
 
   @Select("select id, code, name, description, cron, class_name, params, retry_times, "
           + "last_fire_time, timeout, status, sub_task_codes, consensual, create_time, update_time "
-          + ", task_worker_str, create_time, update_time from auv_task where code=#{code}")
+          + ", task_worker_str, create_time, update_time, app_name from auv_task where code=#{code}")
   AuvTask selectByCode(@Param("code") String code);
 
   @Select("<script>"
           + "select id, code, name, description, cron, class_name, params, retry_times, "
           + "last_fire_time, timeout, status, sub_task_codes, consensual, task_worker_str, "
-          + "create_time, update_time from auv_task where codes in "
+          + "create_time, update_time, app_name from auv_task where codes in "
           + "<foreach collection='codes' item='code' index='index' open='(' close=')' "
           + "separator=','>"
           + "  #{code} "
@@ -52,7 +52,11 @@ public interface AuvTaskMapper {
 
   @Select("select id, code, name, description, cron, class_name, params, retry_times, "
           + "last_fire_time, timeout, status, sub_task_codes, consensual, task_worker_str,"
-          + " create_time, update_time from auv_task")
+          + " create_time, update_time, app_name from auv_task")
   List<AuvTask> selectAll();
 
+  @Select("select id, code, name, description, cron, class_name, params, retry_times, "
+          + "last_fire_time, timeout, status, sub_task_codes, consensual, task_worker_str,"
+          + " create_time, update_time, app_name from auv_task where app_name=#{appName}")
+  List<AuvTask> selectByAppName(@Param("appName") String appName);
 }

@@ -25,44 +25,49 @@ public class AuvJob implements Serializable {
 
   private Long id;
 
-  /*
+  /**
    * task code
    */
   private String code;
 
-  /*
+  /**
    * 任务code
    */
   private String taskCode;
 
-  /*
+  /**
    * 类的全限定名
    */
   private String className;
 
-  /*
+  /**
    * 第几次重试
    */
   private Integer tryTimes;
 
-  /*
+  /**
    * 执行机器
    */
   private String workerCode;
 
-  /*
+  /**
    * 开始时间
    */
   private Timestamp startTime;
 
-  /*
+  /**
    * 开始时间
    */
   private Timestamp createTime;
 
-  /*
+  /**
    * 更新时间
    */
   private Timestamp updateTime;
+
+  /**
+   * 应用名称
+   */
+  private String appName;
 
 }

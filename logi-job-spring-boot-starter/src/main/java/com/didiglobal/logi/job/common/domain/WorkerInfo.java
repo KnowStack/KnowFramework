@@ -32,6 +32,8 @@ public class WorkerInfo {
 
   private Timestamp heartbeat;
 
+  private String appName;
+
   /**
    * get auv worker.
    *
@@ -49,6 +51,7 @@ public class WorkerInfo {
     auvWorker.setJvmMemoryUsed(this.jvmMemoryUsed);
     auvWorker.setJobNum(this.jobNum);
     auvWorker.setHeartbeat(new Timestamp(System.currentTimeMillis()));
+    auvWorker.setAppName(this.appName);
     return auvWorker;
   }
 }

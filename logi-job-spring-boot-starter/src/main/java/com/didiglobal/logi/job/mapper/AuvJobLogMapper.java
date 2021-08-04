@@ -19,13 +19,13 @@ import org.apache.ibatis.annotations.Select;
 public interface AuvJobLogMapper {
 
   @Insert("INSERT INTO auv_job_log(job_code, task_code, class_name, try_times, worker_code, "
-          + "start_time, end_time, status, error, result, create_time, update_time) "
+          + "start_time, end_time, status, error, result, create_time, update_time, app_name) "
           + "VALUES(#{jobCode}, #{taskCode}, #{className}, #{tryTimes}, #{workerCode}, #{startTime}"
-          + ", #{endTime}, #{status}, #{error}, #{result}, #{createTime}, #{updateTime})")
+          + ", #{endTime}, #{status}, #{error}, #{result}, #{createTime}, #{updateTime}, #{appName})")
   int insert(AuvJobLog auvJobLog);
 
   @Select("select id, job_code, task_code, class_name, try_times, worker_code, start_time, "
-          + "end_time, status, error, result, create_time, update_time from auv_job_log where "
+          + "end_time, status, error, result, create_time, update_time, app_name from auv_job_log where "
           + "task_code=#{taskCode} limit #{limit}")
   List<AuvJobLog> selectByTaskCode(@Param("taskCode") String taskCode,
                                    @Param("limit") Integer limit);

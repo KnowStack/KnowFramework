@@ -10,7 +10,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 @Component
-@Task(name = "dd broad", description = "dd broad", cron = "0 /2 * * * ? ", autoRegister = true,
+@Task(name = "dd broad", description = "dd broad", cron = "0 0/1 * * * ? *", autoRegister = true,
         consensual = ConsensualConstant.BROADCAST, timeout = 100)
 public class JobBroadcastInterruptTest implements Job {
   private static final Logger logger = LoggerFactory.getLogger(JobBroadcastInterruptTest.class);
@@ -18,7 +18,7 @@ public class JobBroadcastInterruptTest implements Job {
   @Override
   public Object execute(JobContext jobContext) throws Exception {
     for (int i = 0; i < 500; i++) {
-      Thread.sleep(1000);
+//      Thread.sleep(1000);
       logger.info("hihi broad broad");
       System.out.println("hello world broad broad");
     }

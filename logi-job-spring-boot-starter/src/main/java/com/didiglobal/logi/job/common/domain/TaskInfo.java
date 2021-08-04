@@ -29,6 +29,8 @@ public class TaskInfo {
   private Timestamp createTime;
   private Timestamp updateTime;
 
+  private String appName;
+
   private TaskCallback taskCallback;
 
   @Data

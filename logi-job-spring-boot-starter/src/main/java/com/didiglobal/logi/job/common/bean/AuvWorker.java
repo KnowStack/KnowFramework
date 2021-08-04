@@ -23,54 +23,59 @@ public class AuvWorker implements Serializable {
 
   private Long id;
 
-  /*
+  /**
    * auv task code
    */
   private String code;
 
-  /*
+  /**
    * worker名
    */
   private String name;
 
-  /*
+  /**
    * cpu
    */
   private Integer cpu;
 
-  /*
+  /**
    * cpu使用
    */
   private Double cpuUsed;
 
-  /*
+  /**
    * 内存
    */
   private Double memory;
 
-  /*
+  /**
    * 内存使用
    */
   private Double memoryUsed;
 
-  /*
+  /**
    * jvm堆大小
    */
   private Double jvmMemory;
 
-  /*
+  /**
    * jvm堆使用
    */
   private Double jvmMemoryUsed;
 
-  /*
+  /**
    * 正在执行job数
    */
   private Integer jobNum;
 
-  /*
+  /**
    * 心跳时间
    */
   private Timestamp heartbeat;
+
+  /**
+   * 应用名称
+   */
+  private String appName;
 
 }

@@ -23,29 +23,34 @@ public class AuvTaskLock implements Serializable {
 
   private Long id;
 
-  /*
+  /**
    * task code
    */
   private String taskCode;
 
-  /*
+  /**
    * worker code
    */
   private String workerCode;
 
-  /*
+  /**
    * expire time
    */
   private Long expireTime;
 
-  /*
+  /**
    * 开始时间
    */
   private Timestamp createTime;
 
-  /*
+  /**
    * 开始时间
    */
   private Timestamp updateTime;
+
+  /**
+   * 应用名称
+   */
+  private String appName;
 
 }
