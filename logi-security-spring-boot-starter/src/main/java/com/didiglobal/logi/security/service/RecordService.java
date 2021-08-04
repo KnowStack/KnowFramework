@@ -1,6 +1,5 @@
 package com.didiglobal.logi.security.service;
 
-import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.didiglobal.logi.security.common.PagingData;
 import com.didiglobal.logi.security.common.vo.record.RecordQueryVo;
 import com.didiglobal.logi.security.common.vo.record.RecordTypeVo;

@@ -18,7 +18,7 @@ public interface UserService {
     PagingData<UserVo> getUserPage(UserQueryVo queryVo);
 
     /**
-     * 获取用户详情
+     * 获取用户详情（主要是获取用户所拥有的权限信息）
      *
      * @param userId 用户id
      * @return 用户详情

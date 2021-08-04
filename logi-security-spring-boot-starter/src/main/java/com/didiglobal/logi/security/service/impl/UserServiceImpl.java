@@ -128,7 +128,13 @@ public class UserServiceImpl implements UserService {
 
         Set<Integer> permissionHasSet = new HashSet<>();
         QueryWrapper<RolePermission> rolePermissionWrapper = new QueryWrapper<>();
+
+        List<RoleVo> roleVoList = new ArrayList<>();
         for (Object roleId : roleIdList) {
+            // 获取角色信息
+            Role role = roleMapper.selectById((Integer) roleId);
+            roleVoList.add(CopyBeanUtil.copy(role, RoleVo.class));
+
             // 查询该角色拥有的权限idList
             rolePermissionWrapper.select("permission_id").eq("role_id", roleId);
             List<Object> permissionIdList = rolePermissionMapper.selectObjs(rolePermissionWrapper);
@@ -141,8 +147,11 @@ public class UserServiceImpl implements UserService {
             rolePermissionWrapper.clear();
         }
         UserVo userVo = CopyBeanUtil.copy(user, UserVo.class);
+        userVo.setRoleVoList(roleVoList);
         // 构建权限树
         userVo.setPermissionVo(permissionService.buildPermissionTree(permissionHasSet));
+        // 查找用户所在部门信息
+        userVo.setDeptInfo(deptService.spliceDeptInfo(user.getDeptId()));
         userVo.setUpdateTime(user.getUpdateTime().getTime());
         return userVo;
     }

@@ -1,5 +1,6 @@
 package com.didiglobal.logi.security.service;
 
+import com.didiglobal.logi.security.common.enums.message.MessageCode;
 import com.didiglobal.logi.security.common.vo.message.MessageVo;
 
 import java.util.List;
@@ -21,4 +22,14 @@ public interface MessageService {
      * @param idList 消息idList
      */
     void changeMessageStatus(List<Integer> idList);
+
+    /**
+     * 记录某用户角色变动的信息
+     * @param userId 用户id
+     * @param roleIdList 移除或新增的角色idList
+     * @param messageCode 移除或新增的消息
+     */
+    void saveRoleAssignMessage(Integer userId, List<Integer> roleIdList, MessageCode messageCode);
+
+
 }

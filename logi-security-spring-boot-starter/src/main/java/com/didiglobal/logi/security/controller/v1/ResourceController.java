@@ -12,6 +12,7 @@ import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.lang.reflect.Method;
 import java.util.List;
 
 /**
@@ -43,29 +44,31 @@ public class ResourceController {
         return Result.success(resourceVoList);
     }
 
-    @GetMapping("/page/mbr")
+    @PostMapping("/page/mbr")
     @ApiOperation(value = "资源权限管理（按资源管理的列表信息）", notes = "资源权限管理（按资源管理的列表信息），接口中mbr就是ManageByResource")
     public PagingResult<ManageByResourceVo> page(@RequestBody ManageByResourceQueryVo queryVo) {
         PagingData<ManageByResourceVo> pagingData = resourceService.getManageByResourcePage(queryVo);
         return PagingResult.success(pagingData);
     }
 
-    @GetMapping("/page/mbu")
+    @PostMapping("/page/mbu")
     @ApiOperation(value = "资源权限管理（按用户管理的列表信息）", notes = "资源权限管理（按用户管理的列表信息），接口中mbu就是ManageByUser")
     public PagingResult<ManageByUserVo> page(@RequestBody ManageByUserQueryVo queryVo) {
         PagingData<ManageByUserVo> pagingData = resourceService.getManageByUserPage(queryVo);
         return PagingResult.success(pagingData);
     }
 
-
-
-    /*
-    @GetMapping("/list/mbu")
-    @ApiOperation(value = "资源权限管理（按资源管理的列表信息）", notes = "资源权限管理（按资源管理的列表信息），接口中mbu就是ManageByUser")
-    public PagingResult<ManageByUserVo> page(@RequestBody ResourceQueryVo queryVo) {
-        PagingData<ManageByResourceVo> pagingData = resourceService.getPageManageByResource(queryVo);
-        return PagingResult.success(pagingData);
+    @PostMapping("/assign/mbr")
+    @ApiOperation(value = "按资源管理（分配用户）", notes = "资源权限管理（按资源管理（分配用户））")
+    public Result<String> assign(@RequestBody AssignToManyUserVo assignToManyUserVo) {
+        resourceService.assignResourcePermission(assignToManyUserVo);
+        return Result.success();
     }
 
-     */
+    @PostMapping("/assign/mbu")
+    @ApiOperation(value = "按用户管理（分配资源）", notes = "资源权限管理（按用户管理（分配资源））")
+    public Result<String> assign(@RequestBody AssignToOneUserVo assignToOneUserVo) {
+        resourceService.assignResourcePermission(assignToOneUserVo);
+        return Result.success();
+    }
 }
