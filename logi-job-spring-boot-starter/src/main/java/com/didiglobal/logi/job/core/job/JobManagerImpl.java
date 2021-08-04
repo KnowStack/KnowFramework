@@ -1,6 +1,6 @@
 package com.didiglobal.logi.job.core.job;
 
-import com.didiglobal.logi.job.AuvJobProperties;
+import com.didiglobal.logi.job.LogIJobProperties;
 import com.didiglobal.logi.job.common.bean.AuvJob;
 import com.didiglobal.logi.job.common.bean.AuvJobLog;
 import com.didiglobal.logi.job.common.bean.AuvTask;
@@ -62,7 +62,7 @@ public class JobManagerImpl implements JobManager {
   private JobExecutor jobExecutor;
   private TaskLockService taskLockService;
   private AuvTaskLockMapper auvTaskLockMapper;
-  private AuvJobProperties auvJobProperties;
+  private LogIJobProperties logIJobProperties;
 
   private ConcurrentHashMap<JobInfo, Future> jobFutureMap = new ConcurrentHashMap<>();
 
@@ -74,7 +74,7 @@ public class JobManagerImpl implements JobManager {
   public JobManagerImpl(JobFactory jobFactory, AuvJobMapper auvJobMapper,
                         AuvJobLogMapper auvJobLogMapper, AuvTaskMapper auvTaskMapper,
                         JobExecutor jobExecutor, TaskLockService taskLockService,
-                        AuvTaskLockMapper auvTaskLockMapper, AuvJobProperties auvJobProperties) {
+                        AuvTaskLockMapper auvTaskLockMapper, LogIJobProperties logIJobProperties) {
     this.jobFactory = jobFactory;
     this.auvJobMapper = auvJobMapper;
     this.auvJobLogMapper = auvJobLogMapper;
@@ -82,14 +82,14 @@ public class JobManagerImpl implements JobManager {
     this.jobExecutor = jobExecutor;
     this.taskLockService = taskLockService;
     this.auvTaskLockMapper = auvTaskLockMapper;
-    this.auvJobProperties = auvJobProperties;
+    this.logIJobProperties = logIJobProperties;
     initialize();
   }
 
   private void initialize() {
     new Thread(new JobFutureHandler(), "JobFutureHandler Thread").start();
     new Thread(new LockRenewHandler(), "LockRenewHandler Thread").start();
-    new Thread(new LogCleanHandler(this.auvJobProperties.getLogExpire()),
+    new Thread(new LogCleanHandler(this.logIJobProperties.getLogExpire()),
             "LogCleanHandler Thread").start();
   }
 
@@ -160,7 +160,7 @@ public class JobManagerImpl implements JobManager {
 
   @Override
   public List<JobDto> getJobs() {
-    List<AuvJob> auvJobs = auvJobMapper.selectByAppName(auvJobProperties.getAppName());
+    List<AuvJob> auvJobs = auvJobMapper.selectByAppName( logIJobProperties.getAppName());
     if (CollectionUtils.isEmpty(auvJobs)) {
       return null;
     }

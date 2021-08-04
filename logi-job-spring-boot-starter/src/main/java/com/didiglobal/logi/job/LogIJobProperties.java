@@ -10,7 +10,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
  */
 @ConfigurationProperties("spring.logi-job")
 @Data
-public class AuvJobProperties {
+public class LogIJobProperties {
   private String username;
   private String password;
   private String jdbcUrl;

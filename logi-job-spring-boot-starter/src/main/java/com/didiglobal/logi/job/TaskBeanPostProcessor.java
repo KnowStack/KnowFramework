@@ -35,7 +35,7 @@ public class TaskBeanPostProcessor implements BeanPostProcessor {
   private JobFactory jobFactory;
 
   @Autowired
-  private AuvJobProperties auvJobProperties;
+  private LogIJobProperties logIJobProperties;
 
   @Override
   public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {
@@ -87,13 +87,13 @@ public class TaskBeanPostProcessor implements BeanPostProcessor {
     auvTask.setSubTaskCodes("");
     auvTask.setConsensual(schedule.consensual().name());
     auvTask.setTaskWorkerStr("");
-    auvTask.setAppName(auvJobProperties.getAppName());
+    auvTask.setAppName( logIJobProperties.getAppName());
     return auvTask;
   }
 
   private boolean contains(AuvTask task) {
     if (taskMap.isEmpty()) {
-      List<AuvTask> auvTasks = auvTaskMapper.selectByAppName(auvJobProperties.getAppName());
+      List<AuvTask> auvTasks = auvTaskMapper.selectByAppName( logIJobProperties.getAppName());
       taskMap = auvTasks.stream().collect(Collectors.toMap(AuvTask::getClassName,
               Function.identity()));
     }

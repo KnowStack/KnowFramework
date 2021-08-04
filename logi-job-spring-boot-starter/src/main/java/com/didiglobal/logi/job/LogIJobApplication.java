@@ -10,7 +10,7 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 @ComponentScan(basePackages = "com.didiglobal.logi.job")
-public class AuvJobApplication {
+public class LogIJobApplication {
 
   /**
    * 入口函数.
@@ -19,7 +19,7 @@ public class AuvJobApplication {
    */
   public static void main(String[] args) {
     AnnotationConfigApplicationContext applicationContext =
-            new AnnotationConfigApplicationContext(AuvJobApplication.class);
+            new AnnotationConfigApplicationContext( LogIJobApplication.class);
     BeatMonitor beatMonitor = applicationContext.getBean(BeatMonitor.class);
     TaskMonitor taskMonitor = applicationContext.getBean(TaskMonitor.class);
     MisfireMonitor misfireMonitor = applicationContext.getBean(MisfireMonitor.class);

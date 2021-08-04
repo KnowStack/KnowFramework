@@ -23,10 +23,10 @@ import org.springframework.transaction.PlatformTransactionManager;
  */
 @Configuration
 @ConditionalOnClass({Scheduler.class, PlatformTransactionManager.class})
-@EnableConfigurationProperties({AuvJobProperties.class})
+@EnableConfigurationProperties({LogIJobProperties.class})
 @AutoConfigureAfter({DataSourceAutoConfiguration.class})
 @ComponentScan(basePackages = "com.didiglobal.logi.job")
-public class AuvJobAutoConfiguration {
+public class LogIJobAutoConfiguration {
 
   /**
    * start scheduler.

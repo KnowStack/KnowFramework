@@ -1,6 +1,6 @@
 package com.didiglobal.logi.job.core.task;
 
-import com.didiglobal.logi.job.AuvJobProperties;
+import com.didiglobal.logi.job.LogIJobProperties;
 import com.didiglobal.logi.job.common.Result;
 import com.didiglobal.logi.job.common.bean.AuvTask;
 import com.didiglobal.logi.job.common.domain.TaskInfo;
@@ -46,7 +46,7 @@ public class TaskManagerImpl implements TaskManager {
   private ConsensualFactory     consensualFactory;
   private TaskLockService       taskLockService;
   private AuvTaskMapper         auvTaskMapper;
-  private AuvJobProperties      auvJobProperties;
+  private LogIJobProperties logIJobProperties;
 
 
   /**
@@ -57,12 +57,12 @@ public class TaskManagerImpl implements TaskManager {
    * @param auvTaskMapper   auvTaskMapper
    */
   public TaskManagerImpl(JobManager jobManager, ConsensualFactory consensualFactory,
-                         TaskLockService taskLockService, AuvTaskMapper auvTaskMapper, AuvJobProperties auvJobProperties) {
+                         TaskLockService taskLockService, AuvTaskMapper auvTaskMapper, LogIJobProperties logIJobProperties) {
     this.jobManager         = jobManager;
     this.consensualFactory  = consensualFactory;
     this.taskLockService    = taskLockService;
     this.auvTaskMapper      = auvTaskMapper;
-    this.auvJobProperties   = auvJobProperties;
+    this.logIJobProperties = logIJobProperties;
 
   }
 
@@ -202,7 +202,7 @@ public class TaskManagerImpl implements TaskManager {
   @Override
   public List<TaskInfo> getAll() {
     List<TaskInfo> taskInfoList = new ArrayList<>();
-    List<AuvTask> auvTaskList = auvTaskMapper.selectByAppName(auvJobProperties.getAppName());
+    List<AuvTask> auvTaskList = auvTaskMapper.selectByAppName( logIJobProperties.getAppName());
     if (CollectionUtils.isEmpty(auvTaskList)) {
       return taskInfoList;
     }
