@@ -26,11 +26,12 @@ public interface AuvJobLogMapper {
 
   @Select("select id, job_code, task_code, class_name, try_times, worker_code, start_time, "
           + "end_time, status, error, result, create_time, update_time, app_name from auv_job_log where "
-          + "task_code=#{taskCode} limit #{limit}")
+          + "task_code=#{taskCode} and app_name=#{appName} limit #{limit}")
   List<AuvJobLog> selectByTaskCode(@Param("taskCode") String taskCode,
+                                   @Param("appName") String appName,
                                    @Param("limit") Integer limit);
 
-  @Delete("delete from auv_job_log where create_time<=#{createTime}")
-  int deleteByCreateTime(@Param("createTime") Timestamp createTime);
+  @Delete("delete from auv_job_log where create_time<=#{createTime} and app_name=#{appName}")
+  int deleteByCreateTime(@Param("createTime") Timestamp createTime, @Param("appName") String appName);
 
 }

@@ -25,8 +25,8 @@ public interface AuvTaskMapper {
           + "#{consensual}, #{taskWorkerStr}, #{appName})")
   int insert(AuvTask auvTask);
 
-  @Delete("delete from auv_task where code=#{code}")
-  int deleteByCode(@Param("code") String code);
+  @Delete("delete from auv_task where code=#{code} and app_name=#{appName}")
+  int deleteByCode(@Param("code") String code, @Param("appName") String appName);
 
   @Update("update auv_task set name=#{name}, description=#{description}, cron=#{cron}, class_name="
           + "#{className}, params=#{params}, retry_times=#{retryTimes}, last_fire_time="
@@ -36,19 +36,19 @@ public interface AuvTaskMapper {
 
   @Select("select id, code, name, description, cron, class_name, params, retry_times, "
           + "last_fire_time, timeout, status, sub_task_codes, consensual, create_time, update_time "
-          + ", task_worker_str, create_time, update_time, app_name from auv_task where code=#{code}")
-  AuvTask selectByCode(@Param("code") String code);
+          + ", task_worker_str, create_time, update_time, app_name from auv_task where code=#{code} and app_name=#{appName}")
+  AuvTask selectByCode(@Param("code") String code, @Param("appName") String appName);
 
   @Select("<script>"
           + "select id, code, name, description, cron, class_name, params, retry_times, "
           + "last_fire_time, timeout, status, sub_task_codes, consensual, task_worker_str, "
-          + "create_time, update_time, app_name from auv_task where codes in "
+          + "create_time, update_time, app_name from auv_task where app_name=#{appName} and codes in "
           + "<foreach collection='codes' item='code' index='index' open='(' close=')' "
           + "separator=','>"
           + "  #{code} "
           + "</foreach> "
           + "</script>")
-  List<AuvTask> selectByCodes(@Param("codes") List<String> codes);
+  List<AuvTask> selectByCodes(@Param("codes") List<String> codes, @Param("appName") String appName);
 
   @Select("select id, code, name, description, cron, class_name, params, retry_times, "
           + "last_fire_time, timeout, status, sub_task_codes, consensual, task_worker_str,"

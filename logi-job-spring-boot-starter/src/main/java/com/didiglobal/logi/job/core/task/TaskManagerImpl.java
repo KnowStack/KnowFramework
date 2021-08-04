@@ -46,7 +46,7 @@ public class TaskManagerImpl implements TaskManager {
   private ConsensualFactory     consensualFactory;
   private TaskLockService       taskLockService;
   private AuvTaskMapper         auvTaskMapper;
-  private LogIJobProperties logIJobProperties;
+  private LogIJobProperties     logIJobProperties;
 
 
   /**
@@ -62,7 +62,7 @@ public class TaskManagerImpl implements TaskManager {
     this.consensualFactory  = consensualFactory;
     this.taskLockService    = taskLockService;
     this.auvTaskMapper      = auvTaskMapper;
-    this.logIJobProperties = logIJobProperties;
+    this.logIJobProperties  = logIJobProperties;
 
   }
 
@@ -73,11 +73,11 @@ public class TaskManagerImpl implements TaskManager {
 
   @Override
   public Result delete(String taskCode) {
-    AuvTask auvTask = auvTaskMapper.selectByCode(taskCode);
+    AuvTask auvTask = auvTaskMapper.selectByCode(taskCode, logIJobProperties.getAppName());
     if (auvTask == null) {
       return Result.buildFail("任务不存在！");
     }
-    return Result.buildSucc(auvTaskMapper.deleteByCode(taskCode) > 0);
+    return Result.buildSucc(auvTaskMapper.deleteByCode(taskCode, logIJobProperties.getAppName()) > 0);
   }
 
   @Override
@@ -148,7 +148,7 @@ public class TaskManagerImpl implements TaskManager {
    */
   @Override
   public Result execute(String taskCode, Boolean executeSubs) {
-    AuvTask auvTask = auvTaskMapper.selectByCode(taskCode);
+    AuvTask auvTask = auvTaskMapper.selectByCode(taskCode, logIJobProperties.getAppName());
     if (auvTask == null) {
       return Result.buildFail("任务不存在！");
     }
@@ -254,7 +254,7 @@ public class TaskManagerImpl implements TaskManager {
     // 递归拉起子任务
     if (!StringUtils.isEmpty(taskInfo.getSubTaskCodes())) {
       String[] subTaskCodeArray = taskInfo.getSubTaskCodes().split(",");
-      List<AuvTask> subTasks = auvTaskMapper.selectByCodes(Arrays.asList(subTaskCodeArray));
+      List<AuvTask> subTasks = auvTaskMapper.selectByCodes(Arrays.asList(subTaskCodeArray), logIJobProperties.getAppName());
       List<TaskInfo> subTaskInfoList = subTasks.stream().map(auvTask -> BeanUtil.convertTo(auvTask,
               TaskInfo.class)).collect(Collectors.toList());
       for (TaskInfo subTaskInfo : subTaskInfoList) {
@@ -264,7 +264,7 @@ public class TaskManagerImpl implements TaskManager {
   }
 
   private boolean updateTaskWorker(String taskCode, String workerCode) {
-    AuvTask auvTask = auvTaskMapper.selectByCode(taskCode);
+    AuvTask auvTask = auvTaskMapper.selectByCode(taskCode, logIJobProperties.getAppName());
     if (auvTask == null) {
       return false;
     }

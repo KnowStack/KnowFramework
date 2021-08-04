@@ -160,7 +160,7 @@ public class JobManagerImpl implements JobManager {
 
   @Override
   public List<JobDto> getJobs() {
-    List<AuvJob> auvJobs = auvJobMapper.selectByAppName( logIJobProperties.getAppName());
+    List<AuvJob> auvJobs = auvJobMapper.selectByAppName(logIJobProperties.getAppName());
     if (CollectionUtils.isEmpty(auvJobs)) {
       return null;
     }
@@ -171,7 +171,7 @@ public class JobManagerImpl implements JobManager {
 
   @Override
   public List<JobLogDto> getJobLogs(String taskCode, Integer limit) {
-    List<AuvJobLog> auvJobLogs = auvJobLogMapper.selectByTaskCode(taskCode, limit);
+    List<AuvJobLog> auvJobLogs = auvJobLogMapper.selectByTaskCode(taskCode, logIJobProperties.getAppName(), limit);
     if (CollectionUtils.isEmpty(auvJobLogs)) {
       return null;
     }
@@ -289,7 +289,7 @@ public class JobManagerImpl implements JobManager {
     auvJobMapper.deleteByCode(jobInfo.getCode());
 
     // 更新任务状态
-    AuvTask auvTask = auvTaskMapper.selectByCode(jobInfo.getTaskCode());
+    AuvTask auvTask = auvTaskMapper.selectByCode(jobInfo.getTaskCode(), logIJobProperties.getAppName());
     List<TaskInfo.TaskWorker> taskWorkers = BeanUtil.convertToList(auvTask.getTaskWorkerStr(),
             TaskInfo.TaskWorker.class);
     if (!CollectionUtils.isEmpty(taskWorkers)) {
@@ -350,7 +350,7 @@ public class JobManagerImpl implements JobManager {
               auvTaskLockMapper.deleteById(auvTaskLock.getId());
 
               // 更新当前worker任务状态
-              AuvTask auvTask = auvTaskMapper.selectByCode(auvTaskLock.getTaskCode());
+              AuvTask auvTask = auvTaskMapper.selectByCode(auvTaskLock.getTaskCode(), logIJobProperties.getAppName());
               if (auvTask != null) {
                 List<TaskInfo.TaskWorker> taskWorkers = BeanUtil.convertToList(
                         auvTask.getTaskWorkerStr(), TaskInfo.TaskWorker.class);
@@ -405,7 +405,7 @@ public class JobManagerImpl implements JobManager {
           // 删除日志
           Calendar calendar = Calendar.getInstance();
           calendar.add(Calendar.DATE, -1 * logExpire);
-          int count = auvJobLogMapper.deleteByCreateTime(new Timestamp(calendar.getTimeInMillis()));
+          int count = auvJobLogMapper.deleteByCreateTime(new Timestamp(calendar.getTimeInMillis()), logIJobProperties.getAppName());
           logger.info("class=LogCleanHandler||method=run||url=||msg=clean log count={}", count);
           // 间隔一段时间执行一次
           ThreadUtil.sleep(JOB_INTERVAL, TimeUnit.SECONDS);
