@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping(Constants.V1 + "/auv-job/taskLock")
+@RequestMapping(Constants.V1 + "/job/taskLock")
 public class TaskLockController {
 
   @Autowired

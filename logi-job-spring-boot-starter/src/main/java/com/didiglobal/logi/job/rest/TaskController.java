@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @author dengshan
  */
 @RestController
-@RequestMapping(Constants.V1 + "/auv-job/task")
+@RequestMapping(Constants.V1 + "/job/task")
 public class TaskController {
 
   @Autowired

@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @author dengshan
  */
 @RestController
-@RequestMapping(Constants.V1 + "/auv-job/job")
+@RequestMapping(Constants.V1 + "/job/job")
 public class JobController {
   private static final Logger logger = LoggerFactory.getLogger(JobController.class);
 
