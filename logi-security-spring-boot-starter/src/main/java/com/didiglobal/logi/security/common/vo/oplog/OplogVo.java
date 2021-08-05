@@ -1,17 +1,15 @@
-package com.didiglobal.logi.security.common.vo.record;
+package com.didiglobal.logi.security.common.vo.oplog;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
-
-import java.sql.Timestamp;
 
 /**
  * @author cjm
  */
 @Data
 @ApiModel(description = "操作日志信息")
-public class RecordVo {
+public class OplogVo {
 
     @ApiModelProperty(value = "操作日志id", dataType = "Integer", required = false)
     private Integer id;
@@ -20,25 +18,25 @@ public class RecordVo {
      * 操作者ip
      */
     @ApiModelProperty(value = "操作者ip", dataType = "String", required = false)
-    private String recordIp;
+    private String operatorIp;
 
     /**
      * 操作者用户账号
      */
     @ApiModelProperty(value = "操作者用户账号", dataType = "String", required = false)
-    private String recordUsername;
+    private String operatorUsername;
 
     /**
      * 操作日志页面
      */
     @ApiModelProperty(value = "操作日志页面", dataType = "String", required = false)
-    private String recordPage;
+    private String operatePage;
 
     /**
      * 操作类型
      */
     @ApiModelProperty(value = "操作类型", dataType = "String", required = false)
-    private String recordType;
+    private String operateType;
 
     /**
      * 操作对象

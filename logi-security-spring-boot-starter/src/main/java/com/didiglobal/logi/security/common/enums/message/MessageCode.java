@@ -1,6 +1,5 @@
 package com.didiglobal.logi.security.common.enums.message;
 
-import com.didiglobal.logi.security.common.enums.record.RecordTypeCode;
 import lombok.Getter;
 
 /**

@@ -1,6 +1,5 @@
 package com.didiglobal.logi.security.common.enums.resource;
 
-import com.didiglobal.logi.security.common.enums.record.RecordPageCode;
 import lombok.Getter;
 
 /**

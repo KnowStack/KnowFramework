@@ -10,37 +10,37 @@ import lombok.EqualsAndHashCode;
  */
 @EqualsAndHashCode(callSuper = true)
 @Data
-public class Record extends BaseEntity {
+public class Oplog extends BaseEntity {
 
     /**
      * 操作者ip
      */
-    private String recordIp;
+    private String operatorIp;
 
     /**
      * 操作者用户账号
      */
-    private String recordUsername;
+    private String operatorUsername;
 
     /**
      * 操作页面
      */
-    private Integer recordPage;
+    private String operatePage;
 
     /**
      * 操作类型
      */
-    private Integer recordType;
+    private String operateType;
+
+    /**
+     * 对象分类
+     */
+    private String targetType;
 
     /**
      * 操作对象
      */
     private String target;
-
-    /**
-     * 对象分类
-     */
-    private Integer targetType;
 
     /**
      * 详情

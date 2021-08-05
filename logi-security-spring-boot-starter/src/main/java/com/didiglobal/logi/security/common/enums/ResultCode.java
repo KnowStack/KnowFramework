@@ -58,7 +58,7 @@ public enum ResultCode implements CodeMsg {
     PROJECT_ID_CANNOT_BE_NULL(5003, "项目id不可为空"),
 
     /* 操作日志错误 */
-    RECORD_NOT_EXIST(6001, "操作日志不存在"),
+    OPLOG_NOT_EXIST(6001, "操作日志不存在"),
 
     /* 消息错误 */
     MESSAGE_NOT_EXIST(7001, "消息不存在"),

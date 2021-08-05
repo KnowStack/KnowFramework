@@ -30,7 +30,12 @@ public class Message extends BaseEntity {
     private Boolean isRead;
 
     /**
-     * 消息所属用户
+     * 消息所属用户id
      */
     private Integer userId;
+
+    /**
+     * 操作日志id
+     */
+    private Integer oplogId;
 }

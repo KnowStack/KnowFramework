@@ -1,13 +1,13 @@
-package com.didiglobal.logi.security.common.enums.record;
+package com.didiglobal.logi.security.common.enums.oplog;
 
 import lombok.Getter;
 
 /**
  * @author cjm
- * 操作记录类型
+ * 操作类型
  */
 @Getter
-public enum RecordTypeCode {
+public enum OperateTypeCode {
 
     /* 操作类型 */
     APPROVAL_ADOPT(1, "审批通过"),
@@ -31,16 +31,16 @@ public enum RecordTypeCode {
 
     private final String info;
 
-    RecordTypeCode(Integer type, String info) {
+    OperateTypeCode(Integer type, String info) {
         this.type = type;
         this.info = info;
     }
 
-    public static RecordTypeCode getByType(Integer type) {
-        RecordTypeCode[] recordTypeCodes = RecordTypeCode.values();
-        for(RecordTypeCode recordTypeCode : recordTypeCodes) {
-            if(recordTypeCode.type.equals(type)) {
-                return recordTypeCode;
+    public static OperateTypeCode getByType(Integer type) {
+        OperateTypeCode[] operateTypeCodes = OperateTypeCode.values();
+        for(OperateTypeCode operateTypeCode : operateTypeCodes) {
+            if(operateTypeCode.type.equals(type)) {
+                return operateTypeCode;
             }
         }
         return null;

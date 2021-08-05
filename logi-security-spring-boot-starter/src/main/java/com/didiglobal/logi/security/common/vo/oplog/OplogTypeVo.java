@@ -1,4 +1,4 @@
-package com.didiglobal.logi.security.common.vo.record;
+package com.didiglobal.logi.security.common.vo.oplog;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -10,7 +10,7 @@ import lombok.Data;
  */
 @Data
 @ApiModel(description = "操作类型信息")
-public class RecordTypeVo {
+public class OplogTypeVo {
 
     @ApiModelProperty(value = "操作类型标识", dataType = "Integer", required = false)
     private Integer type;

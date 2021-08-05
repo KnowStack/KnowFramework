@@ -1,4 +1,4 @@
-package com.didiglobal.logi.security.common.enums.record;
+package com.didiglobal.logi.security.common.enums.oplog;
 
 import lombok.Getter;
 

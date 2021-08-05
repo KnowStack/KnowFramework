@@ -1,4 +1,4 @@
-package com.didiglobal.logi.security.common.vo.record;
+package com.didiglobal.logi.security.common.vo.oplog;
 
 import com.didiglobal.logi.security.common.vo.PageParamVo;
 import io.swagger.annotations.ApiModel;
@@ -6,33 +6,31 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
-import java.sql.Timestamp;
-
 /**
  * @author cjm
  */
 @EqualsAndHashCode(callSuper = true)
 @Data
 @ApiModel(description = "操作日志查找条件信息")
-public class RecordQueryVo extends PageParamVo {
+public class OplogQueryVo extends PageParamVo {
 
     /**
      * 操作者ip
      */
     @ApiModelProperty(value = "操作者ip", dataType = "String", required = false)
-    private String recordIp;
+    private String operatorIp;
 
     /**
      * 操作者用户账号
      */
     @ApiModelProperty(value = "操作者用户账号", dataType = "String", required = false)
-    private String recordUsername;
+    private String operatorUsername;
 
     /**
      * 操作类型
      */
     @ApiModelProperty(value = "操作类型", dataType = "Integer", required = false)
-    private Integer recordType;
+    private Integer operateType;
 
     /**
      * 对象类型

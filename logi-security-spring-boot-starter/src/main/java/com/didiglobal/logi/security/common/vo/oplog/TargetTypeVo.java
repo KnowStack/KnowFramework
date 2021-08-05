@@ -1,4 +1,4 @@
-package com.didiglobal.logi.security.common.vo.record;
+package com.didiglobal.logi.security.common.vo.oplog;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;

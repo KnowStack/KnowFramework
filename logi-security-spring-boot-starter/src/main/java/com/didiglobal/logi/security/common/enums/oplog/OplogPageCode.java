@@ -1,4 +1,4 @@
-package com.didiglobal.logi.security.common.enums.record;
+package com.didiglobal.logi.security.common.enums.oplog;
 
 import lombok.Getter;
 
@@ -7,7 +7,7 @@ import lombok.Getter;
  * 操作记录页面
  */
 @Getter
-public enum RecordPageCode {
+public enum OplogPageCode {
 
     /* 页面 */
     LOG_DATABASE_ACCESS_APPROVAL(1, "日子库接入审批"),
@@ -28,16 +28,16 @@ public enum RecordPageCode {
 
     private final String info;
 
-    RecordPageCode(Integer type, String info) {
+    OplogPageCode(Integer type, String info) {
         this.type = type;
         this.info = info;
     }
 
-    public static RecordPageCode getByType(Integer type) {
-        RecordPageCode[] recordPageCodes = RecordPageCode.values();
-        for(RecordPageCode recordPageCode : recordPageCodes) {
-            if(recordPageCode.type.equals(type)) {
-                return recordPageCode;
+    public static OplogPageCode getByType(Integer type) {
+        OplogPageCode[] oplogPageCodes = OplogPageCode.values();
+        for(OplogPageCode oplogPageCode : oplogPageCodes) {
+            if(oplogPageCode.type.equals(type)) {
+                return oplogPageCode;
             }
         }
         return null;
