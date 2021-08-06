@@ -1,8 +1,12 @@
 package com.didiglobal.logi.security.common.vo.user;
 
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.List;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.didiglobal.logi.security.common.vo.dept.DeptVo;
 import com.didiglobal.logi.security.common.vo.permission.PermissionVo;
 import com.didiglobal.logi.security.common.vo.role.RoleVo;
@@ -38,8 +42,8 @@ public class UserVo {
     @ApiModelProperty(value = "部门信息", dataType = "String", required = false)
     private String deptInfo;
 
-    @ApiModelProperty(value = "角色信息", dataType = "List<RoleVo>", required = false)
-    private List<RoleVo> roleVoList;
+    @ApiModelProperty(value = "角色信息", dataType = "String", required = false)
+    private String roleInfo;
 
     @ApiModelProperty(value = "权限信息（树）", dataType = "PermissionVo", required = false)
     private PermissionVo permissionVo;

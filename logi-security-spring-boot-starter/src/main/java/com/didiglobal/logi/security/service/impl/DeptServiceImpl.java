@@ -66,7 +66,7 @@ public class DeptServiceImpl implements DeptService {
             return;
         }
         Dept dept = deptMapper.selectById(deptId);
-        if(dept.getLevel() <= child.getLevel()) {
+        if(child != null && dept.getLevel() >= child.getLevel()) {
             // 如果出现这种情况，则数据有误，中断递归
             throw new SecurityException(ResultCode.DEPT_DATA_ERROR);
         }

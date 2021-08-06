@@ -1,5 +1,6 @@
 package com.didiglobal.logi.security.common.entity;
 
+import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -10,6 +11,7 @@ import lombok.EqualsAndHashCode;
  */
 @EqualsAndHashCode(callSuper = true)
 @Data
+@TableName(value = "logi_oplog")
 public class Oplog extends BaseEntity {
 
     /**

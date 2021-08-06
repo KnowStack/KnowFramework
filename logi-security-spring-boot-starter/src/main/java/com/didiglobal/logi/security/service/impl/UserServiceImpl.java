@@ -65,8 +65,8 @@ public class UserServiceImpl implements UserService {
         IPage<User> userPage = new Page<>(queryVo.getPage(), queryVo.getSize());
 
         // 是否有角色条件
-        if (!StringUtils.isEmpty(queryVo.getRoleName())) {
-            Role role = roleMapper.selectOne(new QueryWrapper<Role>().eq("role_name", queryVo.getRoleName()));
+        if (queryVo.getRoleId() != null) {
+            Role role = roleMapper.selectById(queryVo.getRoleId());
             if (role == null) {
                 // 数据库没该角色名字
                 return new PagingData<>(userPage);
@@ -97,12 +97,14 @@ public class UserServiceImpl implements UserService {
             // 查询用户关联的角色
             userRoleWrapper.select("role_id").eq("user_id", userVo.getId());
             List<Object> roleIdList = userRoleMapper.selectObjs(userRoleWrapper);
-            userVo.setRoleVoList(new ArrayList<>());
+
+            StringBuilder sb = new StringBuilder();
             for (Object roleId : roleIdList) {
                 Role role = roleMap.get((Integer) roleId);
-                RoleVo roleVo = CopyBeanUtil.copy(role, RoleVo.class);
-                userVo.getRoleVoList().add(roleVo);
+                sb.append(role.getRoleName()).append(",");
             }
+            // 设置角色信息
+            userVo.setRoleInfo(sb.substring(0, sb.length() - 1));
             userRoleWrapper.clear();
 
             // 查找用户所在部门信息
@@ -129,11 +131,11 @@ public class UserServiceImpl implements UserService {
         Set<Integer> permissionHasSet = new HashSet<>();
         QueryWrapper<RolePermission> rolePermissionWrapper = new QueryWrapper<>();
 
-        List<RoleVo> roleVoList = new ArrayList<>();
+        StringBuilder sb = new StringBuilder();
         for (Object roleId : roleIdList) {
             // 获取角色信息
             Role role = roleMapper.selectById((Integer) roleId);
-            roleVoList.add(CopyBeanUtil.copy(role, RoleVo.class));
+            sb.append(role.getRoleName()).append(",");
 
             // 查询该角色拥有的权限idList
             rolePermissionWrapper.select("permission_id").eq("role_id", roleId);
@@ -147,7 +149,8 @@ public class UserServiceImpl implements UserService {
             rolePermissionWrapper.clear();
         }
         UserVo userVo = CopyBeanUtil.copy(user, UserVo.class);
-        userVo.setRoleVoList(roleVoList);
+        // 设置角色信息
+        userVo.setRoleInfo(sb.substring(0, sb.length() - 1));
         // 构建权限树
         userVo.setPermissionVo(permissionService.buildPermissionTree(permissionHasSet));
         // 查找用户所在部门信息

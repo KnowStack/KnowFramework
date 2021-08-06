@@ -20,6 +20,7 @@ public class GlobalExceptionHandler {
     @ResponseBody
     @ExceptionHandler(value = SecurityException.class)
     public Result<String> securityException(SecurityException e) {
+        e.printStackTrace();
         String[] s = e.getMessage().split("-", 2);
         return Result.fail(Integer.parseInt(s[0]), s[1]);
     }
@@ -30,6 +31,7 @@ public class GlobalExceptionHandler {
     @ResponseBody
     @ExceptionHandler(value = Exception.class)
     public Result<String> exception(Exception e) {
+        e.printStackTrace();
         return Result.fail(e.getMessage());
     }
 }

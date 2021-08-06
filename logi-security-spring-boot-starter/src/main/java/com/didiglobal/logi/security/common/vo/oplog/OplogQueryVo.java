@@ -15,33 +15,33 @@ import lombok.EqualsAndHashCode;
 public class OplogQueryVo extends PageParamVo {
 
     /**
+     * 操作类型
+     */
+    @ApiModelProperty(value = "操作类型（精确）", dataType = "String", required = false)
+    private String operateType;
+
+    /**
+     * 对象类型
+     */
+    @ApiModelProperty(value = "对象类型（精确）", dataType = "String", required = false)
+    private String targetType;
+
+    /**
      * 操作者ip
      */
-    @ApiModelProperty(value = "操作者ip", dataType = "String", required = false)
+    @ApiModelProperty(value = "操作者ip（模糊）", dataType = "String", required = false)
     private String operatorIp;
 
     /**
      * 操作者用户账号
      */
-    @ApiModelProperty(value = "操作者用户账号", dataType = "String", required = false)
+    @ApiModelProperty(value = "操作者用户账号（模糊）", dataType = "String", required = false)
     private String operatorUsername;
-
-    /**
-     * 操作类型
-     */
-    @ApiModelProperty(value = "操作类型", dataType = "Integer", required = false)
-    private Integer operateType;
-
-    /**
-     * 对象类型
-     */
-    @ApiModelProperty(value = "对象类型", dataType = "Integer", required = false)
-    private Integer targetType;
 
     /**
      * 操作对象
      */
-    @ApiModelProperty(value = "操作对象", dataType = "String", required = false)
+    @ApiModelProperty(value = "操作对象（模糊）", dataType = "String", required = false)
     private String target;
 
     /**

@@ -20,8 +20,8 @@ public class UserQueryVo extends PageParamVo {
     /**
      * 角色名
      */
-    @ApiModelProperty(value = "角色名", dataType = "String", required = false)
-    private String roleName;
+    @ApiModelProperty(value = "根据角色id查询", dataType = "Integer", required = false)
+    private Integer roleId;
 
     /**
      * 用户账号

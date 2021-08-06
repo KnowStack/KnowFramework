@@ -34,10 +34,4 @@ public class OplogDto {
      */
     private String detail;
 
-    public OplogDto(LogiOplog annotation) {
-        this.operatePage = annotation.operatePage();
-        this.operateType = annotation.operateType();
-        this.targetType = annotation.targetType();
-        this.target = annotation.target();
-    }
 }

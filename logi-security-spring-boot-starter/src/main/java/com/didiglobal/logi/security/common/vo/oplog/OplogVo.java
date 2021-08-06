@@ -29,7 +29,7 @@ public class OplogVo {
     /**
      * 操作日志页面
      */
-    @ApiModelProperty(value = "操作日志页面", dataType = "String", required = false)
+    @ApiModelProperty(value = "操作页面", dataType = "String", required = false)
     private String operatePage;
 
     /**

@@ -4,9 +4,7 @@ import com.didiglobal.logi.security.common.PagingData;
 import com.didiglobal.logi.security.common.PagingResult;
 import com.didiglobal.logi.security.common.Result;
 import com.didiglobal.logi.security.common.vo.oplog.OplogQueryVo;
-import com.didiglobal.logi.security.common.vo.oplog.OplogTypeVo;
 import com.didiglobal.logi.security.common.vo.oplog.OplogVo;
-import com.didiglobal.logi.security.common.vo.oplog.TargetTypeVo;
 import com.didiglobal.logi.security.service.OplogService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -42,17 +40,11 @@ public class OplogController {
         return Result.success(oplogVo);
     }
 
-    @GetMapping("/type/oplog")
-    @ApiOperation(value = "获取操作记录类型", notes = "获取全部操作记录类型")
-    public Result<List<OplogTypeVo>> operateType() {
-        List<OplogTypeVo> operateTypeList = oplogService.getOperateTypeList();
-        return Result.success(operateTypeList);
-    }
-
-    @GetMapping("/type/target")
-    @ApiOperation(value = "获取操作对象类型", notes = "获取全部操作对象类型")
-    public Result<List<TargetTypeVo>> targetType() {
-        List<TargetTypeVo> targetTypeList = oplogService.getTargetTypeList();
-        return Result.success(targetTypeList);
+    @GetMapping("/extra/{type}")
+    @ApiOperation(value = "获取操作日志列表的查询条件信息", notes = "查询条件中操作类型、对象类型的下拉信息")
+    @ApiImplicitParam(name = "type", value = "哪种信息：1：操作页面、2：操作类型、3：对象分类", required = true)
+    public Result<List<String>> extra(@PathVariable Integer type) {
+        List<String> oplogExtraList = oplogService.getOplogExtraList(type);
+        return Result.success(oplogExtraList);
     }
 }

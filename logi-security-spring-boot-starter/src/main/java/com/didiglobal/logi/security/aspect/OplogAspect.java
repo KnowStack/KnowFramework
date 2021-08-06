@@ -41,9 +41,8 @@ public class OplogAspect {
         String[] parameterNames = methodSignature.getParameterNames();
         // 获取注解上的参数
         LogiOplog annotation = methodSignature.getMethod().getAnnotation(LogiOplog.class);
-        OplogDto oplogDto = new OplogDto(annotation);
-        oplogDto.setDetail(JSON.toJSONString(ret));
-        oplogService.saveOplog(oplogDto);
+
+        // oplogService.saveOplog(oplogDto);
     }
 
     /**
@@ -54,9 +53,9 @@ public class OplogAspect {
         MethodSignature methodSignature = (MethodSignature) joinPoint.getSignature();
         // 获取注解上的参数
         LogiOplog annotation = methodSignature.getMethod().getAnnotation(LogiOplog.class);
-        OplogDto oplogDto = new OplogDto(annotation);
-        oplogDto.setDetail(getErrorMsg(exception));
-        oplogService.saveOplog(oplogDto);
+        // OplogDto oplogDto = new OplogDto(annotation);
+        // oplogDto.setDetail(getErrorMsg(exception));
+        // oplogService.saveOplog(oplogDto);
     }
 
     /**
