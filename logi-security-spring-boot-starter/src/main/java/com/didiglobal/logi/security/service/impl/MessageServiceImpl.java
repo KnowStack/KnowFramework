@@ -29,7 +29,7 @@ public class MessageServiceImpl implements MessageService {
 
     @Override
     public List<MessageVo> getMessageList(Boolean isRead) {
-        // 这里要获取用户的id
+        // TODO 这里要获取用户的id
         QueryWrapper<Message> messageWrapper = new QueryWrapper<>();
         messageWrapper.eq(isRead != null, "is_read", isRead);
         List<Message> messageList = messageMapper.selectList(messageWrapper);
@@ -43,7 +43,7 @@ public class MessageServiceImpl implements MessageService {
 
     @Override
     public void changeMessageStatus(List<Integer> idList) {
-        // 这里要获取用户的id
+        // TODO 这里要获取用户的id
         if(CollectionUtils.isEmpty(idList)) {
             return;
         }

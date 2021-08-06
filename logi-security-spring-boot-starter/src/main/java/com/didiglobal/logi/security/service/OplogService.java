@@ -1,11 +1,8 @@
 package com.didiglobal.logi.security.service;
 
 import com.didiglobal.logi.security.common.PagingData;
-import com.didiglobal.logi.security.common.dto.OplogDto;
 import com.didiglobal.logi.security.common.vo.oplog.OplogQueryVo;
-import com.didiglobal.logi.security.common.vo.oplog.OplogTypeVo;
 import com.didiglobal.logi.security.common.vo.oplog.OplogVo;
-import com.didiglobal.logi.security.common.vo.oplog.TargetTypeVo;
 
 import java.util.List;
 
@@ -29,20 +26,10 @@ public interface OplogService {
     OplogVo getDetailById(Integer opLogId);
 
     /**
-     * 获取所有操作类型
-     * @return 操作类型信息
+     * 获取操作日志列表的查询条件信息
+     * @param type 1 操作页面、2 操作类型、3 对象分类
+     * @return 操作页面NameList、操作类型NameList、对象分类NameList
      */
-    List<OplogTypeVo> getOperateTypeList();
+    List<String> getOplogExtraList(Integer type);
 
-    /**
-     * 获取所有操作对象类型
-     * @return 操作对象类型信息
-     */
-    List<TargetTypeVo> getTargetTypeList();
-
-    /**
-     * 保存操作记录
-     * @param oplogDto 操作信息
-     */
-    void saveOplog(OplogDto oplogDto);
 }

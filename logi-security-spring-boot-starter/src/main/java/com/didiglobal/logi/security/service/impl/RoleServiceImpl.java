@@ -45,6 +45,7 @@ public class RoleServiceImpl implements RoleService {
     @Autowired
     private PermissionService permissionService;
 
+    @Autowired
     private MessageExtend messageExtend;
 
     @Override
@@ -246,6 +247,13 @@ public class RoleServiceImpl implements RoleService {
             }
         }
     }
+
+    /**
+     * 保存用户角色变更消息
+     * @param userId 角色变更的用户id
+     * @param roleIdList 变更的角色
+     * @param messageCode 变更消息，是移除角色还是添加角色
+     */
     private void saveRoleAssignMessage(Integer userId, List<Integer> roleIdList, MessageCode messageCode) {
         if(CollectionUtils.isEmpty(roleIdList)) {
             return;
