@@ -23,7 +23,7 @@ public class UserServiceTest extends BaseTest {
         UserQueryVo queryVo = new UserQueryVo();
         queryVo.setPage(1);
         queryVo.setSize(5);
-        queryVo.setRoleName("组长");
+        // queryVo.setRoleName("组长");
         queryVo.setUsername("cai");
         queryVo.setRealName("蔡");
         // IPage<UserVo> pageUser = userService.getPageUser(queryVo);

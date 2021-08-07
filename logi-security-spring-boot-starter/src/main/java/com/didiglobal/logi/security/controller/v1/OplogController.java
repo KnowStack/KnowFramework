@@ -27,7 +27,7 @@ public class OplogController {
 
     @PostMapping("/page")
     @ApiOperation(value = "查询操作日志列表", notes = "分页和条件查询")
-    public PagingResult<OplogVo> page(OplogQueryVo queryVo) {
+    public PagingResult<OplogVo> page(@RequestBody OplogQueryVo queryVo) {
         PagingData<OplogVo> pageOplog = oplogService.getOplogPage(queryVo);
         return PagingResult.success(pageOplog);
     }

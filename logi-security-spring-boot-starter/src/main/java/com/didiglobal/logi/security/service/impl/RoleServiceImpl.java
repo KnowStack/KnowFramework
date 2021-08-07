@@ -137,6 +137,8 @@ public class RoleServiceImpl implements RoleService {
         checkParam(roleSaveVo);
         // 更新角色基本信息
         Role role = CopyBeanUtil.copy(roleSaveVo, Role.class);
+        // TODO 设置修改人信息
+        // role.setLastReviser();
         roleMapper.updateById(role);
         // 先删除旧的角色与权限关联信息
         QueryWrapper<RolePermission> rolePermissionWrapper = new QueryWrapper<>();

@@ -2,17 +2,17 @@ package com.didiglobal.logi.security.common.entity;
 
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 
 /**
  * @author cjm
  *
  * 资源类型信息
  */
-@EqualsAndHashCode(callSuper = true)
 @Data
 @TableName(value = "logi_resource_type")
-public class ResourceType extends BaseEntity {
+public class ResourceType {
+
+    private Integer id;
 
     /**
      * 资源类型名

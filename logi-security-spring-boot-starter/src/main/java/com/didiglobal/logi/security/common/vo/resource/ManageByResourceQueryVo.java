@@ -33,7 +33,7 @@ public class ManageByResourceQueryVo extends PageParamVo {
      */
     @ApiModelProperty(
             value = "按资源管理列表展示级别：1 项目展示级别、2 资源类别展示级别、3 具体资源展示级别",
-            dataType = "Integer", required = false)
+            dataType = "Integer", required = true)
     private Integer showLevel;
 
     /**

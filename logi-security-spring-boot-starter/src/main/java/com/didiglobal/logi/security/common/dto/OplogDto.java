@@ -1,6 +1,5 @@
 package com.didiglobal.logi.security.common.dto;
 
-import com.didiglobal.logi.security.annotation.LogiOplog;
 import lombok.Data;
 
 /**

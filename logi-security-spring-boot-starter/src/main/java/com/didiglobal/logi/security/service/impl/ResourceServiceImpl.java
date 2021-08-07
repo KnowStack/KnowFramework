@@ -54,16 +54,32 @@ public class ResourceServiceImpl implements ResourceService {
 
     @Override
     public List<ResourceVo> getResourceList(Integer projectId, Integer resourceTypeId) {
+        if(projectId == null && resourceTypeId != null) {
+            // 资源类别id不为null，则项目id不可为null
+            throw new SecurityException(ResultCode.RESOURCE_SEARCH_ERROR);
+        }
         List<ResourceDto> resourceDtoList = resourceExtend.getResourceList(projectId, resourceTypeId);
         return CopyBeanUtil.copyList(resourceDtoList, ResourceVo.class);
     }
 
-    @Override
-    public void assignResourcePermission(AssignToOneUserVo assignToOneUserVo) {
+    private void checkParam(AssignToOneUserVo assignToOneUserVo) {
         Integer userId = assignToOneUserVo.getUserId();
         if(userId == null || userMapper.selectById(userId) == null) {
             throw new SecurityException(ResultCode.USER_ACCOUNT_NOT_EXIST);
         }
+        Integer projectId = assignToOneUserVo.getProjectId();
+        Integer resourceTypeId = assignToOneUserVo.getResourceTypeId();
+        if(projectId == null && resourceTypeId != null) {
+            // 资源类别id不为null，则项目id不可为null
+            throw new SecurityException(ResultCode.RESOURCE_ASSIGN_ERROR_2);
+        }
+    }
+
+    @Override
+    public void assignResourcePermission(AssignToOneUserVo assignToOneUserVo) {
+        // 检查参数
+        checkParam(assignToOneUserVo);
+        Integer userId = assignToOneUserVo.getUserId();
         Integer projectId = assignToOneUserVo.getProjectId();
         Integer resourceTypeId = assignToOneUserVo.getResourceTypeId();
 
@@ -106,18 +122,12 @@ public class ResourceServiceImpl implements ResourceService {
 
     @Override
     public void assignResourcePermission(AssignToManyUserVo assignToManyUserVo) {
+        // 检查参数
+        checkParam(assignToManyUserVo);
         List<Integer> userIdList = assignToManyUserVo.getUserIdList();
         Integer projectId = assignToManyUserVo.getProjectId();
         Integer resourceTypeId = assignToManyUserVo.getResourceTypeId();
         Integer resourceId = assignToManyUserVo.getResourceId();
-        if(projectId == null) {
-            // 项目id不可为null
-            throw new SecurityException(ResultCode.PROJECT_ID_CANNOT_BE_NULL);
-        }
-        if(resourceTypeId == null && resourceId != null) {
-            // 这种情况不允许出现（如果resourceId != null，则resourceTypeId必不为null）
-            throw new SecurityException(ResultCode.RESOURCE_PERMISSION_ASSIGN_ERROR);
-        }
 
         QueryWrapper<UserResource> userResourceWrapper = new QueryWrapper<>();
         userResourceWrapper
@@ -133,8 +143,9 @@ public class ResourceServiceImpl implements ResourceService {
             resourceDtoList.addAll(resourceExtend.getResourceList(projectId, resourceTypeId));
         } else {
             // 说明只有一个资源的权限分配给用户
-            ResourceDto resourceDto = new ResourceDto();
-            ResourceDto.builder().projectId(projectId).resourceTypeId(resourceTypeId).resourceId(resourceId);
+            ResourceDto resourceDto = ResourceDto.builder()
+                    .projectId(projectId).resourceTypeId(resourceTypeId).resourceId(resourceId)
+                    .build();
             resourceDtoList.add(resourceDto);
         }
         // 插入new关联信息
@@ -150,6 +161,29 @@ public class ResourceServiceImpl implements ResourceService {
         }
     }
 
+    private void checkParam(AssignToManyUserVo assignToManyUserVo) {
+        Integer projectId = assignToManyUserVo.getProjectId();
+        Integer resourceTypeId = assignToManyUserVo.getResourceTypeId();
+        Integer resourceId = assignToManyUserVo.getResourceId();
+        if(projectId == null) {
+            // 项目id不可为nul
+            throw new SecurityException(ResultCode.PROJECT_ID_CANNOT_BE_NULL);
+        }
+        Project project = projectMapper.selectById(projectId);
+        if(project == null) {
+            // 项目不存在
+            throw new SecurityException(ResultCode.PROJECT_NOT_EXIST);
+        }
+        if(!project.getIsRunning()) {
+            // 项目已停运
+            throw new SecurityException(ResultCode.PROJECT_UN_RUNNING);
+        }
+        if(resourceTypeId == null && resourceId != null) {
+            // 这种情况不允许出现（如果resourceId != null，则resourceTypeId必不为null）
+            throw new SecurityException(ResultCode.RESOURCE_ASSIGN_ERROR);
+        }
+    }
+
     //--------------------------资源权限管理（按用户管理）begin--------------------------
 
     @Override
@@ -160,7 +194,7 @@ public class ResourceServiceImpl implements ResourceService {
         userWrapper
                 .eq(queryVo.getDeptId() != null, "dept_id", queryVo.getDeptId())
                 .like(queryVo.getUsername() != null, "username", queryVo.getUsername())
-                .like(queryVo.getDealName() != null, "deal_name", queryVo.getDealName());
+                .like(queryVo.getRealName() != null, "real_name", queryVo.getRealName());
         userMapper.selectPage(userPage, userWrapper);
 
         List<ManageByUserVo> manageByUserVoList = new ArrayList<>();
@@ -194,6 +228,8 @@ public class ResourceServiceImpl implements ResourceService {
 
     @Override
     public PagingData<ManageByResourceVo> getManageByResourcePage(ManageByResourceQueryVo queryVo) {
+        // 检查参数
+        checkParam(queryVo);
         if(queryVo.getShowLevel().equals(ShowLevelCode.PROJECT.getType())) {
             // 项目展示级别，表示查找所有项目
             return dealProjectLevel(queryVo, queryVo.getShowLevel());
@@ -203,6 +239,26 @@ public class ResourceServiceImpl implements ResourceService {
         } else {
             // 具体资源展示级别，表示查找该项目下该资源类别对应的资源
             return dealResourceLevel(queryVo, queryVo.getShowLevel());
+        }
+    }
+
+    private void checkParam(ManageByResourceQueryVo queryVo) {
+        if(ShowLevelCode.getByType(queryVo.getShowLevel()) == null) {
+            // 请输入有效的展示级别（1 <= showLevel <= 3）
+            throw new SecurityException(ResultCode.RESOURCE_INVALID_SHOW_LEVEL);
+        }
+        if(queryVo.getShowLevel().equals(ShowLevelCode.RESOURCE_TYPE.getType())) {
+            // 资源类别展示级别，表示查找某个项目下所有资源类别
+            if(queryVo.getProjectId() == null) {
+                // 2级展示级别，项目id不可为null
+                throw new SecurityException(ResultCode.RESOURCE_SHOW_LEVEL_ERROR);
+            }
+        } else if(queryVo.getShowLevel().equals(ShowLevelCode.RESOURCE.getType())){
+            // 具体资源展示级别，表示查找该项目下该资源类别对应的资源
+            if(queryVo.getProjectId() == null || queryVo.getResourceTypeId() == null) {
+                // 3级展示级别，项目id或资源类别id不可为null
+                throw new SecurityException(ResultCode.RESOURCE_SHOW_LEVEL_ERROR_2);
+            }
         }
     }
 
@@ -277,7 +333,7 @@ public class ResourceServiceImpl implements ResourceService {
             manageByResourceVo.setAdminUserCnt(userResourceMapper.selectCount(queryWrapper));
 
             // 封装查看权限用户数条件
-            wrapQueryCriteria(queryWrapper, showLevel, ControlLevelCode.VIEW, project);
+            wrapQueryCriteria(queryWrapper, showLevel, ControlLevelCode.VIEW, project.getId());
             manageByResourceVo.setViewUserCnt(userResourceMapper.selectCount(queryWrapper));
 
             list.add(manageByResourceVo);

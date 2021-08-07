@@ -56,6 +56,7 @@ public enum ResultCode implements CodeMsg {
     PROJECT_NAME_EXIST(5001, "项目名已存在"),
     PROJECT_NOT_EXIST(5002, "项目不存在"),
     PROJECT_ID_CANNOT_BE_NULL(5003, "项目id不可为空"),
+    PROJECT_UN_RUNNING(5004, "项目未运行"),
 
     /* 操作日志错误 */
     OPLOG_NOT_EXIST(6001, "操作日志不存在"),
@@ -70,7 +71,12 @@ public enum ResultCode implements CodeMsg {
     DEPT_DATA_ERROR(9001, "获取部门数据异常"),
 
     /* 资源权限管理错误 */
-    RESOURCE_PERMISSION_ASSIGN_ERROR(10001, "资源权限分配异常（具体资源id不为null，则资源类别id不可为null）")
+    RESOURCE_ASSIGN_ERROR(10001, "资源权限分配异常，按资源管理，分配用户（具体资源id不为null，则资源类别id不可为null）"),
+    RESOURCE_ASSIGN_ERROR_2(10002, "资源权限分配异常，按用户管理，分配资源（资源类别id不为null，则项目id不可为null）"),
+    RESOURCE_SEARCH_ERROR(10003, "资源查询异常，查询条件，资源类别id不为null，则项目id不可为null"),
+    RESOURCE_INVALID_SHOW_LEVEL(10004, "请输入有效的展示级别（1 <= showLevel <= 3）"),
+    RESOURCE_SHOW_LEVEL_ERROR(10005, "2级展示级别，项目id不可为null"),
+    RESOURCE_SHOW_LEVEL_ERROR_2(10006, "3级展示级别，项目id或资源类别id不可为null")
     ;
 
     private final Integer code;

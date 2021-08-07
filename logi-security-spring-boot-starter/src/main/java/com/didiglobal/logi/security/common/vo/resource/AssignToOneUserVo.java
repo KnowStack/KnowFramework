@@ -31,7 +31,7 @@ public class AssignToOneUserVo {
     private Integer resourceTypeId;
 
     @ApiModelProperty(
-            value = "projectId == null，则表示项目idList、" +
+            value = "projectId == null，resourceTypeId == null，则表示项目idList、" +
                     "projectId != null，resourceTypeId == null，则表示资源类别idList、" +
                     "projectId != null，resourceTypeId != null，则表示具体资源idList",
             dataType = "List<Integer>", required = true)

@@ -23,5 +23,5 @@ public class ManageByUserQueryVo extends PageParamVo {
     private String username;
 
     @ApiModelProperty(value = "用户实名", dataType = "String", required = false)
-    private String dealName;
+    private String realName;
 }
