@@ -61,7 +61,14 @@ public class DeptServiceImpl implements DeptService {
         return sb.substring(0, sb.length() - 1);
     }
 
-    public void spliceDeptInfo(Dept child, Integer deptId, StringBuilder sb) {
+    @Override
+    public List<Integer> getChildDeptIdListByParentId(Integer deptId) {
+        List<Integer> deptIdList = new ArrayList<>();
+        getChildDeptIdListByParentId(deptIdList, deptId);
+        return deptIdList;
+    }
+
+    private void spliceDeptInfo(Dept child, Integer deptId, StringBuilder sb) {
         if(deptId == null || deptId == 0) {
             return;
         }
@@ -74,14 +81,7 @@ public class DeptServiceImpl implements DeptService {
         sb.append(dept.getDeptName()).append("-");
     }
 
-    @Override
-    public List<Integer> getChildDeptIdListByParentId(Integer deptId) {
-        List<Integer> deptIdList = new ArrayList<>();
-        getChildDeptIdListByParentId(deptIdList, deptId);
-        return deptIdList;
-    }
-
-    public void getChildDeptIdListByParentId(List<Integer> deptIdList, Integer deptId) {
+    private void getChildDeptIdListByParentId(List<Integer> deptIdList, Integer deptId) {
         if(deptId == null) {
             return;
         }

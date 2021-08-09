@@ -26,13 +26,13 @@ public class UserQueryVo extends PageParamVo {
     /**
      * 用户账号
      */
-    @ApiModelProperty(value = "用户账号", dataType = "String", required = false)
+    @ApiModelProperty(value = "用户账号（模糊）", dataType = "String", required = false)
     private String username;
 
     /**
      * 真实姓名
      */
-    @ApiModelProperty(value = "真实姓名", dataType = "String", required = false)
+    @ApiModelProperty(value = "真实姓名（模糊）", dataType = "String", required = false)
     private String realName;
 
     /**

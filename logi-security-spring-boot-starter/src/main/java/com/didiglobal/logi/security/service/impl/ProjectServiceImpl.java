@@ -16,6 +16,7 @@ import com.didiglobal.logi.security.mapper.DeptMapper;
 import com.didiglobal.logi.security.mapper.ProjectMapper;
 import com.didiglobal.logi.security.mapper.UserMapper;
 import com.didiglobal.logi.security.mapper.UserProjectMapper;
+import com.didiglobal.logi.security.service.DeptService;
 import com.didiglobal.logi.security.service.ProjectService;
 import com.didiglobal.logi.security.util.CopyBeanUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,13 +44,11 @@ public class ProjectServiceImpl implements ProjectService {
     private UserProjectMapper userProjectMapper;
 
     @Autowired
-    private DeptMapper deptMapper;
+    private DeptService deptService;
 
     @Override
     public ProjectVo getDetailById(Integer projectId) {
-        if(projectId == null) {
-            throw new SecurityException(ResultCode.PARAM_IS_BLANK);
-        }
+        checkProjectId(projectId);
         Project project = projectMapper.selectById(projectId);
         if(project == null) {
             throw new SecurityException(ResultCode.PROJECT_NOT_EXIST);
@@ -63,9 +62,10 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Override
     public void createProject(ProjectSaveVo saveVo) {
+        // 检查参数
         checkParam(saveVo);
         Project project = CopyBeanUtil.copy(saveVo, Project.class);
-        project.setProjectCode("project" + ((int)((Math.random() + 1) * 10000)));
+        project.setProjectCode("p" + ((int) ((Math.random() + 1) * 1000000)));
         projectMapper.insert(project);
         // 插入用户项目关联信息（项目负责人）
         List<UserProject> list = getUserProjectList(project.getId(), saveVo.getChargeUserIdList());
@@ -111,8 +111,8 @@ public class ProjectServiceImpl implements ProjectService {
             projectVo.setChargeUserIdList(getUserVoListByProjectId(projectVo.getId()));
 
             // 查找项目列表每个项目的使用部门信息
-            Dept dept = deptMapper.selectById(projectPage.getRecords().get(i).getDeptId());
-            projectVo.setDeptVo(CopyBeanUtil.copy(dept, DeptVo.class));
+            String deptInfo = deptService.spliceDeptInfo(projectPage.getRecords().get(i).getDeptId());
+            projectVo.setDeptInfo(deptInfo);
             projectVo.setCreateTime(projectPage.getRecords().get(i).getCreateTime().getTime());
         }
         return pagingData;
@@ -120,10 +120,7 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Override
     public void deleteProjectById(Integer projectId) {
-        Project project = projectMapper.selectById(projectId);
-        if(project == null) {
-            throw new SecurityException(ResultCode.PROJECT_NOT_EXIST);
-        }
+        checkProjectId(projectId);
         // TODO 删除前要判断一下有没有服务引用了这个项目
         // 删除项目与负责人的联系
         QueryWrapper<UserProject> wrapper = new QueryWrapper<>();
@@ -135,9 +132,8 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Override
     public void updateProjectBy(ProjectSaveVo saveVo) {
-        if(saveVo == null || projectMapper.selectById(saveVo.getId()) == null) {
-            throw new SecurityException(ResultCode.PROJECT_NOT_EXIST);
-        }
+        checkProjectId(saveVo.getId());
+        // 检查参数
         checkParam(saveVo);
         // 先更新项目基本信息
         Project project = CopyBeanUtil.copy(saveVo, Project.class);
@@ -162,6 +158,19 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     /**
+     * 检查项目的id
+     * @param projectId 项目id
+     */
+    private void checkProjectId(Integer projectId) {
+        if(projectId == null) {
+            throw new SecurityException(ResultCode.PARAM_ID_IS_BLANK);
+        }
+        if(projectMapper.selectById(projectId) == null) {
+            throw new SecurityException(ResultCode.PROJECT_NOT_EXIST);
+        }
+    }
+
+    /**
      * 根据项目id获取项目负责人信息
      * @param projectId 项目id
      * @return List<UserVo>
@@ -183,7 +192,27 @@ public class ProjectServiceImpl implements ProjectService {
      * @param saveVo 项目参数
      */
     private void checkParam(ProjectSaveVo saveVo) {
-
+        if(StringUtils.isEmpty(saveVo.getProjectName())) {
+            throw new SecurityException(ResultCode.PROJECT_NAME_CANNOT_BE_BLANK);
+        }
+        if(saveVo.getDeptId() == null) {
+            throw new SecurityException(ResultCode.PROJECT_DEPT_CANNOT_BE_NULL);
+        }
+        if(StringUtils.isEmpty(saveVo.getDescription())) {
+            throw new SecurityException(ResultCode.PROJECT_DES_CANNOT_BE_BLANK);
+        }
+        if(CollectionUtils.isEmpty(saveVo.getChargeUserIdList())) {
+            throw new SecurityException(ResultCode.PROJECT_CHARGE_USER_CANNOT_BE_NULL);
+        }
+        QueryWrapper<Project> queryWrapper = new QueryWrapper<>();
+        queryWrapper
+                .eq("project_name", saveVo.getProjectName())
+                // 如果id不为null，则是更新操作
+                .ne(saveVo.getId() != null, "id", saveVo.getId());
+        if(projectMapper.selectCount(queryWrapper) > 0) {
+            // 项目名不可重复
+            throw new SecurityException(ResultCode.PROJECT_NAME_EXIST);
+        }
     }
 
     /**

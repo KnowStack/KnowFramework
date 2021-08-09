@@ -46,8 +46,8 @@ public class ProjectVo {
     /**
      * 使用部门
      */
-    @ApiModelProperty(value = "使用部门", dataType = "DeptVo", required = false)
-    private DeptVo deptVo;
+    @ApiModelProperty(value = "使用部门", dataType = "String", required = false)
+    private String deptInfo;
 
     /**
      * 创建时间

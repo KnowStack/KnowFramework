@@ -18,7 +18,7 @@ import java.util.Set;
 public interface RoleService {
 
     /**
-     * 获取角色详情，通过角色id或角色编号
+     * 获取角色详情（主要是获取角色所拥有的权限信息）
      * @param id 角色id
      * @return RoleVo 角色信息
      */
@@ -55,4 +55,11 @@ public interface RoleService {
      * @param roleAssignVo 分配信息
      */
     void assignRoles(RoleAssignVo roleAssignVo);
+
+    /**
+     * 根据角色名模糊查询
+     * @param roleName 角色名
+     * @return 角色list
+     */
+    List<RoleVo> listByRoleName(String roleName);
 }

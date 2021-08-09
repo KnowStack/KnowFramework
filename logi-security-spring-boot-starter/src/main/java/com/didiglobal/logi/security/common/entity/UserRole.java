@@ -14,9 +14,17 @@ import java.sql.Timestamp;
 @TableName(value = "logi_user_role")
 public class UserRole {
 
+    /**
+     * 用户id
+     */
     private Integer userId;
 
+    /**
+     * 角色id
+     */
     private Integer roleId;
+
+    public UserRole() {}
 
     public UserRole(Integer userId, Integer roleId) {
         this.userId = userId;

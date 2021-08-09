@@ -12,7 +12,13 @@ import lombok.Data;
 @TableName(value = "logi_role_permission")
 public class RolePermission {
 
+    /**
+     * 角色id
+     */
     private Integer roleId;
 
+    /**
+     * 权限id
+     */
     private Integer permissionId;
 }

@@ -32,4 +32,10 @@ public interface UserService {
      */
     List<UserVo> getListByDeptId(Integer deptId);
 
+    /**
+     * 会分别以账户名和实名去模糊查询，返回两者的并集
+     * @param name 账户名或实名
+     * @return List<UserVo>
+     */
+    List<UserVo> getUserByUsernameOrRealName(String name);
 }

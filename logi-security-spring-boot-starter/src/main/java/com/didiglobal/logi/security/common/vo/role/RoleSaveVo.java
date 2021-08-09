@@ -19,18 +19,18 @@ public class RoleSaveVo {
     /**
      * 角色名
      */
-    @ApiModelProperty(value = "角色名", dataType = "String", required = false)
+    @ApiModelProperty(value = "角色名", dataType = "String", required = true)
     private String roleName;
 
     /**
      * 角色描述
      */
-    @ApiModelProperty(value = "角色描述", dataType = "String", required = false)
+    @ApiModelProperty(value = "角色描述", dataType = "String", required = true)
     private String description;
 
     /**
      * 权限idList
      */
-    @ApiModelProperty(value = "角色拥有的权限idList（字段为null或者数组大小为0，则表示角色没任何权限）", dataType = "String", required = false)
+    @ApiModelProperty(value = "角色拥有的权限idList（字段为null或者数组大小为0，则表示角色没任何权限）", dataType = "String", required = true)
     private List<Integer> permissionIdList;
 }

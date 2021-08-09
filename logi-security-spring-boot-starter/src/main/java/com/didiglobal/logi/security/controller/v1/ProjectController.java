@@ -25,15 +25,15 @@ public class ProjectController {
 
     @GetMapping("/{id}")
     @ApiOperation(value = "获取项目详情", notes = "根据项目id获取项目详情")
-    @ApiImplicitParam(name = "id", value = "项目id", dataType = "int", required = false)
-    public Result<ProjectVo> get(@PathVariable Integer id) {
+    @ApiImplicitParam(name = "id", value = "项目id", dataType = "int", required = true)
+    public Result<ProjectVo> detail(@PathVariable Integer id) {
         ProjectVo projectVo = projectService.getDetailById(id);
         return Result.success(projectVo);
     }
 
     @PutMapping("/switch/{id}")
     @ApiOperation(value = "更改项目运行状态", notes = "调用该接口则项目运行状态被反转")
-    @ApiImplicitParam(name = "id", value = "项目id", dataType = "int", required = false)
+    @ApiImplicitParam(name = "id", value = "项目id", dataType = "int", required = true)
     public Result<String> switched(@PathVariable Integer id) {
         projectService.changeProjectStatus(id);
         return Result.success();
@@ -62,11 +62,9 @@ public class ProjectController {
     }
 
     @PostMapping("/page")
-    @ApiOperation(value = "查询项目列表", notes = "分页和条件查询")
+    @ApiOperation(value = "分页查询项目列表", notes = "分页和条件查询")
     public PagingResult<ProjectVo> page(@RequestBody ProjectQueryVo queryVo) {
         PagingData<ProjectVo> pageProject = projectService.getProjectPage(queryVo);
         return PagingResult.success(pageProject);
     }
-
-
 }

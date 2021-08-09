@@ -80,6 +80,7 @@ public class UserServiceImpl implements UserService {
         }
 
         userWrapper
+                .eq(queryVo.getDeptId() != null, "dept_id", queryVo.getDeptId())
                 .like(queryVo.getUsername() != null, "username", queryVo.getUsername())
                 .like(queryVo.getRealName() != null, "real_name", queryVo.getRealName());
 
@@ -88,7 +89,9 @@ public class UserServiceImpl implements UserService {
         List<UserVo> userVoList = CopyBeanUtil.copyList(userPage.getRecords(), UserVo.class);
 
         // 获取所有角色，并转换成 roleId-Role对象 形式
-        Map<Integer, Role> roleMap = roleMapper.selectList(null)
+        QueryWrapper<Role> roleWrapper = new QueryWrapper<>();
+        roleWrapper.select("id", "role_name");
+        Map<Integer, Role> roleMap = roleMapper.selectList(roleWrapper)
                 .stream().collect(Collectors.toMap(Role::getId, role -> role));
 
         QueryWrapper<UserRole> userRoleWrapper = new QueryWrapper<>();
@@ -98,13 +101,13 @@ public class UserServiceImpl implements UserService {
             userRoleWrapper.select("role_id").eq("user_id", userVo.getId());
             List<Object> roleIdList = userRoleMapper.selectObjs(userRoleWrapper);
 
-            StringBuilder sb = new StringBuilder();
+            List<RoleVo> roleVoList = new ArrayList<>();
             for (Object roleId : roleIdList) {
                 Role role = roleMap.get((Integer) roleId);
-                sb.append(role.getRoleName()).append(",");
+                roleVoList.add(CopyBeanUtil.copy(role, RoleVo.class));
             }
             // 设置角色信息
-            userVo.setRoleInfo(sb.substring(0, sb.length() - 1));
+            userVo.setRoleVoList(roleVoList);
             userRoleWrapper.clear();
 
             // 查找用户所在部门信息
@@ -131,11 +134,11 @@ public class UserServiceImpl implements UserService {
         Set<Integer> permissionHasSet = new HashSet<>();
         QueryWrapper<RolePermission> rolePermissionWrapper = new QueryWrapper<>();
 
-        StringBuilder sb = new StringBuilder();
+        List<RoleVo> roleVoList = new ArrayList<>();
         for (Object roleId : roleIdList) {
             // 获取角色信息
             Role role = roleMapper.selectById((Integer) roleId);
-            sb.append(role.getRoleName()).append(",");
+            roleVoList.add(CopyBeanUtil.copy(role, RoleVo.class));
 
             // 查询该角色拥有的权限idList
             rolePermissionWrapper.select("permission_id").eq("role_id", roleId);
@@ -150,7 +153,7 @@ public class UserServiceImpl implements UserService {
         }
         UserVo userVo = CopyBeanUtil.copy(user, UserVo.class);
         // 设置角色信息
-        userVo.setRoleInfo(sb.substring(0, sb.length() - 1));
+        userVo.setRoleVoList(roleVoList);
         // 构建权限树
         userVo.setPermissionVo(permissionService.buildPermissionTree(permissionHasSet));
         // 查找用户所在部门信息
@@ -169,6 +172,20 @@ public class UserServiceImpl implements UserService {
         return CopyBeanUtil.copyList(userList, UserVo.class);
     }
 
+    @Override
+    public List<UserVo> getUserByUsernameOrRealName(String name) {
+        if(StringUtils.isEmpty(name)) {
+            return new ArrayList<>();
+        }
+        QueryWrapper<User> queryWrapper = new QueryWrapper<>();
+        queryWrapper.select("id", "username", "real_name")
+                .like("username", name)
+                .or()
+                .like("real_name", name);
+        List<User> userList = userMapper.selectList(queryWrapper);
+        return CopyBeanUtil.copyList(userList, UserVo.class);
+    }
+
     /**
      * 隐私处理
      *
@@ -178,6 +195,4 @@ public class UserServiceImpl implements UserService {
         String phone = userVo.getPhone();
         userVo.setPhone(phone.replaceAll("(\\d{3})\\d{4}(\\d{4})","$1****$2"));
     }
-
-
 }

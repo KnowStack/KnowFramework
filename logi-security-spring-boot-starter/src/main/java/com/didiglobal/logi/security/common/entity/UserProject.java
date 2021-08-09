@@ -12,7 +12,13 @@ import lombok.Data;
 @TableName(value = "logi_user_project")
 public class UserProject {
 
+    /**
+     * 用户id
+     */
     private Integer userId;
 
+    /**
+     * 项目id
+     */
     private Integer projectId;
 }

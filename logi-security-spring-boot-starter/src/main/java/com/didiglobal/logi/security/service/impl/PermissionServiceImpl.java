@@ -1,10 +1,13 @@
 package com.didiglobal.logi.security.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.didiglobal.logi.security.common.entity.Permission;
+import com.didiglobal.logi.security.common.entity.RolePermission;
 import com.didiglobal.logi.security.common.enums.ResultCode;
 import com.didiglobal.logi.security.common.vo.permission.PermissionVo;
 import com.didiglobal.logi.security.exception.SecurityException;
 import com.didiglobal.logi.security.mapper.PermissionMapper;
+import com.didiglobal.logi.security.mapper.RolePermissionMapper;
 import com.didiglobal.logi.security.service.PermissionService;
 import com.didiglobal.logi.security.util.CopyBeanUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +23,9 @@ public class PermissionServiceImpl implements PermissionService {
 
     @Autowired
     private PermissionMapper permissionMapper;
+
+    @Autowired
+    private RolePermissionMapper rolePermissionMapper;
 
     @Override
     public PermissionVo buildPermissionTree(Set<Integer> permissionHasSet) {
@@ -56,5 +62,20 @@ public class PermissionServiceImpl implements PermissionService {
     @Override
     public PermissionVo buildPermissionTree() {
         return buildPermissionTree(new HashSet<>());
+    }
+
+    @Override
+    public PermissionVo buildPermissionTreeByRoleId(Integer roleId) {
+        QueryWrapper<RolePermission> wrapper = new QueryWrapper<>();
+        // 获取该角色拥有的全部权限id
+        wrapper.select("permission_id").eq("role_id", roleId);
+        List<Object> permissionIdList = rolePermissionMapper.selectObjs(wrapper);
+
+        Set<Integer> permissionHasSet = new HashSet<>();
+        for(Object permissionId : permissionIdList) {
+            permissionHasSet.add((Integer) permissionId);
+        }
+
+        return buildPermissionTree(permissionHasSet);
     }
 }

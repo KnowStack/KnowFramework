@@ -23,9 +23,10 @@ public enum ResultCode implements CodeMsg {
     /* 参数错误：1000～1999 */
     PARAM_NOT_VALID(1001, "参数无效"),
     PARAM_IS_BLANK(1002, "参数为空"),
-    PARAM_TYPE_ERROR(1003, "参数类型错误"),
-    PARAM_NOT_COMPLETE(1004, "参数缺失"),
-    PARAM_LENGTH_ERROR(1005, "参数长度不正确"),
+    PARAM_ID_IS_BLANK(1003, "参数id为空"),
+    PARAM_TYPE_ERROR(1004, "参数类型错误"),
+    PARAM_NOT_COMPLETE(1005, "参数缺失"),
+    PARAM_LENGTH_ERROR(1006, "参数长度不正确"),
 
     /* 用户错误 */
     USER_NOT_LOGIN(2001, "用户未登录"),
@@ -50,13 +51,21 @@ public enum ResultCode implements CodeMsg {
     ROLE_BUSINESS_ERROR(4001, "内部错误"),
     ROLE_NOT_EXISTS(4002, "角色不存在"),
     ROLE_USER_AUTHED(4003, "有用户已绑定该角色"),
-    ROLE_ALREADY_EXIST(4004, "角色已存在"),
+    ROLE_NAME_EXIST(4004, "角色名已存在"),
+    ROLE_NAME_CANNOT_BE_BLANK(4005, "角色名不可为空"),
+    ROLE_DEPT_CANNOT_BE_BLANK(4006, "角色描述不可为空"),
+    ROLE_PERMISSION_CANNOT_BE_NULL(4007, "角色权限不可为空"),
+    ROLE_ASSIGN_FLAG_IS_NULL(4008, "角色分配flag不可为空"),
 
     /* 项目错误 */
     PROJECT_NAME_EXIST(5001, "项目名已存在"),
     PROJECT_NOT_EXIST(5002, "项目不存在"),
-    PROJECT_ID_CANNOT_BE_NULL(5003, "项目id不可为空"),
-    PROJECT_UN_RUNNING(5004, "项目未运行"),
+    PROJECT_UN_RUNNING(5003, "项目未运行"),
+    PROJECT_ID_CANNOT_BE_NULL(5004, "项目id不可为空"),
+    PROJECT_NAME_CANNOT_BE_BLANK(5005, "项目名不可为空"),
+    PROJECT_DES_CANNOT_BE_BLANK(5006, "项目描述不可为空"),
+    PROJECT_DEPT_CANNOT_BE_NULL(5007, "项目使用部门不可为空"),
+    PROJECT_CHARGE_USER_CANNOT_BE_NULL(5008, "项目负责人不可为空"),
 
     /* 操作日志错误 */
     OPLOG_NOT_EXIST(6001, "操作日志不存在"),

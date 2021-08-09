@@ -19,18 +19,18 @@ public class RoleQueryVo extends PageParamVo {
     /**
      * 角色编号
      */
-    @ApiModelProperty(value = "角色编号", dataType = "String", required = false)
+    @ApiModelProperty(value = "角色编号（精确）", dataType = "String", required = false)
     private String roleCode;
 
     /**
      * 角色名
      */
-    @ApiModelProperty(value = "角色名", dataType = "String", required = false)
+    @ApiModelProperty(value = "角色名（模糊）", dataType = "String", required = false)
     private String roleName;
 
     /**
      * 描述
      */
-    @ApiModelProperty(value = "描述", dataType = "String", required = false)
+    @ApiModelProperty(value = "描述（模糊）", dataType = "String", required = false)
     private String description;
 }

@@ -23,9 +23,11 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 
 import com.didiglobal.logi.security.util.CopyBeanUtil;
+import com.didiglobal.logi.security.util.ThreadPoolUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.StringUtils;
 
 @Service
 public class RoleServiceImpl implements RoleService {
@@ -51,14 +53,14 @@ public class RoleServiceImpl implements RoleService {
     @Override
     public RoleVo getDetailById(Integer id) {
         if(id == null) {
-            throw new SecurityException(ResultCode.PARAM_NOT_VALID);
+            throw new SecurityException(ResultCode.PARAM_ID_IS_BLANK);
         }
         Role role = roleMapper.selectById(id);
         if(role == null) {
             throw new SecurityException(ResultCode.ROLE_NOT_EXISTS);
         }
         // 根据角色id去查权限树
-        PermissionVo permissionVo = buildPermissionTree(role.getId());
+        PermissionVo permissionVo = permissionService.buildPermissionTreeByRoleId(role.getId());
         RoleVo roleVo = CopyBeanUtil.copy(role, RoleVo.class);
         roleVo.setPermissionVo(permissionVo);
         roleVo.setCreateTime(role.getCreateTime().getTime());
@@ -70,10 +72,13 @@ public class RoleServiceImpl implements RoleService {
         // 分页查询
         IPage<Role> rolePage = new Page<>(queryVo.getPage(), queryVo.getSize());
         QueryWrapper<Role> roleWrapper = new QueryWrapper<>();
-        roleWrapper
-                .like(queryVo.getRoleCode() != null, "role_code", queryVo.getRoleCode())
-                .like(queryVo.getRoleName() != null, "role_name", queryVo.getRoleName())
-                .like(queryVo.getDescription() != null, "description", queryVo.getDescription());
+        if(!StringUtils.isEmpty(queryVo.getRoleCode())) {
+            roleWrapper.eq("role_code", queryVo.getRoleCode());
+        } else {
+            roleWrapper
+                    .like(queryVo.getRoleName() != null, "role_name", queryVo.getRoleName())
+                    .like(queryVo.getDescription() != null, "description", queryVo.getDescription());
+        }
         roleMapper.selectPage(rolePage, roleWrapper);
         // 转vo
         List<RoleVo> roleVoList = CopyBeanUtil.copyList(rolePage.getRecords(), RoleVo.class);
@@ -97,9 +102,9 @@ public class RoleServiceImpl implements RoleService {
         // 保存角色信息
         Role role = CopyBeanUtil.copy(roleSaveVo, Role.class);
         // TODO；这里要添加修改人信息（Token中获取）
-        // role.setLastReviser("xxx");
+        role.setLastReviser("蔡蔡");
         // 设置角色编号
-        role.setRoleCode("role" + ((int)((Math.random() + 1) * 10000)));
+        role.setRoleCode("r" + ((int)((Math.random() + 1) * 1000000)));
         roleMapper.insert(role);
         List<Integer> permissionIdList = roleSaveVo.getPermissionIdList();
         if(!CollectionUtils.isEmpty(permissionIdList)) {
@@ -153,12 +158,10 @@ public class RoleServiceImpl implements RoleService {
 
     @Override
     public void assignRoles(RoleAssignVo roleAssignVo) {
-        // 获取old用户与角色的关系
+        checkParam(roleAssignVo);
+        // 获取old的用户与角色的关系
         List<Object> oldIdList = getOldRelation(roleAssignVo);
 
-        if(roleAssignVo.getFlag() == null) {
-            throw new SecurityException(ResultCode.PARAM_NOT_VALID);
-        }
         QueryWrapper<UserRole> userRoleWrapper = new QueryWrapper<>();
         Integer id = roleAssignVo.getId();
         List<UserRole> userRoleList = new ArrayList<>();
@@ -178,8 +181,8 @@ public class RoleServiceImpl implements RoleService {
                 throw new SecurityException(ResultCode.ROLE_NOT_EXISTS);
             }
             userRoleWrapper.eq("role_id", id);
-            for(Integer userIs : roleAssignVo.getIdList()) {
-                userRoleList.add(new UserRole(userIs, id));
+            for(Integer userId : roleAssignVo.getIdList()) {
+                userRoleList.add(new UserRole(userId, id));
             }
         }
         // 删除old的全部角色用户关联信息
@@ -187,8 +190,25 @@ public class RoleServiceImpl implements RoleService {
         // 插入new的角色与用户关联关系
         userRoleMapper.insertBatchSomeColumn(userRoleList);
 
-        // 打包和保存角色更新消息 TODO 后面改为异步
-        packAndSaveMessage(oldIdList, roleAssignVo);
+        // 打包和保存角色更新消息（异步）
+        ThreadPoolUtil.execute(() -> packAndSaveMessage(oldIdList, roleAssignVo));
+    }
+
+    private void checkParam(RoleAssignVo roleAssignVo) {
+        if(roleAssignVo.getFlag() == null) {
+            throw new SecurityException(ResultCode.ROLE_ASSIGN_FLAG_IS_NULL);
+        }
+    }
+
+    @Override
+    public List<RoleVo> listByRoleName(String roleName) {
+        if(StringUtils.isEmpty(roleName)) {
+            return new ArrayList<>();
+        }
+        QueryWrapper<Role> queryWrapper = new QueryWrapper<>();
+        queryWrapper.select("id", "role_name").like("role_name", roleName);
+        List<Role> roleList = roleMapper.selectList(queryWrapper);
+        return CopyBeanUtil.copyList(roleList, RoleVo.class);
     }
 
     /**
@@ -280,36 +300,26 @@ public class RoleServiceImpl implements RoleService {
     }
 
     /**
-     * 根据角色id，查找所有权限
-     * @param roleId 角色id
-     * @return 权限树
-     */
-    private PermissionVo buildPermissionTree(Integer roleId) {
-        QueryWrapper<RolePermission> wrapper = new QueryWrapper<>();
-        // 获取该角色拥有的全部权限id
-        wrapper.select("permission_id").eq("role_id", roleId);
-        List<Object> permissionIdList = rolePermissionMapper.selectObjs(wrapper);
-
-        Set<Integer> permissionHasSet = new HashSet<>();
-        for(Object permissionId : permissionIdList) {
-            permissionHasSet.add((Integer) permissionId);
-        }
-
-        return permissionService.buildPermissionTree(permissionHasSet);
-    }
-
-    /**
      * 添加或者修改时候检查参数
      * @param roleSaveVo 角色信息
      */
     private void checkParam(RoleSaveVo roleSaveVo) {
+        if(StringUtils.isEmpty(roleSaveVo.getRoleName())) {
+            throw new SecurityException(ResultCode.ROLE_NAME_CANNOT_BE_BLANK);
+        }
+        if(StringUtils.isEmpty(roleSaveVo.getDescription())) {
+            throw new SecurityException(ResultCode.ROLE_DEPT_CANNOT_BE_BLANK);
+        }
+        if(CollectionUtils.isEmpty(roleSaveVo.getPermissionIdList())) {
+            throw new SecurityException(ResultCode.ROLE_PERMISSION_CANNOT_BE_NULL);
+        }
         QueryWrapper<Role> roleWrapper = new QueryWrapper<>();
         roleWrapper
                 .eq("role_name", roleSaveVo.getRoleName())
                 // 如果有id信息，说明是更新，则判断角色名重复的时候要排除old信息
                 .ne(roleSaveVo.getId() != null, "id", roleSaveVo.getId());
-        if(roleMapper.selectOne(roleWrapper) != null) {
-            throw new SecurityException(ResultCode.ROLE_ALREADY_EXIST);
+        if(roleMapper.selectCount(roleWrapper) > 0) {
+            throw new SecurityException(ResultCode.ROLE_NAME_EXIST);
         }
     }
 

@@ -25,11 +25,6 @@ public class Permission {
     private Integer parentId;
 
     /**
-     * 描述
-     */
-    private String description;
-
-    /**
      * 是否是叶子权限
      */
     private Boolean isLeaf;
@@ -38,4 +33,9 @@ public class Permission {
      * 权限点的层级（parentId为0的层级为1）
      */
     private Integer level;
+
+    /**
+     * 描述
+     */
+    private String description;
 }

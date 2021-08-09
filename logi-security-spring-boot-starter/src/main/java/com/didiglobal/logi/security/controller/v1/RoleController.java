@@ -13,6 +13,8 @@ import io.swagger.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 /**
  * @author cjm
  */
@@ -26,8 +28,8 @@ public class RoleController {
 
     @GetMapping("/{id}")
     @ApiOperation(value = "获取角色详情", notes = "根据角色id或角色code获取角色详情")
-    @ApiImplicitParam(name = "id", value = "角色id", dataType = "int", required = false)
-    public Result<RoleVo> get(@PathVariable Integer id) {
+    @ApiImplicitParam(name = "id", value = "角色id", dataType = "int", required = true)
+    public Result<RoleVo> detail(@PathVariable Integer id) {
         RoleVo roleVo = roleService.getDetailById(id);
         return Result.success(roleVo);
     }
@@ -55,7 +57,7 @@ public class RoleController {
     }
 
     @PostMapping("/page")
-    @ApiOperation(value = "查询角色列表", notes = "分页和条件查询")
+    @ApiOperation(value = "分页查询角色列表", notes = "分页和条件查询")
     public PagingResult<RoleVo> page(@RequestBody RoleQueryVo queryVo) {
         PagingData<RoleVo> pageRole = roleService.getRolePage(queryVo);
         return PagingResult.success(pageRole);
@@ -66,5 +68,13 @@ public class RoleController {
     public Result<String> assign(@RequestBody RoleAssignVo assignVo) {
         roleService.assignRoles(assignVo);
         return Result.success();
+    }
+
+    @GetMapping("/list/{roleName}")
+    @ApiOperation(value = "根据角色名模糊查询", notes = "根据角色名模糊查询")
+    @ApiImplicitParam(name = "roleName", value = "角色名", dataType = "String", required = true)
+    public Result<List<RoleVo>> list(String roleName) {
+        List<RoleVo> roleVoList = roleService.listByRoleName(roleName);
+        return Result.success(roleVoList);
     }
 }

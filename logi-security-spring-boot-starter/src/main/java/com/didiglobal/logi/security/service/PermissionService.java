@@ -21,4 +21,11 @@ public interface PermissionService {
      * @return PermissionVo 权限树
      */
     PermissionVo buildPermissionTree();
+
+    /**
+     * 根据角色id构建权限树（返回所有权限点）
+     * @param roleId 角色id
+     * @return PermissionVo 权限树
+     */
+    PermissionVo buildPermissionTreeByRoleId(Integer roleId);
 }

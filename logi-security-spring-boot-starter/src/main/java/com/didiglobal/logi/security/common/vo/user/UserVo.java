@@ -42,8 +42,8 @@ public class UserVo {
     @ApiModelProperty(value = "部门信息", dataType = "String", required = false)
     private String deptInfo;
 
-    @ApiModelProperty(value = "角色信息", dataType = "String", required = false)
-    private String roleInfo;
+    @ApiModelProperty(value = "角色信息", dataType = "List<RoleVo>", required = false)
+    private List<RoleVo> roleVoList;
 
     @ApiModelProperty(value = "权限信息（树）", dataType = "PermissionVo", required = false)
     private PermissionVo permissionVo;
