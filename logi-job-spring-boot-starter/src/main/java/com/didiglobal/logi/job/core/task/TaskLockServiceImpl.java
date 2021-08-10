@@ -6,6 +6,8 @@ import com.didiglobal.logi.job.common.dto.TaskLockDto;
 import com.didiglobal.logi.job.core.WorkerSingleton;
 import com.didiglobal.logi.job.mapper.AuvTaskLockMapper;
 import com.didiglobal.logi.job.utils.BeanUtil;
+
+import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -70,7 +72,11 @@ public class TaskLockServiceImpl implements TaskLockService {
       try {
         return auvTaskLockMapper.insert(taskLock) > 0 ? true : false;
       } catch (Exception e) {
-        logger.error("class=TaskLockServiceImpl||method=tryAcquire||url=||msg=", e);
+        if(e instanceof SQLException && e.getMessage().contains("Duplicate entry")){
+          logger.info("class=TaskLockServiceImpl||method=tryAcquire||taskCode=||msg=duplicate key", taskCode);
+        }else {
+          logger.error("class=TaskLockServiceImpl||method=tryAcquire||taskCode=||msg=", taskCode, e.getMessage());
+        }
       }
     }
     return false;
