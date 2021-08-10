@@ -45,14 +45,6 @@ public interface ResourceService {
     List<ResourceTypeVo> getResourceTypeList();
 
     /**
-     * 获取所有资源类型list
-     * @param projectId 项目id
-     * @param resourceTypeId 资源类别id
-     * @return List<ResourceVo>
-     */
-    List<MByUDataQueryVo> getResourceList(Integer projectId, Integer resourceTypeId);
-
-    /**
      * 资源权限管理/按用户管理/分配资源/数据列表的信息
      * @param queryVo 查询条件
      * @return 数据列表信息

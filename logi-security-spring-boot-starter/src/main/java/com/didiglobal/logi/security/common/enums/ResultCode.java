@@ -83,10 +83,9 @@ public enum ResultCode implements CodeMsg {
     /* 资源权限管理错误 */
     RESOURCE_ASSIGN_ERROR(10001, "资源权限分配异常，按资源管理，分配用户（具体资源id不为null，则资源类别id不可为null）"),
     RESOURCE_ASSIGN_ERROR_2(10002, "资源权限分配异常，按用户管理，分配资源（资源类别id不为null，则项目id不可为null）"),
-    RESOURCE_SEARCH_ERROR(10003, "资源查询异常，查询条件，资源类别id不为null，则项目id不可为null"),
-    RESOURCE_INVALID_SHOW_LEVEL(10004, "请输入有效的展示级别（1 <= showLevel <= 3）"),
-    RESOURCE_SHOW_LEVEL_ERROR(10005, "2级展示级别，项目id不可为null"),
-    RESOURCE_SHOW_LEVEL_ERROR_2(10006, "3级展示级别，项目id或资源类别id不可为null")
+    RESOURCE_INVALID_SHOW_LEVEL(10003, "请输入有效的展示级别（1 <= showLevel <= 3）"),
+    RESOURCE_SHOW_LEVEL_ERROR(10004, "2级展示级别，项目id不可为null"),
+    RESOURCE_SHOW_LEVEL_ERROR_2(10005, "3级展示级别，项目id或资源类别id不可为null")
     ;
 
     private final Integer code;

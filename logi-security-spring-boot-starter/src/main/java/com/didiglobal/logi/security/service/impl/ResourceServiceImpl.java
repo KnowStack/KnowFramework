@@ -53,16 +53,6 @@ public class ResourceServiceImpl implements ResourceService {
     }
 
     @Override
-    public List<MByUDataQueryVo> getResourceList(Integer projectId, Integer resourceTypeId) {
-        if(projectId == null && resourceTypeId != null) {
-            // 资源类别id不为null，则项目id不可为null
-            throw new SecurityException(ResultCode.RESOURCE_SEARCH_ERROR);
-        }
-        List<ResourceDto> resourceDtoList = resourceExtend.getResourceList(projectId, resourceTypeId);
-        return CopyBeanUtil.copyList(resourceDtoList, MByUDataQueryVo.class);
-    }
-
-    @Override
     public List<MByUDataVo> getManagerByUserDataList(MByUDataQueryVo queryVo) {
         // 检查参数
         checkParam(queryVo);
