@@ -8,10 +8,12 @@ import lombok.Data;
  * @author cjm
  *
  * 资源权限管理>按资源管理的列表信息
+ *
+ * MByR（ManageByResource）
  */
 @Data
 @ApiModel(description = "资源权限管理（按资源管理的列表信息）")
-public class ManageByResourceVo {
+public class MByRVo {
 
     /**
      * 列表字段1

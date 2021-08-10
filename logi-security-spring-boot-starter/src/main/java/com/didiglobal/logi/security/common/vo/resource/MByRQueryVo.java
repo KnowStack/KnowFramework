@@ -10,11 +10,13 @@ import lombok.EqualsAndHashCode;
  * @author cjm
  *
  * 资源权限管理>按资源管理的列表查询条件
+ *
+ * MByR（ManageByResource）
  */
 @EqualsAndHashCode(callSuper = true)
 @Data
 @ApiModel(description = "资源权限管理（按资源管理的列表查询条件）")
-public class ManageByResourceQueryVo extends PageParamVo {
+public class MByRQueryVo extends PageParamVo {
 
     /**
      * 项目id

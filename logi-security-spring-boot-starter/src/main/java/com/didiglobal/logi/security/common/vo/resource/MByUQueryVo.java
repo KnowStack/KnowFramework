@@ -10,11 +10,13 @@ import lombok.EqualsAndHashCode;
  * @author cjm
  *
  * 资源权限管理>按用户管理的列表查询条件
+ *
+ * MByU（ManagerByUser）
  */
 @EqualsAndHashCode(callSuper = true)
 @Data
 @ApiModel(description = "资源权限管理（按用户管理的列表查询条件）")
-public class ManageByUserQueryVo extends PageParamVo {
+public class MByUQueryVo extends PageParamVo {
 
     @ApiModelProperty(value = "部门id", dataType = "Integer", required = false)
     private Integer deptId;

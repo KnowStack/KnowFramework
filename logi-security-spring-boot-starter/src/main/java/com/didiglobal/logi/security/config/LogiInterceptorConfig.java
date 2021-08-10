@@ -13,7 +13,6 @@ public class LogiInterceptorConfig implements WebMvcConfigurer {
 
     private final LogiSecurityInterceptor logiSecurityInterceptor;
 
-
     public LogiInterceptorConfig(LogiSecurityInterceptor logiSecurityInterceptor) {
         this.logiSecurityInterceptor = logiSecurityInterceptor;
     }

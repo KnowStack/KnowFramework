@@ -12,6 +12,8 @@ import io.swagger.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 /**
  * @author cjm
  */
@@ -66,5 +68,12 @@ public class ProjectController {
     public PagingResult<ProjectVo> page(@RequestBody ProjectQueryVo queryVo) {
         PagingData<ProjectVo> pageProject = projectService.getProjectPage(queryVo);
         return PagingResult.success(pageProject);
+    }
+
+    @GetMapping("/list")
+    @ApiOperation(value = "获取项目list", notes = "获取全部项目（只返回id、项目名）")
+    public Result<List<ProjectVo>> list() {
+        List<ProjectVo> projectVo = projectService.getProjectList();
+        return Result.success(projectVo);
     }
 }

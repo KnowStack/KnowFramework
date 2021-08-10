@@ -6,6 +6,8 @@ import com.didiglobal.logi.security.common.vo.project.ProjectQueryVo;
 import com.didiglobal.logi.security.common.vo.project.ProjectSaveVo;
 import com.didiglobal.logi.security.common.vo.project.ProjectVo;
 
+import java.util.List;
+
 
 /**
  * @author cjm
@@ -49,4 +51,10 @@ public interface ProjectService {
      * @param id 项目id
      */
     void changeProjectStatus(Integer id);
+
+    /**
+     * 获取所有项目（只返回id、projectName）
+     * @return 项目信息
+     */
+    List<ProjectVo> getProjectList();
 }

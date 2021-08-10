@@ -1,14 +1,10 @@
 package com.didiglobal.logi.security.common;
 
-import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.didiglobal.logi.security.common.enums.ResultCode;
-import com.didiglobal.logi.security.common.vo.resource.ManageByResourceVo;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-
-import java.util.List;
 
 /**
  * 分页数据统一返回规范

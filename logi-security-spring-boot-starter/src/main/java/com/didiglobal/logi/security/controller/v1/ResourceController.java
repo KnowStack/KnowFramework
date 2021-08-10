@@ -12,7 +12,6 @@ import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.lang.reflect.Method;
 import java.util.List;
 
 /**
@@ -33,40 +32,36 @@ public class ResourceController {
         return Result.success(resourceTypeVoList);
     }
 
-    @GetMapping("/list")
-    @ApiOperation(value = "获取具体资源list", notes = "根据项目id和资源类别id获取具体资源list（两个id都为null，则获取所有资源）")
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "projectId", value = "项目id", required = false),
-            @ApiImplicitParam(name = "resourceTypeId", value = "资源类别id", required = false)
-    })
-    public Result<List<ResourceVo>> typeList(@RequestParam Integer projectId, @RequestParam Integer resourceTypeId) {
-        List<ResourceVo> resourceVoList = resourceService.getResourceList(projectId, resourceTypeId);
-        return Result.success(resourceVoList);
+    @GetMapping("/list/mbu")
+    @ApiOperation(value = "资源权限管理/按用户管理/分配资源/数据列表", notes = "获取数据（项目、类别、资源）list")
+    public Result<List<MByUDataVo>> list(@RequestParam MByUDataQueryVo queryVo) {
+        List<MByUDataVo> resultList = resourceService.getManagerByUserDataList(queryVo);
+        return Result.success(resultList);
     }
 
     @PostMapping("/page/mbr")
-    @ApiOperation(value = "资源权限管理（按资源管理的列表信息）", notes = "资源权限管理（按资源管理的列表信息），接口中mbr就是ManageByResource")
-    public PagingResult<ManageByResourceVo> page(@RequestBody ManageByResourceQueryVo queryVo) {
-        PagingData<ManageByResourceVo> pagingData = resourceService.getManageByResourcePage(queryVo);
+    @ApiOperation(value = "资源权限管理/按资源管理/列表信息", notes = "按资源管理的列表信息，接口中mbr就是ManageByResource")
+    public PagingResult<MByRVo> page(@RequestBody MByRQueryVo queryVo) {
+        PagingData<MByRVo> pagingData = resourceService.getManageByResourcePage(queryVo);
         return PagingResult.success(pagingData);
     }
 
     @PostMapping("/page/mbu")
-    @ApiOperation(value = "资源权限管理（按用户管理的列表信息）", notes = "资源权限管理（按用户管理的列表信息），接口中mbu就是ManageByUser")
-    public PagingResult<ManageByUserVo> page(@RequestBody ManageByUserQueryVo queryVo) {
-        PagingData<ManageByUserVo> pagingData = resourceService.getManageByUserPage(queryVo);
+    @ApiOperation(value = "资源权限管理/按用户管理/列表信息", notes = "按用户管理的列表信息，接口中mbu就是ManageByUser")
+    public PagingResult<MByUVo> page(@RequestBody MByUQueryVo queryVo) {
+        PagingData<MByUVo> pagingData = resourceService.getManageByUserPage(queryVo);
         return PagingResult.success(pagingData);
     }
 
     @PostMapping("/assign/mbr")
-    @ApiOperation(value = "按资源管理（分配用户）", notes = "资源权限管理（按资源管理（分配用户））")
+    @ApiOperation(value = "资源权限管理/按资源管理/分配用户", notes = "1个项目或1个资源类别或1个具体资源的权限分配给N个用户")
     public Result<String> assign(@RequestBody AssignToManyUserVo assignToManyUserVo) {
         resourceService.assignResourcePermission(assignToManyUserVo);
         return Result.success();
     }
 
     @PostMapping("/assign/mbu")
-    @ApiOperation(value = "按用户管理（分配资源）", notes = "资源权限管理（按用户管理（分配资源））")
+    @ApiOperation(value = "资源权限管理/按用户管理/分配资源", notes = "N个项目或N个资源类别或N个具体资源的权限分配给1个用户")
     public Result<String> assign(@RequestBody AssignToOneUserVo assignToOneUserVo) {
         resourceService.assignResourcePermission(assignToOneUserVo);
         return Result.success();

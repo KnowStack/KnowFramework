@@ -157,6 +157,14 @@ public class ProjectServiceImpl implements ProjectService {
         projectMapper.updateById(project);
     }
 
+    @Override
+    public List<ProjectVo> getProjectList() {
+        QueryWrapper<Project> queryWrapper = new QueryWrapper<>();
+        queryWrapper.select("id", "project_name");
+        List<Project> projectList = projectMapper.selectList(queryWrapper);
+        return CopyBeanUtil.copyList(projectList, ProjectVo.class);
+    }
+
     /**
      * 检查项目的id
      * @param projectId 项目id

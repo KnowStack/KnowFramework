@@ -43,6 +43,7 @@ public enum ResultCode implements CodeMsg {
     EMAIL_FORMAT_ERROR(2012, "邮箱格式错误"),
     USER_EMAIL_EXIST(2013, "邮箱已存在"),
     USER_PASSWORD_DECRYPT_ERROR(2014, "密码解密出错"),
+    USER_ID_CANNOT_BE_NULL(2015, "用户id不可为空"),
 
     /* 业务错误 */
     NO_PERMISSION(3001, "没有权限"),

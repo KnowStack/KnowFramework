@@ -20,7 +20,6 @@ import com.didiglobal.logi.security.service.ResourceService;
 import com.didiglobal.logi.security.util.CopyBeanUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
 import java.util.ArrayList;
@@ -48,18 +47,89 @@ public class ResourceServiceImpl implements ResourceService {
 
     @Override
     public List<ResourceTypeVo> getResourceTypeList() {
+
         List<ResourceType> resourceTypeList = resourceTypeMapper.selectList(null);
         return CopyBeanUtil.copyList(resourceTypeList, ResourceTypeVo.class);
     }
 
     @Override
-    public List<ResourceVo> getResourceList(Integer projectId, Integer resourceTypeId) {
+    public List<MByUDataQueryVo> getResourceList(Integer projectId, Integer resourceTypeId) {
         if(projectId == null && resourceTypeId != null) {
             // 资源类别id不为null，则项目id不可为null
             throw new SecurityException(ResultCode.RESOURCE_SEARCH_ERROR);
         }
         List<ResourceDto> resourceDtoList = resourceExtend.getResourceList(projectId, resourceTypeId);
-        return CopyBeanUtil.copyList(resourceDtoList, ResourceVo.class);
+        return CopyBeanUtil.copyList(resourceDtoList, MByUDataQueryVo.class);
+    }
+
+    @Override
+    public List<MByUDataVo> getManagerByUserDataList(MByUDataQueryVo queryVo) {
+        // 检查参数
+        checkParam(queryVo);
+
+        List<MByUDataVo> resultList = new ArrayList<>();
+        QueryWrapper<UserResource> queryWrapper = new QueryWrapper<>();
+
+        Integer projectId = queryVo.getProjectId();
+        Integer resourceTypeId = queryVo.getResourceTypeId();
+        Integer showLevel = queryVo.getShowLevel();
+        // 获取权限级别
+        ControlLevelCode controlLevel = ControlLevelCode.getByType(queryVo.getControlLevel());
+
+        if(projectId == null) {
+            List<Project> projectList = projectMapper.selectList(new QueryWrapper<Project>().select("id"));
+            for(Project project : projectList) {
+                MByUDataVo dataVo = new MByUDataVo(project.getId(), project.getProjectName());
+                wrapQueryCriteria(queryWrapper, showLevel, controlLevel, project.getId());
+                queryWrapper.eq("user_id", queryVo.getUserId());
+                int cnt = userResourceMapper.selectCount(queryWrapper);
+                if(cnt == 0) {
+                    dataVo.setHasLevel(0);
+                } else {
+                    // 获取该项目下具体资源的个数
+                    int resourceCnt = resourceExtend.getResourceCnt(project.getId(), null);
+                    dataVo.setHasLevel(cnt == resourceCnt ? 2 : 1);
+                }
+                resultList.add(dataVo);
+                queryWrapper.clear();
+            }
+        } else if(resourceTypeId == null) {
+            List<ResourceType> resourceTypeList = resourceTypeMapper.selectList(null);
+            for(ResourceType resourceType : resourceTypeList) {
+                MByUDataVo dataVo = new MByUDataVo(resourceType.getId(), resourceType.getTypeName());
+                wrapQueryCriteria(queryWrapper, showLevel, controlLevel, projectId, resourceType.getId());
+                queryWrapper.eq("user_id", queryVo.getUserId());
+                int cnt = userResourceMapper.selectCount(queryWrapper);
+                if(cnt == 0) {
+                    dataVo.setHasLevel(0);
+                } else {
+                    // 获取该项目下具体资源的个数
+                    int resourceCnt = resourceExtend.getResourceCnt(projectId, resourceType.getId());
+                    dataVo.setHasLevel(cnt == resourceCnt ? 2 : 1);
+                }
+                resultList.add(dataVo);
+                queryWrapper.clear();
+            }
+        } else {
+            List<ResourceDto> resourceDtoList = resourceExtend.getResourceList(projectId, resourceTypeId);
+            for(ResourceDto resourceDto : resourceDtoList) {
+                MByUDataVo dataVo = new MByUDataVo(resourceDto.getResourceId(), resourceDto.getResourceName());
+                wrapQueryCriteria(queryWrapper, showLevel, controlLevel, projectId, resourceTypeId, resourceDto.getResourceId());
+                queryWrapper.eq("user_id", queryVo.getUserId());
+                int cnt = userResourceMapper.selectCount(queryWrapper);
+                dataVo.setHasLevel(cnt == 0 ? 0 : 2);
+                resultList.add(dataVo);
+                queryWrapper.clear();
+            }
+        }
+        return resultList;
+    }
+
+    private void checkParam(MByUDataQueryVo queryVo) {
+        if(queryVo.getUserId() == null) {
+            throw new SecurityException(ResultCode.USER_ID_CANNOT_BE_NULL);
+        }
+        checkParam(queryVo.getShowLevel(), queryVo.getProjectId(), queryVo.getResourceTypeId());
     }
 
     private void checkParam(AssignToOneUserVo assignToOneUserVo) {
@@ -187,7 +257,7 @@ public class ResourceServiceImpl implements ResourceService {
     //--------------------------资源权限管理（按用户管理）begin--------------------------
 
     @Override
-    public PagingData<ManageByUserVo> getManageByUserPage(ManageByUserQueryVo queryVo) {
+    public PagingData<MByUVo> getManageByUserPage(MByUQueryVo queryVo) {
         QueryWrapper<User> userWrapper = new QueryWrapper<>();
         IPage<User> userPage = new Page<>(queryVo.getPage(), queryVo.getSize());
         // 拼接查询条件
@@ -197,29 +267,29 @@ public class ResourceServiceImpl implements ResourceService {
                 .like(queryVo.getRealName() != null, "real_name", queryVo.getRealName());
         userMapper.selectPage(userPage, userWrapper);
 
-        List<ManageByUserVo> manageByUserVoList = new ArrayList<>();
+        List<MByUVo> mByUVoList = new ArrayList<>();
 
         QueryWrapper<UserResource> userResourceWrapper = new QueryWrapper<>();
         for(User user : userPage.getRecords()) {
-            ManageByUserVo manageByUserVo = CopyBeanUtil.copy(user, ManageByUserVo.class);
+            MByUVo mByUVo = CopyBeanUtil.copy(user, MByUVo.class);
 
             // 计算管理权限资源数
             userResourceWrapper
                     .eq("user_id", user.getId())
                     .eq("control_level", ControlLevelCode.ADMIN.getType());
-            manageByUserVo.setAdminResourceCnt(userResourceMapper.selectCount(userResourceWrapper));
+            mByUVo.setAdminResourceCnt(userResourceMapper.selectCount(userResourceWrapper));
             userResourceWrapper.clear();
 
             // 计算查看权限资源数
             userResourceWrapper
                     .eq("user_id", user.getId())
                     .eq("control_level", ControlLevelCode.VIEW.getType());
-            manageByUserVo.setViewResourceCnt(userResourceMapper.selectCount(userResourceWrapper));
+            mByUVo.setViewResourceCnt(userResourceMapper.selectCount(userResourceWrapper));
             userResourceWrapper.clear();
 
-            manageByUserVoList.add(manageByUserVo);
+            mByUVoList.add(mByUVo);
         }
-        return new PagingData<>(manageByUserVoList, userPage);
+        return new PagingData<>(mByUVoList, userPage);
     }
 
     //--------------------------资源权限管理（按用户管理）end--------------------------
@@ -227,7 +297,7 @@ public class ResourceServiceImpl implements ResourceService {
     //--------------------------资源权限管理（按资源管理）begin--------------------------
 
     @Override
-    public PagingData<ManageByResourceVo> getManageByResourcePage(ManageByResourceQueryVo queryVo) {
+    public PagingData<MByRVo> getManageByResourcePage(MByRQueryVo queryVo) {
         // 检查参数
         checkParam(queryVo);
         if(queryVo.getShowLevel().equals(ShowLevelCode.PROJECT.getType())) {
@@ -242,24 +312,28 @@ public class ResourceServiceImpl implements ResourceService {
         }
     }
 
-    private void checkParam(ManageByResourceQueryVo queryVo) {
-        if(ShowLevelCode.getByType(queryVo.getShowLevel()) == null) {
+    private void checkParam(Integer showLevel, Integer projectId, Integer resourceTypeId) {
+        if(ShowLevelCode.getByType(showLevel) == null) {
             // 请输入有效的展示级别（1 <= showLevel <= 3）
             throw new SecurityException(ResultCode.RESOURCE_INVALID_SHOW_LEVEL);
         }
-        if(queryVo.getShowLevel().equals(ShowLevelCode.RESOURCE_TYPE.getType())) {
+        if(showLevel.equals(ShowLevelCode.RESOURCE_TYPE.getType())) {
             // 资源类别展示级别，表示查找某个项目下所有资源类别
-            if(queryVo.getProjectId() == null) {
+            if(projectId == null) {
                 // 2级展示级别，项目id不可为null
                 throw new SecurityException(ResultCode.RESOURCE_SHOW_LEVEL_ERROR);
             }
-        } else if(queryVo.getShowLevel().equals(ShowLevelCode.RESOURCE.getType())){
+        } else if(showLevel.equals(ShowLevelCode.RESOURCE.getType())){
             // 具体资源展示级别，表示查找该项目下该资源类别对应的资源
-            if(queryVo.getProjectId() == null || queryVo.getResourceTypeId() == null) {
+            if(projectId == null || resourceTypeId == null) {
                 // 3级展示级别，项目id或资源类别id不可为null
                 throw new SecurityException(ResultCode.RESOURCE_SHOW_LEVEL_ERROR_2);
             }
         }
+    }
+
+    private void checkParam(MByRQueryVo queryVo) {
+        checkParam(queryVo.getShowLevel(), queryVo.getProjectId(), queryVo.getResourceTypeId());
     }
 
     /**
@@ -269,8 +343,8 @@ public class ResourceServiceImpl implements ResourceService {
      * @param pagination 分页信息
      * @return PagingData<ManageByResourceVo>
      */
-    private PagingData<ManageByResourceVo> buildPagingData(List<ManageByResourceVo> list, PagingData.Pagination pagination) {
-        PagingData<ManageByResourceVo> pagingData = new PagingData<>();
+    private PagingData<MByRVo> buildPagingData(List<MByRVo> list, PagingData.Pagination pagination) {
+        PagingData<MByRVo> pagingData = new PagingData<>();
         pagingData.setPagination(pagination);
         pagingData.setBizData(list);
         return pagingData;
@@ -311,8 +385,8 @@ public class ResourceServiceImpl implements ResourceService {
      * @param showLevel 展示级别
      * @return PagingData<ManageByResourceVo>
      */
-    private PagingData<ManageByResourceVo> dealProjectLevel(ManageByResourceQueryVo queryVo, int showLevel) {
-        List<ManageByResourceVo> list = new ArrayList<>();
+    private PagingData<MByRVo> dealProjectLevel(MByRQueryVo queryVo, int showLevel) {
+        List<MByRVo> list = new ArrayList<>();
         QueryWrapper<UserResource> queryWrapper = new QueryWrapper<>();
 
         IPage<Project> iPage = new Page<>(queryVo.getPage(), queryVo.getSize());
@@ -324,19 +398,19 @@ public class ResourceServiceImpl implements ResourceService {
         projectMapper.selectPage(iPage, projectWrapper);
 
         for(Project project : iPage.getRecords()) {
-            ManageByResourceVo manageByResourceVo = new ManageByResourceVo();
-            manageByResourceVo.setValue1(project.getProjectCode());
-            manageByResourceVo.setValue2(project.getProjectName());
+            MByRVo mByRVo = new MByRVo();
+            mByRVo.setValue1(project.getProjectCode());
+            mByRVo.setValue2(project.getProjectName());
 
             // 封装获取管理权限用户数条件
             wrapQueryCriteria(queryWrapper, showLevel, ControlLevelCode.ADMIN, project.getId());
-            manageByResourceVo.setAdminUserCnt(userResourceMapper.selectCount(queryWrapper));
+            mByRVo.setAdminUserCnt(userResourceMapper.selectCount(queryWrapper));
 
             // 封装查看权限用户数条件
             wrapQueryCriteria(queryWrapper, showLevel, ControlLevelCode.VIEW, project.getId());
-            manageByResourceVo.setViewUserCnt(userResourceMapper.selectCount(queryWrapper));
+            mByRVo.setViewUserCnt(userResourceMapper.selectCount(queryWrapper));
 
-            list.add(manageByResourceVo);
+            list.add(mByRVo);
         }
         return new PagingData<>(list, iPage);
     }
@@ -347,8 +421,8 @@ public class ResourceServiceImpl implements ResourceService {
      * @param showLevel 展示级别
      * @return PagingData<ManageByResourceVo>
      */
-    private PagingData<ManageByResourceVo> dealResourceTypeLevel(ManageByResourceQueryVo queryVo, int showLevel) {
-        List<ManageByResourceVo> list = new ArrayList<>();
+    private PagingData<MByRVo> dealResourceTypeLevel(MByRQueryVo queryVo, int showLevel) {
+        List<MByRVo> list = new ArrayList<>();
         QueryWrapper<UserResource> queryWrapper = new QueryWrapper<>();
 
         IPage<ResourceType> iPage = new Page<>(queryVo.getPage(), queryVo.getSize());
@@ -362,19 +436,19 @@ public class ResourceServiceImpl implements ResourceService {
         // 获取项目信息
         Project project = projectMapper.selectById(queryVo.getProjectId());
         for(ResourceType resourceType : iPage.getRecords()) {
-            ManageByResourceVo manageByResourceVo = new ManageByResourceVo();
-            manageByResourceVo.setValue1(resourceType.getTypeName());
-            manageByResourceVo.setValue2(project.getProjectName());
+            MByRVo mByRVo = new MByRVo();
+            mByRVo.setValue1(resourceType.getTypeName());
+            mByRVo.setValue2(project.getProjectName());
 
             // 封装获取管理权限用户数条件
             wrapQueryCriteria(queryWrapper, showLevel, ControlLevelCode.ADMIN, project.getId(), resourceType.getId());
-            manageByResourceVo.setAdminUserCnt(userResourceMapper.selectCount(queryWrapper));
+            mByRVo.setAdminUserCnt(userResourceMapper.selectCount(queryWrapper));
 
             // 封装查看权限用户数条件
             wrapQueryCriteria(queryWrapper, showLevel, ControlLevelCode.VIEW, project.getId(), resourceType.getId());
-            manageByResourceVo.setViewUserCnt(userResourceMapper.selectCount(queryWrapper));
+            mByRVo.setViewUserCnt(userResourceMapper.selectCount(queryWrapper));
 
-            list.add(manageByResourceVo);
+            list.add(mByRVo);
         }
         return new PagingData<>(list, iPage);
     }
@@ -385,7 +459,7 @@ public class ResourceServiceImpl implements ResourceService {
      * @param showLevel 展示级别
      * @return PagingData<ManageByResourceVo>
      */
-    private PagingData<ManageByResourceVo> dealResourceLevel(ManageByResourceQueryVo queryVo, int showLevel) {
+    private PagingData<MByRVo> dealResourceLevel(MByRQueryVo queryVo, int showLevel) {
         // 调用扩展接口获取具体资源信息
         PagingData<ResourceDto> page = resourceExtend.getResourcePage(
                 queryVo.getProjectId(),
@@ -394,27 +468,27 @@ public class ResourceServiceImpl implements ResourceService {
                 queryVo.getPage(),
                 queryVo.getSize()
         );
-        List<ManageByResourceVo> list = new ArrayList<>();
+        List<MByRVo> list = new ArrayList<>();
         QueryWrapper<UserResource> queryWrapper = new QueryWrapper<>();
         // 获取资源类别信息
         ResourceType resourceType = resourceTypeMapper.selectById(queryVo.getResourceTypeId());
 
         for(ResourceDto resourceDto : page.getBizData()) {
-            ManageByResourceVo manageByResourceVo = new ManageByResourceVo();
-            manageByResourceVo.setValue1(resourceDto.getResourceName());
-            manageByResourceVo.setValue2(resourceType.getTypeName());
+            MByRVo mByRVo = new MByRVo();
+            mByRVo.setValue1(resourceDto.getResourceName());
+            mByRVo.setValue2(resourceType.getTypeName());
 
             // 封装获取管理权限用户数条件
             wrapQueryCriteria(queryWrapper, showLevel, ControlLevelCode.ADMIN,
                     queryVo.getProjectId(), resourceType.getId(), resourceDto.getResourceId());
-            manageByResourceVo.setAdminUserCnt(userResourceMapper.selectCount(queryWrapper));
+            mByRVo.setAdminUserCnt(userResourceMapper.selectCount(queryWrapper));
 
             // 封装查看权限用户数条件
             wrapQueryCriteria(queryWrapper, showLevel, ControlLevelCode.VIEW,
                     queryVo.getProjectId(), resourceType.getId(), resourceDto.getResourceId());
-            manageByResourceVo.setViewUserCnt(userResourceMapper.selectCount(queryWrapper));
+            mByRVo.setViewUserCnt(userResourceMapper.selectCount(queryWrapper));
 
-            list.add(manageByResourceVo);
+            list.add(mByRVo);
         }
         return buildPagingData(list, page.getPagination());
     }

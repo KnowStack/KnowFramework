@@ -58,7 +58,10 @@ public class DeptServiceImpl implements DeptService {
     public String spliceDeptInfo(Integer deptId) {
         StringBuilder sb = new StringBuilder();
         spliceDeptInfo(null, deptId, sb);
-        return sb.substring(0, sb.length() - 1);
+        if(sb.length() > 0) {
+            return sb.substring(0, sb.length() - 1);
+        }
+        return null;
     }
 
     @Override

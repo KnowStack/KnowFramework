@@ -8,10 +8,12 @@ import lombok.Data;
  * @author cjm
  *
  * 资源权限管理>按用户管理的列表信息
+ *
+ * MByU（ManagerByUser）
  */
 @Data
 @ApiModel(description = "资源权限管理（按用户管理的列表信息）")
-public class ManageByUserVo {
+public class MByUVo {
 
     @ApiModelProperty(value = "用户账号", dataType = "String", required = false)
     private String username;

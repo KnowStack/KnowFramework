@@ -10,6 +10,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.didiglobal.logi.security.common.vo.dept.DeptVo;
 import com.didiglobal.logi.security.common.vo.permission.PermissionVo;
 import com.didiglobal.logi.security.common.vo.role.RoleVo;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -19,6 +20,7 @@ import lombok.Data;
  */
 @Data
 @ApiModel(description = "用户信息")
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class UserVo {
 
     @ApiModelProperty(value = "用户id", dataType = "Integer", required = false)

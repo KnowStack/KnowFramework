@@ -16,7 +16,7 @@ public interface ResourceService {
      * @param queryVo 查询条件
      * @return PagingData<ManageByResourceVo>
      */
-    PagingData<ManageByResourceVo> getManageByResourcePage(ManageByResourceQueryVo queryVo);
+    PagingData<MByRVo> getManageByResourcePage(MByRQueryVo queryVo);
 
     /**
      * 资源权限管理>按用户管理的列表信息
@@ -24,7 +24,7 @@ public interface ResourceService {
      * @param queryVo 查询条件
      * @return PagingData<ManageByUserVo>
      */
-    PagingData<ManageByUserVo> getManageByUserPage(ManageByUserQueryVo queryVo);
+    PagingData<MByUVo> getManageByUserPage(MByUQueryVo queryVo);
 
     /**
      * 分配资源的权限给用户（N资源权限分配给某用户）
@@ -50,5 +50,12 @@ public interface ResourceService {
      * @param resourceTypeId 资源类别id
      * @return List<ResourceVo>
      */
-    List<ResourceVo> getResourceList(Integer projectId, Integer resourceTypeId);
+    List<MByUDataQueryVo> getResourceList(Integer projectId, Integer resourceTypeId);
+
+    /**
+     * 资源权限管理/按用户管理/分配资源/数据列表的信息
+     * @param queryVo 查询条件
+     * @return 数据列表信息
+     */
+    List<MByUDataVo> getManagerByUserDataList(MByUDataQueryVo queryVo);
 }

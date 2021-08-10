@@ -30,4 +30,12 @@ public interface ResourceExtend {
      * @return 资源信息List
      */
     List<ResourceDto> getResourceList(Integer projectId, Integer resourceTypeId);
+
+    /**
+     * 获取资源个数，资源id指的是该资源所在服务对该资源的标识
+     * @param projectId 项目id（可为null）
+     * @param resourceTypeId 资源类型id（可为null，不为null则projectId必不为null）
+     * @return 资源信息List
+     */
+    int getResourceCnt(Integer projectId, Integer resourceTypeId);
 }
