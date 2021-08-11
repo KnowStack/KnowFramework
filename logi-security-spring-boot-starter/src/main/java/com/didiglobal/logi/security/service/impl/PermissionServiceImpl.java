@@ -43,7 +43,9 @@ public class PermissionServiceImpl implements PermissionService {
         parentMap.put(0, root);
         for(Permission permission : permissionList) {
             PermissionVo permissionVo = CopyBeanUtil.copy(permission, PermissionVo.class);
-            permissionVo.setChildList(new ArrayList<>());
+            if(!permission.getIsLeaf()) {
+                permissionVo.setChildList(new ArrayList<>());
+            }
             PermissionVo parent = parentMap.get(permission.getParentId());
             if (parent == null) {
                 // 如果parent为null，则需要查看下数据库权限表的数据是否有误

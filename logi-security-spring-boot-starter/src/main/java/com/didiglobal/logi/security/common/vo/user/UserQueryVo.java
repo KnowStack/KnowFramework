@@ -36,7 +36,7 @@ public class UserQueryVo extends PageParamVo {
     private String realName;
 
     /**
-     * 根据部门id查询（建议不要根据部门名模糊查询，因为没有展示部门列表的界面，不清楚有哪些部门）
+     * 根据部门id查询
      */
     @ApiModelProperty(value = "根据部门id查询", dataType = "Integer", required = false)
     private Integer deptId;

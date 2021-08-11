@@ -21,8 +21,8 @@ public class MByUVo {
     @ApiModelProperty(value = "真实姓名", dataType = "String", required = false)
     private String realName;
 
-    @ApiModelProperty(value = "部门名", dataType = "String", required = false)
-    private String deptName;
+    @ApiModelProperty(value = "部门信息", dataType = "String", required = false)
+    private String deptInfo;
 
     @ApiModelProperty(value = "管理权限资源数", dataType = "Integer", required = false)
     private Integer adminResourceCnt;

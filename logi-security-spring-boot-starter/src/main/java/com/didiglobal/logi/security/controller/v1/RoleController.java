@@ -71,9 +71,9 @@ public class RoleController {
     }
 
     @GetMapping("/list/{roleName}")
-    @ApiOperation(value = "根据角色名模糊查询", notes = "根据角色名模糊查询")
+    @ApiOperation(value = "根据角色名查询", notes = "根据角色名模糊查询")
     @ApiImplicitParam(name = "roleName", value = "角色名", dataType = "String", required = true)
-    public Result<List<RoleVo>> list(String roleName) {
+    public Result<List<RoleVo>> list(@PathVariable String roleName) {
         List<RoleVo> roleVoList = roleService.listByRoleName(roleName);
         return Result.success(roleVoList);
     }

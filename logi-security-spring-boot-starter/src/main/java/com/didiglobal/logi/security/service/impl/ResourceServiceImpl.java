@@ -16,6 +16,7 @@ import com.didiglobal.logi.security.mapper.ProjectMapper;
 import com.didiglobal.logi.security.mapper.ResourceTypeMapper;
 import com.didiglobal.logi.security.mapper.UserMapper;
 import com.didiglobal.logi.security.mapper.UserResourceMapper;
+import com.didiglobal.logi.security.service.DeptService;
 import com.didiglobal.logi.security.service.ResourceService;
 import com.didiglobal.logi.security.util.CopyBeanUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +32,7 @@ import java.util.List;
 @Service
 public class ResourceServiceImpl implements ResourceService {
 
+    @Autowired
     private ResourceExtend resourceExtend;
 
     @Autowired
@@ -44,6 +46,9 @@ public class ResourceServiceImpl implements ResourceService {
 
     @Autowired
     private UserResourceMapper userResourceMapper;
+
+    @Autowired
+    private DeptService deptService;
 
     @Override
     public List<ResourceTypeVo> getResourceTypeList() {
@@ -66,8 +71,9 @@ public class ResourceServiceImpl implements ResourceService {
         // 获取权限级别
         ControlLevelCode controlLevel = ControlLevelCode.getByType(queryVo.getControlLevel());
 
-        if(projectId == null) {
-            List<Project> projectList = projectMapper.selectList(new QueryWrapper<Project>().select("id"));
+        if(ShowLevelCode.PROJECT.getType().equals(showLevel)) {
+            QueryWrapper<Project> projectWrapper = new QueryWrapper<>();
+            List<Project> projectList = projectMapper.selectList(projectWrapper.select("id", "project_name"));
             for(Project project : projectList) {
                 MByUDataVo dataVo = new MByUDataVo(project.getId(), project.getProjectName());
                 wrapQueryCriteria(queryWrapper, showLevel, controlLevel, project.getId());
@@ -83,7 +89,7 @@ public class ResourceServiceImpl implements ResourceService {
                 resultList.add(dataVo);
                 queryWrapper.clear();
             }
-        } else if(resourceTypeId == null) {
+        } else if(ShowLevelCode.RESOURCE_TYPE.getType().equals(showLevel)) {
             List<ResourceType> resourceTypeList = resourceTypeMapper.selectList(null);
             for(ResourceType resourceType : resourceTypeList) {
                 MByUDataVo dataVo = new MByUDataVo(resourceType.getId(), resourceType.getTypeName());
@@ -173,7 +179,9 @@ public class ResourceServiceImpl implements ResourceService {
             for(ResourceDto resourceDto : resourceDtoList) {
                 UserResource userResource = new UserResource(resourceDto);
                 userResource.setUserId(userId);
+                userResource.setControlLevel(assignToOneUserVo.getControlLevel());
                 userResourceList.add(userResource);
+
             }
         }
         // 插入new关联信息
@@ -250,9 +258,11 @@ public class ResourceServiceImpl implements ResourceService {
     public PagingData<MByUVo> getManageByUserPage(MByUQueryVo queryVo) {
         QueryWrapper<User> userWrapper = new QueryWrapper<>();
         IPage<User> userPage = new Page<>(queryVo.getPage(), queryVo.getSize());
+
         // 拼接查询条件
+        List<Integer> deptIdList = deptService.getChildDeptIdListByParentId(queryVo.getDeptId());
         userWrapper
-                .eq(queryVo.getDeptId() != null, "dept_id", queryVo.getDeptId())
+                .in(queryVo.getDeptId() != null, "dept_id", deptIdList)
                 .like(queryVo.getUsername() != null, "username", queryVo.getUsername())
                 .like(queryVo.getRealName() != null, "real_name", queryVo.getRealName());
         userMapper.selectPage(userPage, userWrapper);
@@ -262,7 +272,8 @@ public class ResourceServiceImpl implements ResourceService {
         QueryWrapper<UserResource> userResourceWrapper = new QueryWrapper<>();
         for(User user : userPage.getRecords()) {
             MByUVo mByUVo = CopyBeanUtil.copy(user, MByUVo.class);
-
+            // 设置部门信息
+            mByUVo.setDeptInfo(deptService.spliceDeptInfo(user.getDeptId()));
             // 计算管理权限资源数
             userResourceWrapper
                     .eq("user_id", user.getId())
@@ -381,7 +392,7 @@ public class ResourceServiceImpl implements ResourceService {
 
         IPage<Project> iPage = new Page<>(queryVo.getPage(), queryVo.getSize());
         QueryWrapper<Project> projectWrapper = new QueryWrapper<>();
-        if(StringUtils.isEmpty(queryVo.getName())) {
+        if(!StringUtils.isEmpty(queryVo.getName())) {
             // 如果有名字查询条件
             projectWrapper.like("project_name", queryVo.getName());
         }
@@ -417,7 +428,7 @@ public class ResourceServiceImpl implements ResourceService {
 
         IPage<ResourceType> iPage = new Page<>(queryVo.getPage(), queryVo.getSize());
         QueryWrapper<ResourceType> resourceTypeWrapper = new QueryWrapper<>();
-        if(StringUtils.isEmpty(queryVo.getName())) {
+        if(!StringUtils.isEmpty(queryVo.getName())) {
             // 如果有名字查询条件
             resourceTypeWrapper.like("type_name", queryVo.getName());
         }

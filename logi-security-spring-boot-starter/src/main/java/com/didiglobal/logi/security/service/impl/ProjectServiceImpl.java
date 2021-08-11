@@ -94,8 +94,9 @@ public class ProjectServiceImpl implements ProjectService {
             projectWrapper.in("id", projectIdList);
         }
 
+        List<Integer> deptIdList = deptService.getChildDeptIdListByParentId(queryVo.getDeptId());
         projectWrapper
-                .eq(queryVo.getDeptId() != null, "dept_id", queryVo.getDeptId())
+                .in(queryVo.getDeptId() != null, "dept_id", deptIdList)
                 .eq(queryVo.getProjectCode() != null, "project_code", queryVo.getProjectCode())
                 .eq(queryVo.getIsRunning() != null, "is_running", queryVo.getIsRunning())
                 .like(queryVo.getProjectName() != null, "project_name", queryVo.getProjectName());
@@ -171,7 +172,7 @@ public class ProjectServiceImpl implements ProjectService {
      */
     private void checkProjectId(Integer projectId) {
         if(projectId == null) {
-            throw new SecurityException(ResultCode.PARAM_ID_IS_BLANK);
+            throw new SecurityException(ResultCode.PROJECT_ID_CANNOT_BE_NULL);
         }
         if(projectMapper.selectById(projectId) == null) {
             throw new SecurityException(ResultCode.PROJECT_NOT_EXIST);

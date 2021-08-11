@@ -1,5 +1,6 @@
 package com.didiglobal.logi.security.common.vo.oplog;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -53,6 +54,7 @@ public class OplogVo {
     /**
      * 详情
      */
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     @ApiModelProperty(value = "操作日志详情", dataType = "String", required = false)
     private String detail;
 

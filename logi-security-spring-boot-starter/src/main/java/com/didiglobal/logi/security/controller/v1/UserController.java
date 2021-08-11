@@ -4,6 +4,8 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.didiglobal.logi.security.common.PagingData;
 import com.didiglobal.logi.security.common.PagingResult;
 import com.didiglobal.logi.security.common.Result;
+import com.didiglobal.logi.security.common.entity.BaseEntity;
+import com.didiglobal.logi.security.common.entity.User;
 import com.didiglobal.logi.security.common.vo.user.UserQueryVo;
 import com.didiglobal.logi.security.common.vo.user.UserVo;
 import com.didiglobal.logi.security.service.UserService;
@@ -13,6 +15,7 @@ import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -37,7 +40,7 @@ public class UserController {
 
     @PostMapping("/page")
     @ApiOperation(value = "查询用户列表", notes = "分页和条件查询")
-    public PagingResult<UserVo> page(UserQueryVo queryVo) {
+    public PagingResult<UserVo> page(@RequestBody UserQueryVo queryVo) {
         PagingData<UserVo> pageUser = userService.getUserPage(queryVo);
         return PagingResult.success(pageUser);
     }

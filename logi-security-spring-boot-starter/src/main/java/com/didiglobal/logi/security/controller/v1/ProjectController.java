@@ -64,14 +64,14 @@ public class ProjectController {
     }
 
     @PostMapping("/page")
-    @ApiOperation(value = "分页查询项目列表", notes = "分页和条件查询")
+    @ApiOperation(value = "查询项目列表", notes = "分页和条件查询")
     public PagingResult<ProjectVo> page(@RequestBody ProjectQueryVo queryVo) {
         PagingData<ProjectVo> pageProject = projectService.getProjectPage(queryVo);
         return PagingResult.success(pageProject);
     }
 
     @GetMapping("/list")
-    @ApiOperation(value = "获取项目list", notes = "获取全部项目（只返回id、项目名）")
+    @ApiOperation(value = "获取所有项目概况信息", notes = "获取全部项目（只返回id、项目名）")
     public Result<List<ProjectVo>> list() {
         List<ProjectVo> projectVo = projectService.getProjectList();
         return Result.success(projectVo);

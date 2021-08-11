@@ -64,6 +64,10 @@ public class RoleServiceImpl implements RoleService {
         RoleVo roleVo = CopyBeanUtil.copy(role, RoleVo.class);
         roleVo.setPermissionVo(permissionVo);
         roleVo.setCreateTime(role.getCreateTime().getTime());
+        // 设置授权用户数
+        QueryWrapper<UserRole> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("role_id", id);
+        roleVo.setAuthedUserCnt(userRoleMapper.selectCount(queryWrapper));
         return roleVo;
     }
 

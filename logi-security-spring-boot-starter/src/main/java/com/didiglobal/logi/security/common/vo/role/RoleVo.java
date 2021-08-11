@@ -3,6 +3,7 @@ package com.didiglobal.logi.security.common.vo.role;
 import java.sql.Timestamp;
 
 import com.didiglobal.logi.security.common.vo.permission.PermissionVo;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -12,6 +13,7 @@ import lombok.Data;
  */
 @Data
 @ApiModel(description = "角色信息")
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class RoleVo {
 
     @ApiModelProperty(value = "角色id", dataType = "Integer", required = false)
@@ -39,7 +41,7 @@ public class RoleVo {
      * 授权用户数（拥有该角色的用户数）
      */
     @ApiModelProperty(value = "授权用户数（拥有该角色的用户数）", dataType = "String", required = false)
-    private int authedUserCnt;
+    private Integer authedUserCnt;
 
     /**
      * 最后修改者（用户账号）

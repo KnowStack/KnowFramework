@@ -47,9 +47,6 @@ public class UserServiceImpl implements UserService {
     private UserRoleMapper userRoleMapper;
 
     @Autowired
-    private DeptMapper deptMapper;
-
-    @Autowired
     private PermissionService permissionService;
 
     @Autowired
@@ -79,8 +76,9 @@ public class UserServiceImpl implements UserService {
             userWrapper.in("id", userIdList);
         }
 
+        List<Integer> deptIdList = deptService.getChildDeptIdListByParentId(queryVo.getDeptId());
         userWrapper
-                .eq(queryVo.getDeptId() != null, "dept_id", queryVo.getDeptId())
+                .in(queryVo.getDeptId() != null, "dept_id", deptIdList)
                 .like(queryVo.getUsername() != null, "username", queryVo.getUsername())
                 .like(queryVo.getRealName() != null, "real_name", queryVo.getRealName());
 
@@ -135,9 +133,12 @@ public class UserServiceImpl implements UserService {
         QueryWrapper<RolePermission> rolePermissionWrapper = new QueryWrapper<>();
 
         List<RoleVo> roleVoList = new ArrayList<>();
+        QueryWrapper<Role> roleWrapper = new QueryWrapper<>();
         for (Object roleId : roleIdList) {
             // 获取角色信息
-            Role role = roleMapper.selectById((Integer) roleId);
+            roleWrapper.clear();
+            roleWrapper.select("id", "role_name").eq("id", roleId);
+            Role role = roleMapper.selectOne(roleWrapper);
             roleVoList.add(CopyBeanUtil.copy(role, RoleVo.class));
 
             // 查询该角色拥有的权限idList
