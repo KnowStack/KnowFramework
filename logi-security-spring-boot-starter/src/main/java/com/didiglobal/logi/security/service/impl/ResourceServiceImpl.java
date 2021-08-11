@@ -262,35 +262,35 @@ public class ResourceServiceImpl implements ResourceService {
         // 拼接查询条件
         List<Integer> deptIdList = deptService.getChildDeptIdListByParentId(queryVo.getDeptId());
         userWrapper
-                .in(queryVo.getDeptId() != null, "dept_id", deptIdList)
                 .like(queryVo.getUsername() != null, "username", queryVo.getUsername())
-                .like(queryVo.getRealName() != null, "real_name", queryVo.getRealName());
+                .like(queryVo.getRealName() != null, "real_name", queryVo.getRealName())
+                .in(queryVo.getDeptId() != null, "dept_id", deptIdList);
         userMapper.selectPage(userPage, userWrapper);
 
-        List<MByUVo> mByUVoList = new ArrayList<>();
+        List<MByUVo> list = new ArrayList<>();
 
         QueryWrapper<UserResource> userResourceWrapper = new QueryWrapper<>();
         for(User user : userPage.getRecords()) {
-            MByUVo mByUVo = CopyBeanUtil.copy(user, MByUVo.class);
+            MByUVo dataVo = CopyBeanUtil.copy(user, MByUVo.class);
             // 设置部门信息
-            mByUVo.setDeptInfo(deptService.spliceDeptInfo(user.getDeptId()));
+            dataVo.setDeptInfo(deptService.spliceDeptInfo(user.getDeptId()));
             // 计算管理权限资源数
             userResourceWrapper
                     .eq("user_id", user.getId())
                     .eq("control_level", ControlLevelCode.ADMIN.getType());
-            mByUVo.setAdminResourceCnt(userResourceMapper.selectCount(userResourceWrapper));
+            dataVo.setAdminResourceCnt(userResourceMapper.selectCount(userResourceWrapper));
             userResourceWrapper.clear();
 
             // 计算查看权限资源数
             userResourceWrapper
                     .eq("user_id", user.getId())
                     .eq("control_level", ControlLevelCode.VIEW.getType());
-            mByUVo.setViewResourceCnt(userResourceMapper.selectCount(userResourceWrapper));
+            dataVo.setViewResourceCnt(userResourceMapper.selectCount(userResourceWrapper));
             userResourceWrapper.clear();
 
-            mByUVoList.add(mByUVo);
+            list.add(dataVo);
         }
-        return new PagingData<>(mByUVoList, userPage);
+        return new PagingData<>(list, userPage);
     }
 
     //--------------------------资源权限管理（按用户管理）end--------------------------
