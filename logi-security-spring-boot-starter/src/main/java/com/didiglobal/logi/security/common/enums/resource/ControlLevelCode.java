@@ -36,7 +36,6 @@ public enum ControlLevelCode {
                 return controlLevelCode;
             }
         }
-        // 默认
-        return controlLevelCodes[1];
+        return null;
     }
 }

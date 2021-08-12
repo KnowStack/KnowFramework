@@ -15,6 +15,7 @@ import com.didiglobal.logi.security.mapper.ResourceTypeMapper;
 import com.didiglobal.logi.security.util.CopyBeanUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,9 +44,10 @@ public class ResourceExtendImpl implements ResourceExtend {
         queryWrapper
                 .eq(projectId != null, "project_id", projectId)
                 .eq(resourceTypeId != null, "resource_type_id", resourceTypeId)
-                .like(resourceName != null, "resourceName", resourceName);
+                .like(!StringUtils.isEmpty(resourceName), "resource_name", resourceName);
         projectResourceMapper.selectPage(iPage, queryWrapper);
-        return new PagingData<>(iPage);
+        List<ResourceDto> resourceDtoList = CopyBeanUtil.copyList(iPage.getRecords(), ResourceDto.class);
+        return new PagingData<>(resourceDtoList, iPage);
     }
 
     @Override

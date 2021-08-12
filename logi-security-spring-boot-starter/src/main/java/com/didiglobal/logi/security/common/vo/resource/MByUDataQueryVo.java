@@ -43,4 +43,7 @@ public class MByUDataQueryVo {
 
     @ApiModelProperty(value = "资源管理级别：1（查看权限）、2（管理权限）", dataType = "Integer", required = true)
     private int controlLevel = ControlLevelCode.VIEW.getType();
+
+    @ApiModelProperty(value = "是否是批量操作（默认false）", dataType = "Boolean", required = false)
+    private boolean isBatch = false;
 }

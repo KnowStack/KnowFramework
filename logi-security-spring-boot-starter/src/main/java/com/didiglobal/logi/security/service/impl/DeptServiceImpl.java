@@ -40,7 +40,9 @@ public class DeptServiceImpl implements DeptService {
         parentMap.put(0, root);
         for(Dept dept : deptList) {
             DeptVo deptVo = CopyBeanUtil.copy(dept, DeptVo.class);
-            deptVo.setChildList(new ArrayList<>());
+            if(!deptVo.getIsLeaf()) {
+                deptVo.setChildList(new ArrayList<>());
+            }
             DeptVo parent = parentMap.get(dept.getParentId());
             if (parent == null) {
                 // 如果parent为null，则需要查看下数据库部门表的数据是否有误

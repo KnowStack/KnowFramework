@@ -35,4 +35,5 @@ public class ResourceDto {
 
     @Tolerate
     public ResourceDto() {}
+
 }

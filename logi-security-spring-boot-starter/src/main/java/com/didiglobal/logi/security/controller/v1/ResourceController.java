@@ -39,6 +39,13 @@ public class ResourceController {
         return Result.success(resultList);
     }
 
+    @PostMapping("/mbr/list")
+    @ApiOperation(value = "资源权限管理/按资源管理/分配用户/数据列表", notes = "获取用户list")
+    public Result<List<MByRDataVo>> list(@RequestBody MByRDataQueryVo queryVo) {
+        List<MByRDataVo> resultList = resourceService.getManagerByResourceDataList(queryVo);
+        return Result.success(resultList);
+    }
+
     @PostMapping("/mbr/page")
     @ApiOperation(value = "资源权限管理/按资源管理/列表信息", notes = "按资源管理的列表信息，mbr（ManageByResource）")
     public PagingResult<MByRVo> page(@RequestBody MByRQueryVo queryVo) {
@@ -66,4 +73,15 @@ public class ResourceController {
         resourceService.assignResourcePermission(assignToOneUserVo);
         return Result.success();
     }
+
+    @PostMapping("/assign/batch")
+    @ApiOperation(
+            value = "资源权限管理/批量分配用户和批量分配资源",
+            notes = "批量分配用户：分配之前先删除N资源先前已分配的用户、批量分配资源：分配之前先删除N用户已拥有的资源权限"
+    )
+    public Result<String> assign(@RequestBody BatchAssignVo assignVo) {
+        resourceService.batchAssignResourcePermission(assignVo);
+        return Result.success();
+    }
+
 }

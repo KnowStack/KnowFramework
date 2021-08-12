@@ -1,5 +1,6 @@
 package com.didiglobal.logi.security.interceptor;
 
+import com.didiglobal.logi.security.util.NetworkUtil;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
@@ -12,7 +13,7 @@ public class LogiSecurityInterceptor implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
-        // System.out.println("--preHandle--");
+        System.out.println(request.getRequestURL());
         return true;
     }
 

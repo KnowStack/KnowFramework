@@ -81,11 +81,15 @@ public enum ResultCode implements CodeMsg {
     DEPT_DATA_ERROR(9001, "获取部门数据异常"),
 
     /* 资源权限管理错误 */
-    RESOURCE_ASSIGN_ERROR(10001, "资源权限分配异常，按资源管理，分配用户（具体资源id不为null，则资源类别id不可为null）"),
-    RESOURCE_ASSIGN_ERROR_2(10002, "资源权限分配异常，按用户管理，分配资源（资源类别id不为null，则项目id不可为null）"),
+    // 按资源管理/分配用户
+    RESOURCE_ASSIGN_ERROR(10001, "资源权限分配异常，具体资源id不为null，则资源类别id不可为null"),
+    // 按用户管理/分配资源 || 按用户管理/批量分配 || 按资源管理/批量分配
+    RESOURCE_ASSIGN_ERROR_2(10002, "资源权限分配异常，资源类别id不为null，则项目id不可为null"),
     RESOURCE_INVALID_SHOW_LEVEL(10003, "请输入有效的展示级别（1 <= showLevel <= 3）"),
-    RESOURCE_SHOW_LEVEL_ERROR(10004, "2级展示级别，项目id不可为null"),
-    RESOURCE_SHOW_LEVEL_ERROR_2(10005, "3级展示级别，项目id或资源类别id不可为null")
+    RESOURCE_SHOW_LEVEL_ERROR(10004, "2级展示级别，项目id不可为空"),
+    RESOURCE_SHOW_LEVEL_ERROR_2(10005, "3级展示级别，项目id或资源类别id不可为null"),
+    RESOURCE_ASSIGN_BATCH_FLAG_CANNOT_BE_NULL(10006, "资源权限批量分配的标识不可为空"),
+    RESOURCE_INVALID_CONTROL_LEVEL(10007, "请输入有效的资源权限控制级别（0 <= controlLevel <= 2）")
     ;
 
     private final Integer code;

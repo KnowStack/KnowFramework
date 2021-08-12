@@ -33,7 +33,7 @@ public class ResourceTest extends BaseTest  {
 
         for(Project project : projectList) {
             for(ResourceType resourceType : resourceTypeList) {
-                for(int i = 0; i < new Random().nextInt(20) + 1; i++) {
+                for(int i = 0; i < new Random().nextInt(20) + 50; i++) {
                     ProjectResource projectResource = new ProjectResource();
                     projectResource.setProjectId(project.getId());
                     projectResource.setResourceTypeId(resourceType.getId());
@@ -43,14 +43,6 @@ public class ResourceTest extends BaseTest  {
                 }
             }
         }
-        final int[] a = {3};
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                a[0] = 2;
-                System.out.println(a[0]);
-            }
-        }).start();
         return list;
     }
 

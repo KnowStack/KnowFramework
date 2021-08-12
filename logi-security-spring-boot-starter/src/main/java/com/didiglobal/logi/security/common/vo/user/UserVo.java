@@ -1,13 +1,7 @@
 package com.didiglobal.logi.security.common.vo.user;
 
-import java.sql.Timestamp;
-import java.util.ArrayList;
 import java.util.List;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
-import com.didiglobal.logi.security.common.vo.dept.DeptVo;
 import com.didiglobal.logi.security.common.vo.permission.PermissionVo;
 import com.didiglobal.logi.security.common.vo.role.RoleVo;
 import com.fasterxml.jackson.annotation.JsonInclude;

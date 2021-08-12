@@ -10,16 +10,16 @@ import java.util.List;
 /**
  * @author cjm
  *
- * 资源权限分配，分配资源
- *
- * N资源权限分配给某用户
+ * 资源权限管理
+ * 按用户管理：批量分配用户
+ * 按资源管理：批量分配资源
  */
 @Data
-@ApiModel(description = "资源权限分配信息，分配资源（N项目、某项目下N资源类别、某项目下某资源类别下N具体资源权限->分配给某用户）")
-public class AssignToOneUserVo {
+@ApiModel(description = "资源权限管理，批量分配用户和批量分配资源")
+public class BatchAssignVo {
 
-    @ApiModelProperty(value = "用户id", dataType = "Integer", required = true)
-    private Integer userId;
+    @ApiModelProperty(value = "用户idList", dataType = "Integer", required = true)
+    private List<Integer> userIdList;
 
     @ApiModelProperty(value = "项目id", dataType = "Integer", required = false)
     private Integer projectId;
@@ -43,4 +43,11 @@ public class AssignToOneUserVo {
     @ApiModelProperty(value = "资源管理级别：0（不具备任何权限）、1（默认，查看权限）、2（管理权限）", dataType = "Integer", required = false)
     private int controlLevel = ControlLevelCode.VIEW.getType();
 
+    /**
+     * 分配标记
+     * true（按资源管理下的批量分配用户）
+     * false（按用户管理下的批量分配资源）
+     */
+    @ApiModelProperty(value = "分配标记：true（按资源管理下的批量分配用户）、false（按用户管理下的批量分配资源）", dataType = "Boolean", required = true)
+    private Boolean assignFlag;
 }
