@@ -4,10 +4,8 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.didiglobal.logi.security.common.PagingData;
 import com.didiglobal.logi.security.common.PagingResult;
 import com.didiglobal.logi.security.common.Result;
-import com.didiglobal.logi.security.common.vo.role.RoleAssignVo;
-import com.didiglobal.logi.security.common.vo.role.RoleQueryVo;
-import com.didiglobal.logi.security.common.vo.role.RoleSaveVo;
-import com.didiglobal.logi.security.common.vo.role.RoleVo;
+import com.didiglobal.logi.security.common.vo.role.*;
+import com.didiglobal.logi.security.common.vo.user.UserVo;
 import com.didiglobal.logi.security.service.RoleService;
 import io.swagger.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -70,11 +68,15 @@ public class RoleController {
         return Result.success();
     }
 
-    @GetMapping("/list/{roleName}")
-    @ApiOperation(value = "根据角色名查询", notes = "根据角色名模糊查询")
-    @ApiImplicitParam(name = "roleName", value = "角色名", dataType = "String", required = true)
-    public Result<List<RoleVo>> list(@PathVariable String roleName) {
-        List<RoleVo> roleVoList = roleService.listByRoleName(roleName);
-        return Result.success(roleVoList);
+    @GetMapping("/assign/list")
+    @ApiOperation(value = "角色管理/分配用户/列表", notes = "根据角色id和用户实名或账户名模糊查询")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "roleId", value = "角色id", dataType = "int", required = true),
+            @ApiImplicitParam(name = "name", value = "用户实名或账户名", dataType = "String", required = false),
+    })
+    public Result<List<AssignDataVo>> list(@RequestParam(value = "roleId", required = true) Integer roleId,
+                                           @RequestParam(value = "name", required = false) String name) {
+        List<AssignDataVo> assignDataVoList = roleService.getAssignDataByRoleId(roleId, name);
+        return Result.success(assignDataVoList);
     }
 }

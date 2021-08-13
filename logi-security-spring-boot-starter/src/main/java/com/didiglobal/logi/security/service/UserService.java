@@ -2,6 +2,7 @@ package com.didiglobal.logi.security.service;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.didiglobal.logi.security.common.PagingData;
+import com.didiglobal.logi.security.common.vo.role.AssignDataVo;
 import com.didiglobal.logi.security.common.vo.user.UserQueryVo;
 import com.didiglobal.logi.security.common.vo.user.UserVo;
 
@@ -33,9 +34,10 @@ public interface UserService {
     List<UserVo> getListByDeptId(Integer deptId);
 
     /**
-     * 会分别以账户名和实名去模糊查询，返回两者的并集
-     * @param name 账户名或实名
-     * @return List<UserVo>
+     * 根据用户id和roleName获取角色list
+     * @param userId 用户id
+     * @param roleName 角色名
+     * @return List<AssignDataVo>
      */
-    List<UserVo> getUserByUsernameOrRealName(String name);
+    List<AssignDataVo> getAssignDataByUserId(Integer userId, String roleName);
 }

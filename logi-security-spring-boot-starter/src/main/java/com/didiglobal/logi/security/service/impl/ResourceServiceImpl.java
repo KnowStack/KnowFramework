@@ -243,8 +243,8 @@ public class ResourceServiceImpl implements ResourceService {
 
     private List<UserResource> getUserResourceList(Integer projectId, Integer resourceTypeId,
                                                    List<Integer> idList, List<Integer> userIdList, int controlLevel) {
-        List<Object> projectIdList = null;
-        List<Object> resourceTypeIdList = null;
+        List<Object> projectIdList;
+        List<Object> resourceTypeIdList;
         List<Object> resourceIdList = null;
         QueryWrapper<Project> projectWrapper = new QueryWrapper<>();
         projectWrapper.select("id");
@@ -595,6 +595,7 @@ public class ResourceServiceImpl implements ResourceService {
 
         for(Project project : iPage.getRecords()) {
             MByRVo data = new MByRVo();
+            data.otherAttribute().put("projectId", project.getId());
             data.otherAttribute().put("projectCode", project.getProjectCode());
             data.otherAttribute().put("projectName", project.getProjectName());
 
@@ -633,6 +634,8 @@ public class ResourceServiceImpl implements ResourceService {
         Project project = projectMapper.selectById(queryVo.getProjectId());
         for(ResourceType resourceType : iPage.getRecords()) {
             MByRVo data = new MByRVo();
+            data.otherAttribute().put("resourceTypeId", resourceType.getId());
+            data.otherAttribute().put("projectId", queryVo.getProjectId());
             data.otherAttribute().put("resourceTypeName", resourceType.getTypeName());
             data.otherAttribute().put("projectName", project.getProjectName());
 
@@ -673,6 +676,10 @@ public class ResourceServiceImpl implements ResourceService {
 
         for(ResourceDto resourceDto : page.getBizData()) {
             MByRVo data = new MByRVo();
+
+            data.otherAttribute().put("resourceId", resourceDto.getResourceId());
+            data.otherAttribute().put("resourceTypeId", queryVo.getResourceTypeId());
+            data.otherAttribute().put("projectId", queryVo.getProjectId());
             data.otherAttribute().put("resourceName", resourceDto.getResourceName());
             data.otherAttribute().put("resourceTypeName", resourceType.getTypeName());
 

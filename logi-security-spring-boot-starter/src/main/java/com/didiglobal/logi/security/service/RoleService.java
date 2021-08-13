@@ -4,10 +4,8 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.didiglobal.logi.security.common.PagingData;
 import com.didiglobal.logi.security.common.entity.Permission;
 import com.didiglobal.logi.security.common.vo.permission.PermissionVo;
-import com.didiglobal.logi.security.common.vo.role.RoleAssignVo;
-import com.didiglobal.logi.security.common.vo.role.RoleQueryVo;
-import com.didiglobal.logi.security.common.vo.role.RoleSaveVo;
-import com.didiglobal.logi.security.common.vo.role.RoleVo;
+import com.didiglobal.logi.security.common.vo.role.*;
+import com.didiglobal.logi.security.common.vo.user.UserVo;
 
 import java.util.List;
 import java.util.Set;
@@ -57,9 +55,10 @@ public interface RoleService {
     void assignRoles(RoleAssignVo roleAssignVo);
 
     /**
-     * 根据角色名模糊查询
-     * @param roleName 角色名
-     * @return 角色list
+     * 根据角色id和name获取用户list
+     * @param roleId 角色id
+     * @param name 用户实名或账户名
+     * @return List<AssignDataVo>
      */
-    List<RoleVo> listByRoleName(String roleName);
+    List<AssignDataVo> getAssignDataByRoleId(Integer roleId, String name);
 }

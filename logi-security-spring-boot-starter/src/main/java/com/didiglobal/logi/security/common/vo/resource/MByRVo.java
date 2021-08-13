@@ -35,16 +35,17 @@ public class MByRVo {
     private Integer viewUserCnt;
 
     /**
-     * 附加属性（两个key-value），key属性名，value属性值
+     * 附加属性（key-value），key属性名，value属性值
      * key的解释：
      * key1：列表字段1（如果是全部项目级别：项目ID、如果是具体项目级别：资源类型、如果是资源类别级别：资源名称）
      * key2：列表字段2（如果是全部项目级别：项目名称、如果是具体项目级别：归属项目、如果是资源类别级别：资源类型）
+     * key3：id（项目id、资源类别id、具体资源id）
      */
     @JsonIgnore
-    private Map<String, String> otherAttribute = new HashMap<>();
+    private Map<String, Object> otherAttribute = new HashMap<>();
 
     @JsonAnyGetter
-    public Map<String, String> otherAttribute() {
+    public Map<String, Object> otherAttribute() {
         return otherAttribute;
     }
 }

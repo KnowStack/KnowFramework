@@ -8,11 +8,9 @@ import com.didiglobal.logi.security.common.dto.MessageDto;
 import com.didiglobal.logi.security.common.entity.*;
 import com.didiglobal.logi.security.common.enums.message.MessageCode;
 import com.didiglobal.logi.security.common.vo.permission.PermissionVo;
-import com.didiglobal.logi.security.common.vo.role.RoleAssignVo;
-import com.didiglobal.logi.security.common.vo.role.RoleQueryVo;
-import com.didiglobal.logi.security.common.vo.role.RoleSaveVo;
-import com.didiglobal.logi.security.common.vo.role.RoleVo;
+import com.didiglobal.logi.security.common.vo.role.*;
 import com.didiglobal.logi.security.common.enums.ResultCode;
+import com.didiglobal.logi.security.common.vo.user.UserVo;
 import com.didiglobal.logi.security.exception.SecurityException;
 import com.didiglobal.logi.security.extend.MessageExtend;
 import com.didiglobal.logi.security.mapper.*;
@@ -205,14 +203,35 @@ public class RoleServiceImpl implements RoleService {
     }
 
     @Override
-    public List<RoleVo> listByRoleName(String roleName) {
-        if(StringUtils.isEmpty(roleName)) {
-            return new ArrayList<>();
+    public List<AssignDataVo> getAssignDataByRoleId(Integer roleId, String name) {
+        if(roleId == null) {
+            throw new SecurityException(ResultCode.ROLE_ID_CANNOT_BE_NULL);
         }
-        QueryWrapper<Role> queryWrapper = new QueryWrapper<>();
-        queryWrapper.select("id", "role_name").like("role_name", roleName);
-        List<Role> roleList = roleMapper.selectList(queryWrapper);
-        return CopyBeanUtil.copyList(roleList, RoleVo.class);
+        // 查询所有的用户，并根据用户添加时间排序（倒序）
+        QueryWrapper<User> queryWrapper = new QueryWrapper<>();
+        queryWrapper.select("id", "username", "real_name")
+                .like(!StringUtils.isEmpty(name), "username", name)
+                .like(!StringUtils.isEmpty(name), "real_name", name)
+                .orderByDesc("create_time");
+        List<User> userList = userMapper.selectList(queryWrapper);
+
+        // 先获取该角色已分配的用户，并转为set
+        QueryWrapper<UserRole> userRoleWrapper = new QueryWrapper<>();
+        userRoleWrapper.select("user_id").eq("role_id", roleId);
+        List<Object> userIdList = userRoleMapper.selectObjs(userRoleWrapper);
+        Set<Object> hasRoleUserIdSet = new HashSet<>(userIdList);
+
+        // 封装List<AssignDataVo>
+        List<AssignDataVo> list = new ArrayList<>();
+        for(User user : userList) {
+            AssignDataVo data = new AssignDataVo();
+            // 判断用户是否拥有该角色
+            data.setHas(hasRoleUserIdSet.contains(user.getId()));
+            data.setName(user.getUsername() + "/" + user.getRealName());
+            data.setId(user.getId());
+            list.add(data);
+        }
+        return list;
     }
 
     /**

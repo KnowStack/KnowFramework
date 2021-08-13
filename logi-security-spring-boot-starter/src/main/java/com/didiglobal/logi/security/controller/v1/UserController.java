@@ -6,11 +6,13 @@ import com.didiglobal.logi.security.common.PagingResult;
 import com.didiglobal.logi.security.common.Result;
 import com.didiglobal.logi.security.common.entity.BaseEntity;
 import com.didiglobal.logi.security.common.entity.User;
+import com.didiglobal.logi.security.common.vo.role.AssignDataVo;
 import com.didiglobal.logi.security.common.vo.user.UserQueryVo;
 import com.didiglobal.logi.security.common.vo.user.UserVo;
 import com.didiglobal.logi.security.service.UserService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -53,12 +55,16 @@ public class UserController {
         return Result.success(userVoList);
     }
 
-    @GetMapping("/list/name/{name}")
-    @ApiOperation(value = "根据账户名或用户实名查询", notes = "对于传入的条件，会分别以账户名和实名去模糊查询，返回两者的并集")
-    @ApiImplicitParam(name = "name", value = "账户名或用户实名", dataType = "String", required = true)
-    public Result<List<UserVo>> listByName(@PathVariable String name) {
-        List<UserVo> userVoList = userService.getUserByUsernameOrRealName(name);
-        return Result.success(userVoList);
+    @GetMapping("/assign/list")
+    @ApiOperation(value = "角色管理/分配用户/列表", notes = "根据用户id和角色名模糊查询")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "userId", value = "用户id", dataType = "int", required = true),
+            @ApiImplicitParam(name = "roleName", value = "角色名", dataType = "String", required = false),
+    })
+    public Result<List<AssignDataVo>> list(@RequestParam(value = "userId", required = true) Integer userId,
+                                           @RequestParam(value = "roleName", required = false) String roleName) {
+        List<AssignDataVo> assignDataVoList = userService.getAssignDataByUserId(userId, roleName);
+        return Result.success(assignDataVoList);
     }
 }
 

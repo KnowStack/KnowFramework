@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.didiglobal.logi.security.common.PagingData;
 import com.didiglobal.logi.security.common.entity.*;
 import com.didiglobal.logi.security.common.vo.dept.DeptVo;
+import com.didiglobal.logi.security.common.vo.role.AssignDataVo;
 import com.didiglobal.logi.security.common.vo.role.RoleVo;
 import com.didiglobal.logi.security.common.vo.user.UserQueryVo;
 import com.didiglobal.logi.security.common.enums.ResultCode;
@@ -174,17 +175,32 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<UserVo> getUserByUsernameOrRealName(String name) {
-        if(StringUtils.isEmpty(name)) {
-            return new ArrayList<>();
+    public List<AssignDataVo> getAssignDataByUserId(Integer userId, String roleName) {
+        if(userId == null) {
+            throw new SecurityException(ResultCode.USER_ID_CANNOT_BE_NULL);
         }
-        QueryWrapper<User> queryWrapper = new QueryWrapper<>();
-        queryWrapper.select("id", "username", "real_name")
-                .like("username", name)
-                .or()
-                .like("real_name", name);
-        List<User> userList = userMapper.selectList(queryWrapper);
-        return CopyBeanUtil.copyList(userList, UserVo.class);
+        // 查询所有的角色，并根据角色添加时间排序（倒序）
+        QueryWrapper<Role> queryWrapper = new QueryWrapper<>();
+        queryWrapper.select("id", "role_name")
+                .like(!StringUtils.isEmpty(roleName), "role_name", roleName);
+        List<Role> roleList = roleMapper.selectList(queryWrapper);
+
+        // 先获取该用户已拥有的角色，并转为set
+        QueryWrapper<UserRole> userRoleWrapper = new QueryWrapper<>();
+        userRoleWrapper.select("role_id").eq("user_id", userId);
+        List<Object> roleIdList = userRoleMapper.selectObjs(userRoleWrapper);
+        Set<Object> hasRoleIdSet = new HashSet<>(roleIdList);
+
+        // 封装List<AssignDataVo>
+        List<AssignDataVo> list = new ArrayList<>();
+        for(Role role : roleList) {
+            AssignDataVo data = new AssignDataVo();
+            data.setName(role.getRoleName());
+            data.setId(role.getId());
+            data.setHas(hasRoleIdSet.contains(role.getId()));
+            list.add(data);
+        }
+        return list;
     }
 
     /**

@@ -57,6 +57,7 @@ public enum ResultCode implements CodeMsg {
     ROLE_DEPT_CANNOT_BE_BLANK(4006, "角色描述不可为空"),
     ROLE_PERMISSION_CANNOT_BE_NULL(4007, "角色权限不可为空"),
     ROLE_ASSIGN_FLAG_IS_NULL(4008, "角色分配flag不可为空"),
+    ROLE_ID_CANNOT_BE_NULL(4009, "角色id不可为空"),
 
     /* 项目错误 */
     PROJECT_NAME_EXIST(5001, "项目名已存在"),
