@@ -56,7 +56,7 @@ public class UserController {
     }
 
     @GetMapping("/assign/list")
-    @ApiOperation(value = "角色管理/分配用户/列表", notes = "根据用户id和角色名模糊查询")
+    @ApiOperation(value = "用户管理/分配角色/列表", notes = "根据用户id和角色名模糊查询")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "userId", value = "用户id", dataType = "int", required = true),
             @ApiImplicitParam(name = "roleName", value = "角色名", dataType = "String", required = false),

@@ -104,7 +104,7 @@ public class RoleServiceImpl implements RoleService {
         // 保存角色信息
         Role role = CopyBeanUtil.copy(roleSaveVo, Role.class);
         // TODO；这里要添加修改人信息（Token中获取）
-        role.setLastReviser("蔡蔡");
+        role.setLastReviser("caijiamin_i");
         // 设置角色编号
         role.setRoleCode("r" + ((int)((Math.random() + 1) * 1000000)));
         roleMapper.insert(role);

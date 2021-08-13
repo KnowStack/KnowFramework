@@ -7,13 +7,13 @@ package com.didiglobal.logi.security.util;
  */
 public class ThreadLocalUtil {
 
-    private static final ThreadLocal<Object> THREAD_LOCAL = new ThreadLocal<>();
+    private static final ThreadLocal<Integer> THREAD_LOCAL = new ThreadLocal<>();
 
-    public static void set(Object info) {
+    public static void set(Integer info) {
         THREAD_LOCAL.set(info);
     }
     
-    public static Object get() {
+    public static Integer get() {
         return THREAD_LOCAL.get();
     }
     

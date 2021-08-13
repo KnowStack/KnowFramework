@@ -35,7 +35,7 @@ public class ThreadPoolUtil {
     }
 
     /**
-     * dcs获取线程池
+     * 获取线程池
      *
      * @return 线程池对象
      */
