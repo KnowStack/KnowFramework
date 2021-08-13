@@ -72,6 +72,7 @@ public class ResourceServiceImpl implements ResourceService {
         int controlLevel = queryVo.getControlLevel();
 
         if(ShowLevelCode.PROJECT.getType().equals(showLevel)) {
+            // 如果是项目展示级别
             QueryWrapper<Project> projectWrapper = new QueryWrapper<>();
             List<Project> projectList = projectMapper.selectList(projectWrapper.select("id", "project_name"));
             for(Project project : projectList) {
@@ -95,6 +96,7 @@ public class ResourceServiceImpl implements ResourceService {
                 queryWrapper.clear();
             }
         } else if(ShowLevelCode.RESOURCE_TYPE.getType().equals(showLevel)) {
+            // 如果是资源类别展示级别
             List<ResourceType> resourceTypeList = resourceTypeMapper.selectList(null);
             for(ResourceType resourceType : resourceTypeList) {
                 MByUDataVo dataVo = new MByUDataVo(resourceType.getId(), resourceType.getTypeName());
@@ -117,6 +119,7 @@ public class ResourceServiceImpl implements ResourceService {
                 queryWrapper.clear();
             }
         } else {
+            // 如果是具体资源展示级别
             List<ResourceDto> resourceDtoList = resourceExtend.getResourceList(projectId, resourceTypeId);
             for(ResourceDto resourceDto : resourceDtoList) {
                 MByUDataVo dataVo = new MByUDataVo(resourceDto.getResourceId(), resourceDto.getResourceName());
@@ -467,6 +470,7 @@ public class ResourceServiceImpl implements ResourceService {
         QueryWrapper<UserResource> userResourceWrapper = new QueryWrapper<>();
         for(User user : userPage.getRecords()) {
             MByUVo dataVo = CopyBeanUtil.copy(user, MByUVo.class);
+            dataVo.setUserId(user.getId());
             // 设置部门信息
             dataVo.setDeptInfo(deptService.spliceDeptInfo(user.getDeptId()));
             // 计算管理权限资源数

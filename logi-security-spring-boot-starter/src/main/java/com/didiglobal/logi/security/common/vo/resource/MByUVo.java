@@ -15,6 +15,9 @@ import lombok.Data;
 @ApiModel(description = "资源权限管理（按用户管理的列表信息）")
 public class MByUVo {
 
+    @ApiModelProperty(value = "用户id", dataType = "Integer", required = false)
+    private Integer userId;
+
     @ApiModelProperty(value = "用户账号", dataType = "String", required = false)
     private String username;
 

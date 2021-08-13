@@ -203,6 +203,23 @@ public class UserServiceImpl implements UserService {
         return list;
     }
 
+    @Override
+    public List<UserVo> getListByRoleId(Integer roleId) {
+        if(roleId == null) {
+            throw new SecurityException(ResultCode.ROLE_ID_CANNOT_BE_NULL);
+        }
+        // 先获取拥有该角色的用户id
+        QueryWrapper<UserRole> userRoleWrapper = new QueryWrapper<>();
+        userRoleWrapper.eq("role_id", roleId);
+        List<Object> userIdList = userRoleMapper.selectObjs(userRoleWrapper);
+
+        // 封装List<User>
+        QueryWrapper<User> userWrapper = new QueryWrapper<>();
+        userWrapper.select("id", "username", "real_name").in("id", userIdList);
+        List<User> userList = userMapper.selectList(userWrapper);
+        return CopyBeanUtil.copyList(userList, UserVo.class);
+    }
+
     /**
      * 隐私处理
      *

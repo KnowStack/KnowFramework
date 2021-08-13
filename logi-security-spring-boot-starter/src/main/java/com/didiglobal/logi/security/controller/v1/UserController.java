@@ -55,6 +55,14 @@ public class UserController {
         return Result.success(userVoList);
     }
 
+    @GetMapping("/list/role/{roleId}")
+    @ApiOperation(value = "根据角色id获取用户list", notes = "根据角色id获取用户list")
+    @ApiImplicitParam(name = "roleId", value = "角色id", dataType = "int", required = true)
+    public Result<List<UserVo>> listByRoleId(@PathVariable Integer roleId) {
+        List<UserVo> userVoList = userService.getListByRoleId(roleId);
+        return Result.success(userVoList);
+    }
+
     @GetMapping("/assign/list")
     @ApiOperation(value = "用户管理/分配角色/列表", notes = "根据用户id和角色名模糊查询")
     @ApiImplicitParams({

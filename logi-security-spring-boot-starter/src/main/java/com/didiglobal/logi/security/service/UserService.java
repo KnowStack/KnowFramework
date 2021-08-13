@@ -40,4 +40,11 @@ public interface UserService {
      * @return List<AssignDataVo>
      */
     List<AssignDataVo> getAssignDataByUserId(Integer userId, String roleName);
+
+    /**
+     * 根据角色id获取用户list
+     * @param roleId 角色Id
+     * @return List<UserVo>
+     */
+    List<UserVo> getListByRoleId(Integer roleId);
 }
