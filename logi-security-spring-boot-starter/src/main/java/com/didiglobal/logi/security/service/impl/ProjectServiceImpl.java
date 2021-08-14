@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.didiglobal.logi.security.common.PagingData;
+import com.didiglobal.logi.security.common.dto.OplogDto;
 import com.didiglobal.logi.security.common.entity.*;
 import com.didiglobal.logi.security.common.enums.ResultCode;
 import com.didiglobal.logi.security.common.vo.dept.DeptVo;
@@ -12,6 +13,7 @@ import com.didiglobal.logi.security.common.vo.project.ProjectSaveVo;
 import com.didiglobal.logi.security.common.vo.project.ProjectVo;
 import com.didiglobal.logi.security.common.vo.user.UserVo;
 import com.didiglobal.logi.security.exception.SecurityException;
+import com.didiglobal.logi.security.extend.OplogExtend;
 import com.didiglobal.logi.security.mapper.DeptMapper;
 import com.didiglobal.logi.security.mapper.ProjectMapper;
 import com.didiglobal.logi.security.mapper.UserMapper;
@@ -46,6 +48,9 @@ public class ProjectServiceImpl implements ProjectService {
     @Autowired
     private DeptService deptService;
 
+    @Autowired
+    private OplogExtend oplogExtend;
+
     @Override
     public ProjectVo getDetailById(Integer projectId) {
         checkProjectId(projectId);
@@ -70,6 +75,12 @@ public class ProjectServiceImpl implements ProjectService {
         // 插入用户项目关联信息（项目负责人）
         List<UserProject> list = getUserProjectList(project.getId(), saveVo.getChargeUserIdList());
         userProjectMapper.insertBatchSomeColumn(list);
+
+        // 保存操作日志
+        oplogExtend.saveOplog(OplogDto.builder()
+                .operatePage("项目配置").operateType("新增")
+                .targetType("项目").target(saveVo.getProjectName()).build()
+        );
     }
 
     @Override
@@ -129,6 +140,13 @@ public class ProjectServiceImpl implements ProjectService {
         userProjectMapper.delete(wrapper);
         // 逻辑删除项目（自动）
         projectMapper.deleteById(projectId);
+
+        // 保存操作日志
+        Project project = projectMapper.selectById(projectId);
+        oplogExtend.saveOplog(OplogDto.builder()
+                .operatePage("项目配置").operateType("删除")
+                .targetType("项目").target(project.getProjectName()).build()
+        );
     }
 
     @Override
@@ -145,6 +163,12 @@ public class ProjectServiceImpl implements ProjectService {
         // 插入new项目负责人与项目联系
         List<UserProject> list = getUserProjectList(project.getId(), saveVo.getChargeUserIdList());
         userProjectMapper.insertBatchSomeColumn(list);
+
+        // 保存操作日志
+        oplogExtend.saveOplog(OplogDto.builder()
+                .operatePage("项目配置").operateType("编辑")
+                .targetType("项目").target(saveVo.getProjectName()).build()
+        );
     }
 
     @Override
@@ -156,6 +180,12 @@ public class ProjectServiceImpl implements ProjectService {
         // 状态取反
         project.setIsRunning(!project.getIsRunning());
         projectMapper.updateById(project);
+
+        // 保存操作日志
+        oplogExtend.saveOplog(OplogDto.builder()
+                .operatePage("项目配置").operateType(project.getIsRunning() ? "启用" : "停用")
+                .targetType("项目").target(project.getProjectName()).build()
+        );
     }
 
     @Override

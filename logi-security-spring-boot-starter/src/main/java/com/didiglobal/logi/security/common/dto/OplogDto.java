@@ -1,11 +1,14 @@
 package com.didiglobal.logi.security.common.dto;
 
+import lombok.Builder;
 import lombok.Data;
+import lombok.experimental.Tolerate;
 
 /**
  * @author cjm
  */
 @Data
+@Builder
 public class OplogDto {
 
     /**
@@ -33,4 +36,6 @@ public class OplogDto {
      */
     private String detail;
 
+    @Tolerate
+    public OplogDto() {}
 }

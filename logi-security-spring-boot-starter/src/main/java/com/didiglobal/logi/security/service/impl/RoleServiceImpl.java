@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.didiglobal.logi.security.common.PagingData;
 import com.didiglobal.logi.security.common.dto.MessageDto;
+import com.didiglobal.logi.security.common.dto.OplogDto;
 import com.didiglobal.logi.security.common.entity.*;
 import com.didiglobal.logi.security.common.enums.message.MessageCode;
 import com.didiglobal.logi.security.common.vo.permission.PermissionVo;
@@ -13,6 +14,7 @@ import com.didiglobal.logi.security.common.enums.ResultCode;
 import com.didiglobal.logi.security.common.vo.user.UserVo;
 import com.didiglobal.logi.security.exception.SecurityException;
 import com.didiglobal.logi.security.extend.MessageExtend;
+import com.didiglobal.logi.security.extend.OplogExtend;
 import com.didiglobal.logi.security.mapper.*;
 import com.didiglobal.logi.security.service.PermissionService;
 import com.didiglobal.logi.security.service.RoleService;
@@ -21,6 +23,7 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 
 import com.didiglobal.logi.security.util.CopyBeanUtil;
+import com.didiglobal.logi.security.util.ThreadLocalUtil;
 import com.didiglobal.logi.security.util.ThreadPoolUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -47,6 +50,9 @@ public class RoleServiceImpl implements RoleService {
 
     @Autowired
     private MessageExtend messageExtend;
+
+    @Autowired
+    private OplogExtend oplogExtend;
 
     @Override
     public RoleVo getDetailById(Integer id) {
@@ -103,8 +109,10 @@ public class RoleServiceImpl implements RoleService {
         checkParam(roleSaveVo);
         // 保存角色信息
         Role role = CopyBeanUtil.copy(roleSaveVo, Role.class);
-        // TODO；这里要添加修改人信息（Token中获取）
-        role.setLastReviser("caijiamin_i");
+        // 获取修改人信息
+        Integer userId = ThreadLocalUtil.get();
+        User user = userMapper.selectById(userId);
+        role.setLastReviser(user.getUsername());
         // 设置角色编号
         role.setRoleCode("r" + ((int)((Math.random() + 1) * 1000000)));
         roleMapper.insert(role);
@@ -114,6 +122,12 @@ public class RoleServiceImpl implements RoleService {
             // 保存角色与权限信息（批量插入）
             rolePermissionMapper.insertBatchSomeColumn(rolePermissionList);
         }
+
+        // 保存操作日志
+        oplogExtend.saveOplog(OplogDto.builder()
+                .operatePage("角色管理").operateType("新增")
+                .targetType("角色").target(roleSaveVo.getRoleName()).build()
+        );
     }
 
     @Override
@@ -134,6 +148,12 @@ public class RoleServiceImpl implements RoleService {
         rolePermissionMapper.delete(rolePermissionWrapper);
         // 逻辑删除（自动）
         roleMapper.deleteById(role.getId());
+
+        // 保存操作日志
+        oplogExtend.saveOplog(OplogDto.builder()
+                .operatePage("角色管理").operateType("删除")
+                .targetType("角色").target(role.getRoleName()).build()
+        );
     }
 
     @Override
@@ -144,8 +164,10 @@ public class RoleServiceImpl implements RoleService {
         checkParam(roleSaveVo);
         // 更新角色基本信息
         Role role = CopyBeanUtil.copy(roleSaveVo, Role.class);
-        // TODO 设置修改人信息
-        // role.setLastReviser();
+        // 设置修改人信息
+        Integer userId = ThreadLocalUtil.get();
+        User user = userMapper.selectById(userId);
+        role.setLastReviser(user.getUsername());
         roleMapper.updateById(role);
         // 先删除旧的角色与权限关联信息
         QueryWrapper<RolePermission> rolePermissionWrapper = new QueryWrapper<>();
@@ -156,6 +178,12 @@ public class RoleServiceImpl implements RoleService {
             List<RolePermission> rpList = getRolePermissionList(role.getId(), roleSaveVo.getPermissionIdList());
             rolePermissionMapper.insertBatchSomeColumn(rpList);
         }
+
+        // 保存操作日志
+        oplogExtend.saveOplog(
+                OplogDto.builder().operatePage("角色管理").operateType("编辑")
+                .targetType("角色").target(roleSaveVo.getRoleName()).build()
+        );
     }
 
     @Override
@@ -194,6 +222,22 @@ public class RoleServiceImpl implements RoleService {
 
         // 打包和保存角色更新消息（异步）
         ThreadPoolUtil.execute(() -> packAndSaveMessage(oldIdList, roleAssignVo));
+
+        // 保存操作日志
+        if(roleAssignVo.getFlag()) {
+            User user = userMapper.selectById(roleAssignVo.getId());
+            oplogExtend.saveOplog(OplogDto.builder()
+                    .operatePage("用户管理").operateType("分配角色")
+                    .targetType("用户").target(user.getUsername()).build()
+            );
+        } else {
+            Role role = roleMapper.selectById(roleAssignVo.getId());
+            oplogExtend.saveOplog(OplogDto.builder()
+                    .operatePage("角色管理").operateType("分配用户")
+                    .targetType("角色").target(role.getRoleName()).build()
+            );
+        }
+
     }
 
     private void checkParam(RoleAssignVo roleAssignVo) {

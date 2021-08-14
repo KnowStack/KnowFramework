@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.didiglobal.logi.security.common.PagingData;
+import com.didiglobal.logi.security.common.dto.OplogDto;
 import com.didiglobal.logi.security.common.dto.ResourceDto;
 import com.didiglobal.logi.security.common.entity.*;
 import com.didiglobal.logi.security.common.enums.ResultCode;
@@ -11,6 +12,7 @@ import com.didiglobal.logi.security.common.enums.resource.ControlLevelCode;
 import com.didiglobal.logi.security.common.enums.resource.ShowLevelCode;
 import com.didiglobal.logi.security.common.vo.resource.*;
 import com.didiglobal.logi.security.exception.SecurityException;
+import com.didiglobal.logi.security.extend.OplogExtend;
 import com.didiglobal.logi.security.extend.ResourceExtend;
 import com.didiglobal.logi.security.mapper.ProjectMapper;
 import com.didiglobal.logi.security.mapper.ResourceTypeMapper;
@@ -50,6 +52,9 @@ public class ResourceServiceImpl implements ResourceService {
 
     @Autowired
     private DeptService deptService;
+
+    @Autowired
+    private OplogExtend oplogExtend;
 
     @Override
     public List<ResourceTypeVo> getResourceTypeList() {
@@ -324,6 +329,12 @@ public class ResourceServiceImpl implements ResourceService {
         );
         // 插入new关联信息
         userResourceMapper.insertBatchSomeColumn(userResourceList);
+
+        // 保存操作日志 TODO：用户+资源名称 这个信息咋搞比较好，还要记录移除的信息
+        oplogExtend.saveOplog(OplogDto.builder()
+                .operatePage("资源权限管理").operateType("分配资源")
+                .targetType("用户").target("用户+资源名称").build()
+        );
     }
 
     @Override
@@ -365,6 +376,12 @@ public class ResourceServiceImpl implements ResourceService {
             }
             userResourceMapper.insertBatchSomeColumn(userResourceList);
         }
+
+        // 保存操作日志 TODO：资源名称+用户 这个信息咋搞比较好？还要记录移除的信息
+        oplogExtend.saveOplog(OplogDto.builder()
+                .operatePage("资源权限管理").operateType("分配用户")
+                .targetType("资源").target("资源名称+用户").build()
+        );
     }
 
     /**
@@ -422,6 +439,20 @@ public class ResourceServiceImpl implements ResourceService {
         );
         // 插入新关联信息
         userResourceMapper.insertBatchSomeColumn(userResourceList);
+
+        if(assignFlag) {
+            // 保存操作日志 TODO：资源名称+用户 这个信息咋搞比较好？还要记录移除的信息
+            oplogExtend.saveOplog(OplogDto.builder()
+                    .operatePage("资源权限管理").operateType("批量分配用户")
+                    .targetType("资源").target("资源名称+用户").build()
+            );
+        } else {
+            // 保存操作日志 TODO：用户+资源名称 这个信息咋搞比较好？还要记录移除的信息
+            oplogExtend.saveOplog(OplogDto.builder()
+                    .operatePage("资源权限管理").operateType("批量分配资源")
+                    .targetType("用户").target("用户+资源名称").build()
+            );
+        }
     }
 
     private void checkParam(BatchAssignVo batchAssignVo) {

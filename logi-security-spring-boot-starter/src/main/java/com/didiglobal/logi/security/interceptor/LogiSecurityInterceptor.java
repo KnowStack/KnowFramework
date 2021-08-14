@@ -1,6 +1,7 @@
 package com.didiglobal.logi.security.interceptor;
 
 import com.didiglobal.logi.security.util.NetworkUtil;
+import com.didiglobal.logi.security.util.ThreadLocalUtil;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
@@ -14,6 +15,8 @@ public class LogiSecurityInterceptor implements HandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
         System.out.println(request.getRequestURL());
+        // TODO，由于没有登录
+        ThreadLocalUtil.set(1);
         return true;
     }
 
@@ -24,6 +27,6 @@ public class LogiSecurityInterceptor implements HandlerInterceptor {
 
     @Override
     public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) {
-        // System.out.println("--afterCompletion--");
+        ThreadLocalUtil.clear();
     }
 }

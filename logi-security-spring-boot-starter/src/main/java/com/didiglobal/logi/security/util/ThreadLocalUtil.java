@@ -14,7 +14,11 @@ public class ThreadLocalUtil {
     }
     
     public static Integer get() {
-        return THREAD_LOCAL.get();
+        Integer i = THREAD_LOCAL.get();
+        if(i == null) {
+            return 1;
+        }
+        return i;
     }
     
     public static void clear() {

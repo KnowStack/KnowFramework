@@ -8,8 +8,10 @@ import com.didiglobal.logi.security.common.enums.message.MessageCode;
 import com.didiglobal.logi.security.common.vo.message.MessageVo;
 import com.didiglobal.logi.security.mapper.MessageMapper;
 import com.didiglobal.logi.security.mapper.RoleMapper;
+import com.didiglobal.logi.security.mapper.UserMapper;
 import com.didiglobal.logi.security.service.MessageService;
 import com.didiglobal.logi.security.util.CopyBeanUtil;
+import com.didiglobal.logi.security.util.ThreadLocalUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
@@ -27,11 +29,17 @@ public class MessageServiceImpl implements MessageService {
     @Autowired
     private MessageMapper messageMapper;
 
+    @Autowired
+    private UserMapper userMapper;
+
     @Override
     public List<MessageVo> getMessageList(Boolean isRead) {
-        // TODO 这里要获取用户的id
+        // 获取消息所属用户id
+        Integer userId = ThreadLocalUtil.get();
         QueryWrapper<Message> messageWrapper = new QueryWrapper<>();
-        messageWrapper.eq(isRead != null, "is_read", isRead);
+        messageWrapper
+                .eq( "user_id", userId)
+                .eq(isRead != null, "is_read", isRead);
         List<Message> messageList = messageMapper.selectList(messageWrapper);
         List<MessageVo> messageVoList = CopyBeanUtil.copyList(messageList, MessageVo.class);
         for(int i = 0; i < messageList.size(); i++) {
@@ -43,7 +51,6 @@ public class MessageServiceImpl implements MessageService {
 
     @Override
     public void changeMessageStatus(List<Integer> idList) {
-        // TODO 这里要获取用户的id
         if(CollectionUtils.isEmpty(idList)) {
             return;
         }
