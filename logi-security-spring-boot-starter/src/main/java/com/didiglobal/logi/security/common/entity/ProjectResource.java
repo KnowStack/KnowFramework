@@ -7,7 +7,6 @@ import lombok.Data;
  * @author cjm
  */
 @Data
-@TableName(value = "logi_project_resource")
 public class ProjectResource {
 
     private Integer projectId;

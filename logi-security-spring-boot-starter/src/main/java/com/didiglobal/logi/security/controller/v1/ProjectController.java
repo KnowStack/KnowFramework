@@ -1,12 +1,13 @@
 package com.didiglobal.logi.security.controller.v1;
 
-import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.didiglobal.logi.security.common.PagingData;
 import com.didiglobal.logi.security.common.PagingResult;
 import com.didiglobal.logi.security.common.Result;
-import com.didiglobal.logi.security.common.vo.project.ProjectQueryVo;
-import com.didiglobal.logi.security.common.vo.project.ProjectSaveVo;
-import com.didiglobal.logi.security.common.vo.project.ProjectVo;
+import com.didiglobal.logi.security.common.dto.project.ProjectQueryDTO;
+import com.didiglobal.logi.security.common.dto.project.ProjectSaveDTO;
+import com.didiglobal.logi.security.common.vo.project.ProjectBriefVO;
+import com.didiglobal.logi.security.common.vo.project.ProjectDeleteCheckVO;
+import com.didiglobal.logi.security.common.vo.project.ProjectVO;
 import com.didiglobal.logi.security.service.ProjectService;
 import io.swagger.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,9 +29,9 @@ public class ProjectController {
     @GetMapping("/{id}")
     @ApiOperation(value = "获取项目详情", notes = "根据项目id获取项目详情")
     @ApiImplicitParam(name = "id", value = "项目id", dataType = "int", required = true)
-    public Result<ProjectVo> detail(@PathVariable Integer id) {
-        ProjectVo projectVo = projectService.getDetailById(id);
-        return Result.success(projectVo);
+    public Result<ProjectVO> detail(@PathVariable Integer id) {
+        ProjectVO projectVO = projectService.getDetailById(id);
+        return Result.success(projectVO);
     }
 
     @PutMapping("/switch/{id}")
@@ -42,17 +43,25 @@ public class ProjectController {
     }
 
     @PutMapping
-    @ApiOperation(value = "更新项目信息", notes = "根据项目id更新项目信息")
-    public Result<String> update(@RequestBody ProjectSaveVo projectSaveVo) {
-        projectService.updateProjectBy(projectSaveVo);
+    @ApiOperation(value = "更新项目", notes = "根据项目id更新项目信息")
+    public Result<String> update(@RequestBody ProjectSaveDTO projectSaveDTO) {
+        projectService.updateProjectBy(projectSaveDTO);
         return Result.success();
     }
 
     @PostMapping
     @ApiOperation(value = "创建项目", notes = "创建项目")
-    public Result<String> create(@RequestBody ProjectSaveVo projectSaveVo) {
-        projectService.createProject(projectSaveVo);
+    public Result<String> create(@RequestBody ProjectSaveDTO projectSaveDTO) {
+        projectService.createProject(projectSaveDTO);
         return Result.success();
+    }
+
+    @GetMapping("/delete/check/{id}")
+    @ApiOperation(value = "删除项目前的检查", notes = "检查是否有服务引用了该项目、是否有具体资源挂上了该项目")
+    @ApiImplicitParam(name = "id", value = "项目id", dataType = "int", required = true)
+    public Result<ProjectDeleteCheckVO> deleteCheck(@PathVariable Integer id) {
+        ProjectDeleteCheckVO deleteCheckVO = projectService.checkBeforeDelete(id);
+        return Result.success(deleteCheckVO);
     }
 
     @DeleteMapping("/{id}")
@@ -65,15 +74,15 @@ public class ProjectController {
 
     @PostMapping("/page")
     @ApiOperation(value = "查询项目列表", notes = "分页和条件查询")
-    public PagingResult<ProjectVo> page(@RequestBody ProjectQueryVo queryVo) {
-        PagingData<ProjectVo> pageProject = projectService.getProjectPage(queryVo);
+    public PagingResult<ProjectVO> page(@RequestBody ProjectQueryDTO queryVo) {
+        PagingData<ProjectVO> pageProject = projectService.getProjectPage(queryVo);
         return PagingResult.success(pageProject);
     }
 
     @GetMapping("/list")
-    @ApiOperation(value = "获取所有项目概况信息", notes = "获取全部项目（只返回id、项目名）")
-    public Result<List<ProjectVo>> list() {
-        List<ProjectVo> projectVo = projectService.getProjectList();
-        return Result.success(projectVo);
+    @ApiOperation(value = "获取所有项目信息", notes = "获取全部项目简要信息（只返回id、项目名）")
+    public Result<List<ProjectBriefVO>> list() {
+        List<ProjectBriefVO> projectBriefVOList = projectService.getProjectList();
+        return Result.success(projectBriefVOList);
     }
 }

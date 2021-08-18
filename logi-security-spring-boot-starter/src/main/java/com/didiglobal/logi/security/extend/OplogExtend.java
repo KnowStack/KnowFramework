@@ -1,7 +1,6 @@
 package com.didiglobal.logi.security.extend;
 
-import com.didiglobal.logi.security.common.dto.MessageDto;
-import com.didiglobal.logi.security.common.dto.OplogDto;
+import com.didiglobal.logi.security.common.dto2.OplogDto;
 
 /**
  * @author cjm

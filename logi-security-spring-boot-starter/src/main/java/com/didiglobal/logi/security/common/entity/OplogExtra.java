@@ -9,7 +9,6 @@ import lombok.Data;
  * 操作日志信息（操作页面、操作类型、对象分类）
  */
 @Data
-@TableName(value = "logi_oplog_extra")
 public class OplogExtra {
 
     private Integer id;

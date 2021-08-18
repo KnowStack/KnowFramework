@@ -1,10 +1,10 @@
 package com.didiglobal.logi.security.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.didiglobal.logi.security.common.entity.Permission;
-import com.didiglobal.logi.security.common.entity.RolePermission;
 import com.didiglobal.logi.security.common.enums.ResultCode;
-import com.didiglobal.logi.security.common.vo.permission.PermissionVo;
+import com.didiglobal.logi.security.common.po.PermissionPO;
+import com.didiglobal.logi.security.common.po.RolePermissionPO;
+import com.didiglobal.logi.security.common.vo.permission.PermissionTreeVO;
 import com.didiglobal.logi.security.exception.SecurityException;
 import com.didiglobal.logi.security.mapper.PermissionMapper;
 import com.didiglobal.logi.security.mapper.RolePermissionMapper;
@@ -28,25 +28,25 @@ public class PermissionServiceImpl implements PermissionService {
     private RolePermissionMapper rolePermissionMapper;
 
     @Override
-    public PermissionVo buildPermissionTree(Set<Integer> permissionHasSet) {
+    public PermissionTreeVO buildPermissionTree(Set<Integer> permissionHasSet) {
         // 获取全部权限（为了效率就先全部读出来）
-        List<Permission> permissionList = permissionMapper.selectList(null);
+        List<PermissionPO> permissionPOList = permissionMapper.selectList(null);
         // 根据level小到大排序（保证树是层序遍历的）
-        permissionList.sort(Comparator.comparingInt(Permission::getLevel));
+        permissionPOList.sort(Comparator.comparingInt(PermissionPO::getLevel));
 
         // 创建一个虚拟根节点
-        PermissionVo root = PermissionVo
-                .builder().isLeaf(false).isHas(true).id(0).childList(new ArrayList<>()).build();
+        PermissionTreeVO root = PermissionTreeVO
+                .builder().leaf(false).has(true).id(0).childList(new ArrayList<>()).build();
 
         // 转成树
-        Map<Integer, PermissionVo> parentMap = new HashMap<>();
+        Map<Integer, PermissionTreeVO> parentMap = new HashMap<>(permissionPOList.size());
         parentMap.put(0, root);
-        for(Permission permission : permissionList) {
-            PermissionVo permissionVo = CopyBeanUtil.copy(permission, PermissionVo.class);
-            if(!permission.getIsLeaf()) {
-                permissionVo.setChildList(new ArrayList<>());
+        for(PermissionPO permissionPO : permissionPOList) {
+            PermissionTreeVO permissionTreeVO = CopyBeanUtil.copy(permissionPO, PermissionTreeVO.class);
+            if(!permissionPO.getLeaf()) {
+                permissionTreeVO.setChildList(new ArrayList<>());
             }
-            PermissionVo parent = parentMap.get(permission.getParentId());
+            PermissionTreeVO parent = parentMap.get(permissionPO.getParentId());
             if (parent == null) {
                 // 如果parent为null，则需要查看下数据库权限表的数据是否有误
                 // 1.可能出现了本来该是父节点的节点（有其他子节点的parent为它），但该节点parent为其他子节点的情况（数据异常）
@@ -54,21 +54,21 @@ public class PermissionServiceImpl implements PermissionService {
                 throw new SecurityException(ResultCode.PERMISSION_DATA_ERROR);
             }
             // 父权限拥有，子权限才肯定拥有
-            permissionVo.setIsHas(parent.getIsHas() && permissionHasSet.contains(permission.getId()));
-            parent.getChildList().add(permissionVo);
-            parentMap.put(permissionVo.getId(), permissionVo);
+            permissionTreeVO.setHas(parent.getHas() && permissionHasSet.contains(permissionPO.getId()));
+            parent.getChildList().add(permissionTreeVO);
+            parentMap.put(permissionTreeVO.getId(), permissionTreeVO);
         }
         return root;
     }
 
     @Override
-    public PermissionVo buildPermissionTree() {
+    public PermissionTreeVO buildPermissionTree() {
         return buildPermissionTree(new HashSet<>());
     }
 
     @Override
-    public PermissionVo buildPermissionTreeByRoleId(Integer roleId) {
-        QueryWrapper<RolePermission> wrapper = new QueryWrapper<>();
+    public PermissionTreeVO buildPermissionTreeByRoleId(Integer roleId) {
+        QueryWrapper<RolePermissionPO> wrapper = new QueryWrapper<>();
         // 获取该角色拥有的全部权限id
         wrapper.select("permission_id").eq("role_id", roleId);
         List<Object> permissionIdList = rolePermissionMapper.selectObjs(wrapper);

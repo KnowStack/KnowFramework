@@ -1,8 +1,8 @@
 package com.didiglobal.logi.security.service;
 
 import com.didiglobal.logi.security.common.PagingData;
-import com.didiglobal.logi.security.common.vo.oplog.OplogQueryVo;
-import com.didiglobal.logi.security.common.vo.oplog.OplogVo;
+import com.didiglobal.logi.security.common.dto.oplog.OplogQueryDTO;
+import com.didiglobal.logi.security.common.vo.oplog.OplogVO;
 
 import java.util.List;
 
@@ -16,14 +16,14 @@ public interface OplogService {
      * @param queryVo 查询条件
      * @return 分页信息
      */
-    PagingData<OplogVo> getOplogPage(OplogQueryVo queryVo);
+    PagingData<OplogVO> getOplogPage(OplogQueryDTO queryVo);
 
     /**
      * 根据id查找操作日志详情
      * @param opLogId 操作日志id
      * @return OplogVo 详情
      */
-    OplogVo getDetailById(Integer opLogId);
+    OplogVO getDetailById(Integer opLogId);
 
     /**
      * 获取操作日志列表的查询条件信息

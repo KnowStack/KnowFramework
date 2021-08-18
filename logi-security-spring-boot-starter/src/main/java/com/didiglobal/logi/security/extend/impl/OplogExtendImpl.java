@@ -1,8 +1,8 @@
 package com.didiglobal.logi.security.extend.impl;
 
-import com.didiglobal.logi.security.common.dto.OplogDto;
-import com.didiglobal.logi.security.common.entity.Oplog;
-import com.didiglobal.logi.security.common.entity.User;
+import com.didiglobal.logi.security.common.dto2.OplogDto;
+import com.didiglobal.logi.security.common.po.OplogPO;
+import com.didiglobal.logi.security.common.po.UserPO;
 import com.didiglobal.logi.security.extend.OplogExtend;
 import com.didiglobal.logi.security.mapper.OplogMapper;
 import com.didiglobal.logi.security.mapper.UserMapper;
@@ -28,12 +28,12 @@ public class OplogExtendImpl implements OplogExtend {
     public void saveOplog(OplogDto oplogDto) {
         // 获取客户端真实ip地址
         String realIpAddress = NetworkUtil.getRealIpAddress();
-        Oplog oplog = CopyBeanUtil.copy(oplogDto, Oplog.class);
-        oplog.setOperatorIp(realIpAddress);
+        OplogPO oplogPO = CopyBeanUtil.copy(oplogDto, OplogPO.class);
+        oplogPO.setOperatorIp(realIpAddress);
         // 获取操作人信息
         Integer userId = ThreadLocalUtil.get();
-        User user = userMapper.selectById(userId);
-        oplog.setOperatorUsername(user.getUsername());
-        oplogMapper.insert(oplog);
+        UserPO userPO = userMapper.selectById(userId);
+        oplogPO.setOperatorUsername(userPO.getUsername());
+        oplogMapper.insert(oplogPO);
     }
 }

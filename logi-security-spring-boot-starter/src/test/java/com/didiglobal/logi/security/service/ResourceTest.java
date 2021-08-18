@@ -1,9 +1,9 @@
 package com.didiglobal.logi.security.service;
 
 import com.didiglobal.logi.security.BaseTest;
-import com.didiglobal.logi.security.common.entity.Project;
-import com.didiglobal.logi.security.common.entity.ProjectResource;
-import com.didiglobal.logi.security.common.entity.ResourceType;
+import com.didiglobal.logi.security.common.po.ProjectPO;
+import com.didiglobal.logi.security.common.po.ProjectResourcePO;
+import com.didiglobal.logi.security.common.po.ResourceTypePO;
 import com.didiglobal.logi.security.mapper.ProjectMapper;
 import com.didiglobal.logi.security.mapper.ProjectResourceMapper;
 import com.didiglobal.logi.security.mapper.ResourceTypeMapper;
@@ -26,20 +26,20 @@ public class ResourceTest extends BaseTest  {
     @Autowired
     private ProjectResourceMapper projectResourceMapper;
 
-    private List<ProjectResource> generateData() {
-        List<ProjectResource> list = new ArrayList<>();
-        List<Project> projectList = projectMapper.selectList(null);
-        List<ResourceType> resourceTypeList = resourceTypeMapper.selectList(null);
+    private List<ProjectResourcePO> generateData() {
+        List<ProjectResourcePO> list = new ArrayList<>();
+        List<ProjectPO> projectList = projectMapper.selectList(null);
+        List<ResourceTypePO> resourceTypeList = resourceTypeMapper.selectList(null);
 
-        for(Project project : projectList) {
-            for(ResourceType resourceType : resourceTypeList) {
+        for(ProjectPO projectPO : projectList) {
+            for(ResourceTypePO resourceTypePO : resourceTypeList) {
                 for(int i = 0; i < new Random().nextInt(20) + 50; i++) {
-                    ProjectResource projectResource = new ProjectResource();
-                    projectResource.setProjectId(project.getId());
-                    projectResource.setResourceTypeId(resourceType.getId());
-                    projectResource.setResourceName("测试资源" + ((int) ((Math.random() + 1) * 1000)));
-                    projectResource.setResourceId(((int) ((Math.random() + 1) * 10000000)));
-                    list.add(projectResource);
+                    ProjectResourcePO projectResourcePO = new ProjectResourcePO();
+                    projectResourcePO.setProjectId(projectPO.getId());
+                    projectResourcePO.setResourceTypeId(resourceTypePO.getId());
+                    projectResourcePO.setResourceName("测试资源" + ((int) ((Math.random() + 1) * 1000)));
+                    projectResourcePO.setResourceId(((int) ((Math.random() + 1) * 10000000)));
+                    list.add(projectResourcePO);
                 }
             }
         }
@@ -48,7 +48,7 @@ public class ResourceTest extends BaseTest  {
 
     @Test
     public void generateResource() {
-        List<ProjectResource> projectResourceList = generateData();
+        List<ProjectResourcePO> projectResourceList = generateData();
         projectResourceMapper.insertBatchSomeColumn(projectResourceList);
     }
 }

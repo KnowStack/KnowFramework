@@ -11,7 +11,6 @@ import lombok.EqualsAndHashCode;
  */
 @EqualsAndHashCode(callSuper = true)
 @Data
-@TableName(value = "logi_message")
 public class Message extends BaseEntity {
 
     /**
@@ -27,7 +26,7 @@ public class Message extends BaseEntity {
     /**
      * 是否已读
      */
-    private Boolean isRead;
+    private Boolean read;
 
     /**
      * 消息所属用户id

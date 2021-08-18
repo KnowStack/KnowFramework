@@ -4,33 +4,30 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.didiglobal.logi.security.common.PagingData;
-import com.didiglobal.logi.security.common.entity.*;
-import com.didiglobal.logi.security.common.vo.dept.DeptVo;
-import com.didiglobal.logi.security.common.vo.role.AssignDataVo;
-import com.didiglobal.logi.security.common.vo.role.RoleVo;
-import com.didiglobal.logi.security.common.vo.user.UserQueryVo;
+import com.didiglobal.logi.security.common.po.RolePO;
+import com.didiglobal.logi.security.common.po.RolePermissionPO;
+import com.didiglobal.logi.security.common.po.UserPO;
+import com.didiglobal.logi.security.common.po.UserRolePO;
+import com.didiglobal.logi.security.common.dto.role.AssignDataDTO;
+import com.didiglobal.logi.security.common.vo.role.RoleBriefVO;
+import com.didiglobal.logi.security.common.vo.role.RoleVO;
+import com.didiglobal.logi.security.common.dto.user.UserQueryDTO;
+import com.didiglobal.logi.security.common.vo.user.UserBriefVO;
+import com.didiglobal.logi.security.common.vo.user.UserVO;
 import com.didiglobal.logi.security.common.enums.ResultCode;
-import com.didiglobal.logi.security.common.vo.user.UserVo;
 import com.didiglobal.logi.security.exception.SecurityException;
 import com.didiglobal.logi.security.mapper.*;
 import com.didiglobal.logi.security.service.DeptService;
 import com.didiglobal.logi.security.service.PermissionService;
-import com.didiglobal.logi.security.service.RoleService;
 import com.didiglobal.logi.security.util.CopyBeanUtil;
 import com.didiglobal.logi.security.service.UserService;
 
-import java.sql.Timestamp;
 import java.util.*;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.springframework.util.CollectionUtils;
-import org.springframework.util.DigestUtils;
 import org.springframework.util.StringUtils;
-
-import javax.crypto.Cipher;
 
 /**
  * @author cjm
@@ -57,21 +54,21 @@ public class UserServiceImpl implements UserService {
     private DeptService deptService;
 
     @Override
-    public PagingData<UserVo> getUserPage(UserQueryVo queryVo) {
-        QueryWrapper<User> userWrapper = new QueryWrapper<>();
+    public PagingData<UserVO> getUserPage(UserQueryDTO queryVo) {
+        QueryWrapper<UserPO> userWrapper = new QueryWrapper<>();
         // 分页查询
-        IPage<User> userPage = new Page<>(queryVo.getPage(), queryVo.getSize());
+        IPage<UserPO> userPage = new Page<>(queryVo.getPage(), queryVo.getSize());
 
         // 是否有角色条件
         if (queryVo.getRoleId() != null) {
-            Role role = roleMapper.selectById(queryVo.getRoleId());
-            if (role == null) {
+            RolePO rolePO = roleMapper.selectById(queryVo.getRoleId());
+            if (rolePO == null) {
                 // 数据库没该角色名字
                 return new PagingData<>(userPage);
             }
             // 根据角色id查找用户idList
-            QueryWrapper<UserRole> wrapper = new QueryWrapper<>();
-            wrapper.select("user_id").eq("role_id", role.getId());
+            QueryWrapper<UserRolePO> wrapper = new QueryWrapper<>();
+            wrapper.select("user_id").eq("role_id", rolePO.getId());
             List<Object> userIdList = userRoleMapper.selectObjs(wrapper);
             // 只获取拥有该角色的用户信息
             userWrapper.in("id", userIdList);
@@ -85,62 +82,63 @@ public class UserServiceImpl implements UserService {
 
         userMapper.selectPage(userPage, userWrapper);
         // 转成vo
-        List<UserVo> userVoList = CopyBeanUtil.copyList(userPage.getRecords(), UserVo.class);
+        List<UserVO> userVOList = CopyBeanUtil.copyList(userPage.getRecords(), UserVO.class);
 
         // 获取所有角色，并转换成 roleId-Role对象 形式
-        QueryWrapper<Role> roleWrapper = new QueryWrapper<>();
+        QueryWrapper<RolePO> roleWrapper = new QueryWrapper<>();
         roleWrapper.select("id", "role_name");
-        Map<Integer, Role> roleMap = roleMapper.selectList(roleWrapper)
-                .stream().collect(Collectors.toMap(Role::getId, role -> role));
+        Map<Integer, RolePO> roleMap = roleMapper.selectList(roleWrapper)
+                .stream().collect(Collectors.toMap(RolePO::getId, rolePO -> rolePO));
 
-        QueryWrapper<UserRole> userRoleWrapper = new QueryWrapper<>();
-        for (int i = 0; i < userVoList.size(); i++) {
-            UserVo userVo = userVoList.get(i);
+        QueryWrapper<UserRolePO> userRoleWrapper = new QueryWrapper<>();
+        for (int i = 0; i < userVOList.size(); i++) {
+            UserVO userVo = userVOList.get(i);
             // 查询用户关联的角色
             userRoleWrapper.select("role_id").eq("user_id", userVo.getId());
             List<Object> roleIdList = userRoleMapper.selectObjs(userRoleWrapper);
 
-            List<RoleVo> roleVoList = new ArrayList<>();
+            List<RoleBriefVO> roleBriefVOList = new ArrayList<>();
             for (Object roleId : roleIdList) {
-                Role role = roleMap.get((Integer) roleId);
-                roleVoList.add(CopyBeanUtil.copy(role, RoleVo.class));
+                RolePO rolePO = roleMap.get((Integer) roleId);
+                roleBriefVOList.add(CopyBeanUtil.copy(rolePO, RoleBriefVO.class));
             }
             // 设置角色信息
-            userVo.setRoleVoList(roleVoList);
+            userVo.setRoleList(roleBriefVOList);
             userRoleWrapper.clear();
 
             // 查找用户所在部门信息
-            userVo.setDeptInfo(deptService.spliceDeptInfo(userPage.getRecords().get(i).getDeptId()));
+            Integer deptId = userPage.getRecords().get(i).getDeptId();
+            userVo.setDeptList(deptService.getParentDeptListByChildId(deptId));
             userVo.setUpdateTime(userPage.getRecords().get(i).getUpdateTime().getTime());
             // 隐私信息处理
             privacyProcessing(userVo);
         }
-        return new PagingData<>(userVoList, userPage);
+        return new PagingData<>(userVOList, userPage);
     }
 
     @Override
-    public UserVo getDetailById(Integer userId) {
-        User user = userMapper.selectById(userId);
-        if (user == null) {
+    public UserVO getDetailById(Integer userId) {
+        UserPO userPO = userMapper.selectById(userId);
+        if (userPO == null) {
             throw new SecurityException(ResultCode.USER_ACCOUNT_NOT_EXIST);
         }
 
         // 根据用户id获取角色idList
-        QueryWrapper<UserRole> userRoleWrapper = new QueryWrapper<>();
+        QueryWrapper<UserRolePO> userRoleWrapper = new QueryWrapper<>();
         userRoleWrapper.select("role_id").eq("user_id", userId);
         List<Object> roleIdList = userRoleMapper.selectObjs(userRoleWrapper);
 
         Set<Integer> permissionHasSet = new HashSet<>();
-        QueryWrapper<RolePermission> rolePermissionWrapper = new QueryWrapper<>();
+        QueryWrapper<RolePermissionPO> rolePermissionWrapper = new QueryWrapper<>();
 
-        List<RoleVo> roleVoList = new ArrayList<>();
-        QueryWrapper<Role> roleWrapper = new QueryWrapper<>();
+        List<RoleBriefVO> roleBriefVOList = new ArrayList<>();
+        QueryWrapper<RolePO> roleWrapper = new QueryWrapper<>();
         for (Object roleId : roleIdList) {
             // 获取角色信息
             roleWrapper.clear();
             roleWrapper.select("id", "role_name").eq("id", roleId);
-            Role role = roleMapper.selectOne(roleWrapper);
-            roleVoList.add(CopyBeanUtil.copy(role, RoleVo.class));
+            RolePO rolePO = roleMapper.selectOne(roleWrapper);
+            roleBriefVOList.add(CopyBeanUtil.copy(rolePO, RoleBriefVO.class));
 
             // 查询该角色拥有的权限idList
             rolePermissionWrapper.select("permission_id").eq("role_id", roleId);
@@ -153,71 +151,82 @@ public class UserServiceImpl implements UserService {
 
             rolePermissionWrapper.clear();
         }
-        UserVo userVo = CopyBeanUtil.copy(user, UserVo.class);
+        UserVO userVo = CopyBeanUtil.copy(userPO, UserVO.class);
         // 设置角色信息
-        userVo.setRoleVoList(roleVoList);
+        userVo.setRoleList(roleBriefVOList);
         // 构建权限树
-        userVo.setPermissionVo(permissionService.buildPermissionTree(permissionHasSet));
+        userVo.setPermissionTreeVO(permissionService.buildPermissionTree(permissionHasSet));
         // 查找用户所在部门信息
-        userVo.setDeptInfo(deptService.spliceDeptInfo(user.getDeptId()));
-        userVo.setUpdateTime(user.getUpdateTime().getTime());
+        userVo.setDeptList(deptService.getParentDeptListByChildId(userPO.getDeptId()));
+        userVo.setUpdateTime(userPO.getUpdateTime().getTime());
         return userVo;
     }
 
     @Override
-    public List<UserVo> getListByDeptId(Integer deptId) {
-        QueryWrapper<User> userWrapper = new QueryWrapper<>();
-        List<Integer> deptIdList = deptService.getChildDeptIdListByParentId(deptId);
-        // 根据部门id查找用户，该部门的子部门的用户都属于该部门
-        userWrapper.select("id", "username", "real_name").in("dept_id", deptIdList);
-        List<User> userList = userMapper.selectList(userWrapper);
-        return CopyBeanUtil.copyList(userList, UserVo.class);
+    public List<UserBriefVO> getListByUsernameOrRealName(String name) {
+        QueryWrapper<UserPO> queryWrapper = new QueryWrapper<>();
+        queryWrapper.select("id", "username", "real_name")
+                .like(!StringUtils.isEmpty(name), "username", name)
+                .or()
+                .like(!StringUtils.isEmpty(name), "real_name", name);
+        List<UserPO> userList = userMapper.selectList(queryWrapper);
+        return CopyBeanUtil.copyList(userList, UserBriefVO.class);
     }
 
     @Override
-    public List<AssignDataVo> getAssignDataByUserId(Integer userId, String roleName) {
+    public List<UserBriefVO> getListByDeptId(Integer deptId) {
+        QueryWrapper<UserPO> userWrapper = new QueryWrapper<>();
+        List<Integer> deptIdList = deptService.getChildDeptIdListByParentId(deptId);
+        // 根据部门id查找用户，该部门的子部门的用户都属于该部门
+        userWrapper.select("id", "username", "real_name").in("dept_id", deptIdList);
+        List<UserPO> userList = userMapper.selectList(userWrapper);
+        return CopyBeanUtil.copyList(userList, UserBriefVO.class);
+    }
+
+    @Override
+    public List<AssignDataDTO> getAssignDataByUserId(Integer userId, String roleName) {
         if(userId == null) {
             throw new SecurityException(ResultCode.USER_ID_CANNOT_BE_NULL);
         }
         // 查询所有的角色，并根据角色添加时间排序（倒序）
-        QueryWrapper<Role> queryWrapper = new QueryWrapper<>();
+        QueryWrapper<RolePO> queryWrapper = new QueryWrapper<>();
         queryWrapper.select("id", "role_name")
                 .like(!StringUtils.isEmpty(roleName), "role_name", roleName);
-        List<Role> roleList = roleMapper.selectList(queryWrapper);
+        List<RolePO> roleList = roleMapper.selectList(queryWrapper);
 
         // 先获取该用户已拥有的角色，并转为set
-        QueryWrapper<UserRole> userRoleWrapper = new QueryWrapper<>();
+        QueryWrapper<UserRolePO> userRoleWrapper = new QueryWrapper<>();
         userRoleWrapper.select("role_id").eq("user_id", userId);
         List<Object> roleIdList = userRoleMapper.selectObjs(userRoleWrapper);
         Set<Object> hasRoleIdSet = new HashSet<>(roleIdList);
 
         // 封装List<AssignDataVo>
-        List<AssignDataVo> list = new ArrayList<>();
-        for(Role role : roleList) {
-            AssignDataVo data = new AssignDataVo();
-            data.setName(role.getRoleName());
-            data.setId(role.getId());
-            data.setHas(hasRoleIdSet.contains(role.getId()));
+        List<AssignDataDTO> list = new ArrayList<>();
+        for(RolePO rolePO : roleList) {
+            AssignDataDTO data = new AssignDataDTO();
+            data.setName(rolePO.getRoleName());
+            data.setId(rolePO.getId());
+            data.setHas(hasRoleIdSet.contains(rolePO.getId()));
             list.add(data);
         }
         return list;
     }
 
     @Override
-    public List<UserVo> getListByRoleId(Integer roleId) {
+    public List<UserBriefVO> getListByRoleId(Integer roleId) {
         if(roleId == null) {
             throw new SecurityException(ResultCode.ROLE_ID_CANNOT_BE_NULL);
         }
         // 先获取拥有该角色的用户id
-        QueryWrapper<UserRole> userRoleWrapper = new QueryWrapper<>();
-        userRoleWrapper.eq("role_id", roleId);
+        QueryWrapper<UserRolePO> userRoleWrapper = new QueryWrapper<>();
+        userRoleWrapper.select("user_id").eq("role_id", roleId);
         List<Object> userIdList = userRoleMapper.selectObjs(userRoleWrapper);
 
-        // 封装List<User>
-        QueryWrapper<User> userWrapper = new QueryWrapper<>();
+        // 封装List<UserPO>
+        QueryWrapper<UserPO> userWrapper = new QueryWrapper<>();
         userWrapper.select("id", "username", "real_name").in("id", userIdList);
-        List<User> userList = userMapper.selectList(userWrapper);
-        return CopyBeanUtil.copyList(userList, UserVo.class);
+        List<UserPO> userList = userMapper.selectList(userWrapper);
+        return CopyBeanUtil.copyList(userList, UserBriefVO.class);
     }
 
     /**
@@ -225,7 +234,7 @@ public class UserServiceImpl implements UserService {
      *
      * @param userVo 返回给页面的用户信息
      */
-    private void privacyProcessing(UserVo userVo) {
+    private void privacyProcessing(UserVO userVo) {
         String phone = userVo.getPhone();
         userVo.setPhone(phone.replaceAll("(\\d{3})\\d{4}(\\d{4})","$1****$2"));
     }

@@ -1,11 +1,11 @@
 package com.didiglobal.logi.security.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.didiglobal.logi.security.common.entity.Dept;
-import com.didiglobal.logi.security.common.entity.Permission;
+import com.didiglobal.logi.security.common.vo.dept.DeptBriefVO;
+
 import com.didiglobal.logi.security.common.enums.ResultCode;
-import com.didiglobal.logi.security.common.vo.dept.DeptVo;
-import com.didiglobal.logi.security.common.vo.permission.PermissionVo;
+import com.didiglobal.logi.security.common.vo.dept.DeptTreeVO;
+import com.didiglobal.logi.security.common.po.DeptPO;
 import com.didiglobal.logi.security.exception.SecurityException;
 import com.didiglobal.logi.security.mapper.DeptMapper;
 import com.didiglobal.logi.security.service.DeptService;
@@ -25,45 +25,42 @@ public class DeptServiceImpl implements DeptService {
     private DeptMapper deptMapper;
 
     @Override
-    public DeptVo buildDeptTree() {
+    public DeptTreeVO buildDeptTree() {
         // 获取全部部门
-        List<Dept> deptList = deptMapper.selectList(null);
+        List<DeptPO> deptPOList = deptMapper.selectList(null);
         // 根据level小到大排序
-        deptList.sort(Comparator.comparingInt(Dept::getLevel));
+        deptPOList.sort(Comparator.comparingInt(DeptPO::getLevel));
 
         // 创建一个虚拟根节点
-        DeptVo root = DeptVo
-                .builder().isLeaf(false).id(0).childList(new ArrayList<>()).build();
+        DeptTreeVO root = DeptTreeVO
+                .builder().leaf(false).id(0).childList(new ArrayList<>()).build();
 
         // 转成树
-        Map<Integer, DeptVo> parentMap = new HashMap<>();
+        Map<Integer, DeptTreeVO> parentMap = new HashMap<>();
         parentMap.put(0, root);
-        for(Dept dept : deptList) {
-            DeptVo deptVo = CopyBeanUtil.copy(dept, DeptVo.class);
-            if(!deptVo.getIsLeaf()) {
-                deptVo.setChildList(new ArrayList<>());
+        for(DeptPO deptPO : deptPOList) {
+            DeptTreeVO deptTreeVO = CopyBeanUtil.copy(deptPO, DeptTreeVO.class);
+            if(!deptTreeVO.getLeaf()) {
+                deptTreeVO.setChildList(new ArrayList<>());
             }
-            DeptVo parent = parentMap.get(dept.getParentId());
+            DeptTreeVO parent = parentMap.get(deptPO.getParentId());
             if (parent == null) {
                 // 如果parent为null，则需要查看下数据库部门表的数据是否有误
                 // 1.可能出现了本来该是父节点的节点（有其他子节点的parent为它），但该节点parent为其他子节点的情况（数据异常）
                 // 2.也可能是level填写错了（因为前面根据level大小排序）
                 throw new SecurityException(ResultCode.DEPT_DATA_ERROR);
             }
-            parent.getChildList().add(deptVo);
-            parentMap.put(deptVo.getId(), deptVo);
+            parent.getChildList().add(deptTreeVO);
+            parentMap.put(deptTreeVO.getId(), deptTreeVO);
         }
         return root;
     }
 
     @Override
-    public String spliceDeptInfo(Integer deptId) {
-        StringBuilder sb = new StringBuilder();
-        spliceDeptInfo(null, deptId, sb);
-        if(sb.length() > 0) {
-            return sb.substring(0, sb.length() - 1);
-        }
-        return null;
+    public List<DeptBriefVO> getParentDeptListByChildId(Integer deptId) {
+        List<DeptBriefVO> deptBriefVOList = new ArrayList<>();
+        getParentDeptListByChildId(null, deptId, deptBriefVOList);
+        return deptBriefVOList;
     }
 
     @Override
@@ -73,17 +70,17 @@ public class DeptServiceImpl implements DeptService {
         return deptIdList;
     }
 
-    private void spliceDeptInfo(Dept child, Integer deptId, StringBuilder sb) {
+    private void getParentDeptListByChildId(DeptPO child, Integer deptId, List<DeptBriefVO> deptBriefVOList) {
         if(deptId == null || deptId == 0) {
             return;
         }
-        Dept dept = deptMapper.selectById(deptId);
-        if(child != null && dept.getLevel() >= child.getLevel()) {
+        DeptPO deptPO = deptMapper.selectById(deptId);
+        if(child != null && deptPO.getLevel() >= child.getLevel()) {
             // 如果出现这种情况，则数据有误，中断递归
             throw new SecurityException(ResultCode.DEPT_DATA_ERROR);
         }
-        spliceDeptInfo(dept, dept.getParentId(), sb);
-        sb.append(dept.getDeptName()).append("-");
+        getParentDeptListByChildId(deptPO, deptPO.getParentId(), deptBriefVOList);
+        deptBriefVOList.add(CopyBeanUtil.copy(deptPO, DeptBriefVO.class));
     }
 
     private void getChildDeptIdListByParentId(List<Integer> deptIdList, Integer deptId) {
@@ -91,15 +88,16 @@ public class DeptServiceImpl implements DeptService {
             return;
         }
         deptIdList.add(deptId);
-        QueryWrapper<Dept> deptWrapper = new QueryWrapper<>();
-        deptWrapper.select("id", "is_leaf").eq("parent_id", deptId);
-        List<Dept> deptList = deptMapper.selectList(deptWrapper);
-        for(Dept dept : deptList) {
-            if(dept.getIsLeaf()) {
+        QueryWrapper<DeptPO> deptWrapper = new QueryWrapper<>();
+        deptWrapper.select("id", "leaf").eq("parent_id", deptId);
+        List<DeptPO> deptPOList = deptMapper.selectList(deptWrapper);
+        for(DeptPO deptPO : deptPOList) {
+            if(deptPO.getLeaf()) {
                 // 如果是叶子部门
+                // 如果确实就是叶子部门，但是leaf为恶意修改为false，不过下一次递归也不会进入for循环，所以不会递归爆炸
                 continue;
             }
-            getChildDeptIdListByParentId(deptIdList, dept.getId());
+            getChildDeptIdListByParentId(deptIdList, deptPO.getId());
         }
     }
 

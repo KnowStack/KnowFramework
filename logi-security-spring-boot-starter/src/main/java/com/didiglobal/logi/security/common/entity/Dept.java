@@ -9,7 +9,6 @@ import lombok.Data;
  * 部门信息
  */
 @Data
-@TableName(value = "logi_dept")
 public class Dept {
 
     private Integer id;
@@ -32,7 +31,7 @@ public class Dept {
     /**
      * 是否是叶子部门
      */
-    private Boolean isLeaf;
+    private Boolean leaf;
 
     /**
      * 部门的层级（parentId为0的层级为1）

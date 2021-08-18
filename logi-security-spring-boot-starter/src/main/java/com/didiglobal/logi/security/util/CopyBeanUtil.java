@@ -2,8 +2,6 @@ package com.didiglobal.logi.security.util;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.didiglobal.logi.security.common.entity.User;
-import com.didiglobal.logi.security.common.vo.user.UserVo;
 import org.springframework.beans.BeanUtils;
 
 import java.util.Collections;

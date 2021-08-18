@@ -11,7 +11,6 @@ import lombok.EqualsAndHashCode;
  */
 @EqualsAndHashCode(callSuper = true)
 @Data
-@TableName(value = "logi_oplog")
 public class Oplog extends BaseEntity {
 
     /**

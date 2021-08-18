@@ -11,7 +11,6 @@ import java.sql.Timestamp;
  * 用户角色关系
  */
 @Data
-@TableName(value = "logi_user_role")
 public class UserRole {
 
     /**

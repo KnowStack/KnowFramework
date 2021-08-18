@@ -1,7 +1,7 @@
 package com.didiglobal.logi.security.extend;
 
 import com.didiglobal.logi.security.common.PagingData;
-import com.didiglobal.logi.security.common.dto.ResourceDto;
+import com.didiglobal.logi.security.common.dto2.ResourceDto;
 
 import java.util.List;
 

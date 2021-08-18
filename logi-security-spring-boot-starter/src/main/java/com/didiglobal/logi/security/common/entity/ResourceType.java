@@ -9,7 +9,6 @@ import lombok.Data;
  * 资源类型信息
  */
 @Data
-@TableName(value = "logi_resource_type")
 public class ResourceType {
 
     private Integer id;

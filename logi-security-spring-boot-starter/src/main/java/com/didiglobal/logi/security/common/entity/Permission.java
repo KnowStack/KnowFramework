@@ -9,7 +9,6 @@ import lombok.Data;
  * 权限信息
  */
 @Data
-@TableName(value = "logi_permission")
 public class Permission {
 
     private Integer id;
@@ -27,7 +26,7 @@ public class Permission {
     /**
      * 是否是叶子权限
      */
-    private Boolean isLeaf;
+    private Boolean leaf;
 
     /**
      * 权限点的层级（parentId为0的层级为1）

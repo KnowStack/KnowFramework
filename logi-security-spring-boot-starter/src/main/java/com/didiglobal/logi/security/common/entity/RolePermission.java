@@ -9,7 +9,6 @@ import lombok.Data;
  * 角色权限关系
  */
 @Data
-@TableName(value = "logi_role_permission")
 public class RolePermission {
 
     /**

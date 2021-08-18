@@ -4,10 +4,10 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.didiglobal.logi.security.common.PagingData;
-import com.didiglobal.logi.security.common.entity.Oplog;
-import com.didiglobal.logi.security.common.entity.OplogExtra;
-import com.didiglobal.logi.security.common.vo.oplog.OplogQueryVo;
-import com.didiglobal.logi.security.common.vo.oplog.OplogVo;
+import com.didiglobal.logi.security.common.po.OplogExtraPO;
+import com.didiglobal.logi.security.common.po.OplogPO;
+import com.didiglobal.logi.security.common.dto.oplog.OplogQueryDTO;
+import com.didiglobal.logi.security.common.vo.oplog.OplogVO;
 import com.didiglobal.logi.security.mapper.OplogExtraMapper;
 import com.didiglobal.logi.security.mapper.OplogMapper;
 import com.didiglobal.logi.security.service.OplogService;
@@ -31,12 +31,12 @@ public class OplogServiceImpl implements OplogService {
     private OplogExtraMapper oplogExtraMapper;
 
     @Override
-    public PagingData<OplogVo> getOplogPage(OplogQueryVo queryVo) {
-        QueryWrapper<Oplog> queryWrapper = new QueryWrapper<>();
+    public PagingData<OplogVO> getOplogPage(OplogQueryDTO queryVo) {
+        QueryWrapper<OplogPO> queryWrapper = new QueryWrapper<>();
         // 分页查询
-        IPage<Oplog> oplogPage = new Page<>(queryVo.getPage(), queryVo.getSize());
+        IPage<OplogPO> iPage = new Page<>(queryVo.getPage(), queryVo.getSize());
         // 不查找detail字段
-        queryWrapper.select(Oplog.class, oplog -> !"detail".equals(oplog.getColumn()));
+        queryWrapper.select(OplogPO.class, oplog -> !"detail".equals(oplog.getColumn()));
         queryWrapper
                 .eq(queryVo.getOperateType() != null, "operate_type", queryVo.getOperateType())
                 .eq(queryVo.getTargetType() != null, "target_type", queryVo.getTargetType())
@@ -45,34 +45,34 @@ public class OplogServiceImpl implements OplogService {
                 .like(queryVo.getTarget() != null, "target", queryVo.getTarget())
                 .like(queryVo.getOperatorIp() != null, "operator_ip", queryVo.getOperatorIp())
                 .like(queryVo.getOperatorUsername() != null, "operator_username", queryVo.getOperatorUsername());
-        oplogMapper.selectPage(oplogPage, queryWrapper);
+        oplogMapper.selectPage(iPage, queryWrapper);
         // 转成vo
-        List<OplogVo> oplogVoList = CopyBeanUtil.copyList(oplogPage.getRecords(), OplogVo.class);
+        List<OplogVO> oplogVOList = CopyBeanUtil.copyList(iPage.getRecords(), OplogVO.class);
 
-        PagingData<OplogVo> pagingData = new PagingData<>(oplogVoList, oplogPage);
+        PagingData<OplogVO> pagingData = new PagingData<>(oplogVOList, iPage);
         for(int i = 0; i < pagingData.getBizData().size(); i++) {
-            OplogVo oplogVo = pagingData.getBizData().get(i);
-            oplogVo.setCreateTime(oplogPage.getRecords().get(i).getCreateTime().getTime());
+            OplogVO oplogVO = pagingData.getBizData().get(i);
+            oplogVO.setCreateTime(iPage.getRecords().get(i).getCreateTime().getTime());
         }
         return pagingData;
     }
 
     @Override
-    public OplogVo getDetailById(Integer oplogId) {
-        Oplog oplog = oplogMapper.selectById(oplogId);
-        OplogVo oplogVo = CopyBeanUtil.copy(oplog, OplogVo.class);
-        oplogVo.setCreateTime(oplog.getCreateTime().getTime());
-        return oplogVo;
+    public OplogVO getDetailById(Integer oplogId) {
+        OplogPO oplogPO = oplogMapper.selectById(oplogId);
+        OplogVO oplogVO = CopyBeanUtil.copy(oplogPO, OplogVO.class);
+        oplogVO.setCreateTime(oplogPO.getCreateTime().getTime());
+        return oplogVO;
     }
 
     @Override
     public List<String> getOplogExtraList(Integer type) {
-        QueryWrapper<OplogExtra> queryWrapper = new QueryWrapper<>();
+        QueryWrapper<OplogExtraPO> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("type", type);
-        List<OplogExtra> oplogExtraList = oplogExtraMapper.selectList(queryWrapper);
+        List<OplogExtraPO> oplogExtraPOList = oplogExtraMapper.selectList(queryWrapper);
         List<String> result = new ArrayList<>();
-        for(OplogExtra oplogExtra : oplogExtraList) {
-            result.add(oplogExtra.getInfo());
+        for(OplogExtraPO oplogExtraPO : oplogExtraPOList) {
+            result.add(oplogExtraPO.getInfo());
         }
         return result;
     }
