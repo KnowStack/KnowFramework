@@ -17,13 +17,13 @@ import com.didiglobal.logi.security.common.po.UserPO;
 import com.didiglobal.logi.security.common.po.UserResourcePO;
 import com.didiglobal.logi.security.common.vo.resource.*;
 import com.didiglobal.logi.security.exception.SecurityException;
-import com.didiglobal.logi.security.extend.OplogExtend;
 import com.didiglobal.logi.security.extend.ResourceExtend;
 import com.didiglobal.logi.security.mapper.ProjectMapper;
 import com.didiglobal.logi.security.mapper.ResourceTypeMapper;
 import com.didiglobal.logi.security.mapper.UserMapper;
 import com.didiglobal.logi.security.mapper.UserResourceMapper;
 import com.didiglobal.logi.security.service.DeptService;
+import com.didiglobal.logi.security.service.OplogService;
 import com.didiglobal.logi.security.service.ResourceService;
 import com.didiglobal.logi.security.util.CopyBeanUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -59,7 +59,7 @@ public class ResourceServiceImpl implements ResourceService {
     private DeptService deptService;
 
     @Autowired
-    private OplogExtend oplogExtend;
+    private OplogService oplogService;
 
     @Override
     public List<ResourceTypeVO> getResourceTypeList() {
@@ -245,10 +245,6 @@ public class ResourceServiceImpl implements ResourceService {
             // 项目不存在
             throw new SecurityException(ResultCode.PROJECT_NOT_EXIST);
         }
-        if(!projectPO.getRunning()) {
-            // 项目已停运
-            throw new SecurityException(ResultCode.PROJECT_UN_RUNNING);
-        }
         if(resourceTypeId == null && resourceId != null) {
             // 这种情况不允许出现（如果resourceId != null，则resourceTypeId必不为null）
             throw new SecurityException(ResultCode.RESOURCE_ASSIGN_ERROR);
@@ -385,7 +381,7 @@ public class ResourceServiceImpl implements ResourceService {
         }
 
         // 保存操作日志 TODO：用户+资源名称 这个信息咋搞比较好，还要记录移除的信息
-        oplogExtend.saveOplog(OplogDto.builder()
+        oplogService.saveOplog(OplogDto.builder()
                 .operatePage("资源权限管理").operateType("分配资源")
                 .targetType("用户").target("用户+资源名称").build()
         );
@@ -435,7 +431,7 @@ public class ResourceServiceImpl implements ResourceService {
         }
 
         // 保存操作日志 TODO：资源名称+用户 这个信息咋搞比较好？还要记录移除的信息
-        oplogExtend.saveOplog(OplogDto.builder()
+        oplogService.saveOplog(OplogDto.builder()
                 .operatePage("资源权限管理").operateType("分配用户")
                 .targetType("资源").target("资源名称+用户").build()
         );
@@ -501,13 +497,13 @@ public class ResourceServiceImpl implements ResourceService {
 
         if(assignFlag) {
             // 保存操作日志 TODO：资源名称+用户 这个信息咋搞比较好？还要记录移除的信息
-            oplogExtend.saveOplog(OplogDto.builder()
+            oplogService.saveOplog(OplogDto.builder()
                     .operatePage("资源权限管理").operateType("批量分配用户")
                     .targetType("资源").target("资源名称+用户").build()
             );
         } else {
             // 保存操作日志 TODO：用户+资源名称 这个信息咋搞比较好？还要记录移除的信息
-            oplogExtend.saveOplog(OplogDto.builder()
+            oplogService.saveOplog(OplogDto.builder()
                     .operatePage("资源权限管理").operateType("批量分配资源")
                     .targetType("用户").target("用户+资源名称").build()
             );

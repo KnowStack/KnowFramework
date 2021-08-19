@@ -2,6 +2,7 @@ package com.didiglobal.logi.security.service;
 
 import com.didiglobal.logi.security.common.PagingData;
 import com.didiglobal.logi.security.common.dto.oplog.OplogQueryDTO;
+import com.didiglobal.logi.security.common.dto2.OplogDto;
 import com.didiglobal.logi.security.common.vo.oplog.OplogVO;
 
 import java.util.List;
@@ -10,6 +11,12 @@ import java.util.List;
  * @author cjm
  */
 public interface OplogService {
+
+    /**
+     * 保存操作日志
+     * @param oplogDto 操作日志
+     */
+    void saveOplog(OplogDto oplogDto);
 
     /**
      * 分页查询操作日志

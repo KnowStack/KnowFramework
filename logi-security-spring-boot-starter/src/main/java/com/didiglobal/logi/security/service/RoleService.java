@@ -6,6 +6,7 @@ import com.didiglobal.logi.security.common.dto.role.RoleAssignDTO;
 import com.didiglobal.logi.security.common.dto.role.RoleQueryDTO;
 import com.didiglobal.logi.security.common.dto.role.RoleSaveDTO;
 import com.didiglobal.logi.security.common.vo.role.RoleBriefVO;
+import com.didiglobal.logi.security.common.vo.role.RoleDeleteCheckVO;
 import com.didiglobal.logi.security.common.vo.role.RoleVO;
 
 import java.util.List;
@@ -68,4 +69,11 @@ public interface RoleService {
      * @return List<RoleBriefVO> 角色简要信息list
      */
     List<RoleBriefVO> listByRoleName(String roleName);
+
+    /**
+     * 判断该角色是否已经分配给用户，如有分配给用户，则返回用户名list
+     * @param roleId 角色id
+     * @return RoleDeleteCheckVO 检查结果
+     */
+    RoleDeleteCheckVO checkBeforeDelete(Integer roleId);
 }

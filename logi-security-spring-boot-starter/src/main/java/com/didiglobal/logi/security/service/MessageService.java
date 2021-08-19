@@ -1,5 +1,6 @@
 package com.didiglobal.logi.security.service;
 
+import com.didiglobal.logi.security.common.dto2.MessageDto;
 import com.didiglobal.logi.security.common.vo.message.MessageVO;
 
 import java.util.List;
@@ -8,6 +9,13 @@ import java.util.List;
  * @author cjm
  */
 public interface MessageService {
+
+
+    /**
+     * 保存消息
+     * @param messageDto 消息内容
+     */
+    void saveMessage(MessageDto messageDto);
 
     /**
      * 根据消息状态，获取消息List

@@ -4,14 +4,19 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.didiglobal.logi.security.common.PagingData;
+import com.didiglobal.logi.security.common.dto2.OplogDto;
 import com.didiglobal.logi.security.common.po.OplogExtraPO;
 import com.didiglobal.logi.security.common.po.OplogPO;
 import com.didiglobal.logi.security.common.dto.oplog.OplogQueryDTO;
+import com.didiglobal.logi.security.common.po.UserPO;
 import com.didiglobal.logi.security.common.vo.oplog.OplogVO;
 import com.didiglobal.logi.security.mapper.OplogExtraMapper;
 import com.didiglobal.logi.security.mapper.OplogMapper;
+import com.didiglobal.logi.security.mapper.UserMapper;
 import com.didiglobal.logi.security.service.OplogService;
 import com.didiglobal.logi.security.util.CopyBeanUtil;
+import com.didiglobal.logi.security.util.NetworkUtil;
+import com.didiglobal.logi.security.util.ThreadLocalUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -29,6 +34,9 @@ public class OplogServiceImpl implements OplogService {
 
     @Autowired
     private OplogExtraMapper oplogExtraMapper;
+
+    @Autowired
+    private UserMapper userMapper;
 
     @Override
     public PagingData<OplogVO> getOplogPage(OplogQueryDTO queryVo) {
@@ -75,6 +83,19 @@ public class OplogServiceImpl implements OplogService {
             result.add(oplogExtraPO.getInfo());
         }
         return result;
+    }
+
+    @Override
+    public void saveOplog(OplogDto oplogDto) {
+        // 获取客户端真实ip地址
+        String realIpAddress = NetworkUtil.getRealIpAddress();
+        OplogPO oplogPO = CopyBeanUtil.copy(oplogDto, OplogPO.class);
+        oplogPO.setOperatorIp(realIpAddress);
+        // 获取操作人信息
+        Integer userId = ThreadLocalUtil.get();
+        UserPO userPO = userMapper.selectById(userId);
+        oplogPO.setOperatorUsername(userPO.getUsername());
+        oplogMapper.insert(oplogPO);
     }
 
 }

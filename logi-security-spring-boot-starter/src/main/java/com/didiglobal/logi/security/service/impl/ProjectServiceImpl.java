@@ -16,14 +16,13 @@ import com.didiglobal.logi.security.common.vo.project.ProjectBriefVO;
 import com.didiglobal.logi.security.common.vo.project.ProjectDeleteCheckVO;
 import com.didiglobal.logi.security.common.vo.project.ProjectVO;
 import com.didiglobal.logi.security.common.vo.user.UserBriefVO;
-import com.didiglobal.logi.security.common.vo.user.UserVO;
 import com.didiglobal.logi.security.exception.SecurityException;
-import com.didiglobal.logi.security.extend.OplogExtend;
 import com.didiglobal.logi.security.extend.ResourceExtend;
 import com.didiglobal.logi.security.mapper.ProjectMapper;
 import com.didiglobal.logi.security.mapper.UserMapper;
 import com.didiglobal.logi.security.mapper.UserProjectMapper;
 import com.didiglobal.logi.security.service.DeptService;
+import com.didiglobal.logi.security.service.OplogService;
 import com.didiglobal.logi.security.service.ProjectService;
 import com.didiglobal.logi.security.util.CopyBeanUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,7 +53,7 @@ public class ProjectServiceImpl implements ProjectService {
     private DeptService deptService;
 
     @Autowired
-    private OplogExtend oplogExtend;
+    private OplogService oplogService;
 
     @Autowired
     private ResourceExtend resourceExtend;
@@ -84,7 +83,7 @@ public class ProjectServiceImpl implements ProjectService {
         }
 
         // 保存操作日志
-        oplogExtend.saveOplog(OplogDto.builder()
+        oplogService.saveOplog(OplogDto.builder()
                 .operatePage("项目配置").operateType("新增")
                 .targetType("项目").target(saveVo.getProjectName()).build()
         );
@@ -150,7 +149,7 @@ public class ProjectServiceImpl implements ProjectService {
         projectMapper.deleteById(projectId);
 
         // 保存操作日志
-        oplogExtend.saveOplog(OplogDto.builder()
+        oplogService.saveOplog(OplogDto.builder()
                 .operatePage("项目配置").operateType("删除")
                 .targetType("项目").target(projectPO.getProjectName()).build()
         );
@@ -175,7 +174,7 @@ public class ProjectServiceImpl implements ProjectService {
         }
 
         // 保存操作日志
-        oplogExtend.saveOplog(OplogDto.builder()
+        oplogService.saveOplog(OplogDto.builder()
                 .operatePage("项目配置").operateType("编辑")
                 .targetType("项目").target(saveVo.getProjectName()).build()
         );
@@ -192,7 +191,7 @@ public class ProjectServiceImpl implements ProjectService {
         projectMapper.updateById(projectPO);
 
         // 保存操作日志
-        oplogExtend.saveOplog(OplogDto.builder()
+        oplogService.saveOplog(OplogDto.builder()
                 .operatePage("项目配置").operateType(projectPO.getRunning() ? "启用" : "停用")
                 .targetType("项目").target(projectPO.getProjectName()).build()
         );

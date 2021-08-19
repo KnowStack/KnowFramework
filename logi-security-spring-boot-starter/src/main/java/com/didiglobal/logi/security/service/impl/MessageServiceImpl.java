@@ -1,6 +1,7 @@
 package com.didiglobal.logi.security.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.didiglobal.logi.security.common.dto2.MessageDto;
 import com.didiglobal.logi.security.common.vo.message.MessageVO;
 import com.didiglobal.logi.security.common.po.MessagePO;
 import com.didiglobal.logi.security.mapper.MessageMapper;
@@ -25,6 +26,12 @@ public class MessageServiceImpl implements MessageService {
 
     @Autowired
     private UserMapper userMapper;
+
+    @Override
+    public void saveMessage(MessageDto messageDto) {
+        MessagePO messagePO = CopyBeanUtil.copy(messageDto, MessagePO.class);
+        messageMapper.insert(messagePO);
+    }
 
     @Override
     public List<MessageVO> getMessageList(Boolean read) {

@@ -9,6 +9,7 @@ import com.didiglobal.logi.security.common.dto.role.RoleAssignDTO;
 import com.didiglobal.logi.security.common.dto.role.RoleQueryDTO;
 import com.didiglobal.logi.security.common.dto.role.RoleSaveDTO;
 import com.didiglobal.logi.security.common.vo.role.RoleBriefVO;
+import com.didiglobal.logi.security.common.vo.role.RoleDeleteCheckVO;
 import com.didiglobal.logi.security.common.vo.role.RoleVO;
 import com.didiglobal.logi.security.common.dto2.MessageDto;
 import com.didiglobal.logi.security.common.dto2.OplogDto;
@@ -20,9 +21,9 @@ import com.didiglobal.logi.security.common.po.UserRolePO;
 import com.didiglobal.logi.security.common.vo.permission.PermissionTreeVO;
 import com.didiglobal.logi.security.common.enums.ResultCode;
 import com.didiglobal.logi.security.exception.SecurityException;
-import com.didiglobal.logi.security.extend.MessageExtend;
-import com.didiglobal.logi.security.extend.OplogExtend;
 import com.didiglobal.logi.security.mapper.*;
+import com.didiglobal.logi.security.service.MessageService;
+import com.didiglobal.logi.security.service.OplogService;
 import com.didiglobal.logi.security.service.PermissionService;
 import com.didiglobal.logi.security.service.RoleService;
 
@@ -56,10 +57,10 @@ public class RoleServiceImpl implements RoleService {
     private PermissionService permissionService;
 
     @Autowired
-    private MessageExtend messageExtend;
+    private MessageService messageService;
 
     @Autowired
-    private OplogExtend oplogExtend;
+    private OplogService oplogService;
 
     @Override
     public RoleVO getDetailById(Integer id) {
@@ -133,7 +134,7 @@ public class RoleServiceImpl implements RoleService {
         }
 
         // 保存操作日志
-        oplogExtend.saveOplog(OplogDto.builder()
+        oplogService.saveOplog(OplogDto.builder()
                 .operatePage("角色管理").operateType("新增")
                 .targetType("角色").target(roleSaveDTO.getRoleName()).build()
         );
@@ -159,7 +160,7 @@ public class RoleServiceImpl implements RoleService {
         roleMapper.deleteById(rolePO.getId());
 
         // 保存操作日志
-        oplogExtend.saveOplog(OplogDto.builder()
+        oplogService.saveOplog(OplogDto.builder()
                 .operatePage("角色管理").operateType("删除")
                 .targetType("角色").target(rolePO.getRoleName()).build()
         );
@@ -191,7 +192,7 @@ public class RoleServiceImpl implements RoleService {
         }
 
         // 保存操作日志
-        oplogExtend.saveOplog(
+        oplogService.saveOplog(
                 OplogDto.builder().operatePage("角色管理").operateType("编辑")
                 .targetType("角色").target(roleSaveDTO.getRoleName()).build()
         );
@@ -239,13 +240,13 @@ public class RoleServiceImpl implements RoleService {
         // 保存操作日志
         if(roleAssignDTO.getFlag()) {
             UserPO userPO = userMapper.selectById(roleAssignDTO.getId());
-            oplogExtend.saveOplog(OplogDto.builder()
+            oplogService.saveOplog(OplogDto.builder()
                     .operatePage("用户管理").operateType("分配角色")
                     .targetType("用户").target(userPO.getUsername()).build()
             );
         } else {
             RolePO rolePO = roleMapper.selectById(roleAssignDTO.getId());
-            oplogExtend.saveOplog(OplogDto.builder()
+            oplogService.saveOplog(OplogDto.builder()
                     .operatePage("角色管理").operateType("分配用户")
                     .targetType("角色").target(rolePO.getRoleName()).build()
             );
@@ -259,6 +260,25 @@ public class RoleServiceImpl implements RoleService {
                 .like(!StringUtils.isEmpty(roleName), "role_name", roleName);
         List<RolePO> roleList = roleMapper.selectList(queryWrapper);
         return CopyBeanUtil.copyList(roleList, RoleBriefVO.class);
+    }
+
+    @Override
+    public RoleDeleteCheckVO checkBeforeDelete(Integer roleId) {
+        QueryWrapper<UserRolePO> queryWrapper = new QueryWrapper<>();
+        queryWrapper.select("user_id").eq("role_id", roleId);
+        List<Object> userIdList = userRoleMapper.selectObjs(queryWrapper);
+        RoleDeleteCheckVO roleDeleteCheckVO = new RoleDeleteCheckVO();
+        roleDeleteCheckVO.setRoleId(roleId);
+        if(!CollectionUtils.isEmpty(userIdList)) {
+            QueryWrapper<UserPO> userWrapper = new QueryWrapper<>();
+            List<UserPO> userPOList = userMapper.selectList(userWrapper);
+            List<String> usernameList = new ArrayList<>();
+            for(UserPO userPo : userPOList) {
+                usernameList.add(userPo.getUsername());
+            }
+            roleDeleteCheckVO.setUsernameNameList(usernameList);
+        }
+        return roleDeleteCheckVO;
     }
 
     private void checkParam(RoleAssignDTO roleAssignDTO) {
@@ -384,7 +404,7 @@ public class RoleServiceImpl implements RoleService {
         String content = String.format(messageCode.getContent(), time, info);
         messageDto.setTitle(messageCode.getTitle());
         messageDto.setContent(content);
-        messageExtend.saveMessage(messageDto);
+        messageService.saveMessage(messageDto);
     }
 
     /**

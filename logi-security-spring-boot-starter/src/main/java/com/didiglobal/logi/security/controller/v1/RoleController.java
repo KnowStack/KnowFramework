@@ -8,6 +8,7 @@ import com.didiglobal.logi.security.common.dto.role.RoleAssignDTO;
 import com.didiglobal.logi.security.common.dto.role.RoleQueryDTO;
 import com.didiglobal.logi.security.common.dto.role.RoleSaveDTO;
 import com.didiglobal.logi.security.common.vo.role.RoleBriefVO;
+import com.didiglobal.logi.security.common.vo.role.RoleDeleteCheckVO;
 import com.didiglobal.logi.security.common.vo.role.RoleVO;
 import com.didiglobal.logi.security.service.RoleService;
 import io.swagger.annotations.*;
@@ -48,15 +49,14 @@ public class RoleController {
         roleService.createRole(roleSaveDTO);
         return Result.success();
     }
-    /*
-    @DeleteMapping("/{id}")
+
+    @DeleteMapping("/delete/check/{id}")
     @ApiOperation(value = "删除角色前的检查", notes = "判断该角色是否已经分配给用户，如有分配给用户，则返回用户的信息list")
     @ApiImplicitParam(name = "id", value = "角色id", dataType = "int", required = true)
-    public Result<List<UserVo>> check(@PathVariable Integer id) {
-        List<UserVo> userVoList = roleService.checkBeforeDeleteRole(id);
-        return Result.success(userVoList);
+    public Result<RoleDeleteCheckVO> check(@PathVariable Integer id) {
+        RoleDeleteCheckVO deleteCheckVO = roleService.checkBeforeDelete(id);
+        return Result.success(deleteCheckVO);
     }
-    */
 
     @DeleteMapping("/{id}")
     @ApiOperation(value = "删除角色", notes = "根据角色id删除角色")
