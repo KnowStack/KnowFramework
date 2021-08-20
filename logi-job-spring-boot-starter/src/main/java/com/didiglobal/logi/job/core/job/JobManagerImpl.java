@@ -322,7 +322,7 @@ public class JobManagerImpl implements JobManager {
 
           // 锁续约
           List<AuvTaskLock> auvTaskLocks = auvTaskLockMapper.selectByWorkerCode(WorkerSingleton
-                  .getInstance().getWorkerInfo().getCode());
+                  .getInstance().getWorkerInfo().getCode(), logIJobProperties.getAppName());
           if (!CollectionUtils.isEmpty(auvTaskLocks)) {
             for (AuvTaskLock auvTaskLock : auvTaskLocks) {
               boolean matched = jobFutureMap.keySet().stream().anyMatch(jobInfo ->
@@ -370,8 +370,6 @@ public class JobManagerImpl implements JobManager {
             }
           }
 
-          // 间隔一段时间执行一次
-//          ThreadUtil.sleep(JOB_INTERVAL, TimeUnit.SECONDS);
         } catch (Exception e) {
           logger.error("class=LockRenewHandler||method=run||url=||msg=", e);
         }

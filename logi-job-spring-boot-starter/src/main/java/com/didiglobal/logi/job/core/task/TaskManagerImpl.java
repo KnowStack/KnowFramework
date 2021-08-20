@@ -168,13 +168,15 @@ public class TaskManagerImpl implements TaskManager {
 
   @Override
   public void execute(TaskInfo taskInfo, Boolean executeSubs) {
+    Timestamp lastFireTime = new Timestamp(System.currentTimeMillis());
+
     AuvTask auvTask = BeanUtil.convertTo(taskInfo, AuvTask.class);
     List<TaskInfo.TaskWorker> taskWorkers = taskInfo.getTaskWorkers();
     boolean worked = false;
     for (TaskInfo.TaskWorker taskWorker : taskWorkers) {
       if (Objects.equals(taskWorker.getWorkerCode(),
               WorkerSingleton.getInstance().getWorkerInfo().getCode())) {
-        taskWorker.setLastFireTime(new Timestamp(System.currentTimeMillis()));
+        taskWorker.setLastFireTime(lastFireTime);
         taskWorker.setStatus(TaskStatusEnum.RUNNING.getValue());
         worked = true;
         break;
@@ -187,6 +189,7 @@ public class TaskManagerImpl implements TaskManager {
     }
 
     auvTask.setTaskWorkerStr(BeanUtil.convertToJson(taskWorkers));
+    auvTask.setLastFireTime(lastFireTime);
     // 更新任务状态，最近更新时间
     auvTaskMapper.updateByCode(auvTask);
 

@@ -26,25 +26,22 @@ public interface AuvTaskLockMapper {
   int update(@Param("id") Long id, @Param("expireTime") Long expireTime);
 
   @Select("select id, task_code, worker_code, expire_time, create_time, update_time, app_name "
-          + "from auv_task_lock")
-  List<AuvTaskLock> selectAll();
-
-  @Select("select id, task_code, worker_code, expire_time, create_time, update_time, app_name "
           + "from auv_task_lock where app_name=#{appName}")
   List<AuvTaskLock> selectByAppName(@Param("appName") String appName);
 
   @Select("select id, task_code, worker_code, expire_time, create_time, update_time, app_name "
-          + "from auv_task_lock where task_code=#{taskCode}")
-  List<AuvTaskLock> selectByTaskCode(@Param("taskCode") String taskCode);
+          + "from auv_task_lock where task_code=#{taskCode} and app_name=#{appName}")
+  List<AuvTaskLock> selectByTaskCode(@Param("taskCode") String taskCode, @Param("appName") String appName);
 
   @Select("select id, task_code, worker_code, expire_time, create_time, update_time, app_name "
-          + "from auv_task_lock where worker_code=#{workerCode}")
-  List<AuvTaskLock> selectByWorkerCode(@Param("workerCode") String workerCode);
+          + "from auv_task_lock where worker_code=#{workerCode} and app_name=#{appName}")
+  List<AuvTaskLock> selectByWorkerCode(@Param("workerCode") String workerCode, @Param("appName") String appName);
 
   @Select("select id, task_code, worker_code, expire_time, create_time, update_time, app_namefrom "
-          + "auv_task_lock where task_code=#{taskCode} and worker_code=#{workerCode}")
+          + "auv_task_lock where task_code=#{taskCode} and worker_code=#{workerCode} and app_name=#{appName}")
   List<AuvTaskLock> selectByTaskCodeAndWorkerCode(@Param("taskCode") String taskCode,
-                                                  @Param("workerCode") String workerCode);
+                                                  @Param("workerCode") String workerCode,
+                                                  @Param("appName") String appName);
 
   @Delete("delete from auv_task_lock where id=#{id}")
   int deleteById(@Param("id") Long id);

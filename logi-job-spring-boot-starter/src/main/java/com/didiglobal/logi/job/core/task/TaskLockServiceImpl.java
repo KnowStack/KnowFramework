@@ -26,7 +26,7 @@ import org.springframework.util.CollectionUtils;
 public class TaskLockServiceImpl implements TaskLockService {
   private static final Logger logger = LoggerFactory.getLogger(TaskLockServiceImpl.class);
   // 每次申请锁的默认过期时间
-  private static final Long EXPIRE_TIME_SECONDS = 300L;
+  private static final Long EXPIRE_TIME_SECONDS = 120L;
 
   private AuvTaskLockMapper auvTaskLockMapper;
   private LogIJobProperties logIJobProperties;
@@ -49,7 +49,7 @@ public class TaskLockServiceImpl implements TaskLockService {
 
   @Override
   public Boolean tryAcquire(String taskCode, String workerCode, Long expireTime) {
-    List<AuvTaskLock> auvTaskLockList = auvTaskLockMapper.selectByTaskCode(taskCode);
+    List<AuvTaskLock> auvTaskLockList = auvTaskLockMapper.selectByTaskCode(taskCode, logIJobProperties.getAppName());
 
     boolean hasLock;
     if (CollectionUtils.isEmpty(auvTaskLockList)) {
@@ -57,7 +57,7 @@ public class TaskLockServiceImpl implements TaskLockService {
     } else {
       long current = System.currentTimeMillis() / 1000;
       Long inLockSize = auvTaskLockList.stream().filter(auvTaskLock -> auvTaskLock.getCreateTime()
-              .getTime() / 1000 + expireTime < current).collect(Collectors.counting());
+              .getTime() / 1000 + expireTime > current).collect(Collectors.counting());
       hasLock = inLockSize > 0 ? true : false;
     }
 
@@ -90,7 +90,7 @@ public class TaskLockServiceImpl implements TaskLockService {
   @Override
   public Boolean tryRelease(String taskCode, String workerCode) {
     List<AuvTaskLock> auvTaskLockList = auvTaskLockMapper.selectByTaskCodeAndWorkerCode(taskCode,
-            workerCode);
+            workerCode, logIJobProperties.getAppName());
     if (CollectionUtils.isEmpty(auvTaskLockList)) {
       logger.error("class=TaskLockServiceImpl||method=tryRelease||url=||msg=taskCode={}, "
               + "workerCode={}", taskCode, workerCode);
