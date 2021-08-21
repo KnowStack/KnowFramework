@@ -1,14 +1,11 @@
 package com.didiglobal.logi.security.common.dto.oplog;
 
-import lombok.Builder;
 import lombok.Data;
-import lombok.experimental.Tolerate;
 
 /**
  * @author cjm
  */
 @Data
-@Builder
 public class OplogDTO {
 
     /**
@@ -36,6 +33,20 @@ public class OplogDTO {
      */
     private String detail;
 
-    @Tolerate
     public OplogDTO() {}
+
+    public OplogDTO(String operatePage, String operateType, String targetType, String target, String detail) {
+        this.operatePage = operatePage;
+        this.operateType = operateType;
+        this.targetType = targetType;
+        this.target = target;
+        this.detail = detail;
+    }
+
+    public OplogDTO(String operatePage, String operateType, String targetType, String target) {
+        this.operatePage = operatePage;
+        this.operateType = operateType;
+        this.targetType = targetType;
+        this.target = target;
+    }
 }

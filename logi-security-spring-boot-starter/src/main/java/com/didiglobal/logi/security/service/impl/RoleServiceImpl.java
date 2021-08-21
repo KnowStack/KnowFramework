@@ -116,12 +116,8 @@ public class RoleServiceImpl implements RoleService {
         roleMapper.insert(rolePO);
         // 保持角色与权限的关联信息
         rolePermissionService.saveRolePermission(rolePO.getId(), roleSaveDTO.getPermissionIdList());
-
         // 保存操作日志
-        oplogService.saveOplog(OplogDTO.builder()
-                .operatePage("角色管理").operateType("新增")
-                .targetType("角色").target(roleSaveDTO.getRoleName()).build()
-        );
+        oplogService.saveOplog(new OplogDTO("角色管理", "新增", "角色", roleSaveDTO.getRoleName()));
     }
 
     @Override
@@ -139,12 +135,8 @@ public class RoleServiceImpl implements RoleService {
         rolePermissionService.deleteRolePermissionByRoleId(roleId);
         // 逻辑删除（自动）
         roleMapper.deleteById(roleId);
-
         // 保存操作日志
-        oplogService.saveOplog(OplogDTO.builder()
-                .operatePage("角色管理").operateType("删除")
-                .targetType("角色").target(rolePO.getRoleName()).build()
-        );
+        oplogService.saveOplog(new OplogDTO("角色管理", "删除", "角色", rolePO.getRoleName()));
     }
 
     @Override
@@ -163,12 +155,8 @@ public class RoleServiceImpl implements RoleService {
         roleMapper.updateById(rolePO);
         // 更新角色与权限关联信息
         rolePermissionService.updateRolePermission(rolePO.getId(), roleSaveDTO.getPermissionIdList());
-
         // 保存操作日志
-        oplogService.saveOplog(
-                OplogDTO.builder().operatePage("角色管理").operateType("编辑")
-                .targetType("角色").target(roleSaveDTO.getRoleName()).build()
-        );
+        oplogService.saveOplog(new OplogDTO("角色管理", "编辑", "角色", roleSaveDTO.getRoleName()));
     }
 
     @Override
@@ -181,31 +169,26 @@ public class RoleServiceImpl implements RoleService {
             Integer userId = roleAssignDTO.getId();
             // 获取old的用户与角色的关系
             List<Integer> oldRoleIdList = userRoleService.getRoleIdListByUserId(userId);
+            // 更新关联信息
             userRoleService.updateUserRoleByUserId(userId, roleAssignDTO.getIdList());
-            // 打包和保存角色更新消息
-            packAndSaveMessage(oldRoleIdList, roleAssignDTO);
-
             // 保存操作日志
             UserBriefVO userBriefVO = userService.getUserBriefByUserId(roleAssignDTO.getId());
-            oplogService.saveOplog(OplogDTO.builder()
-                    .operatePage("用户管理").operateType("分配角色")
-                    .targetType("用户").target(userBriefVO.getUsername()).build()
-            );
+            OplogDTO oplogDTO = new OplogDTO("用户管理", "分配角色", "用户", userBriefVO.getUsername());
+            Integer oplogId = oplogService.saveOplog(oplogDTO);
+            // 打包和保存角色更新消息
+            packAndSaveMessage(oplogId, oldRoleIdList, roleAssignDTO);
         } else {
             // 1个角色分配给N个用户
             Integer roleId = roleAssignDTO.getId();
             // 获取old的用户与角色的关系
             List<Integer> oldUserIdList = userRoleService.getUserIdListByRoleId(roleId);
             userRoleService.updateUserRoleByRoleId(roleId, roleAssignDTO.getIdList());
-            // 打包和保存角色更新消息
-            packAndSaveMessage(oldUserIdList, roleAssignDTO);
-
             // 保存操作日志
             RolePO rolePO = roleMapper.selectById(roleAssignDTO.getId());
-            oplogService.saveOplog(OplogDTO.builder()
-                    .operatePage("角色管理").operateType("分配用户")
-                    .targetType("角色").target(rolePO.getRoleName()).build()
-            );
+            OplogDTO oplogDTO = new OplogDTO("角色管理", "分配用户", "角色", rolePO.getRoleName());
+            Integer oplogId = oplogService.saveOplog(oplogDTO);
+            // 打包和保存角色更新消息
+            packAndSaveMessage(oplogId, oldUserIdList, roleAssignDTO);
         }
     }
 
@@ -285,7 +268,7 @@ public class RoleServiceImpl implements RoleService {
         return result;
     }
 
-    private void packAndSaveMessage(List<Integer> oldIdList, RoleAssignDTO roleAssignDTO) {
+    private void packAndSaveMessage(Integer oplogId, List<Integer> oldIdList, RoleAssignDTO roleAssignDTO) {
         List<Integer> newIdList = roleAssignDTO.getIdList();
 
         List<Integer> removeIdList = new ArrayList<>();
@@ -308,24 +291,26 @@ public class RoleServiceImpl implements RoleService {
             List<Integer> userIdList = new ArrayList<>();
             userIdList.add(roleAssignDTO.getId());
             // 保存移除角色消息 和 新增角色消息
-            saveRoleAssignMessage(userIdList, removeIdList, userIdList, addIdList);
+            saveRoleAssignMessage(oplogId, userIdList, removeIdList, userIdList, addIdList);
         } else {
             // 1个角色分配给N个用户，oldIdList和newIdList都为用户idList
             List<Integer> roleIdList = new ArrayList<>();
             roleIdList.add(roleAssignDTO.getId());
             // 保存移除角色消息 和 新增角色消息
-            saveRoleAssignMessage(removeIdList, roleIdList, addIdList, roleIdList);
+            saveRoleAssignMessage(oplogId, removeIdList, roleIdList, addIdList, roleIdList);
         }
     }
 
     /**
      * 保存用户角色变更消息
+     * @param oplogId 操作日志id
      * @param removeUserIdList 被移除角色的用户idList
      * @param removeRoleIdList 移除的角色idList
      * @param addUserIdList 新增角色的用户idList
      * @param addRoleIdList 新增的角色idList
      */
-    private void saveRoleAssignMessage(List<Integer> removeUserIdList, List<Integer> removeRoleIdList,
+    private void saveRoleAssignMessage(Integer oplogId,
+                                       List<Integer> removeUserIdList, List<Integer> removeRoleIdList,
                                        List<Integer> addUserIdList, List<Integer> addRoleIdList) {
         // 获取当前时间
         SimpleDateFormat formatter= new SimpleDateFormat("MM-dd HH:mm");
@@ -338,9 +323,7 @@ public class RoleServiceImpl implements RoleService {
 
         List<MessageDTO> messageDTOList = new ArrayList<>();
         for(Integer userId : addUserIdList) {
-            MessageDTO messageDTO = new MessageDTO();
-            // 设置消息所属用户
-            messageDTO.setUserId(userId);
+            MessageDTO messageDTO = new MessageDTO(userId, oplogId);
             // 赋值占位符
             String content = String.format(MessageCode.ROLE_ADD_MESSAGE.getContent(), time, addRoleInfo);
             messageDTO.setContent(content);
@@ -348,9 +331,7 @@ public class RoleServiceImpl implements RoleService {
             messageDTOList.add(messageDTO);
         }
         for(Integer userId : removeUserIdList) {
-            MessageDTO messageDTO = new MessageDTO();
-            // 设置消息所属用户
-            messageDTO.setUserId(userId);
+            MessageDTO messageDTO = new MessageDTO(userId, oplogId);
             // 赋值占位符
             String content = String.format(MessageCode.ROLE_REMOVE_MESSAGE.getContent(), time, removeRoleInfo);
             messageDTO.setContent(content);

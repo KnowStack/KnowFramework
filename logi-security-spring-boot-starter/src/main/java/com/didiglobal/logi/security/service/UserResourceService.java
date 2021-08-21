@@ -82,4 +82,5 @@ public interface UserResourceService {
     /**
      * 调用该接口则资源查看权限控制状态被反转
      */
-    void changeResourceViewControlStatus();}
+    void changeResourceViewControlStatus();
+}

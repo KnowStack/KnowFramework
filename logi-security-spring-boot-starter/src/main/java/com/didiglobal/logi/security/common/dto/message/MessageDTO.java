@@ -27,4 +27,9 @@ public class MessageDTO {
      * 消息所属用户id
      */
     private Integer userId;
+
+    public MessageDTO(Integer userId, Integer oplogId) {
+        this.userId = userId;
+        this.oplogId = oplogId;
+    }
 }

@@ -87,14 +87,15 @@ public class OplogServiceImpl implements OplogService {
     }
 
     @Override
-    public void saveOplog(OplogDTO oplogDto) {
+    public Integer saveOplog(OplogDTO oplogDTO) {
         // 获取客户端真实ip地址
         String realIpAddress = NetworkUtil.getRealIpAddress();
-        OplogPO oplogPO = CopyBeanUtil.copy(oplogDto, OplogPO.class);
+        OplogPO oplogPO = CopyBeanUtil.copy(oplogDTO, OplogPO.class);
         oplogPO.setOperatorIp(realIpAddress);
         // 获取操作人信息
         UserBriefVO userBriefVO = userService.getUserBriefByUserId(ThreadLocalUtil.get());
         oplogPO.setOperatorUsername(userBriefVO.getUsername());
         oplogMapper.insert(oplogPO);
+        return oplogPO.getId();
     }
 }

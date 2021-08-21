@@ -383,10 +383,7 @@ public class UserResourceServiceImpl implements UserResourceService {
         }
 
         // 保存操作日志 TODO：用户+资源名称 这个信息咋搞比较好，还要记录移除的信息
-        oplogService.saveOplog(OplogDTO.builder()
-                .operatePage("资源权限管理").operateType("分配资源")
-                .targetType("用户").target("用户+资源名称").build()
-        );
+        oplogService.saveOplog(new OplogDTO("资源权限管理", "分配资源", "用户", "用户+资源名称"));
     }
 
     @Override
@@ -420,10 +417,7 @@ public class UserResourceServiceImpl implements UserResourceService {
         }
 
         // 保存操作日志 TODO：资源名称+用户 这个信息咋搞比较好？还要记录移除的信息
-        oplogService.saveOplog(OplogDTO.builder()
-                .operatePage("资源权限管理").operateType("分配用户")
-                .targetType("资源").target("资源名称+用户").build()
-        );
+        oplogService.saveOplog(new OplogDTO("资源权限管理", "分配用户", "资源", "资源名称+用户"));
     }
 
     /**
@@ -484,16 +478,10 @@ public class UserResourceServiceImpl implements UserResourceService {
 
         if(assignFlag) {
             // 保存操作日志 TODO：资源名称+用户 这个信息咋搞比较好？还要记录移除的信息
-            oplogService.saveOplog(OplogDTO.builder()
-                    .operatePage("资源权限管理").operateType("批量分配用户")
-                    .targetType("资源").target("资源名称+用户").build()
-            );
         } else {
             // 保存操作日志 TODO：用户+资源名称 这个信息咋搞比较好？还要记录移除的信息
-            oplogService.saveOplog(OplogDTO.builder()
-                    .operatePage("资源权限管理").operateType("批量分配资源")
-                    .targetType("用户").target("用户+资源名称").build()
-            );
+            oplogService.saveOplog(new OplogDTO("资源权限管理", "批量分配资源", "用户", "用户+资源名称"));
+
         }
     }
 

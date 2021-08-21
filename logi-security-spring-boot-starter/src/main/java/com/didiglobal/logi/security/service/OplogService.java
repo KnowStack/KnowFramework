@@ -13,10 +13,11 @@ import java.util.List;
 public interface OplogService {
 
     /**
-     * 保存操作日志
+     * 保存操作日志，并获取操作日志id
      * @param oplogDto 操作日志
+     * @return 操作日志id
      */
-    void saveOplog(OplogDTO oplogDto);
+    Integer saveOplog(OplogDTO oplogDto);
 
     /**
      * 分页查询操作日志
