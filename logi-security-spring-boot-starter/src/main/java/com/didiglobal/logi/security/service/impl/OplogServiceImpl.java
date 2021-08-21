@@ -5,18 +5,19 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.didiglobal.logi.security.common.PagingData;
 import com.didiglobal.logi.security.common.dto.oplog.OplogDTO;
+import com.didiglobal.logi.security.common.enums.ResultCode;
 import com.didiglobal.logi.security.common.po.OplogExtraPO;
 import com.didiglobal.logi.security.common.po.OplogPO;
 import com.didiglobal.logi.security.common.dto.oplog.OplogQueryDTO;
 import com.didiglobal.logi.security.common.vo.oplog.OplogVO;
 import com.didiglobal.logi.security.common.vo.user.UserBriefVO;
+import com.didiglobal.logi.security.exception.SecurityException;
 import com.didiglobal.logi.security.mapper.OplogExtraMapper;
 import com.didiglobal.logi.security.mapper.OplogMapper;
 import com.didiglobal.logi.security.service.OplogService;
 import com.didiglobal.logi.security.service.UserService;
 import com.didiglobal.logi.security.util.CopyBeanUtil;
 import com.didiglobal.logi.security.util.NetworkUtil;
-import com.didiglobal.logi.security.util.ThreadLocalUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -87,13 +88,17 @@ public class OplogServiceImpl implements OplogService {
     }
 
     @Override
-    public Integer saveOplog(OplogDTO oplogDTO) {
+    public Integer saveOplogWithUserId(Integer userId, OplogDTO oplogDTO) throws SecurityException {
+        // 获取操作人信息
+        UserBriefVO userBriefVO = userService.getUserBriefByUserId(userId);
+        if(userBriefVO == null) {
+            throw new SecurityException(ResultCode.USER_NOT_EXISTS);
+        }
         // 获取客户端真实ip地址
         String realIpAddress = NetworkUtil.getRealIpAddress();
         OplogPO oplogPO = CopyBeanUtil.copy(oplogDTO, OplogPO.class);
         oplogPO.setOperatorIp(realIpAddress);
-        // 获取操作人信息
-        UserBriefVO userBriefVO = userService.getUserBriefByUserId(ThreadLocalUtil.get());
+
         oplogPO.setOperatorUsername(userBriefVO.getUsername());
         oplogMapper.insert(oplogPO);
         return oplogPO.getId();

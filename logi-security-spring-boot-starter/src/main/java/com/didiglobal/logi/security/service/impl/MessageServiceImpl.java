@@ -32,22 +32,19 @@ public class MessageServiceImpl implements MessageService {
     }
 
     @Override
-    public List<MessageVO> getMessageList(Boolean readTag) {
-        // 获取消息所属用户id
-        Integer userId = ThreadLocalUtil.get();
+    public List<MessageVO> getMessageListByUserId(Integer userId, Boolean readTag) {
         QueryWrapper<MessagePO> queryWrapper = new QueryWrapper<>();
         queryWrapper
-                .eq( "user_id", userId)
+                .eq( userId != null, "user_id", userId)
                 .eq(readTag != null, "read_tag", readTag);
         List<MessagePO> messagePOList = messageMapper.selectList(queryWrapper);
-        List<MessageVO> messageVOList = new ArrayList<>();
-
+        List<MessageVO> result = new ArrayList<>();
         for(MessagePO messagePO : messagePOList) {
             MessageVO messageVO = CopyBeanUtil.copy(messagePO, MessageVO.class);
             messageVO.setCreateTime(messagePO.getCreateTime().getTime());
-            messageVOList.add(messageVO);
+            result.add(messageVO);
         }
-        return messageVOList;
+        return result;
     }
 
     @Override

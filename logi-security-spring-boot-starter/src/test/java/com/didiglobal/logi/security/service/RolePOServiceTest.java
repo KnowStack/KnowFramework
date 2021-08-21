@@ -54,7 +54,7 @@ public class RolePOServiceTest extends BaseTest {
         permissionIdList.add(3);
         permissionIdList.add(16);
         roleSaveDTO.setPermissionIdList(permissionIdList);
-        roleService.createRole(roleSaveDTO);
+        roleService.createRoleWithUserId(1, roleSaveDTO);
     }
 
     @Test
@@ -74,6 +74,6 @@ public class RolePOServiceTest extends BaseTest {
         RoleSaveDTO roleSaveDTO = new RoleSaveDTO();
         roleSaveDTO.setId(2);
         roleSaveDTO.setDescription("这是管理员角色123");
-        roleService.updateRoleByRoleId(roleSaveDTO);
+        roleService.updateRoleWithUserId(1, roleSaveDTO);
     }
 }

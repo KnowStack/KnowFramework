@@ -22,6 +22,7 @@ import com.didiglobal.logi.security.mapper.ProjectMapper;
 import com.didiglobal.logi.security.service.*;
 import com.didiglobal.logi.security.util.CopyBeanUtil;
 import com.didiglobal.logi.security.util.MathUtil;
+import com.didiglobal.logi.security.util.ThreadLocalUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
@@ -92,8 +93,8 @@ public class ProjectServiceImpl implements ProjectService {
         // 插入用户项目关联信息（项目负责人）
         userProjectService.saveUserProject(projectPO.getId(), saveVo.getUserIdList());
         // 保存操作日志
-        oplogService.saveOplog(new OplogDTO("项目配置", "新增", "项目", saveVo.getProjectName()));
-
+        OplogDTO oplogDTO = new OplogDTO("项目配置", "新增", "项目", saveVo.getProjectName());
+        oplogService.saveOplogWithUserId(ThreadLocalUtil.get(), oplogDTO);
     }
 
     @Override
@@ -144,7 +145,8 @@ public class ProjectServiceImpl implements ProjectService {
         // 逻辑删除项目（自动）
         projectMapper.deleteById(projectId);
         // 保存操作日志
-        oplogService.saveOplog(new OplogDTO("项目配置", "删除", "项目", projectPO.getProjectName()));
+        OplogDTO oplogDTO = new OplogDTO("项目配置", "删除", "项目", projectPO.getProjectName());
+        oplogService.saveOplogWithUserId(ThreadLocalUtil.get(), oplogDTO);
 
     }
 
@@ -161,7 +163,8 @@ public class ProjectServiceImpl implements ProjectService {
         // 更新项目负责人与项目联系
         userProjectService.updateUserProject(saveVo.getId(), saveVo.getUserIdList());
         // 保存操作日志
-        oplogService.saveOplog(new OplogDTO("项目配置", "编辑", "项目", saveVo.getProjectName()));
+        OplogDTO oplogDTO = new OplogDTO("项目配置", "编辑", "项目", saveVo.getProjectName());
+        oplogService.saveOplogWithUserId(ThreadLocalUtil.get(), oplogDTO);
     }
 
     @Override
@@ -175,8 +178,8 @@ public class ProjectServiceImpl implements ProjectService {
         projectMapper.updateById(projectPO);
         // 保存操作日志
         String curRunningTag = projectPO.getRunning() ? "启用" : "停用";
-        oplogService.saveOplog(new OplogDTO("项目配置", curRunningTag, "项目", projectPO.getProjectName()));
-
+        OplogDTO oplogDTO = new OplogDTO("项目配置", curRunningTag, "项目", projectPO.getProjectName());
+        oplogService.saveOplogWithUserId(ThreadLocalUtil.get(), oplogDTO);
     }
 
     @Override

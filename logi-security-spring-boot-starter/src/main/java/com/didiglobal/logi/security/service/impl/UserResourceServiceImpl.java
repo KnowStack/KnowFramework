@@ -22,6 +22,7 @@ import com.didiglobal.logi.security.extend.ResourceExtend;
 import com.didiglobal.logi.security.mapper.UserResourceMapper;
 import com.didiglobal.logi.security.service.*;
 import com.didiglobal.logi.security.util.CopyBeanUtil;
+import com.didiglobal.logi.security.util.ThreadLocalUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
@@ -383,7 +384,8 @@ public class UserResourceServiceImpl implements UserResourceService {
         }
 
         // 保存操作日志 TODO：用户+资源名称 这个信息咋搞比较好，还要记录移除的信息
-        oplogService.saveOplog(new OplogDTO("资源权限管理", "分配资源", "用户", "用户+资源名称"));
+        OplogDTO oplogDTO = new OplogDTO("资源权限管理", "分配资源", "用户", "用户+资源名称");
+        oplogService.saveOplogWithUserId(userId, oplogDTO);
     }
 
     @Override
@@ -417,7 +419,8 @@ public class UserResourceServiceImpl implements UserResourceService {
         }
 
         // 保存操作日志 TODO：资源名称+用户 这个信息咋搞比较好？还要记录移除的信息
-        oplogService.saveOplog(new OplogDTO("资源权限管理", "分配用户", "资源", "资源名称+用户"));
+        OplogDTO oplogDTO = new OplogDTO("资源权限管理", "分配用户", "资源", "资源名称+用户");
+        oplogService.saveOplogWithUserId(ThreadLocalUtil.get(), oplogDTO);
     }
 
     /**
@@ -478,10 +481,12 @@ public class UserResourceServiceImpl implements UserResourceService {
 
         if(assignFlag) {
             // 保存操作日志 TODO：资源名称+用户 这个信息咋搞比较好？还要记录移除的信息
+            OplogDTO oplogDTO = new OplogDTO("资源权限管理", "批量分配用户", "资源", "资源名称+用户");
+            oplogService.saveOplogWithUserId(ThreadLocalUtil.get(), oplogDTO);
         } else {
             // 保存操作日志 TODO：用户+资源名称 这个信息咋搞比较好？还要记录移除的信息
-            oplogService.saveOplog(new OplogDTO("资源权限管理", "批量分配资源", "用户", "用户+资源名称"));
-
+            OplogDTO oplogDTO = new OplogDTO("资源权限管理", "批量分配资源", "用户", "用户+资源名称");
+            oplogService.saveOplogWithUserId(ThreadLocalUtil.get(), oplogDTO);
         }
     }
 

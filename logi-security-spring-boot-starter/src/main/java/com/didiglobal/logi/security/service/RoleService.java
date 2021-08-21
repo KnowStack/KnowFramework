@@ -34,10 +34,11 @@ public interface RoleService {
 
     /**
      * 保存角色
+     * @param userId 角色创建者的用户id
      * @param roleSaveDTO 角色信息
      * @throws SecurityException 参数检查错误信息
      */
-    void createRole(RoleSaveDTO roleSaveDTO) throws SecurityException;
+    void createRoleWithUserId(Integer userId, RoleSaveDTO roleSaveDTO) throws SecurityException;
 
     /**
      * 删除角色
@@ -47,9 +48,10 @@ public interface RoleService {
 
     /**
      * 更新角色信息
+     * @param userId 角色更新者的用户id
      * @param roleSaveDTO 角色信息
      */
-    void updateRoleByRoleId(RoleSaveDTO roleSaveDTO);
+    void updateRoleWithUserId(Integer userId, RoleSaveDTO roleSaveDTO);
 
     /**
      * 分配角色给用户

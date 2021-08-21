@@ -101,13 +101,13 @@ public class RoleServiceImpl implements RoleService {
     }
 
     @Override
-    public void createRole(RoleSaveDTO roleSaveDTO) throws SecurityException {
+    public void createRoleWithUserId(Integer userId, RoleSaveDTO roleSaveDTO) throws SecurityException {
         // 检查参数
         checkParam(roleSaveDTO, false);
         // 保存角色信息
         RolePO rolePO = CopyBeanUtil.copy(roleSaveDTO, RolePO.class);
         // 设置修改人信息
-        UserBriefVO userBriefVO = userService.getUserBriefByUserId(ThreadLocalUtil.get());
+        UserBriefVO userBriefVO = userService.getUserBriefByUserId(userId);
         if(userBriefVO != null) {
             rolePO.setLastReviser(userBriefVO.getUsername());
         }
@@ -117,7 +117,8 @@ public class RoleServiceImpl implements RoleService {
         // 保持角色与权限的关联信息
         rolePermissionService.saveRolePermission(rolePO.getId(), roleSaveDTO.getPermissionIdList());
         // 保存操作日志
-        oplogService.saveOplog(new OplogDTO("角色管理", "新增", "角色", roleSaveDTO.getRoleName()));
+        OplogDTO oplogDTO = new OplogDTO("角色管理", "新增", "角色", roleSaveDTO.getRoleName());
+        oplogService.saveOplogWithUserId(ThreadLocalUtil.get(), oplogDTO);
     }
 
     @Override
@@ -136,11 +137,12 @@ public class RoleServiceImpl implements RoleService {
         // 逻辑删除（自动）
         roleMapper.deleteById(roleId);
         // 保存操作日志
-        oplogService.saveOplog(new OplogDTO("角色管理", "删除", "角色", rolePO.getRoleName()));
+        OplogDTO oplogDTO = new OplogDTO("角色管理", "删除", "角色", rolePO.getRoleName());
+        oplogService.saveOplogWithUserId(ThreadLocalUtil.get(), oplogDTO);
     }
 
     @Override
-    public void updateRoleByRoleId(RoleSaveDTO roleSaveDTO) {
+    public void updateRoleWithUserId(Integer userId, RoleSaveDTO roleSaveDTO) {
         if(roleMapper.selectById(roleSaveDTO.getId()) == null) {
             throw new SecurityException(ResultCode.ROLE_NOT_EXISTS);
         }
@@ -148,7 +150,7 @@ public class RoleServiceImpl implements RoleService {
         // 更新角色基本信息
         RolePO rolePO = CopyBeanUtil.copy(roleSaveDTO, RolePO.class);
         // 设置修改人信息
-        UserBriefVO userBriefVO = userService.getUserBriefByUserId(ThreadLocalUtil.get());
+        UserBriefVO userBriefVO = userService.getUserBriefByUserId(userId);
         if(userBriefVO != null) {
             rolePO.setLastReviser(userBriefVO.getUsername());
         }
@@ -156,7 +158,8 @@ public class RoleServiceImpl implements RoleService {
         // 更新角色与权限关联信息
         rolePermissionService.updateRolePermission(rolePO.getId(), roleSaveDTO.getPermissionIdList());
         // 保存操作日志
-        oplogService.saveOplog(new OplogDTO("角色管理", "编辑", "角色", roleSaveDTO.getRoleName()));
+        OplogDTO oplogDTO = new OplogDTO("角色管理", "编辑", "角色", roleSaveDTO.getRoleName());
+        oplogService.saveOplogWithUserId(ThreadLocalUtil.get(), oplogDTO);
     }
 
     @Override
@@ -174,7 +177,7 @@ public class RoleServiceImpl implements RoleService {
             // 保存操作日志
             UserBriefVO userBriefVO = userService.getUserBriefByUserId(roleAssignDTO.getId());
             OplogDTO oplogDTO = new OplogDTO("用户管理", "分配角色", "用户", userBriefVO.getUsername());
-            Integer oplogId = oplogService.saveOplog(oplogDTO);
+            Integer oplogId = oplogService.saveOplogWithUserId(ThreadLocalUtil.get(), oplogDTO);
             // 打包和保存角色更新消息
             packAndSaveMessage(oplogId, oldRoleIdList, roleAssignDTO);
         } else {
@@ -186,7 +189,7 @@ public class RoleServiceImpl implements RoleService {
             // 保存操作日志
             RolePO rolePO = roleMapper.selectById(roleAssignDTO.getId());
             OplogDTO oplogDTO = new OplogDTO("角色管理", "分配用户", "角色", rolePO.getRoleName());
-            Integer oplogId = oplogService.saveOplog(oplogDTO);
+            Integer oplogId = oplogService.saveOplogWithUserId(ThreadLocalUtil.get(), oplogDTO);
             // 打包和保存角色更新消息
             packAndSaveMessage(oplogId, oldUserIdList, roleAssignDTO);
         }

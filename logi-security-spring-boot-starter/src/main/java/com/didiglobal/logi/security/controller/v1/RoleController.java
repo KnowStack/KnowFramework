@@ -11,6 +11,7 @@ import com.didiglobal.logi.security.common.vo.role.RoleBriefVO;
 import com.didiglobal.logi.security.common.vo.role.RoleDeleteCheckVO;
 import com.didiglobal.logi.security.common.vo.role.RoleVO;
 import com.didiglobal.logi.security.service.RoleService;
+import com.didiglobal.logi.security.util.ThreadLocalUtil;
 import io.swagger.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -39,14 +40,14 @@ public class RoleController {
     @PutMapping
     @ApiOperation(value = "更新角色信息", notes = "根据角色id更新角色信息")
     public Result<String> update(@RequestBody RoleSaveDTO roleSaveDTO) {
-        roleService.updateRoleByRoleId(roleSaveDTO);
+        roleService.updateRoleWithUserId(ThreadLocalUtil.get(), roleSaveDTO);
         return Result.success();
     }
 
     @PostMapping
     @ApiOperation(value = "创建角色", notes = "创建角色")
     public Result<String> create(@RequestBody RoleSaveDTO roleSaveDTO) {
-        roleService.createRole(roleSaveDTO);
+        roleService.createRoleWithUserId(ThreadLocalUtil.get(), roleSaveDTO);
         return Result.success();
     }
 

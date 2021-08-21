@@ -82,8 +82,7 @@ public class DeptServiceImpl implements DeptService {
         if(CollectionUtils.isEmpty(deptIdList)) {
             return new ArrayList<>();
         }
-        queryWrapper
-                .select("id")
+        queryWrapper.select("id")
                 .like(!StringUtils.isEmpty(deptName), "dept_name", deptName)
                 .in("id", deptIdList);
         List<Object> deptIdList2 = deptMapper.selectObjs(queryWrapper);
