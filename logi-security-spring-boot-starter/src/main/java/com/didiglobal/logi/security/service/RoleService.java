@@ -1,13 +1,14 @@
 package com.didiglobal.logi.security.service;
 
 import com.didiglobal.logi.security.common.PagingData;
-import com.didiglobal.logi.security.common.dto.role.AssignDataDTO;
+import com.didiglobal.logi.security.common.vo.role.AssignInfoVO;
 import com.didiglobal.logi.security.common.dto.role.RoleAssignDTO;
 import com.didiglobal.logi.security.common.dto.role.RoleQueryDTO;
 import com.didiglobal.logi.security.common.dto.role.RoleSaveDTO;
 import com.didiglobal.logi.security.common.vo.role.RoleBriefVO;
 import com.didiglobal.logi.security.common.vo.role.RoleDeleteCheckVO;
 import com.didiglobal.logi.security.common.vo.role.RoleVO;
+import com.didiglobal.logi.security.exception.SecurityException;
 
 import java.util.List;
 
@@ -18,10 +19,10 @@ public interface RoleService {
 
     /**
      * 获取角色详情（主要是获取角色所拥有的权限信息）
-     * @param id 角色id
+     * @param roleId 角色id
      * @return RoleVo 角色信息
      */
-    RoleVO getDetailById(Integer id);
+    RoleVO getRoleDetailByRoleId(Integer roleId);
 
     /**
      * 分页获取角色列表
@@ -34,41 +35,43 @@ public interface RoleService {
     /**
      * 保存角色
      * @param roleSaveDTO 角色信息
+     * @throws SecurityException 参数检查错误信息
      */
-    void createRole(RoleSaveDTO roleSaveDTO);
+    void createRole(RoleSaveDTO roleSaveDTO) throws SecurityException;
 
     /**
      * 删除角色
      * @param id 角色id
      */
-    void deleteRoleById(Integer id);
+    void deleteRoleByRoleId(Integer id);
 
     /**
      * 更新角色信息
      * @param roleSaveDTO 角色信息
      */
-    void updateRoleById(RoleSaveDTO roleSaveDTO);
+    void updateRoleByRoleId(RoleSaveDTO roleSaveDTO);
 
     /**
      * 分配角色给用户
      * @param roleAssignDTO 分配信息
+     * @throws SecurityException 角色分配flag不可为空
      */
-    void assignRoles(RoleAssignDTO roleAssignDTO);
+    void assignRoles(RoleAssignDTO roleAssignDTO) throws SecurityException;
 
     /**
-     * 根据角色id和name获取用户list
+     * 根据角色id，获取分配信息
      * @param roleId 角色id
      * @param name 用户实名或账户名
-     * @return List<AssignDataVo>
+     * @return List<AssignDataVo> 分配信息
      */
-    List<AssignDataDTO> getAssignDataByRoleId(Integer roleId, String name);
+    List<AssignInfoVO> getAssignInfoByRoleId(Integer roleId, String name);
 
     /**
      * 根据角色名模糊查询
      * @param roleName 角色名
      * @return List<RoleBriefVO> 角色简要信息list
      */
-    List<RoleBriefVO> listByRoleName(String roleName);
+    List<RoleBriefVO> getRoleBriefListByRoleName(String roleName);
 
     /**
      * 判断该角色是否已经分配给用户，如有分配给用户，则返回用户名list
@@ -76,4 +79,17 @@ public interface RoleService {
      * @return RoleDeleteCheckVO 检查结果
      */
     RoleDeleteCheckVO checkBeforeDelete(Integer roleId);
+
+    /**
+     * 获取所有角色的简要信息
+     * @return List<RoleBriefVO> 角色简要信息
+     */
+    List<RoleBriefVO> getAllRoleBriefList();
+
+    /**
+     * 根据用户id获取用户拥有的角色信息
+     * @param userId 用户id
+     * @return List<RoleBriefVO> 角色简要信息
+     */
+    List<RoleBriefVO> getRoleBriefListByUserId(Integer userId);
 }

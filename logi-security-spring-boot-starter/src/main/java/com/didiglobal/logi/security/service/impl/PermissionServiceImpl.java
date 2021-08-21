@@ -9,6 +9,7 @@ import com.didiglobal.logi.security.exception.SecurityException;
 import com.didiglobal.logi.security.mapper.PermissionMapper;
 import com.didiglobal.logi.security.mapper.RolePermissionMapper;
 import com.didiglobal.logi.security.service.PermissionService;
+import com.didiglobal.logi.security.service.RolePermissionService;
 import com.didiglobal.logi.security.util.CopyBeanUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -25,7 +26,7 @@ public class PermissionServiceImpl implements PermissionService {
     private PermissionMapper permissionMapper;
 
     @Autowired
-    private RolePermissionMapper rolePermissionMapper;
+    private RolePermissionService rolePermissionService;
 
     @Override
     public PermissionTreeVO buildPermissionTree(Set<Integer> permissionHasSet) {
@@ -70,14 +71,8 @@ public class PermissionServiceImpl implements PermissionService {
     public PermissionTreeVO buildPermissionTreeByRoleId(Integer roleId) {
         QueryWrapper<RolePermissionPO> wrapper = new QueryWrapper<>();
         // 获取该角色拥有的全部权限id
-        wrapper.select("permission_id").eq("role_id", roleId);
-        List<Object> permissionIdList = rolePermissionMapper.selectObjs(wrapper);
-
-        Set<Integer> permissionHasSet = new HashSet<>();
-        for(Object permissionId : permissionIdList) {
-            permissionHasSet.add((Integer) permissionId);
-        }
-
+        List<Integer> permissionIdList = rolePermissionService.getPermissionIdListByRoleId(roleId);
+        Set<Integer> permissionHasSet = new HashSet<>(permissionIdList);
         return buildPermissionTree(permissionHasSet);
     }
 }

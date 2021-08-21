@@ -19,4 +19,7 @@ public class UserBriefVO {
 
     @ApiModelProperty(value = "真实姓名", dataType = "String", required = false)
     private String realName;
+
+    @ApiModelProperty(value = "部门id", dataType = "Integer", required = false)
+    private Integer deptId;
 }

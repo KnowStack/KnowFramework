@@ -36,7 +36,7 @@ public class OplogController {
     @ApiOperation(value = "获取操作日志详情", notes = "根据操作日志id获取操作日志详情")
     @ApiImplicitParam(name = "id", value = "操作日志id", dataType = "int", required = true)
     public Result<OplogVO> get(@PathVariable Integer id) {
-        OplogVO oplogVO = oplogService.getDetailById(id);
+        OplogVO oplogVO = oplogService.getOplogDetailByOplogId(id);
         return Result.success(oplogVO);
     }
 

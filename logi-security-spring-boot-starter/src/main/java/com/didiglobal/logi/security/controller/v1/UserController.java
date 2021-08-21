@@ -3,7 +3,7 @@ package com.didiglobal.logi.security.controller.v1;
 import com.didiglobal.logi.security.common.PagingData;
 import com.didiglobal.logi.security.common.PagingResult;
 import com.didiglobal.logi.security.common.Result;
-import com.didiglobal.logi.security.common.dto.role.AssignDataDTO;
+import com.didiglobal.logi.security.common.vo.role.AssignInfoVO;
 import com.didiglobal.logi.security.common.dto.user.UserQueryDTO;
 import com.didiglobal.logi.security.common.vo.user.UserBriefVO;
 import com.didiglobal.logi.security.common.vo.user.UserVO;
@@ -32,7 +32,7 @@ public class UserController {
     @ApiOperation(value = "获取用户详情", notes = "根据用户id获取用户详情")
     @ApiImplicitParam(name = "id", value = "用户id", dataType = "int", required = true)
     public Result<UserVO> detail(@PathVariable Integer id) {
-        UserVO userVo = userService.getDetailById(id);
+        UserVO userVo = userService.getUserDetailByUserId(id);
         return Result.success(userVo);
     }
 
@@ -47,7 +47,7 @@ public class UserController {
     @ApiOperation(value = "根据部门id获取用户list", notes = "根据部门id获取用户简要信息list")
     @ApiImplicitParam(name = "deptId", value = "部门id", dataType = "int", required = true)
     public Result<List<UserBriefVO>> listByDeptId(@PathVariable Integer deptId) {
-        List<UserBriefVO> userBriefVOList = userService.getListByDeptId(deptId);
+        List<UserBriefVO> userBriefVOList = userService.getUserBriefListByDeptId(deptId);
         return Result.success(userBriefVOList);
     }
 
@@ -55,7 +55,7 @@ public class UserController {
     @ApiOperation(value = "根据角色id获取用户list", notes = "根据角色id获取用户简要信息list")
     @ApiImplicitParam(name = "roleId", value = "角色id", dataType = "int", required = true)
     public Result<List<UserBriefVO>> listByRoleId(@PathVariable Integer roleId) {
-        List<UserBriefVO> userBriefVOList = userService.getListByRoleId(roleId);
+        List<UserBriefVO> userBriefVOList = userService.getUserBriefListByRoleId(roleId);
         return Result.success(userBriefVOList);
     }
 
@@ -65,17 +65,17 @@ public class UserController {
             @ApiImplicitParam(name = "userId", value = "用户id", dataType = "int", required = true),
             @ApiImplicitParam(name = "roleName", value = "角色名（为null，则获取全部角色）", dataType = "String", required = false),
     })
-    public Result<List<AssignDataDTO>> assignList(@PathVariable(value = "userId", required = true) Integer userId,
-                                                  @PathVariable(value = "roleName", required = false) String roleName) {
-        List<AssignDataDTO> assignDataDTOList = userService.getAssignDataByUserId(userId, roleName);
-        return Result.success(assignDataDTOList);
+    public Result<List<AssignInfoVO>> assignList(@PathVariable(value = "userId", required = true) Integer userId,
+                                                 @PathVariable(value = "roleName", required = false) String roleName) {
+        List<AssignInfoVO> assignInfoVOList = userService.getAssignDataByUserId(userId, roleName);
+        return Result.success(assignInfoVOList);
     }
 
     @GetMapping(value = {"/list/{name}", "/list"})
     @ApiOperation(value = "根据账户名或用户实名查询", notes = "获取用户简要信息list，会分别以账户名和实名去模糊查询，返回两者的并集")
     @ApiImplicitParam(name = "name", value = "账户名或用户实名（为null，则获取全部用户）", dataType = "String", required = false)
     public Result<List<UserBriefVO>> listByName(@PathVariable(required = false) String name) {
-        List<UserBriefVO> userBriefVOList = userService.getListByUsernameOrRealName(name);
+        List<UserBriefVO> userBriefVOList = userService.getUserBriefListByUsernameOrRealName(name);
         return Result.success(userBriefVOList);
     }
 }

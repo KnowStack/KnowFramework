@@ -2,10 +2,10 @@ package com.didiglobal.logi.security.service;
 
 import com.didiglobal.logi.security.BaseTest;
 import com.didiglobal.logi.security.common.po.ProjectPO;
-import com.didiglobal.logi.security.common.po.ProjectResourcePO;
+import com.didiglobal.logi.security.inside.common.po.ProjectResourcePO;
 import com.didiglobal.logi.security.common.po.ResourceTypePO;
 import com.didiglobal.logi.security.mapper.ProjectMapper;
-import com.didiglobal.logi.security.mapper.ProjectResourceMapper;
+import com.didiglobal.logi.security.inside.mapper.ProjectResourceMapper;
 import com.didiglobal.logi.security.mapper.ResourceTypeMapper;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;

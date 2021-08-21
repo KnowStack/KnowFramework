@@ -27,6 +27,12 @@ public class PagingData<T> {
 
     public PagingData() {}
 
+    public PagingData(List<T> bizData, Pagination pagination) {
+        this.pagination = pagination;
+        this.bizData = bizData;
+    }
+
+
     public PagingData(List<T> bizData, IPage iPage) {
         this.pagination = Pagination.builder()
                 .total(iPage.getTotal()).pages(iPage.getPages())

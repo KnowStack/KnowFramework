@@ -2,7 +2,7 @@ package com.didiglobal.logi.security.service;
 
 import com.didiglobal.logi.security.common.PagingData;
 import com.didiglobal.logi.security.common.dto.oplog.OplogQueryDTO;
-import com.didiglobal.logi.security.common.dto2.OplogDto;
+import com.didiglobal.logi.security.common.dto.oplog.OplogDTO;
 import com.didiglobal.logi.security.common.vo.oplog.OplogVO;
 
 import java.util.List;
@@ -16,7 +16,7 @@ public interface OplogService {
      * 保存操作日志
      * @param oplogDto 操作日志
      */
-    void saveOplog(OplogDto oplogDto);
+    void saveOplog(OplogDTO oplogDto);
 
     /**
      * 分页查询操作日志
@@ -30,7 +30,7 @@ public interface OplogService {
      * @param opLogId 操作日志id
      * @return OplogVo 详情
      */
-    OplogVO getDetailById(Integer opLogId);
+    OplogVO getOplogDetailByOplogId(Integer opLogId);
 
     /**
      * 获取操作日志列表的查询条件信息

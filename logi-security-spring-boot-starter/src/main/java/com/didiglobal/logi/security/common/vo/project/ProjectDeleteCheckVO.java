@@ -23,4 +23,8 @@ public class ProjectDeleteCheckVO {
 
     @ApiModelProperty(value = "服务名list，存放引用该项目的具体资源名", dataType = "List<String>", required = false)
     private List<String> resourceNameList;
+
+    public ProjectDeleteCheckVO(Integer projectId) {
+        this.projectId = projectId;
+    }
 }

@@ -31,7 +31,7 @@ public class Project extends BaseEntity {
     /**
      * 运行状态（启动 or 停用）
      */
-    private Boolean isRunning;
+    private Boolean running;
 
     /**
      * 所属部门id

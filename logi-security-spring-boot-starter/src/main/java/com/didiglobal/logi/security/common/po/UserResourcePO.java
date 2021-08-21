@@ -1,7 +1,7 @@
 package com.didiglobal.logi.security.common.po;
 
 import com.baomidou.mybatisplus.annotation.TableName;
-import com.didiglobal.logi.security.common.dto2.ResourceDto;
+import com.didiglobal.logi.security.common.dto2.ResourceDTO;
 import lombok.Data;
 
 /**
@@ -44,7 +44,7 @@ public class UserResourcePO {
      */
     private Integer controlLevel;
 
-    public UserResourcePO(ResourceDto resourceDto) {
+    public UserResourcePO(ResourceDTO resourceDto) {
         this.projectId = resourceDto.getProjectId();
         this.resourceTypeId = resourceDto.getResourceTypeId();
         this.resourceId = resourceDto.getResourceId();

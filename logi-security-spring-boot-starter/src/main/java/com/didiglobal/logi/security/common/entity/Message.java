@@ -26,7 +26,7 @@ public class Message extends BaseEntity {
     /**
      * 是否已读
      */
-    private Boolean read;
+    private Boolean readTag;
 
     /**
      * 消息所属用户id

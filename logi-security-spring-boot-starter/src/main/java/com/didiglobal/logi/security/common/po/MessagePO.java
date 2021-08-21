@@ -27,7 +27,7 @@ public class MessagePO extends BasePO {
     /**
      * 是否已读
      */
-    private Boolean read;
+    private Boolean readTag;
 
     /**
      * 操作日志id

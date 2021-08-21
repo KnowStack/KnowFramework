@@ -1,6 +1,6 @@
 package com.didiglobal.logi.security.common.entity;
 
-import com.didiglobal.logi.security.common.dto2.ResourceDto;
+import com.didiglobal.logi.security.common.dto2.ResourceDTO;
 import lombok.Data;
 
 /**
@@ -42,7 +42,7 @@ public class UserResource {
      */
     private Integer controlLevel;
 
-    public UserResource(ResourceDto resourceDto) {
+    public UserResource(ResourceDTO resourceDto) {
         this.projectId = resourceDto.getProjectId();
         this.resourceTypeId = resourceDto.getResourceTypeId();
         this.resourceId = resourceDto.getResourceId();

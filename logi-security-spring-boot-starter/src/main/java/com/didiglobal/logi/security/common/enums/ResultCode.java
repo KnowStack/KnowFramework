@@ -52,7 +52,7 @@ public enum ResultCode implements CodeMsg {
     ROLE_BUSINESS_ERROR(4001, "内部错误"),
     ROLE_NOT_EXISTS(4002, "角色不存在"),
     ROLE_USER_AUTHED(4003, "有用户已绑定该角色"),
-    ROLE_NAME_EXIST(4004, "角色名已存在"),
+    ROLE_NAME_ALREADY_EXISTS(4004, "角色名已存在"),
     ROLE_NAME_CANNOT_BE_BLANK(4005, "角色名不可为空"),
     ROLE_DEPT_CANNOT_BE_BLANK(4006, "角色描述不可为空"),
     ROLE_PERMISSION_CANNOT_BE_NULL(4007, "角色权限不可为空"),
@@ -60,8 +60,8 @@ public enum ResultCode implements CodeMsg {
     ROLE_ID_CANNOT_BE_NULL(4009, "角色id不可为空"),
 
     /* 项目错误 */
-    PROJECT_NAME_EXIST(5001, "项目名已存在"),
-    PROJECT_NOT_EXIST(5002, "项目不存在"),
+    PROJECT_NAME_ALREADY_EXISTS(5001, "项目名已存在"),
+    PROJECT_NOT_EXISTS(5002, "项目不存在"),
     PROJECT_UN_RUNNING(5003, "项目未运行"),
     PROJECT_ID_CANNOT_BE_NULL(5004, "项目id不可为空"),
     PROJECT_NAME_CANNOT_BE_BLANK(5005, "项目名不可为空"),

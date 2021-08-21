@@ -23,17 +23,17 @@ public class MessageController {
     @Autowired
     private MessageService messageService;
 
-    @GetMapping(value = {"/list/{read}", "/list"})
+    @GetMapping(value = {"/list/{readTag}", "/list"})
     @ApiOperation(value = "获取所有消息", notes = "根据是否读已读获取消息")
-    @ApiImplicitParam(name = "read", value = "消息状态（true已读，false未读，null全部）", dataType = "Boolean", required = false)
-    public Result<List<MessageVO>> list(@PathVariable(required = false) Boolean read) {
-        List<MessageVO> messageVOList = messageService.getMessageList(read);
+    @ApiImplicitParam(name = "readTag", value = "消息状态（true已读，false未读，null全部）", dataType = "Boolean", required = false)
+    public Result<List<MessageVO>> list(@PathVariable(required = false) Boolean readTag) {
+        List<MessageVO> messageVOList = messageService.getMessageList(readTag);
         return Result.success(messageVOList);
     }
 
     @PutMapping("/switch")
     @ApiOperation(value = "更改消息状态", notes = "调用该接口则消息状态被反转")
-    public Result<String> list(@RequestBody @ApiParam(name = "idList", value = "需要改变状态的消息idList") List<Integer> idList) {
+    public Result<String> switched(@RequestBody @ApiParam(name = "idList", value = "需要改变状态的消息idList") List<Integer> idList) {
         messageService.changeMessageStatus(idList);
         return Result.success();
     }

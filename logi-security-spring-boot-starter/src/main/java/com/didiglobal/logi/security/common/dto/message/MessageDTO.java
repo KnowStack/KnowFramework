@@ -1,4 +1,4 @@
-package com.didiglobal.logi.security.common.dto2;
+package com.didiglobal.logi.security.common.dto.message;
 
 import lombok.Data;
 
@@ -6,7 +6,7 @@ import lombok.Data;
  * @author cjm
  */
 @Data
-public class MessageDto {
+public class MessageDTO {
 
     /**
      * 消息标题

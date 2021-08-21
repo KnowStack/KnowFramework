@@ -1,4 +1,4 @@
-package com.didiglobal.logi.security.common.dto2;
+package com.didiglobal.logi.security.common.dto.oplog;
 
 import lombok.Builder;
 import lombok.Data;
@@ -9,7 +9,7 @@ import lombok.experimental.Tolerate;
  */
 @Data
 @Builder
-public class OplogDto {
+public class OplogDTO {
 
     /**
      * 操作页面
@@ -37,5 +37,5 @@ public class OplogDto {
     private String detail;
 
     @Tolerate
-    public OplogDto() {}
+    public OplogDTO() {}
 }

@@ -14,6 +14,9 @@ public class ProjectBriefVO {
     @ApiModelProperty(value = "项目id", dataType = "Integer", required = false)
     private Integer id;
 
+    @ApiModelProperty(value = "项目编号", dataType = "String", required = false)
+    private String projectCode;
+
     /**
      * 项目名
      */

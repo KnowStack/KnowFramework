@@ -2,9 +2,11 @@ package com.didiglobal.logi.security.service;
 
 import com.didiglobal.logi.security.BaseTest;
 import com.didiglobal.logi.security.common.dto.user.UserQueryDTO;
-import com.didiglobal.logi.security.common.vo.user.UserVO;
+import com.didiglobal.logi.security.common.vo.user.UserBriefVO;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.List;
 
 public class UserPOServiceTest extends BaseTest {
 
@@ -25,7 +27,7 @@ public class UserPOServiceTest extends BaseTest {
 
     @Test
     public void testGetDetailById() {
-        UserVO userVo = userService.getDetailById(4);
-        System.out.println(userVo);
+        List<UserBriefVO> listByRoleId = userService.getUserBriefListByRoleId(null);
+        System.out.println(listByRoleId);
     }
 }

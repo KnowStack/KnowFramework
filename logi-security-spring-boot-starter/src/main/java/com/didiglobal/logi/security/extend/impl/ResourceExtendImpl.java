@@ -4,11 +4,11 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.didiglobal.logi.security.common.PagingData;
-import com.didiglobal.logi.security.common.dto2.ResourceDto;
-import com.didiglobal.logi.security.common.po.ProjectResourcePO;
+import com.didiglobal.logi.security.common.dto2.ResourceDTO;
+import com.didiglobal.logi.security.inside.common.po.ProjectResourcePO;
 import com.didiglobal.logi.security.extend.ResourceExtend;
 import com.didiglobal.logi.security.mapper.ProjectMapper;
-import com.didiglobal.logi.security.mapper.ProjectResourceMapper;
+import com.didiglobal.logi.security.inside.mapper.ProjectResourceMapper;
 import com.didiglobal.logi.security.mapper.ResourceTypeMapper;
 import com.didiglobal.logi.security.util.CopyBeanUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,7 +33,7 @@ public class ResourceExtendImpl implements ResourceExtend {
     private ProjectResourceMapper projectResourceMapper;
 
     @Override
-    public PagingData<ResourceDto> getResourcePage(Integer projectId, Integer resourceTypeId, String resourceName, int page, int size) {
+    public PagingData<ResourceDTO> getResourcePage(Integer projectId, Integer resourceTypeId, String resourceName, int page, int size) {
 
         IPage<ProjectResourcePO> iPage = new Page<>(page, size);
         QueryWrapper<ProjectResourcePO> queryWrapper = new QueryWrapper<>();
@@ -42,18 +42,18 @@ public class ResourceExtendImpl implements ResourceExtend {
                 .eq(resourceTypeId != null, "resource_type_id", resourceTypeId)
                 .like(!StringUtils.isEmpty(resourceName), "resource_name", resourceName);
         projectResourceMapper.selectPage(iPage, queryWrapper);
-        List<ResourceDto> resourceDtoList = CopyBeanUtil.copyList(iPage.getRecords(), ResourceDto.class);
-        return new PagingData<>(resourceDtoList, iPage);
+        List<ResourceDTO> resourceDTOList = CopyBeanUtil.copyList(iPage.getRecords(), ResourceDTO.class);
+        return new PagingData<>(resourceDTOList, iPage);
     }
 
     @Override
-    public List<ResourceDto> getResourceList(Integer projectId, Integer resourceTypeId) {
+    public List<ResourceDTO> getResourceList(Integer projectId, Integer resourceTypeId) {
         QueryWrapper<ProjectResourcePO> queryWrapper = new QueryWrapper<>();
         queryWrapper
                 .eq(projectId != null, "project_id", projectId)
                 .eq(resourceTypeId != null, "resource_type_id", resourceTypeId);
         List<ProjectResourcePO> projectResources = projectResourceMapper.selectList(queryWrapper);
-        return CopyBeanUtil.copyList(projectResources, ResourceDto.class);
+        return CopyBeanUtil.copyList(projectResources, ResourceDTO.class);
     }
 
     @Override

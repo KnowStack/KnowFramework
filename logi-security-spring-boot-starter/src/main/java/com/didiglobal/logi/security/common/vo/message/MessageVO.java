@@ -30,7 +30,7 @@ public class MessageVO {
      * 是否已读
      */
     @ApiModelProperty(value = "是否已读", dataType = "Boolean", required = false)
-    private Boolean read;
+    private Boolean readTag;
 
     /**
      * 创建时间

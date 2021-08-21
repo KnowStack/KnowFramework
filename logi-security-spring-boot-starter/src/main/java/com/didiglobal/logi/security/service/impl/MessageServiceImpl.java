@@ -1,7 +1,7 @@
 package com.didiglobal.logi.security.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.didiglobal.logi.security.common.dto2.MessageDto;
+import com.didiglobal.logi.security.common.dto.message.MessageDTO;
 import com.didiglobal.logi.security.common.vo.message.MessageVO;
 import com.didiglobal.logi.security.common.po.MessagePO;
 import com.didiglobal.logi.security.mapper.MessageMapper;
@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -24,28 +25,27 @@ public class MessageServiceImpl implements MessageService {
     @Autowired
     private MessageMapper messageMapper;
 
-    @Autowired
-    private UserMapper userMapper;
-
     @Override
-    public void saveMessage(MessageDto messageDto) {
+    public void saveMessage(MessageDTO messageDto) {
         MessagePO messagePO = CopyBeanUtil.copy(messageDto, MessagePO.class);
         messageMapper.insert(messagePO);
     }
 
     @Override
-    public List<MessageVO> getMessageList(Boolean read) {
+    public List<MessageVO> getMessageList(Boolean readTag) {
         // 获取消息所属用户id
         Integer userId = ThreadLocalUtil.get();
-        QueryWrapper<MessagePO> messageWrapper = new QueryWrapper<>();
-        messageWrapper
+        QueryWrapper<MessagePO> queryWrapper = new QueryWrapper<>();
+        queryWrapper
                 .eq( "user_id", userId)
-                .eq(read != null, "read", read);
-        List<MessagePO> messagePOList = messageMapper.selectList(messageWrapper);
-        List<MessageVO> messageVOList = CopyBeanUtil.copyList(messagePOList, MessageVO.class);
-        for(int i = 0; i < messagePOList.size(); i++) {
-            MessageVO messageVO = messageVOList.get(i);
-            messageVO.setCreateTime(messagePOList.get(i).getCreateTime().getTime());
+                .eq(readTag != null, "read_tag", readTag);
+        List<MessagePO> messagePOList = messageMapper.selectList(queryWrapper);
+        List<MessageVO> messageVOList = new ArrayList<>();
+
+        for(MessagePO messagePO : messagePOList) {
+            MessageVO messageVO = CopyBeanUtil.copy(messagePO, MessageVO.class);
+            messageVO.setCreateTime(messagePO.getCreateTime().getTime());
+            messageVOList.add(messageVO);
         }
         return messageVOList;
     }
@@ -60,8 +60,17 @@ public class MessageServiceImpl implements MessageService {
         List<MessagePO> messagePOList = messageMapper.selectList(messageWrapper);
         for(MessagePO messagePO : messagePOList) {
             // 反转已读状态
-            messagePO.setRead(!messagePO.getRead());
+            messagePO.setReadTag(!messagePO.getReadTag());
             messageMapper.updateById(messagePO);
         }
+    }
+
+    @Override
+    public void saveMessages(List<MessageDTO> messageDTOList) {
+        if(CollectionUtils.isEmpty(messageDTOList)) {
+            return;
+        }
+        List<MessagePO> messagePOList = CopyBeanUtil.copyList(messageDTOList, MessagePO.class);
+        messageMapper.insertBatchSomeColumn(messagePOList);
     }
 }

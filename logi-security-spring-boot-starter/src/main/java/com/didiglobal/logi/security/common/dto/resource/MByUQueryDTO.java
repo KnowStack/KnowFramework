@@ -21,6 +21,9 @@ public class MByUQueryDTO extends PageParamDTO {
     @ApiModelProperty(value = "部门id", dataType = "Integer", required = false)
     private Integer deptId;
 
+    @ApiModelProperty(value = "部门名（模糊）", dataType = "String", required = false)
+    private String deptName;
+
     @ApiModelProperty(value = "用户账号", dataType = "String", required = false)
     private String username;
 

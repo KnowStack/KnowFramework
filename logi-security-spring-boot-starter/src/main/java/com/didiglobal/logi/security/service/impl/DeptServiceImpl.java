@@ -12,6 +12,8 @@ import com.didiglobal.logi.security.service.DeptService;
 import com.didiglobal.logi.security.util.CopyBeanUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
+import org.springframework.util.StringUtils;
 
 import java.util.*;
 
@@ -57,17 +59,39 @@ public class DeptServiceImpl implements DeptService {
     }
 
     @Override
-    public List<DeptBriefVO> getParentDeptListByChildId(Integer deptId) {
+    public List<DeptBriefVO> getDeptBriefListByChildId(Integer deptId) {
         List<DeptBriefVO> deptBriefVOList = new ArrayList<>();
         getParentDeptListByChildId(null, deptId, deptBriefVOList);
         return deptBriefVOList;
     }
 
     @Override
-    public List<Integer> getChildDeptIdListByParentId(Integer deptId) {
+    public List<Integer> getDeptIdListByParentId(Integer deptId) {
+        if(deptId == null) {
+            return new ArrayList<>();
+        }
         List<Integer> deptIdList = new ArrayList<>();
         getChildDeptIdListByParentId(deptIdList, deptId);
         return deptIdList;
+    }
+
+    @Override
+    public List<Integer> getDeptIdListByParentIdAndDeptName(Integer deptId, String deptName) {
+        List<Integer> deptIdList = getDeptIdListByParentId(deptId);
+        QueryWrapper<DeptPO> queryWrapper = new QueryWrapper<>();
+        if(CollectionUtils.isEmpty(deptIdList)) {
+            return new ArrayList<>();
+        }
+        queryWrapper
+                .select("id")
+                .like(!StringUtils.isEmpty(deptName), "dept_name", deptName)
+                .in("id", deptIdList);
+        List<Object> deptIdList2 = deptMapper.selectObjs(queryWrapper);
+        List<Integer> result = new ArrayList<>();
+        for(Object id : deptIdList2) {
+            result.add((Integer) id);
+        }
+        return result;
     }
 
     private void getParentDeptListByChildId(DeptPO child, Integer deptId, List<DeptBriefVO> deptBriefVOList) {

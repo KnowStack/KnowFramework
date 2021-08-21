@@ -8,7 +8,7 @@ import java.util.Collection;
  * @author cjm
  * EasyBaseMapper 扩展通用 Mapper，支持数据批量插入
  */
-interface EasyBaseMapper<T> extends BaseMapper<T> {
+public interface EasyBaseMapper<T> extends BaseMapper<T> {
 
     /**
      * 批量插入 仅适用于mysql

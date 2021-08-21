@@ -2,14 +2,26 @@ package com.didiglobal.logi.security.service;
 
 import com.didiglobal.logi.security.common.PagingData;
 import com.didiglobal.logi.security.common.dto.resource.*;
-import com.didiglobal.logi.security.common.vo.resource.*;
+import com.didiglobal.logi.security.common.vo.resource.MByRDataVO;
+import com.didiglobal.logi.security.common.vo.resource.MByRVO;
+import com.didiglobal.logi.security.common.vo.resource.MByUDataVO;
+import com.didiglobal.logi.security.common.vo.resource.MByUVO;
 
 import java.util.List;
 
 /**
  * @author cjm
+ * 管理用户拥有的资源权限
  */
-public interface ResourceService {
+public interface UserResourceService {
+
+    /**
+     * 根据用户id和指定条件，获取用户拥有权限的具体资源个数
+     * @param userId 用户id
+     * @param queryDTO 查询条件
+     * @return 用户idList
+     */
+    int getResourceCntByUserId(Integer userId, UserResourceQueryDTO queryDTO);
 
     /**
      * 资源权限管理>按资源管理的列表信息
@@ -48,12 +60,6 @@ public interface ResourceService {
     void batchAssignResourcePermission(BatchAssignDTO batchAssignDTO);
 
     /**
-     * 获取所有资源类型list
-     * @return List<ResourceTypeVo>
-     */
-    List<ResourceTypeVO> getResourceTypeList();
-
-    /**
      * 资源权限管理/按用户管理/分配资源/数据列表的信息
      * @param queryVo 查询条件
      * @return 数据列表信息
@@ -76,5 +82,4 @@ public interface ResourceService {
     /**
      * 调用该接口则资源查看权限控制状态被反转
      */
-    void changeResourceViewControlStatus();
-}
+    void changeResourceViewControlStatus();}

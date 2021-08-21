@@ -19,6 +19,6 @@ public class RoleDeleteCheckVO {
     private Integer roleId;
 
     @ApiModelProperty(value = "用户名list，存放引用该角色的用户名", dataType = "List<String>", required = false)
-    private List<String> usernameNameList;
+    private List<String> usernameList;
 
 }

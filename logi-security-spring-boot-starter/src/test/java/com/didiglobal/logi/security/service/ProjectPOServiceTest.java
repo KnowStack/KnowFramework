@@ -34,7 +34,7 @@ public class ProjectPOServiceTest extends BaseTest {
     @Test
     public void TestGetDetailByIdOrCode() {
         int projectId = 1;
-        ProjectVO projectVO = projectService.getDetailById(projectId);
+        ProjectVO projectVO = projectService.getProjectDetailByProjectId(projectId);
         System.out.println(projectVO);
     }
 
@@ -52,7 +52,7 @@ public class ProjectPOServiceTest extends BaseTest {
     @Test
     public void testDeleteProjectById() {
         int projectId = 1;
-        projectService.deleteProjectById(projectId);
+        projectService.deleteProjectByProjectId(projectId);
     }
 
     @Test
@@ -67,7 +67,7 @@ public class ProjectPOServiceTest extends BaseTest {
         list.add(3);
         list.add(4);
         saveVo.setUserIdList(list);
-        projectService.updateProjectBy(saveVo);
+        projectService.updateProject(saveVo);
     }
 
 }

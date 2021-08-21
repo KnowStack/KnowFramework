@@ -1,4 +1,4 @@
-package com.didiglobal.logi.security.common.entity;
+package com.didiglobal.logi.security.inside.common.entity;
 
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;

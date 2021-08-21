@@ -1,8 +1,6 @@
 package com.didiglobal.logi.security.common.dto2;
 
-import lombok.Builder;
 import lombok.Data;
-import lombok.experimental.Tolerate;
 
 /**
  * @author cjm
@@ -10,8 +8,7 @@ import lombok.experimental.Tolerate;
  * 集群资源信息
  */
 @Data
-@Builder
-public class ResourceDto {
+public class ResourceDTO {
 
     /**
      * 资源id（资源id指的是该资源所在服务对该资源的标识）
@@ -33,6 +30,14 @@ public class ResourceDto {
      */
     private Integer resourceTypeId;
 
-    @Tolerate
-    public ResourceDto() {}
+    public ResourceDTO() {
+
+    }
+
+    public ResourceDTO(Integer projectId, Integer resourceTypeId, Integer resourceId) {
+        this.projectId = projectId;
+        this.resourceTypeId = resourceTypeId;
+        this.resourceId = resourceId;
+    }
+
 }

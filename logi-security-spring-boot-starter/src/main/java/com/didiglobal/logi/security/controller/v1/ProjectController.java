@@ -30,7 +30,7 @@ public class ProjectController {
     @ApiOperation(value = "获取项目详情", notes = "根据项目id获取项目详情")
     @ApiImplicitParam(name = "id", value = "项目id", dataType = "int", required = true)
     public Result<ProjectVO> detail(@PathVariable Integer id) {
-        ProjectVO projectVO = projectService.getDetailById(id);
+        ProjectVO projectVO = projectService.getProjectDetailByProjectId(id);
         return Result.success(projectVO);
     }
 
@@ -45,7 +45,7 @@ public class ProjectController {
     @PutMapping
     @ApiOperation(value = "更新项目", notes = "根据项目id更新项目信息")
     public Result<String> update(@RequestBody ProjectSaveDTO projectSaveDTO) {
-        projectService.updateProjectBy(projectSaveDTO);
+        projectService.updateProject(projectSaveDTO);
         return Result.success();
     }
 
@@ -68,7 +68,7 @@ public class ProjectController {
     @ApiOperation(value = "删除项目", notes = "根据项目id删除项目")
     @ApiImplicitParam(name = "id", value = "项目id", dataType = "int", required = true)
     public Result<String> delete(@PathVariable Integer id) {
-        projectService.deleteProjectById(id);
+        projectService.deleteProjectByProjectId(id);
         return Result.success();
     }
 
@@ -82,7 +82,7 @@ public class ProjectController {
     @GetMapping("/list")
     @ApiOperation(value = "获取所有项目信息", notes = "获取全部项目简要信息（只返回id、项目名）")
     public Result<List<ProjectBriefVO>> list() {
-        List<ProjectBriefVO> projectBriefVOList = projectService.getProjectList();
+        List<ProjectBriefVO> projectBriefVOList = projectService.getProjectBriefList();
         return Result.success(projectBriefVOList);
     }
 }

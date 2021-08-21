@@ -34,14 +34,14 @@ public class RolePOServiceTest extends BaseTest {
 
     @Test
     public void testDeleteRoleById() {
-        roleService.deleteRoleById(7);
+        roleService.deleteRoleByRoleId(7);
     }
 
     @Test
     public void testGetDetailByIdOrCode() {
         int roleId = 2;
         String roleCode = "role11608";
-        RoleVO roleVo = roleService.getDetailById(2);
+        RoleVO roleVo = roleService.getRoleDetailByRoleId(2);
         System.out.println(roleVo);
     }
 
@@ -74,6 +74,6 @@ public class RolePOServiceTest extends BaseTest {
         RoleSaveDTO roleSaveDTO = new RoleSaveDTO();
         roleSaveDTO.setId(2);
         roleSaveDTO.setDescription("这是管理员角色123");
-        roleService.updateRoleById(roleSaveDTO);
+        roleService.updateRoleByRoleId(roleSaveDTO);
     }
 }
