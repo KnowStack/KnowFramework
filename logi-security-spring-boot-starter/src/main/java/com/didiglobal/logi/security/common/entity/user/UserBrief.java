@@ -4,6 +4,7 @@ import lombok.Data;
 
 /**
  * @author cjm
+ * 用户简要信息
  */
 @Data
 public class UserBrief {

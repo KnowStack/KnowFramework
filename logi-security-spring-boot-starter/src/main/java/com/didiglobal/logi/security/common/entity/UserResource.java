@@ -42,15 +42,15 @@ public class UserResource {
      */
     private Integer controlLevel;
 
-    public UserResource(ResourceDTO resourceDto) {
-        this.projectId = resourceDto.getProjectId();
-        this.resourceTypeId = resourceDto.getResourceTypeId();
-        this.resourceId = resourceDto.getResourceId();
+    public UserResource(ResourceDTO resourceDTO) {
+        this.projectId = resourceDTO.getProjectId();
+        this.resourceTypeId = resourceDTO.getResourceTypeId();
+        this.resourceId = resourceDTO.getResourceId();
     }
 
     public UserResource() {}
 
-    public UserResource(int userId, int projectId, int resourceTypeId, int resourceId, int controlLevel) {
+    public UserResource(Integer userId, Integer projectId, Integer resourceTypeId, Integer resourceId, Integer controlLevel) {
         this.userId = userId;
         this.projectId = projectId;
         this.resourceTypeId = resourceTypeId;
