@@ -1,12 +1,10 @@
 package com.didiglobal.logi.security.service.impl;
 
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.didiglobal.logi.security.common.entity.Permission;
 import com.didiglobal.logi.security.common.enums.ResultCode;
-import com.didiglobal.logi.security.common.po.RolePermissionPO;
 import com.didiglobal.logi.security.common.vo.permission.PermissionTreeVO;
 import com.didiglobal.logi.security.dao.PermissionDao;
-import com.didiglobal.logi.security.exception.SecurityException;
+import com.didiglobal.logi.security.exception.LogiSecurityException;
 import com.didiglobal.logi.security.service.PermissionService;
 import com.didiglobal.logi.security.service.RolePermissionService;
 import com.didiglobal.logi.security.util.CopyBeanUtil;
@@ -27,8 +25,7 @@ public class PermissionServiceImpl implements PermissionService {
     @Autowired
     private RolePermissionService rolePermissionService;
 
-    @Override
-    public PermissionTreeVO buildPermissionTree(Set<Integer> permissionHasSet) {
+    private PermissionTreeVO buildPermissionTree(Set<Integer> permissionHasSet) throws LogiSecurityException {
         // 获取全部权限，根据level小到大排序
         List<Permission> permissionList = permissionDao.selectAllAndAscOrderByLevel();
 
@@ -49,7 +46,7 @@ public class PermissionServiceImpl implements PermissionService {
                 // 如果parent为null，则需要查看下数据库权限表的数据是否有误
                 // 1.可能出现了本来该是父节点的节点（有其他子节点的parent为它），但该节点parent为其他子节点的情况（数据异常）
                 // 2.也可能是level填写错了（因为前面根据level大小排序）
-                throw new SecurityException(ResultCode.PERMISSION_DATA_ERROR);
+                throw new LogiSecurityException(ResultCode.PERMISSION_DATA_ERROR);
             }
             // 父权限拥有，子权限才肯定拥有
             permissionTreeVO.setHas(parent.getHas() && permissionHasSet.contains(permission.getId()));
@@ -60,16 +57,31 @@ public class PermissionServiceImpl implements PermissionService {
     }
 
     @Override
+    public PermissionTreeVO buildPermissionTreeWithHas(List<Integer> permissionHasList) {
+        PermissionTreeVO permissionTreeVO = null;
+        try {
+            permissionTreeVO = buildPermissionTree(new HashSet<>(permissionHasList));
+        } catch (LogiSecurityException e) {
+            e.printStackTrace();
+        }
+        return permissionTreeVO;
+    }
+
+    @Override
     public PermissionTreeVO buildPermissionTree() {
-        return buildPermissionTree(new HashSet<>());
+        PermissionTreeVO permissionTreeVO = null;
+        try {
+            permissionTreeVO = buildPermissionTree(new HashSet<>());
+        } catch (LogiSecurityException e) {
+            e.printStackTrace();
+        }
+        return permissionTreeVO;
     }
 
     @Override
     public PermissionTreeVO buildPermissionTreeByRoleId(Integer roleId) {
-        QueryWrapper<RolePermissionPO> wrapper = new QueryWrapper<>();
         // 获取该角色拥有的全部权限id
         List<Integer> permissionIdList = rolePermissionService.getPermissionIdListByRoleId(roleId);
-        Set<Integer> permissionHasSet = new HashSet<>(permissionIdList);
-        return buildPermissionTree(permissionHasSet);
+        return buildPermissionTreeWithHas(permissionIdList);
     }
 }

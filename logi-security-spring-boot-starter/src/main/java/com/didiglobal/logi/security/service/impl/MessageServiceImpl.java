@@ -23,8 +23,8 @@ public class MessageServiceImpl implements MessageService {
     private MessageDao messageDao;
 
     @Override
-    public void saveMessage(MessageDTO messageDto) {
-        Message message = CopyBeanUtil.copy(messageDto, Message.class);
+    public void saveMessage(MessageDTO messageDTO) {
+        Message message = CopyBeanUtil.copy(messageDTO, Message.class);
         messageDao.insert(message);
     }
 

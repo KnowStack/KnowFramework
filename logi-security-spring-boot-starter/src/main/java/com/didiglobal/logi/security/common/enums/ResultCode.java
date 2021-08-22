@@ -80,7 +80,7 @@ public enum ResultCode implements CodeMsg {
     PERMISSION_DATA_ERROR(8001, "获取权限数据异常"),
 
     /* 部门错误 */
-    DEPT_DATA_ERROR(9001, "获取部门数据异常"),
+    DEPT_DATA_ERROR(9001, "获取部门数据异常，请检查部门表数据"),
 
     /* 资源权限管理错误 */
     // 按资源管理/分配用户

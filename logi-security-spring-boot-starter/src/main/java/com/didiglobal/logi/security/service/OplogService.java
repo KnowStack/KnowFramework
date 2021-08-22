@@ -4,7 +4,6 @@ import com.didiglobal.logi.security.common.PagingData;
 import com.didiglobal.logi.security.common.dto.oplog.OplogQueryDTO;
 import com.didiglobal.logi.security.common.dto.oplog.OplogDTO;
 import com.didiglobal.logi.security.common.vo.oplog.OplogVO;
-import com.didiglobal.logi.security.exception.SecurityException;
 
 import java.util.List;
 
@@ -18,9 +17,8 @@ public interface OplogService {
      * @param userId 操作用户id
      * @param oplogDTO 操作日志
      * @return 操作日志id
-     * @throws SecurityException 用户不存在（userId无效）
      */
-    Integer saveOplogWithUserId(Integer userId, OplogDTO oplogDTO) throws SecurityException;
+    Integer saveOplogWithUserId(Integer userId, OplogDTO oplogDTO);
 
     /**
      * 分页查询操作日志

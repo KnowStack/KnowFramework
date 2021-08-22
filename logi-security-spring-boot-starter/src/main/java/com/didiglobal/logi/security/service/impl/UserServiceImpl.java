@@ -12,7 +12,7 @@ import com.didiglobal.logi.security.common.vo.user.UserBriefVO;
 import com.didiglobal.logi.security.common.vo.user.UserVO;
 import com.didiglobal.logi.security.common.enums.ResultCode;
 import com.didiglobal.logi.security.dao.UserDao;
-import com.didiglobal.logi.security.exception.SecurityException;
+import com.didiglobal.logi.security.exception.LogiSecurityException;
 import com.didiglobal.logi.security.service.*;
 import com.didiglobal.logi.security.util.CopyBeanUtil;
 
@@ -93,7 +93,7 @@ public class UserServiceImpl implements UserService {
         // 根据用户id获取角色List
         List<RoleBriefVO> roleBriefVOList = roleService.getRoleBriefListByUserId(userId);
 
-        Set<Integer> permissionHasSet = new HashSet<>();
+        List<Integer> permissionHasSet = new ArrayList<>();
         for (RoleBriefVO roleBriefVO : roleBriefVOList) {
             // 获取角色拥有的权限idList
             List<Integer> permissionIdList = rolePermissionService.getPermissionIdListByRoleId(roleBriefVO.getId());
@@ -105,7 +105,7 @@ public class UserServiceImpl implements UserService {
         // 设置角色信息
         userVo.setRoleList(roleBriefVOList);
         // 构建权限树
-        userVo.setPermissionTreeVO(permissionService.buildPermissionTree(permissionHasSet));
+        userVo.setPermissionTreeVO(permissionService.buildPermissionTreeWithHas(permissionHasSet));
         // 查找用户所在部门信息
         userVo.setDeptList(deptService.getDeptBriefListByChildId(user.getDeptId()));
         userVo.setUpdateTime(user.getUpdateTime().getTime());
@@ -155,9 +155,9 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<AssignInfoVO> getAssignDataByUserId(Integer userId, String roleName) {
+    public List<AssignInfoVO> getAssignDataByUserId(Integer userId, String roleName) throws LogiSecurityException {
         if(userId == null) {
-            throw new SecurityException(ResultCode.USER_ID_CANNOT_BE_NULL);
+            throw new LogiSecurityException(ResultCode.USER_ID_CANNOT_BE_NULL);
         }
         // 根据角色名，模糊查询
         List<RoleBriefVO> roleBriefVOList = roleService.getRoleBriefListByRoleName(roleName);

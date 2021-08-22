@@ -1,7 +1,6 @@
 package com.didiglobal.logi.security.exception;
 
 import com.didiglobal.logi.security.common.Result;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -10,16 +9,15 @@ import org.springframework.web.bind.annotation.ResponseBody;
  * @author cjm
  * 全局异常处理
  */
-@Slf4j
-@ControllerAdvice
+// @ControllerAdvice
 public class GlobalExceptionHandler {
 
     /**
      * 捕获SecurityException异常
      */
     @ResponseBody
-    @ExceptionHandler(value = SecurityException.class)
-    public Result<String> securityException(SecurityException e) {
+    @ExceptionHandler(value = LogiSecurityException.class)
+    public Result<String> securityException(LogiSecurityException e) {
         e.printStackTrace();
         String[] s = e.getMessage().split("-", 2);
         return Result.fail(Integer.parseInt(s[0]), s[1]);

@@ -18,7 +18,7 @@ import com.didiglobal.logi.security.common.vo.project.ProjectBriefVO;
 import com.didiglobal.logi.security.common.vo.resource.*;
 import com.didiglobal.logi.security.common.vo.user.UserBriefVO;
 import com.didiglobal.logi.security.dao.UserResourceDao;
-import com.didiglobal.logi.security.exception.SecurityException;
+import com.didiglobal.logi.security.exception.LogiSecurityException;
 import com.didiglobal.logi.security.extend.ResourceExtend;
 import com.didiglobal.logi.security.service.*;
 import com.didiglobal.logi.security.util.CopyBeanUtil;
@@ -77,7 +77,7 @@ public class UserResourceServiceImpl implements UserResourceService {
     }
 
     @Override
-    public List<MByUDataVO> getManagerByUserDataList(MByUDataQueryDTO queryDTO) {
+    public List<MByUDataVO> getManagerByUserDataList(MByUDataQueryDTO queryDTO) throws LogiSecurityException {
         // 检查参数
         checkParam(queryDTO);
 
@@ -121,7 +121,7 @@ public class UserResourceServiceImpl implements UserResourceService {
     }
 
     @Override
-    public List<MByRDataVO> getManagerByResourceDataList(MByRDataQueryDTO queryDTO) {
+    public List<MByRDataVO> getManagerByResourceDataList(MByRDataQueryDTO queryDTO) throws LogiSecurityException {
         checkParam(queryDTO);
         Integer projectId = queryDTO.getProjectId();
         Integer resourceTypeId = queryDTO.getResourceTypeId();
@@ -203,50 +203,50 @@ public class UserResourceServiceImpl implements UserResourceService {
      * @param resourceTypeId 资源类别id
      * @param resourceId 具体资源id
      */
-    private void checkParam(Integer controlLevel, Integer projectId, Integer resourceTypeId, Integer resourceId) {
+    private void checkParam(Integer controlLevel, Integer projectId, Integer resourceTypeId, Integer resourceId) throws LogiSecurityException {
         if(projectId == null) {
             // 项目id不可为nul
-            throw new SecurityException(ResultCode.PROJECT_ID_CANNOT_BE_NULL);
+            throw new LogiSecurityException(ResultCode.PROJECT_ID_CANNOT_BE_NULL);
         }
         if(resourceTypeId == null && resourceId != null) {
             // 这种情况不允许出现（如果resourceId != null，则resourceTypeId必不为null）
-            throw new SecurityException(ResultCode.RESOURCE_ASSIGN_ERROR);
+            throw new LogiSecurityException(ResultCode.RESOURCE_ASSIGN_ERROR);
         }
         if(ControlLevelCode.getByType(controlLevel) == null) {
-            throw new SecurityException(ResultCode.RESOURCE_INVALID_CONTROL_LEVEL);
+            throw new LogiSecurityException(ResultCode.RESOURCE_INVALID_CONTROL_LEVEL);
         }
     }
 
-    private void checkParam(MByRDataQueryDTO queryDTO) {
+    private void checkParam(MByRDataQueryDTO queryDTO) throws LogiSecurityException {
         checkParam(
                 queryDTO.getControlLevel(), queryDTO.getProjectId(),
                 queryDTO.getResourceTypeId(), queryDTO.getResourceId()
         );
     }
 
-    private void checkParam(MByUDataQueryDTO queryDTO) {
+    private void checkParam(MByUDataQueryDTO queryDTO) throws LogiSecurityException {
         if(queryDTO.getUserId() == null) {
-            throw new SecurityException(ResultCode.USER_ID_CANNOT_BE_NULL);
+            throw new LogiSecurityException(ResultCode.USER_ID_CANNOT_BE_NULL);
         }
         if(ControlLevelCode.getByType(queryDTO.getControlLevel()) == null) {
-            throw new SecurityException(ResultCode.RESOURCE_INVALID_CONTROL_LEVEL);
+            throw new LogiSecurityException(ResultCode.RESOURCE_INVALID_CONTROL_LEVEL);
         }
         checkParam(queryDTO.getShowLevel(), queryDTO.getProjectId(), queryDTO.getResourceTypeId());
     }
 
-    private void checkParam(AssignToOneUserDTO assignToOneUserDTO) {
+    private void checkParam(AssignToOneUserDTO assignToOneUserDTO) throws LogiSecurityException {
         Integer userId = assignToOneUserDTO.getUserId();
         if(userId == null) {
-            throw new SecurityException(ResultCode.USER_ID_CANNOT_BE_NULL);
+            throw new LogiSecurityException(ResultCode.USER_ID_CANNOT_BE_NULL);
         }
         if(ControlLevelCode.getByType(assignToOneUserDTO.getControlLevel()) == null) {
-            throw new SecurityException(ResultCode.RESOURCE_INVALID_CONTROL_LEVEL);
+            throw new LogiSecurityException(ResultCode.RESOURCE_INVALID_CONTROL_LEVEL);
         }
         Integer projectId = assignToOneUserDTO.getProjectId();
         Integer resourceTypeId = assignToOneUserDTO.getResourceTypeId();
         if(projectId == null && resourceTypeId != null) {
             // 资源类别id不为null，则项目id不可为null
-            throw new SecurityException(ResultCode.RESOURCE_ASSIGN_ERROR_2);
+            throw new LogiSecurityException(ResultCode.RESOURCE_ASSIGN_ERROR_2);
         }
     }
 
@@ -313,7 +313,7 @@ public class UserResourceServiceImpl implements UserResourceService {
     }
 
     @Override
-    public void assignResourcePermission(AssignToOneUserDTO assignToOneUserDTO) {
+    public void assignResourcePermission(AssignToOneUserDTO assignToOneUserDTO) throws LogiSecurityException {
         // 检查参数
         checkParam(assignToOneUserDTO);
         Integer userId = assignToOneUserDTO.getUserId();
@@ -337,7 +337,7 @@ public class UserResourceServiceImpl implements UserResourceService {
     }
 
     @Override
-    public void assignResourcePermission(AssignToManyUserDTO assignToManyUserDTO) {
+    public void assignResourcePermission(AssignToManyUserDTO assignToManyUserDTO) throws LogiSecurityException {
         // 检查参数
         checkParam(assignToManyUserDTO);
         List<Integer> userIdList = assignToManyUserDTO.getUserIdList();
@@ -396,7 +396,7 @@ public class UserResourceServiceImpl implements UserResourceService {
     }
 
     @Override
-    public void batchAssignResourcePermission(BatchAssignDTO assignDTO) {
+    public void batchAssignResourcePermission(BatchAssignDTO assignDTO) throws LogiSecurityException {
         // 检查参数
         checkParam(assignDTO);
         // 获取参数
@@ -424,20 +424,20 @@ public class UserResourceServiceImpl implements UserResourceService {
         }
     }
 
-    private void checkParam(BatchAssignDTO assignDTO) {
+    private void checkParam(BatchAssignDTO assignDTO) throws LogiSecurityException {
         if(assignDTO.getAssignFlag() == null) {
-            throw new SecurityException(ResultCode.RESOURCE_ASSIGN_BATCH_FLAG_CANNOT_BE_NULL);
+            throw new LogiSecurityException(ResultCode.RESOURCE_ASSIGN_BATCH_FLAG_CANNOT_BE_NULL);
         }
         if(assignDTO.getProjectId() == null && assignDTO.getResourceTypeId() != null) {
             // 资源类别id不为null，则项目id不可为null
-            throw new SecurityException(ResultCode.RESOURCE_ASSIGN_ERROR_2);
+            throw new LogiSecurityException(ResultCode.RESOURCE_ASSIGN_ERROR_2);
         }
         if(ControlLevelCode.getByType(assignDTO.getControlLevel()) == null) {
-            throw new SecurityException(ResultCode.RESOURCE_INVALID_CONTROL_LEVEL);
+            throw new LogiSecurityException(ResultCode.RESOURCE_INVALID_CONTROL_LEVEL);
         }
     }
 
-    private void checkParam(AssignToManyUserDTO assignToManyUserDTO) {
+    private void checkParam(AssignToManyUserDTO assignToManyUserDTO) throws LogiSecurityException {
         checkParam(
                 assignToManyUserDTO.getControlLevel(), assignToManyUserDTO.getProjectId(),
                 assignToManyUserDTO.getResourceTypeId(), assignToManyUserDTO.getResourceId()
@@ -475,7 +475,7 @@ public class UserResourceServiceImpl implements UserResourceService {
     //--------------------------资源权限管理（按资源管理）begin--------------------------
 
     @Override
-    public PagingData<MByRVO> getManageByResourcePage(MByRQueryDTO queryDTO) {
+    public PagingData<MByRVO> getManageByResourcePage(MByRQueryDTO queryDTO) throws LogiSecurityException {
         // 检查参数
         checkParam(queryDTO);
 
@@ -494,27 +494,27 @@ public class UserResourceServiceImpl implements UserResourceService {
         }
     }
 
-    private void checkParam(Integer showLevel, Integer projectId, Integer resourceTypeId) {
+    private void checkParam(Integer showLevel, Integer projectId, Integer resourceTypeId) throws LogiSecurityException {
         if(ShowLevelCode.getByType(showLevel) == null) {
             // 请输入有效的展示级别（1 <= showLevel <= 3）
-            throw new SecurityException(ResultCode.RESOURCE_INVALID_SHOW_LEVEL);
+            throw new LogiSecurityException(ResultCode.RESOURCE_INVALID_SHOW_LEVEL);
         }
         if(showLevel.equals(ShowLevelCode.RESOURCE_TYPE.getType())) {
             // 资源类别展示级别，表示查找某个项目下所有资源类别
             if(projectId == null) {
                 // 2级展示级别，项目id不可为null
-                throw new SecurityException(ResultCode.RESOURCE_SHOW_LEVEL_ERROR);
+                throw new LogiSecurityException(ResultCode.RESOURCE_SHOW_LEVEL_ERROR);
             }
         } else if(showLevel.equals(ShowLevelCode.RESOURCE.getType())){
             // 具体资源展示级别，表示查找该项目下该资源类别对应的资源
             if(projectId == null || resourceTypeId == null) {
                 // 3级展示级别，项目id或资源类别id不可为null
-                throw new SecurityException(ResultCode.RESOURCE_SHOW_LEVEL_ERROR_2);
+                throw new LogiSecurityException(ResultCode.RESOURCE_SHOW_LEVEL_ERROR_2);
             }
         }
     }
 
-    private void checkParam(MByRQueryDTO queryDTO) {
+    private void checkParam(MByRQueryDTO queryDTO) throws LogiSecurityException {
         checkParam(queryDTO.getShowLevel(), queryDTO.getProjectId(), queryDTO.getResourceTypeId());
     }
 

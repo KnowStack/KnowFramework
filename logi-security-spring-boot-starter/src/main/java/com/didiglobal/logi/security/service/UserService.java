@@ -6,6 +6,7 @@ import com.didiglobal.logi.security.common.vo.role.AssignInfoVO;
 import com.didiglobal.logi.security.common.dto.user.UserQueryDTO;
 import com.didiglobal.logi.security.common.vo.user.UserBriefVO;
 import com.didiglobal.logi.security.common.vo.user.UserVO;
+import com.didiglobal.logi.security.exception.LogiSecurityException;
 
 import java.util.List;
 
@@ -58,8 +59,9 @@ public interface UserService {
      * @param userId 用户id
      * @param roleName 角色名
      * @return List<AssignDataVo>
+     * @throws LogiSecurityException 用户id不可为null
      */
-    List<AssignInfoVO> getAssignDataByUserId(Integer userId, String roleName);
+    List<AssignInfoVO> getAssignDataByUserId(Integer userId, String roleName) throws LogiSecurityException;
 
     /**
      * 根据角色id获取用户list

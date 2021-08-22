@@ -1,6 +1,5 @@
 package com.didiglobal.logi.security.service;
 
-import com.didiglobal.logi.security.common.po.DeptPO;
 import com.didiglobal.logi.security.common.vo.dept.DeptBriefVO;
 import com.didiglobal.logi.security.common.vo.dept.DeptTreeVO;
 
@@ -26,6 +25,7 @@ public interface DeptService {
     List<DeptBriefVO> getDeptBriefListByChildId(Integer deptId);
 
     /**
+     * 获取当前部门的子部门部门idList
      * 根据部门id，获取所有子部门id（包括子部门、子子部门、子子子部门...）
      * @param deptId 部门id
      * @return 子部门idList

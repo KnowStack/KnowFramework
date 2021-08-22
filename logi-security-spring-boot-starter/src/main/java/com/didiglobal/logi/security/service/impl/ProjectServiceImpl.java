@@ -14,7 +14,7 @@ import com.didiglobal.logi.security.common.vo.project.ProjectBriefVO;
 import com.didiglobal.logi.security.common.vo.project.ProjectDeleteCheckVO;
 import com.didiglobal.logi.security.common.vo.project.ProjectVO;
 import com.didiglobal.logi.security.dao.ProjectDao;
-import com.didiglobal.logi.security.exception.SecurityException;
+import com.didiglobal.logi.security.exception.LogiSecurityException;
 import com.didiglobal.logi.security.extend.ResourceExtend;
 import com.didiglobal.logi.security.service.*;
 import com.didiglobal.logi.security.util.CopyBeanUtil;
@@ -79,7 +79,7 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
-    public void createProject(ProjectSaveDTO saveVo) {
+    public void createProject(ProjectSaveDTO saveVo) throws LogiSecurityException {
         // 检查参数
         checkParam(saveVo, false);
         Project project = CopyBeanUtil.copy(saveVo, Project.class);
@@ -100,7 +100,9 @@ public class ProjectServiceImpl implements ProjectService {
             List<Integer> userIdList = userService.getUserIdListByUsernameOrRealName(queryDTO.getChargeUsername());
             projectIdList = userProjectService.getProjectIdListByUserIdList(userIdList);
         }
+        // 获取当前部门的子部门idList
         List<Integer> deptIdList = deptService.getDeptIdListByParentId(queryDTO.getDeptId());
+        // 分页获取
         IPage<Project> iPage = projectDao.selectPageByDeptIdListAndProjectIdList(queryDTO, deptIdList, projectIdList);
         List<ProjectVO> projectVOList = new ArrayList<>();
         for(Project project : iPage.getRecords()) {
@@ -133,9 +135,9 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
-    public void updateProject(ProjectSaveDTO saveVo) {
+    public void updateProject(ProjectSaveDTO saveVo) throws LogiSecurityException {
         if(projectDao.selectByProjectId(saveVo.getId()) == null) {
-            throw new SecurityException(ResultCode.PROJECT_NOT_EXISTS);
+            throw new LogiSecurityException(ResultCode.PROJECT_NOT_EXISTS);
         }
         // 检查参数
         checkParam(saveVo, true);
@@ -202,25 +204,25 @@ public class ProjectServiceImpl implements ProjectService {
      * @param saveVo 项目参数
      * @param isUpdate 创建 or 更新
      */
-    private void checkParam(ProjectSaveDTO saveVo, boolean isUpdate) {
+    private void checkParam(ProjectSaveDTO saveVo, boolean isUpdate) throws LogiSecurityException {
         if(StringUtils.isEmpty(saveVo.getProjectName())) {
-            throw new SecurityException(ResultCode.PROJECT_NAME_CANNOT_BE_BLANK);
+            throw new LogiSecurityException(ResultCode.PROJECT_NAME_CANNOT_BE_BLANK);
         }
         if(saveVo.getDeptId() == null) {
-            throw new SecurityException(ResultCode.PROJECT_DEPT_CANNOT_BE_NULL);
+            throw new LogiSecurityException(ResultCode.PROJECT_DEPT_CANNOT_BE_NULL);
         }
         if(StringUtils.isEmpty(saveVo.getDescription())) {
-            throw new SecurityException(ResultCode.PROJECT_DES_CANNOT_BE_BLANK);
+            throw new LogiSecurityException(ResultCode.PROJECT_DES_CANNOT_BE_BLANK);
         }
         if(CollectionUtils.isEmpty(saveVo.getUserIdList())) {
-            throw new SecurityException(ResultCode.PROJECT_CHARGE_USER_CANNOT_BE_NULL);
+            throw new LogiSecurityException(ResultCode.PROJECT_CHARGE_USER_CANNOT_BE_NULL);
         }
         // 如果是更新操作，则判断项目名重复的时候要排除old信息
         Integer projectId = isUpdate ? saveVo.getId() : null;
         int count = projectDao.selectCountByProjectNameAndNotProjectId(saveVo.getProjectName(), projectId);
         if(count > 0) {
             // 项目名不可重复
-            throw new SecurityException(ResultCode.PROJECT_NAME_ALREADY_EXISTS);
+            throw new LogiSecurityException(ResultCode.PROJECT_NAME_ALREADY_EXISTS);
         }
     }
 }

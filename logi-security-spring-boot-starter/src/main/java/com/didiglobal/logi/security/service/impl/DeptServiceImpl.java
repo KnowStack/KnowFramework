@@ -7,7 +7,7 @@ import com.didiglobal.logi.security.common.vo.dept.DeptBriefVO;
 import com.didiglobal.logi.security.common.enums.ResultCode;
 import com.didiglobal.logi.security.common.vo.dept.DeptTreeVO;
 import com.didiglobal.logi.security.dao.DeptDao;
-import com.didiglobal.logi.security.exception.SecurityException;
+import com.didiglobal.logi.security.exception.LogiSecurityException;
 import com.didiglobal.logi.security.service.DeptService;
 import com.didiglobal.logi.security.util.CopyBeanUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,7 +46,7 @@ public class DeptServiceImpl implements DeptService {
                 // 如果parent为null，则需要查看下数据库部门表的数据是否有误
                 // 1.可能出现了本来该是父节点的节点（有其他子节点的parent为它），但该节点parent为其他子节点的情况（数据异常）
                 // 2.也可能是level填写错了（因为前面根据level大小排序）
-                throw new SecurityException(ResultCode.DEPT_DATA_ERROR);
+                throw new LogiSecurityException(ResultCode.DEPT_DATA_ERROR);
             }
             parent.getChildList().add(deptTreeVO);
             parentMap.put(deptTreeVO.getId(), deptTreeVO);
@@ -57,7 +57,12 @@ public class DeptServiceImpl implements DeptService {
     @Override
     public List<DeptBriefVO> getDeptBriefListByChildId(Integer deptId) {
         List<DeptBriefVO> deptBriefVOList = new ArrayList<>();
-        getParentDeptListByChildId(null, deptId, deptBriefVOList);
+        try {
+            getParentDeptListByChildId(null, deptId, deptBriefVOList);
+        } catch (LogiSecurityException e) {
+            e.printStackTrace();
+            return null;
+        }
         return deptBriefVOList;
     }
 
@@ -89,14 +94,14 @@ public class DeptServiceImpl implements DeptService {
         return result;
     }
 
-    private void getParentDeptListByChildId(Dept child, Integer deptId, List<DeptBriefVO> deptBriefVOList) {
+    private void getParentDeptListByChildId(Dept child, Integer deptId, List<DeptBriefVO> deptBriefVOList) throws LogiSecurityException {
         if(deptId == null || deptId == 0) {
             return;
         }
         Dept dept = deptDao.selectByDeptId(deptId);
         if(child != null && dept.getLevel() >= child.getLevel()) {
             // 如果出现这种情况，则数据有误，中断递归
-            throw new SecurityException(ResultCode.DEPT_DATA_ERROR);
+            throw new LogiSecurityException(ResultCode.DEPT_DATA_ERROR);
         }
         getParentDeptListByChildId(dept, dept.getParentId(), deptBriefVOList);
         deptBriefVOList.add(CopyBeanUtil.copy(dept, DeptBriefVO.class));

@@ -7,6 +7,7 @@ import com.didiglobal.logi.security.common.vo.role.AssignInfoVO;
 import com.didiglobal.logi.security.common.dto.user.UserQueryDTO;
 import com.didiglobal.logi.security.common.vo.user.UserBriefVO;
 import com.didiglobal.logi.security.common.vo.user.UserVO;
+import com.didiglobal.logi.security.exception.LogiSecurityException;
 import com.didiglobal.logi.security.service.UserService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -67,8 +68,14 @@ public class UserController {
     })
     public Result<List<AssignInfoVO>> assignList(@PathVariable(value = "userId", required = true) Integer userId,
                                                  @PathVariable(value = "roleName", required = false) String roleName) {
-        List<AssignInfoVO> assignInfoVOList = userService.getAssignDataByUserId(userId, roleName);
-        return Result.success(assignInfoVOList);
+        try {
+            List<AssignInfoVO> assignInfoVOList = userService.getAssignDataByUserId(userId, roleName);
+            return Result.success(assignInfoVOList);
+        } catch (LogiSecurityException e) {
+            e.printStackTrace();
+            return Result.fail(e);
+        }
+
     }
 
     @GetMapping(value = {"/list/{name}", "/list"})

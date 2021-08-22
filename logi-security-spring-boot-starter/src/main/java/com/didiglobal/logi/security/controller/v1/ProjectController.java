@@ -8,6 +8,7 @@ import com.didiglobal.logi.security.common.dto.project.ProjectSaveDTO;
 import com.didiglobal.logi.security.common.vo.project.ProjectBriefVO;
 import com.didiglobal.logi.security.common.vo.project.ProjectDeleteCheckVO;
 import com.didiglobal.logi.security.common.vo.project.ProjectVO;
+import com.didiglobal.logi.security.exception.LogiSecurityException;
 import com.didiglobal.logi.security.service.ProjectService;
 import io.swagger.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,14 +46,24 @@ public class ProjectController {
     @PutMapping
     @ApiOperation(value = "更新项目", notes = "根据项目id更新项目信息")
     public Result<String> update(@RequestBody ProjectSaveDTO saveDTO) {
-        projectService.updateProject(saveDTO);
+        try {
+            projectService.updateProject(saveDTO);
+        } catch (LogiSecurityException e) {
+            e.printStackTrace();
+            return Result.fail(e);
+        }
         return Result.success();
     }
 
     @PostMapping
     @ApiOperation(value = "创建项目", notes = "创建项目")
     public Result<String> create(@RequestBody ProjectSaveDTO saveDTO) {
-        projectService.createProject(saveDTO);
+        try {
+            projectService.createProject(saveDTO);
+        } catch (LogiSecurityException e) {
+            e.printStackTrace();
+            return Result.fail(e);
+        }
         return Result.success();
     }
 

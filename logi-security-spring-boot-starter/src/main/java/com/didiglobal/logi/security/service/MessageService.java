@@ -13,9 +13,9 @@ public interface MessageService {
 
     /**
      * 保存消息
-     * @param messageDto 消息内容
+     * @param messageDTO 消息内容
      */
-    void saveMessage(MessageDTO messageDto);
+    void saveMessage(MessageDTO messageDTO);
 
     /**
      * 根据消息状态，获取消息List

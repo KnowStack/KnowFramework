@@ -10,6 +10,7 @@ import com.didiglobal.logi.security.common.dto.role.RoleSaveDTO;
 import com.didiglobal.logi.security.common.vo.role.RoleBriefVO;
 import com.didiglobal.logi.security.common.vo.role.RoleDeleteCheckVO;
 import com.didiglobal.logi.security.common.vo.role.RoleVO;
+import com.didiglobal.logi.security.exception.LogiSecurityException;
 import com.didiglobal.logi.security.service.RoleService;
 import com.didiglobal.logi.security.util.ThreadLocalUtil;
 import io.swagger.annotations.*;
@@ -40,15 +41,25 @@ public class RoleController {
     @PutMapping
     @ApiOperation(value = "更新角色信息", notes = "根据角色id更新角色信息")
     public Result<String> update(@RequestBody RoleSaveDTO saveDTO) {
-        roleService.updateRoleWithUserId(ThreadLocalUtil.get(), saveDTO);
-        return Result.success();
+        try {
+            roleService.updateRoleWithUserId(ThreadLocalUtil.get(), saveDTO);
+            return Result.success();
+        } catch (LogiSecurityException e) {
+            e.printStackTrace();
+            return Result.fail(e);
+        }
     }
 
     @PostMapping
     @ApiOperation(value = "创建角色", notes = "创建角色")
     public Result<String> create(@RequestBody RoleSaveDTO saveDTO) {
-        roleService.createRoleWithUserId(ThreadLocalUtil.get(), saveDTO);
-        return Result.success();
+        try {
+            roleService.createRoleWithUserId(ThreadLocalUtil.get(), saveDTO);
+            return Result.success();
+        } catch (LogiSecurityException e) {
+            e.printStackTrace();
+            return Result.fail(e);
+        }
     }
 
     @DeleteMapping("/delete/check/{id}")
@@ -63,7 +74,12 @@ public class RoleController {
     @ApiOperation(value = "删除角色", notes = "根据角色id删除角色")
     @ApiImplicitParam(name = "id", value = "角色id", dataType = "int", required = true)
     public Result<String> delete(@PathVariable Integer id) {
-        roleService.deleteRoleByRoleId(id);
+        try {
+            roleService.deleteRoleByRoleId(id);
+        } catch (LogiSecurityException e) {
+            e.printStackTrace();
+            return Result.fail(e);
+        }
         return Result.success();
     }
 
@@ -77,8 +93,13 @@ public class RoleController {
     @PostMapping("/assign")
     @ApiOperation(value = "分配角色", notes = "分配一个角色给多个用户或分配多个角色给一个用户")
     public Result<String> assign(@RequestBody RoleAssignDTO assignDTO) {
-        roleService.assignRoles(assignDTO);
-        return Result.success();
+        try {
+            roleService.assignRoles(assignDTO);
+            return Result.success();
+        } catch (LogiSecurityException e) {
+            e.printStackTrace();
+            return Result.fail(e);
+        }
     }
 
     @GetMapping(value = {"/assign/list/{roleId}/{name}", "/assign/list/{roleId}"})

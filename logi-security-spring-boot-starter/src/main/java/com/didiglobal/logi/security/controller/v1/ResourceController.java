@@ -5,6 +5,7 @@ import com.didiglobal.logi.security.common.PagingResult;
 import com.didiglobal.logi.security.common.Result;
 import com.didiglobal.logi.security.common.dto.resource.*;
 import com.didiglobal.logi.security.common.vo.resource.*;
+import com.didiglobal.logi.security.exception.LogiSecurityException;
 import com.didiglobal.logi.security.service.ResourceTypeService;
 import com.didiglobal.logi.security.service.UserResourceService;
 import io.swagger.annotations.*;
@@ -51,22 +52,37 @@ public class ResourceController {
     @PostMapping("/mbu/list")
     @ApiOperation(value = "资源权限管理/按用户管理/分配资源/数据列表", notes = "获取数据（项目、类别、资源）list")
     public Result<List<MByUDataVO>> mbuList(@RequestBody MByUDataQueryDTO queryDTO) {
-        List<MByUDataVO> resultList = userResourceService.getManagerByUserDataList(queryDTO);
-        return Result.success(resultList);
+        try {
+            List<MByUDataVO> resultList = userResourceService.getManagerByUserDataList(queryDTO);
+            return Result.success(resultList);
+        } catch (LogiSecurityException e) {
+            e.printStackTrace();
+            return Result.fail(e);
+        }
     }
 
     @PostMapping("/mbr/list")
     @ApiOperation(value = "资源权限管理/按资源管理/分配用户/数据列表", notes = "获取用户list")
     public Result<List<MByRDataVO>> mbrList(@RequestBody MByRDataQueryDTO queryDTO) {
-        List<MByRDataVO> resultList = userResourceService.getManagerByResourceDataList(queryDTO);
-        return Result.success(resultList);
+        try {
+            List<MByRDataVO> resultList = userResourceService.getManagerByResourceDataList(queryDTO);
+            return Result.success(resultList);
+        } catch (LogiSecurityException e) {
+            e.printStackTrace();
+            return Result.fail(e);
+        }
     }
 
     @PostMapping("/mbr/page")
     @ApiOperation(value = "资源权限管理/按资源管理/列表信息", notes = "按资源管理的列表信息，mbr（ManageByResource）")
     public PagingResult<MByRVO> mbrPage(@RequestBody MByRQueryDTO queryDTO) {
-        PagingData<MByRVO> pagingData = userResourceService.getManageByResourcePage(queryDTO);
-        return PagingResult.success(pagingData);
+        try {
+            PagingData<MByRVO> pagingData = userResourceService.getManageByResourcePage(queryDTO);
+            return PagingResult.success(pagingData);
+        } catch (LogiSecurityException e) {
+            e.printStackTrace();
+            return PagingResult.fail(e);
+        }
     }
 
     @PostMapping("/mbu/page")
@@ -79,15 +95,25 @@ public class ResourceController {
     @PostMapping("/mbr/assign")
     @ApiOperation(value = "资源权限管理/按资源管理/分配用户", notes = "1个项目或1个资源类别或1个具体资源的权限分配给N个用户")
     public Result<String> mbrAssign(@RequestBody AssignToManyUserDTO assignToManyUserDTO) {
-        userResourceService.assignResourcePermission(assignToManyUserDTO);
+        try {
+            userResourceService.assignResourcePermission(assignToManyUserDTO);
+        } catch (LogiSecurityException e) {
+            e.printStackTrace();
+            return Result.fail(e);
+        }
         return Result.success();
     }
 
     @PostMapping("/mbu/assign")
     @ApiOperation(value = "资源权限管理/按用户管理/分配资源", notes = "N个项目或N个资源类别或N个具体资源的权限分配给1个用户")
     public Result<String> mbuAssign(@RequestBody AssignToOneUserDTO assignToOneUserDTO) {
-        userResourceService.assignResourcePermission(assignToOneUserDTO);
-        return Result.success();
+        try {
+            userResourceService.assignResourcePermission(assignToOneUserDTO);
+            return Result.success();
+        } catch (LogiSecurityException e) {
+            e.printStackTrace();
+            return Result.fail(e);
+        }
     }
 
     @PostMapping("/assign/batch")
@@ -96,7 +122,13 @@ public class ResourceController {
             notes = "批量分配用户：分配之前先删除N资源先前已分配的用户、批量分配资源：分配之前先删除N用户已拥有的资源权限"
     )
     public Result<String> batchAssign(@RequestBody BatchAssignDTO assignDTO) {
-        userResourceService.batchAssignResourcePermission(assignDTO);
-        return Result.success();
+        try {
+            userResourceService.batchAssignResourcePermission(assignDTO);
+            return Result.success();
+        } catch (LogiSecurityException e) {
+            e.printStackTrace();
+            return Result.fail(e);
+        }
+
     }
 }

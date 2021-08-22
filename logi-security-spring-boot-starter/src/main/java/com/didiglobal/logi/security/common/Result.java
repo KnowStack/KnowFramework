@@ -1,12 +1,12 @@
 package com.didiglobal.logi.security.common;
 
 import com.didiglobal.logi.security.common.enums.ResultCode;
+import com.didiglobal.logi.security.exception.LogiSecurityException;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
-import java.util.Random;
 
 /**
  * 非分页统一的返回规范
@@ -59,5 +59,10 @@ public class Result<T> extends BaseResult {
         Result<T> ret = new Result<T>(ResultCode.COMMON_FAIL.getCode());
         ret.setMessage(msg);
         return ret;
+    }
+
+    public static <T> Result<T> fail(LogiSecurityException e) {
+        String[] s = e.getMessage().split("-", 2);
+        return Result.fail(Integer.parseInt(s[0]), s[1]);
     }
 }

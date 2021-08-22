@@ -7,7 +7,7 @@ import com.didiglobal.logi.security.common.dto.project.ProjectSaveDTO;
 import com.didiglobal.logi.security.common.vo.project.ProjectBriefVO;
 import com.didiglobal.logi.security.common.vo.project.ProjectDeleteCheckVO;
 import com.didiglobal.logi.security.common.vo.project.ProjectVO;
-import com.didiglobal.logi.security.common.vo.user.UserBriefVO;
+import com.didiglobal.logi.security.exception.LogiSecurityException;
 
 import java.util.List;
 
@@ -20,8 +20,9 @@ public interface ProjectService {
     /**
      * 创建项目
      * @param saveDTO 项目信息
+     * @throws LogiSecurityException 项目相关的错误信息
      */
-    void createProject(ProjectSaveDTO saveDTO);
+    void createProject(ProjectSaveDTO saveDTO)  throws LogiSecurityException;
 
     /**
      * 获取项目详情，通过项目id
@@ -53,8 +54,9 @@ public interface ProjectService {
     /**
      * 更新项目信息
      * @param saveDTO 项目信息
+     * @throws LogiSecurityException 项目相关的错误信息
      */
-    void updateProject(ProjectSaveDTO saveDTO);
+    void updateProject(ProjectSaveDTO saveDTO) throws LogiSecurityException;
 
     /**
      * 更改项目运行状态，旧状态取反

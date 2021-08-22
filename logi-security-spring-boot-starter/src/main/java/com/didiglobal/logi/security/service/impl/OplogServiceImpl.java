@@ -5,12 +5,10 @@ import com.didiglobal.logi.security.common.PagingData;
 import com.didiglobal.logi.security.common.dto.oplog.OplogDTO;
 import com.didiglobal.logi.security.common.entity.Oplog;
 import com.didiglobal.logi.security.common.entity.OplogExtra;
-import com.didiglobal.logi.security.common.enums.ResultCode;
 import com.didiglobal.logi.security.common.dto.oplog.OplogQueryDTO;
 import com.didiglobal.logi.security.common.vo.oplog.OplogVO;
 import com.didiglobal.logi.security.common.vo.user.UserBriefVO;
 import com.didiglobal.logi.security.dao.OplogDao;
-import com.didiglobal.logi.security.exception.SecurityException;
 import com.didiglobal.logi.security.service.OplogExtraService;
 import com.didiglobal.logi.security.service.OplogService;
 import com.didiglobal.logi.security.service.UserService;
@@ -71,18 +69,16 @@ public class OplogServiceImpl implements OplogService {
     }
 
     @Override
-    public Integer saveOplogWithUserId(Integer userId, OplogDTO oplogDTO) throws SecurityException {
+    public Integer saveOplogWithUserId(Integer userId, OplogDTO oplogDTO) {
+        Oplog oplog = CopyBeanUtil.copy(oplogDTO, Oplog.class);
         // 获取操作人信息
         UserBriefVO userBriefVO = userService.getUserBriefByUserId(userId);
-        if(userBriefVO == null) {
-            throw new SecurityException(ResultCode.USER_NOT_EXISTS);
+        if(userBriefVO != null) {
+            oplog.setOperatorUsername(userBriefVO.getUsername());
         }
         // 获取客户端真实ip地址
         String realIpAddress = NetworkUtil.getRealIpAddress();
-        Oplog oplog = CopyBeanUtil.copy(oplogDTO, Oplog.class);
         oplog.setOperatorIp(realIpAddress);
-
-        oplog.setOperatorUsername(userBriefVO.getUsername());
         oplogDao.insert(oplog);
         return oplog.getId();
     }

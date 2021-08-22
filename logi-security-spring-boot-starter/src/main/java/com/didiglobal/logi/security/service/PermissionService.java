@@ -11,11 +11,11 @@ import java.util.Set;
 public interface PermissionService {
 
     /**
-     * 构建权限树
-     * @param permissionHasSet 拥有的权限（只包含权限id）
+     * 构建权限树，并标注拥有的权限
+     * @param permissionHasList 拥有的权限（只包含权限id）
      * @return PermissionVo 权限树
      */
-    PermissionTreeVO buildPermissionTree(Set<Integer> permissionHasSet);
+    PermissionTreeVO buildPermissionTreeWithHas(List<Integer> permissionHasList);
 
     /**
      * 构建权限树（返回所有权限点）

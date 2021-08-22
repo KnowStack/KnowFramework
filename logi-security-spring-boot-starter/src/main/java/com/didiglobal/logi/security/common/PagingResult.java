@@ -1,6 +1,7 @@
 package com.didiglobal.logi.security.common;
 
 import com.didiglobal.logi.security.common.enums.ResultCode;
+import com.didiglobal.logi.security.exception.LogiSecurityException;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -55,5 +56,10 @@ public class PagingResult<T> extends BaseResult {
         PagingResult<T> ret = new PagingResult<T>(ResultCode.COMMON_FAIL.getCode());
         ret.setMessage(msg);
         return ret;
+    }
+
+    public static <T> PagingResult<T> fail(LogiSecurityException e) {
+        String[] s = e.getMessage().split("-", 2);
+        return PagingResult.fail(Integer.parseInt(s[0]), s[1]);
     }
 }

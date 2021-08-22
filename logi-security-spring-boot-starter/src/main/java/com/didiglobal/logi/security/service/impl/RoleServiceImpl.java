@@ -18,7 +18,7 @@ import com.didiglobal.logi.security.common.vo.permission.PermissionTreeVO;
 import com.didiglobal.logi.security.common.enums.ResultCode;
 import com.didiglobal.logi.security.common.vo.user.UserBriefVO;
 import com.didiglobal.logi.security.dao.RoleDao;
-import com.didiglobal.logi.security.exception.SecurityException;
+import com.didiglobal.logi.security.exception.LogiSecurityException;
 import com.didiglobal.logi.security.service.*;
 
 import java.text.SimpleDateFormat;
@@ -92,7 +92,7 @@ public class RoleServiceImpl implements RoleService {
     }
 
     @Override
-    public void createRoleWithUserId(Integer userId, RoleSaveDTO roleSaveDTO) throws SecurityException {
+    public void createRoleWithUserId(Integer userId, RoleSaveDTO roleSaveDTO) throws LogiSecurityException {
         // 检查参数
         checkParam(roleSaveDTO, false);
         // 保存角色信息
@@ -109,11 +109,11 @@ public class RoleServiceImpl implements RoleService {
         rolePermissionService.saveRolePermission(role.getId(), roleSaveDTO.getPermissionIdList());
         // 保存操作日志
         OplogDTO oplogDTO = new OplogDTO("角色管理", "新增", "角色", roleSaveDTO.getRoleName());
-        oplogService.saveOplogWithUserId(ThreadLocalUtil.get(), oplogDTO);
+        oplogService.saveOplogWithUserId(userId, oplogDTO);
     }
 
     @Override
-    public void deleteRoleByRoleId(Integer roleId) {
+    public void deleteRoleByRoleId(Integer roleId) throws LogiSecurityException {
         Role role = roleDao.selectByRoleId(roleId);
         if(role == null) {
             return;
@@ -121,7 +121,7 @@ public class RoleServiceImpl implements RoleService {
         // 检查该角色是否和用户绑定
         List<Integer> userIdList = userRoleService.getUserIdListByRoleId(roleId);
         if(userIdList.size() > 0) {
-            throw new SecurityException(ResultCode.ROLE_USER_AUTHED);
+            throw new LogiSecurityException(ResultCode.ROLE_USER_AUTHED);
         }
         // 删除角色与权限的关联
         rolePermissionService.deleteRolePermissionByRoleId(roleId);
@@ -133,9 +133,9 @@ public class RoleServiceImpl implements RoleService {
     }
 
     @Override
-    public void updateRoleWithUserId(Integer userId, RoleSaveDTO saveDTO) {
+    public void updateRoleWithUserId(Integer userId, RoleSaveDTO saveDTO) throws LogiSecurityException {
         if(roleDao.selectByRoleId(saveDTO.getId()) == null) {
-            throw new SecurityException(ResultCode.ROLE_NOT_EXISTS);
+            throw new LogiSecurityException(ResultCode.ROLE_NOT_EXISTS);
         }
         checkParam(saveDTO, true);
         // 更新角色基本信息
@@ -154,9 +154,9 @@ public class RoleServiceImpl implements RoleService {
     }
 
     @Override
-    public void assignRoles(RoleAssignDTO assignDTO) throws SecurityException {
+    public void assignRoles(RoleAssignDTO assignDTO) throws LogiSecurityException {
         if(assignDTO.getFlag() == null) {
-            throw new SecurityException(ResultCode.ROLE_ASSIGN_FLAG_IS_NULL);
+            throw new LogiSecurityException(ResultCode.ROLE_ASSIGN_FLAG_IS_NULL);
         }
         if(assignDTO.getFlag()) {
             // N个角色分配给1个用户
@@ -199,8 +199,10 @@ public class RoleServiceImpl implements RoleService {
         }
         RoleDeleteCheckVO roleDeleteCheckVO = new RoleDeleteCheckVO();
         roleDeleteCheckVO.setRoleId(roleId);
+        // 获取用户idList
         List<Integer> userIdList = userRoleService.getUserIdListByRoleId(roleId);
         if(!CollectionUtils.isEmpty(userIdList)) {
+            // 获取用户简要信息List
             List<UserBriefVO> userBriefVOList = userService.getUserBriefListByUserIdList(userIdList);
             List<String> usernameList = new ArrayList<>();
             for(UserBriefVO userBriefVO : userBriefVOList) {
@@ -341,24 +343,24 @@ public class RoleServiceImpl implements RoleService {
      * 添加或者修改时候检查参数
      * @param saveDTO 角色信息
      * @param isUpdate 是创建还是更新
-     * @throws SecurityException 校验错误
+     * @throws LogiSecurityException 校验错误
      */
-    private void checkParam(RoleSaveDTO saveDTO, boolean isUpdate) throws SecurityException {
+    private void checkParam(RoleSaveDTO saveDTO, boolean isUpdate) throws LogiSecurityException {
         if(StringUtils.isEmpty(saveDTO.getRoleName())) {
-            throw new SecurityException(ResultCode.ROLE_NAME_CANNOT_BE_BLANK);
+            throw new LogiSecurityException(ResultCode.ROLE_NAME_CANNOT_BE_BLANK);
         }
         if(StringUtils.isEmpty(saveDTO.getDescription())) {
-            throw new SecurityException(ResultCode.ROLE_DEPT_CANNOT_BE_BLANK);
+            throw new LogiSecurityException(ResultCode.ROLE_DEPT_CANNOT_BE_BLANK);
         }
         if(CollectionUtils.isEmpty(saveDTO.getPermissionIdList())) {
-            throw new SecurityException(ResultCode.ROLE_PERMISSION_CANNOT_BE_NULL);
+            throw new LogiSecurityException(ResultCode.ROLE_PERMISSION_CANNOT_BE_NULL);
         }
         // 如果是更新操作，则判断项目名重复的时候要排除old信息
         Integer roleId = isUpdate ? saveDTO.getId() : null;
         int count = roleDao.selectCountByRoleNameAndNotRoleId(saveDTO.getRoleName(), roleId);
         if(count > 0) {
             // 角色名不可重复
-            throw new SecurityException(ResultCode.ROLE_NAME_ALREADY_EXISTS);
+            throw new LogiSecurityException(ResultCode.ROLE_NAME_ALREADY_EXISTS);
         }
     }
 }

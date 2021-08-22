@@ -5,15 +5,15 @@ package com.didiglobal.logi.security.exception;
  *
  * 返回后端和前端商定的code（msg前端自己决定）
  */
-public class SecurityException extends RuntimeException {
+public class LogiSecurityException extends RuntimeException {
 
-    public SecurityException() {}
+    public LogiSecurityException() {}
 
-    public SecurityException(CodeMsg codeMsg) {
+    public LogiSecurityException(CodeMsg codeMsg) {
         super(codeMsg.getCode() + "-" + codeMsg.getMessage());
     }
 
-    public SecurityException(String message, Throwable cause) {
+    public LogiSecurityException(String message, Throwable cause) {
         super(message, cause);
     }
 }
