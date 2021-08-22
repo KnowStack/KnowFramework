@@ -7,7 +7,6 @@ import com.didiglobal.logi.security.common.dto.role.RoleQueryDTO;
 import com.didiglobal.logi.security.common.entity.role.Role;
 import com.didiglobal.logi.security.common.entity.role.RoleBrief;
 import com.didiglobal.logi.security.common.po.RolePO;
-import com.didiglobal.logi.security.common.po.UserPO;
 import com.didiglobal.logi.security.dao.RoleDao;
 import com.didiglobal.logi.security.dao.mapper.RoleMapper;
 import com.didiglobal.logi.security.util.CopyBeanUtil;

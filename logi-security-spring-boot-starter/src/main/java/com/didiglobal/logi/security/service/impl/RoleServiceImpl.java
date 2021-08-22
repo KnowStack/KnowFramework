@@ -32,6 +32,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
+/**
+ * @author cjm
+ */
 @Service
 public class RoleServiceImpl implements RoleService {
 

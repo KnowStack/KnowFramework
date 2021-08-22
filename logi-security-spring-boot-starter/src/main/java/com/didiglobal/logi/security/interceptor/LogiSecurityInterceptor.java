@@ -1,6 +1,5 @@
 package com.didiglobal.logi.security.interceptor;
 
-import com.didiglobal.logi.security.util.NetworkUtil;
 import com.didiglobal.logi.security.util.ThreadLocalUtil;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;

@@ -1,9 +1,7 @@
 package com.didiglobal.logi.security.exception;
 
 /**
- * @author jmcai
- * @version 1.0
- * @date 2021/2/17 13:13
+ * @author cjm
  */
 public interface CodeMsg {
 
