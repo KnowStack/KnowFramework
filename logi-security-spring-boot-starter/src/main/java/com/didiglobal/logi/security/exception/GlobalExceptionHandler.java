@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 /**
  * @author cjm
  * 全局异常处理
+ * TODO：后期要去掉全局异常处理
  */
 // @ControllerAdvice
 public class GlobalExceptionHandler {
