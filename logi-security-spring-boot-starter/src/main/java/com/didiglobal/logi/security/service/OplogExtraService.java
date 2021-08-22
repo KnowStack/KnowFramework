@@ -1,6 +1,6 @@
 package com.didiglobal.logi.security.service;
 
-import com.didiglobal.logi.security.common.po.OplogExtraPO;
+import com.didiglobal.logi.security.common.entity.OplogExtra;
 
 import java.util.List;
 
@@ -14,5 +14,5 @@ public interface OplogExtraService {
      * @param type 操作页面 or 操作类型 or 对象分类
      * @return 操作日志信息（操作页面、操作类型、对象分类）List
      */
-    List<OplogExtraPO> getOplogExtraListByType(Integer type);
+    List<OplogExtra> getOplogExtraListByType(Integer type);
 }

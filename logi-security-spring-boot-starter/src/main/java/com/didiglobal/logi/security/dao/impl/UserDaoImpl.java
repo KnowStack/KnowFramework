@@ -5,9 +5,12 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.didiglobal.logi.security.common.dto.user.UserBriefQueryDTO;
 import com.didiglobal.logi.security.common.dto.user.UserQueryDTO;
+import com.didiglobal.logi.security.common.entity.user.User;
+import com.didiglobal.logi.security.common.entity.user.UserBrief;
 import com.didiglobal.logi.security.common.po.UserPO;
 import com.didiglobal.logi.security.dao.UserDao;
 import com.didiglobal.logi.security.dao.mapper.UserMapper;
+import com.didiglobal.logi.security.util.CopyBeanUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
@@ -26,13 +29,13 @@ public class UserDaoImpl implements UserDao {
     private UserMapper userMapper;
 
     @Override
-    public IPage<UserPO> selectPageByDeptIdListAndUserIdList(UserQueryDTO queryDTO, List<Integer> deptIdList, List<Integer> userIdList) {
+    public IPage<User> selectPageByDeptIdListAndUserIdList(UserQueryDTO queryDTO, List<Integer> deptIdList, List<Integer> userIdList) {
         IPage<UserPO> iPage = new Page<>(queryDTO.getPage(), queryDTO.getSize());
         if(deptIdList != null && deptIdList.size() == 0) {
-            return iPage;
+            return CopyBeanUtil.copyPage(iPage, User.class);
         }
         if(userIdList != null && userIdList.size() == 0) {
-            return iPage;
+            return CopyBeanUtil.copyPage(iPage, User.class);
         }
         QueryWrapper<UserPO> queryWrapper = new QueryWrapper<>();
         queryWrapper
@@ -41,60 +44,61 @@ public class UserDaoImpl implements UserDao {
                 .in(deptIdList != null, "dept_id", deptIdList)
                 .in(userIdList != null, "id", userIdList);
         userMapper.selectPage(iPage, queryWrapper);
-        return userMapper.selectPage(iPage, queryWrapper);
+        return CopyBeanUtil.copyPage(iPage, User.class);
     }
 
     @Override
-    public IPage<UserPO> selectBriefPageByDeptIdList(UserBriefQueryDTO queryDTO, List<Integer> deptIdList) {
+    public IPage<UserBrief> selectBriefPageByDeptIdList(UserBriefQueryDTO queryDTO, List<Integer> deptIdList) {
         IPage<UserPO> iPage = new Page<>(queryDTO.getPage(), queryDTO.getSize());
         if(deptIdList != null && deptIdList.size() == 0) {
-            return iPage;
+            return CopyBeanUtil.copyPage(iPage, UserBrief.class);
         }
         QueryWrapper<UserPO> queryWrapper = wrapBriefQuery();
         queryWrapper
                 .like(!StringUtils.isEmpty(queryDTO.getUsername()), "username", queryDTO.getUsername())
                 .like(!StringUtils.isEmpty(queryDTO.getRealName()), "real_name", queryDTO.getRealName())
                 .in(deptIdList != null, "dept_id", deptIdList);
-        return userMapper.selectPage(iPage, queryWrapper);
+        userMapper.selectPage(iPage, queryWrapper);
+        return CopyBeanUtil.copyPage(iPage, UserBrief.class);
     }
 
     @Override
-    public UserPO selectByUserId(Integer userId) {
+    public User selectByUserId(Integer userId) {
         if(userId == null) {
             return null;
         }
-        return userMapper.selectById(userId);
+        return CopyBeanUtil.copy(userMapper.selectById(userId), User.class);
     }
 
     @Override
-    public List<UserPO> selectBriefListByUserIdList(List<Integer> userIdList) {
+    public List<UserBrief> selectBriefListByUserIdList(List<Integer> userIdList) {
         if(CollectionUtils.isEmpty(userIdList)) {
             return new ArrayList<>();
         }
         QueryWrapper<UserPO> queryWrapper = wrapBriefQuery();
         queryWrapper.in("id", userIdList);
-        return userMapper.selectList(queryWrapper);
+        return CopyBeanUtil.copyList(userMapper.selectList(queryWrapper), UserBrief.class);
     }
 
     @Override
-    public List<UserPO> selectBriefListByNameAndDescOrderByCreateTime(String name) {
+    public List<UserBrief> selectBriefListByNameAndDescOrderByCreateTime(String name) {
         QueryWrapper<UserPO> queryWrapper = wrapBriefQuery();
         queryWrapper
                 .like(!StringUtils.isEmpty(name), "username", name)
                 .or()
                 .like(!StringUtils.isEmpty(name), "real_name", name)
                 .orderByDesc("create_time");
-        return userMapper.selectList(queryWrapper);
+        return CopyBeanUtil.copyList(userMapper.selectList(queryWrapper), UserBrief.class);
     }
 
     @Override
-    public List<UserPO> selectBriefListByDeptIdList(List<Integer> deptIdList) {
+    public List<UserBrief> selectBriefListByDeptIdList(List<Integer> deptIdList) {
         if(deptIdList != null && deptIdList.size() == 0) {
             return new ArrayList<>();
         }
         QueryWrapper<UserPO> queryWrapper = wrapBriefQuery();
         queryWrapper.in(deptIdList != null, "dept_id", deptIdList);
-        return userMapper.selectList(queryWrapper);
+        return CopyBeanUtil.copyList(userMapper.selectList(queryWrapper), UserBrief.class);
     }
 
     private QueryWrapper<UserPO> wrapBriefQuery() {

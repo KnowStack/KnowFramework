@@ -4,9 +4,11 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.didiglobal.logi.security.common.dto.oplog.OplogQueryDTO;
+import com.didiglobal.logi.security.common.entity.Oplog;
 import com.didiglobal.logi.security.common.po.OplogPO;
 import com.didiglobal.logi.security.dao.OplogDao;
 import com.didiglobal.logi.security.dao.mapper.OplogMapper;
+import com.didiglobal.logi.security.util.CopyBeanUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -22,7 +24,7 @@ public class OplogDaoImpl implements OplogDao {
     private OplogMapper oplogMapper;
 
     @Override
-    public IPage<OplogPO> selectPageWithoutDetail(OplogQueryDTO queryDTO) {
+    public IPage<Oplog> selectPageWithoutDetail(OplogQueryDTO queryDTO) {
         QueryWrapper<OplogPO> queryWrapper = new QueryWrapper<>();
         // 分页查询
         IPage<OplogPO> iPage = new Page<>(queryDTO.getPage(), queryDTO.getSize());
@@ -40,19 +42,19 @@ public class OplogDaoImpl implements OplogDao {
         if(queryDTO.getEndTime() != null) {
             queryWrapper.le("create_time", new Timestamp(queryDTO.getEndTime()));
         }
-        return oplogMapper.selectPage(iPage, queryWrapper);
+        return CopyBeanUtil.copyPage(oplogMapper.selectPage(iPage, queryWrapper), Oplog.class);
     }
 
     @Override
-    public OplogPO selectByOplogId(Integer oplogId) {
+    public Oplog selectByOplogId(Integer oplogId) {
         if(oplogId == null) {
             return null;
         }
-        return oplogMapper.selectById(oplogId);
+        return CopyBeanUtil.copy(oplogMapper.selectById(oplogId), Oplog.class);
     }
 
     @Override
-    public void insert(OplogPO oplogPO) {
-        oplogMapper.insert(oplogPO);
+    public void insert(Oplog oplog) {
+        oplogMapper.insert(CopyBeanUtil.copy(oplog, OplogPO.class));
     }
 }

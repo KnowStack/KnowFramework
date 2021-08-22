@@ -1,9 +1,11 @@
 package com.didiglobal.logi.security.dao.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.didiglobal.logi.security.common.entity.RolePermission;
 import com.didiglobal.logi.security.common.po.RolePermissionPO;
 import com.didiglobal.logi.security.dao.RolePermissionDao;
 import com.didiglobal.logi.security.dao.mapper.RolePermissionMapper;
+import com.didiglobal.logi.security.util.CopyBeanUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
@@ -21,9 +23,9 @@ public class RolePermissionDaoImpl implements RolePermissionDao {
     private RolePermissionMapper rolePermissionMapper;
 
     @Override
-    public void insertBatch(List<RolePermissionPO> rolePermissionPOList) {
-        if(!CollectionUtils.isEmpty(rolePermissionPOList)) {
-            rolePermissionMapper.insertBatchSomeColumn(rolePermissionPOList);
+    public void insertBatch(List<RolePermission> rolePermissionList) {
+        if(!CollectionUtils.isEmpty(rolePermissionList)) {
+            rolePermissionMapper.insertBatchSomeColumn(CopyBeanUtil.copyList(rolePermissionList, RolePermissionPO.class));
         }
     }
 

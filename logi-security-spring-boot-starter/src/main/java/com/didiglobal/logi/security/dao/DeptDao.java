@@ -1,6 +1,7 @@
 package com.didiglobal.logi.security.dao;
 
-import com.didiglobal.logi.security.common.po.DeptPO;
+import com.didiglobal.logi.security.common.entity.dept.Dept;
+import com.didiglobal.logi.security.common.entity.dept.DeptBrief;
 
 import java.util.List;
 
@@ -10,17 +11,17 @@ import java.util.List;
 public interface DeptDao {
 
     /**
-     * 根据parentId获取id和deptName信息
+     * 根据parentId获取部门简要信息List
      * @param parentId 父id
-     * @return List<DeptPO>
+     * @return 部门简要信息List
      */
-    List<DeptPO> selectIdListAndDeptNameByParentId(Integer parentId);
+    List<DeptBrief> selectBriefListByParentId(Integer parentId);
 
     /**
      * 获取全部
-     * @return List<DeptPO>
+     * @return List<Dept>
      */
-    List<DeptPO> selectAll();
+    List<Dept> selectAllAndAscOrderByLevel();
 
     /**
      * 根据部门名模糊匹配，获取部门idList
@@ -34,5 +35,5 @@ public interface DeptDao {
      * @param deptId 部门id
      * @return 部门信息
      */
-    DeptPO selectByDeptId(Integer deptId);
+    Dept selectByDeptId(Integer deptId);
 }

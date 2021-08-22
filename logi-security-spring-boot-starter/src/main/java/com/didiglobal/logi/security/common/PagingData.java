@@ -1,7 +1,6 @@
 package com.didiglobal.logi.security.common;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.didiglobal.logi.security.common.entity.Project;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Builder;

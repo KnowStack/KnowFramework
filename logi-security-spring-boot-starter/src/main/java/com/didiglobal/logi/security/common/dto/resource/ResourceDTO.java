@@ -1,4 +1,4 @@
-package com.didiglobal.logi.security.common.dto2;
+package com.didiglobal.logi.security.common.dto.resource;
 
 import lombok.Data;
 

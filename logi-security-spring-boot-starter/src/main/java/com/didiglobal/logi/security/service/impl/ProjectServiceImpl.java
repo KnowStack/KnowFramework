@@ -4,9 +4,10 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.didiglobal.logi.security.common.PagingData;
 import com.didiglobal.logi.security.common.dto.oplog.OplogDTO;
 import com.didiglobal.logi.security.common.dto.project.ProjectBriefQueryDTO;
-import com.didiglobal.logi.security.common.dto2.ResourceDTO;
+import com.didiglobal.logi.security.common.dto.resource.ResourceDTO;
+import com.didiglobal.logi.security.common.entity.project.Project;
+import com.didiglobal.logi.security.common.entity.project.ProjectBrief;
 import com.didiglobal.logi.security.common.enums.ResultCode;
-import com.didiglobal.logi.security.common.po.ProjectPO;
 import com.didiglobal.logi.security.common.dto.project.ProjectQueryDTO;
 import com.didiglobal.logi.security.common.dto.project.ProjectSaveDTO;
 import com.didiglobal.logi.security.common.vo.project.ProjectBriefVO;
@@ -57,14 +58,14 @@ public class ProjectServiceImpl implements ProjectService {
         if(projectId == null) {
             return null;
         }
-        ProjectPO projectPO = projectDao.selectByProjectId(projectId);
-        ProjectVO projectVO = CopyBeanUtil.copy(projectPO, ProjectVO.class);
+        Project project = projectDao.selectByProjectId(projectId);
+        ProjectVO projectVO = CopyBeanUtil.copy(project, ProjectVO.class);
         // 获取负责人信息
         List<Integer> userIdList = userProjectService.getUserIdListByProjectId(projectId);
         projectVO.setUserList(userService.getUserBriefListByUserIdList(userIdList));
         // 获取部门信息
         projectVO.setDeptList(deptService.getDeptBriefListByChildId(projectVO.getDeptId()));
-        projectVO.setCreateTime(projectPO.getCreateTime().getTime());
+        projectVO.setCreateTime(project.getCreateTime().getTime());
         return projectVO;
     }
 
@@ -73,19 +74,19 @@ public class ProjectServiceImpl implements ProjectService {
         if(projectId == null) {
             return null;
         }
-        ProjectPO projectPO = projectDao.selectByProjectId(projectId);
-        return CopyBeanUtil.copy(projectPO, ProjectBriefVO.class);
+        Project project = projectDao.selectByProjectId(projectId);
+        return CopyBeanUtil.copy(project, ProjectBriefVO.class);
     }
 
     @Override
     public void createProject(ProjectSaveDTO saveVo) {
         // 检查参数
         checkParam(saveVo, false);
-        ProjectPO projectPO = CopyBeanUtil.copy(saveVo, ProjectPO.class);
-        projectPO.setProjectCode("p" + MathUtil.getRandomNumber(7));
-        projectDao.insert(projectPO);
+        Project project = CopyBeanUtil.copy(saveVo, Project.class);
+        project.setProjectCode("p" + MathUtil.getRandomNumber(7));
+        projectDao.insert(project);
         // 插入用户项目关联信息（项目负责人）
-        userProjectService.saveUserProject(projectPO.getId(), saveVo.getUserIdList());
+        userProjectService.saveUserProject(project.getId(), saveVo.getUserIdList());
         // 保存操作日志
         OplogDTO oplogDTO = new OplogDTO("项目配置", "新增", "项目", saveVo.getProjectName());
         oplogService.saveOplogWithUserId(ThreadLocalUtil.get(), oplogDTO);
@@ -100,16 +101,16 @@ public class ProjectServiceImpl implements ProjectService {
             projectIdList = userProjectService.getProjectIdListByUserIdList(userIdList);
         }
         List<Integer> deptIdList = deptService.getDeptIdListByParentId(queryDTO.getDeptId());
-        IPage<ProjectPO> iPage = projectDao.selectPageByDeptIdListAndProjectIdList(queryDTO, deptIdList, projectIdList);
+        IPage<Project> iPage = projectDao.selectPageByDeptIdListAndProjectIdList(queryDTO, deptIdList, projectIdList);
         List<ProjectVO> projectVOList = new ArrayList<>();
-        for(ProjectPO projectPO : iPage.getRecords()) {
-            ProjectVO projectVO = CopyBeanUtil.copy(projectPO, ProjectVO.class);
+        for(Project project : iPage.getRecords()) {
+            ProjectVO projectVO = CopyBeanUtil.copy(project, ProjectVO.class);
             // 获取负责人信息
-            List<Integer> userIdList = userProjectService.getUserIdListByProjectId(projectPO.getId());
+            List<Integer> userIdList = userProjectService.getUserIdListByProjectId(project.getId());
             projectVO.setUserList(userService.getUserBriefListByUserIdList(userIdList));
             // 获取部门信息
-            projectVO.setDeptList(deptService.getDeptBriefListByChildId(projectPO.getDeptId()));
-            projectVO.setCreateTime(projectPO.getCreateTime().getTime());
+            projectVO.setDeptList(deptService.getDeptBriefListByChildId(project.getDeptId()));
+            projectVO.setCreateTime(project.getCreateTime().getTime());
             projectVOList.add(projectVO);
         }
         return new PagingData<>(projectVOList, iPage);
@@ -117,8 +118,8 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Override
     public void deleteProjectByProjectId(Integer projectId) {
-        ProjectPO projectPO = projectDao.selectByProjectId(projectId);
-        if(projectPO == null) {
+        Project project = projectDao.selectByProjectId(projectId);
+        if(project == null) {
             return;
         }
         // TODO 删除前要判断一下有没有服务引用了这个项目，有没有具体资源引用了这个项目
@@ -127,7 +128,7 @@ public class ProjectServiceImpl implements ProjectService {
         // 逻辑删除项目（自动）
         projectDao.deleteByProjectId(projectId);
         // 保存操作日志
-        OplogDTO oplogDTO = new OplogDTO("项目配置", "删除", "项目", projectPO.getProjectName());
+        OplogDTO oplogDTO = new OplogDTO("项目配置", "删除", "项目", project.getProjectName());
         oplogService.saveOplogWithUserId(ThreadLocalUtil.get(), oplogDTO);
     }
 
@@ -139,8 +140,8 @@ public class ProjectServiceImpl implements ProjectService {
         // 检查参数
         checkParam(saveVo, true);
         // 先更新项目基本信息
-        ProjectPO projectPO = CopyBeanUtil.copy(saveVo, ProjectPO.class);
-        projectDao.update(projectPO);
+        Project project = CopyBeanUtil.copy(saveVo, Project.class);
+        projectDao.update(project);
         // 更新项目负责人与项目联系
         userProjectService.updateUserProject(saveVo.getId(), saveVo.getUserIdList());
         // 保存操作日志
@@ -150,23 +151,23 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Override
     public void changeProjectStatus(Integer projectId) {
-        ProjectPO projectPO = projectDao.selectByProjectId(projectId);
-        if (projectPO == null) {
+        Project project = projectDao.selectByProjectId(projectId);
+        if (project == null) {
             return;
         }
         // 状态取反
-        projectPO.setRunning(!projectPO.getRunning());
-        projectDao.update(projectPO);
+        project.setRunning(!project.getRunning());
+        projectDao.update(project);
         // 保存操作日志
-        String curRunningTag = projectPO.getRunning() ? "启用" : "停用";
-        OplogDTO oplogDTO = new OplogDTO("项目配置", curRunningTag, "项目", projectPO.getProjectName());
+        String curRunningTag = project.getRunning() ? "启用" : "停用";
+        OplogDTO oplogDTO = new OplogDTO("项目配置", curRunningTag, "项目", project.getProjectName());
         oplogService.saveOplogWithUserId(ThreadLocalUtil.get(), oplogDTO);
     }
 
     @Override
     public List<ProjectBriefVO> getProjectBriefList() {
-        List<ProjectPO> projectPOList = projectDao.selectBriefList();
-        return CopyBeanUtil.copyList(projectPOList, ProjectBriefVO.class);
+        List<ProjectBrief> projectBriefList = projectDao.selectBriefList();
+        return CopyBeanUtil.copyList(projectBriefList, ProjectBriefVO.class);
     }
 
     @Override
@@ -191,7 +192,7 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Override
     public PagingData<ProjectBriefVO> getProjectBriefPage(ProjectBriefQueryDTO queryDTO) {
-        IPage<ProjectPO> iPage = projectDao.selectBriefPage(queryDTO);
+        IPage<ProjectBrief> iPage = projectDao.selectBriefPage(queryDTO);
         List<ProjectBriefVO> list = CopyBeanUtil.copyList(iPage.getRecords(),ProjectBriefVO.class);
         return new PagingData<>(list, iPage);
     }

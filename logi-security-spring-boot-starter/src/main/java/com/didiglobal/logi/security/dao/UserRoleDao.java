@@ -1,5 +1,6 @@
 package com.didiglobal.logi.security.dao;
 
+import com.didiglobal.logi.security.common.entity.UserRole;
 import com.didiglobal.logi.security.common.po.UserRolePO;
 
 import java.util.List;
@@ -25,9 +26,9 @@ public interface UserRoleDao {
 
     /**
      * 批量插入
-     * @param userRolePOList 用户角色关联信息
+     * @param userRoleList 用户角色关联信息
      */
-    void insertBatch(List<UserRolePO> userRolePOList);
+    void insertBatch(List<UserRole> userRoleList);
 
     /**
      * 根据角色或者用户id，删除用户与角色的关系

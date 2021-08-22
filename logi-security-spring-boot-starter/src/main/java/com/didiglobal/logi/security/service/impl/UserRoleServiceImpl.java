@@ -1,9 +1,7 @@
 package com.didiglobal.logi.security.service.impl;
 
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.didiglobal.logi.security.common.po.UserRolePO;
+import com.didiglobal.logi.security.common.entity.UserRole;
 import com.didiglobal.logi.security.dao.UserRoleDao;
-import com.didiglobal.logi.security.dao.mapper.UserRoleMapper;
 import com.didiglobal.logi.security.service.UserRoleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -71,10 +69,10 @@ public class UserRoleServiceImpl implements UserRoleService {
         userRoleDao.insertBatch(getUserRoleList(false, roleId, userIdList));
     }
 
-    private List<UserRolePO> getUserRoleList(boolean isUserId, Integer id, List<Integer> idList) {
-        List<UserRolePO> result = new ArrayList<>();
+    private List<UserRole> getUserRoleList(boolean isUserId, Integer id, List<Integer> idList) {
+        List<UserRole> result = new ArrayList<>();
         for(Integer id2 : idList) {
-            result.add(isUserId ? new UserRolePO(id, id2) : new UserRolePO(id2, id));
+            result.add(isUserId ? new UserRole(id, id2) : new UserRole(id2, id));
         }
         return result;
     }

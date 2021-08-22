@@ -1,6 +1,6 @@
 package com.didiglobal.logi.security.dao;
 
-import com.didiglobal.logi.security.common.po.UserProjectPO;
+import com.didiglobal.logi.security.common.entity.UserProject;
 
 import java.util.List;
 
@@ -25,9 +25,9 @@ public interface UserProjectDao {
 
     /**
      * 批量插入用户与项目的关联信息
-     * @param userProjectPOList 用户与项目关联信息
+     * @param userProjectList 用户与项目关联信息
      */
-    void insertBatch(List<UserProjectPO> userProjectPOList);
+    void insertBatch(List<UserProject> userProjectList);
 
     /**
      * 根据项目id删除用户与项目的关联信息

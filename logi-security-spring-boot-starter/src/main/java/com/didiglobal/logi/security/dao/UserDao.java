@@ -3,7 +3,8 @@ package com.didiglobal.logi.security.dao;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.didiglobal.logi.security.common.dto.user.UserBriefQueryDTO;
 import com.didiglobal.logi.security.common.dto.user.UserQueryDTO;
-import com.didiglobal.logi.security.common.po.UserPO;
+import com.didiglobal.logi.security.common.entity.user.User;
+import com.didiglobal.logi.security.common.entity.user.UserBrief;
 
 import java.util.List;
 
@@ -19,7 +20,7 @@ public interface UserDao {
      * @param userIdList 用户idList
      * @return 用户信息page
      */
-    IPage<UserPO> selectPageByDeptIdListAndUserIdList(UserQueryDTO queryDTO, List<Integer> deptIdList, List<Integer> userIdList);
+    IPage<User> selectPageByDeptIdListAndUserIdList(UserQueryDTO queryDTO, List<Integer> deptIdList, List<Integer> userIdList);
 
     /**
      * 根据指定条件分页查询用户简要信息
@@ -27,28 +28,33 @@ public interface UserDao {
      * @param deptIdList 部门idList
      * @return 用户简要信息page
      */
-    IPage<UserPO> selectBriefPageByDeptIdList(UserBriefQueryDTO queryDTO, List<Integer> deptIdList);
+    IPage<UserBrief> selectBriefPageByDeptIdList(UserBriefQueryDTO queryDTO, List<Integer> deptIdList);
 
     /**
      * 根据用户id获取用户信息
      * @param userId 用户id
      * @return 用户信息
      */
-    UserPO selectByUserId(Integer userId);
+    User selectByUserId(Integer userId);
 
     /**
      * 根据用户idList获取用户简要信息List
      * @param userIdList 用户idList
      * @return 用户简要信息List
      */
-    List<UserPO> selectBriefListByUserIdList(List<Integer> userIdList);
+    List<UserBrief> selectBriefListByUserIdList(List<Integer> userIdList);
 
     /**
      * 会分别以账户名和实名去模糊查询，返回两者的并集
      * @param name 账户名或实名
-     * @return List<UserPO> 用户简要信息list
+     * @return List<User> 用户简要信息list
      */
-    List<UserPO> selectBriefListByNameAndDescOrderByCreateTime(String name);
+    List<UserBrief> selectBriefListByNameAndDescOrderByCreateTime(String name);
 
-    List<UserPO> selectBriefListByDeptIdList(List<Integer> deptIdList);
+    /**
+     * 根据部门idList，获取用户简要信息List
+     * @param deptIdList 部门idList
+     * @return 用户简要信息List
+     */
+    List<UserBrief> selectBriefListByDeptIdList(List<Integer> deptIdList);
 }

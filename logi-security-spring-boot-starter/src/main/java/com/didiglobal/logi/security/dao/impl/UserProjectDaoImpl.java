@@ -1,9 +1,11 @@
 package com.didiglobal.logi.security.dao.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.didiglobal.logi.security.common.entity.UserProject;
 import com.didiglobal.logi.security.common.po.UserProjectPO;
 import com.didiglobal.logi.security.dao.UserProjectDao;
 import com.didiglobal.logi.security.dao.mapper.UserProjectMapper;
+import com.didiglobal.logi.security.util.CopyBeanUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
@@ -52,9 +54,9 @@ public class UserProjectDaoImpl implements UserProjectDao {
     }
 
     @Override
-    public void insertBatch(List<UserProjectPO> userProjectPOList) {
-        if(!CollectionUtils.isEmpty(userProjectPOList)) {
-            userProjectMapper.insertBatchSomeColumn(userProjectPOList);
+    public void insertBatch(List<UserProject> userProjectList) {
+        if(!CollectionUtils.isEmpty(userProjectList)) {
+            userProjectMapper.insertBatchSomeColumn(CopyBeanUtil.copyList(userProjectList, UserProjectPO.class));
         }
     }
 

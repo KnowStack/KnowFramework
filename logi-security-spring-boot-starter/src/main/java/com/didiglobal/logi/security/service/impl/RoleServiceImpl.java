@@ -2,6 +2,8 @@ package com.didiglobal.logi.security.service.impl;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.didiglobal.logi.security.common.PagingData;
+import com.didiglobal.logi.security.common.entity.role.Role;
+import com.didiglobal.logi.security.common.entity.role.RoleBrief;
 import com.didiglobal.logi.security.common.vo.role.AssignInfoVO;
 import com.didiglobal.logi.security.common.dto.role.RoleAssignDTO;
 import com.didiglobal.logi.security.common.dto.role.RoleQueryDTO;
@@ -12,7 +14,6 @@ import com.didiglobal.logi.security.common.vo.role.RoleVO;
 import com.didiglobal.logi.security.common.dto.message.MessageDTO;
 import com.didiglobal.logi.security.common.dto.oplog.OplogDTO;
 import com.didiglobal.logi.security.common.enums.message.MessageCode;
-import com.didiglobal.logi.security.common.po.RolePO;
 import com.didiglobal.logi.security.common.vo.permission.PermissionTreeVO;
 import com.didiglobal.logi.security.common.enums.ResultCode;
 import com.didiglobal.logi.security.common.vo.user.UserBriefVO;
@@ -57,15 +58,15 @@ public class RoleServiceImpl implements RoleService {
 
     @Override
     public RoleVO getRoleDetailByRoleId(Integer roleId) {
-        RolePO rolePO = roleDao.selectByRoleId(roleId);
-        if(rolePO == null) {
+        Role role = roleDao.selectByRoleId(roleId);
+        if(role == null) {
             return null;
         }
         // 根据角色id去查权限树
-        PermissionTreeVO permissionTreeVO = permissionService.buildPermissionTreeByRoleId(rolePO.getId());
-        RoleVO roleVo = CopyBeanUtil.copy(rolePO, RoleVO.class);
+        PermissionTreeVO permissionTreeVO = permissionService.buildPermissionTreeByRoleId(role.getId());
+        RoleVO roleVo = CopyBeanUtil.copy(role, RoleVO.class);
         roleVo.setPermissionTreeVO(permissionTreeVO);
-        roleVo.setCreateTime(rolePO.getCreateTime().getTime());
+        roleVo.setCreateTime(role.getCreateTime().getTime());
         // 获取授予用户数
         List<Integer> userIdList = userRoleService.getUserIdListByRoleId(roleId);
         roleVo.setAuthedUserCnt(userIdList.size());
@@ -74,14 +75,14 @@ public class RoleServiceImpl implements RoleService {
 
     @Override
     public PagingData<RoleVO> getRolePage(RoleQueryDTO queryDTO) {
-        IPage<RolePO> iPage = roleDao.selectPage(queryDTO);
+        IPage<Role> iPage = roleDao.selectPage(queryDTO);
         List<RoleVO> roleVOList = new ArrayList<>();
-        for(RolePO rolePO : iPage.getRecords()) {
-            RoleVO roleVO = CopyBeanUtil.copy(rolePO, RoleVO.class);
+        for(Role role : iPage.getRecords()) {
+            RoleVO roleVO = CopyBeanUtil.copy(role, RoleVO.class);
             // 获取该角色已分配给的用户数
-            List<Integer> userIdList = userRoleService.getUserIdListByRoleId(rolePO.getId());
+            List<Integer> userIdList = userRoleService.getUserIdListByRoleId(role.getId());
             roleVO.setAuthedUserCnt(userIdList.size());
-            roleVO.setCreateTime(rolePO.getCreateTime().getTime());
+            roleVO.setCreateTime(role.getCreateTime().getTime());
             roleVOList.add(roleVO);
         }
         return new PagingData<>(roleVOList, iPage);
@@ -92,17 +93,17 @@ public class RoleServiceImpl implements RoleService {
         // 检查参数
         checkParam(roleSaveDTO, false);
         // 保存角色信息
-        RolePO rolePO = CopyBeanUtil.copy(roleSaveDTO, RolePO.class);
+        Role role = CopyBeanUtil.copy(roleSaveDTO, Role.class);
         // 设置修改人信息
         UserBriefVO userBriefVO = userService.getUserBriefByUserId(userId);
         if(userBriefVO != null) {
-            rolePO.setLastReviser(userBriefVO.getUsername());
+            role.setLastReviser(userBriefVO.getUsername());
         }
         // 设置角色编号
-        rolePO.setRoleCode("r" + MathUtil.getRandomNumber(7));
-        roleDao.insert(rolePO);
+        role.setRoleCode("r" + MathUtil.getRandomNumber(7));
+        roleDao.insert(role);
         // 保持角色与权限的关联信息
-        rolePermissionService.saveRolePermission(rolePO.getId(), roleSaveDTO.getPermissionIdList());
+        rolePermissionService.saveRolePermission(role.getId(), roleSaveDTO.getPermissionIdList());
         // 保存操作日志
         OplogDTO oplogDTO = new OplogDTO("角色管理", "新增", "角色", roleSaveDTO.getRoleName());
         oplogService.saveOplogWithUserId(ThreadLocalUtil.get(), oplogDTO);
@@ -110,8 +111,8 @@ public class RoleServiceImpl implements RoleService {
 
     @Override
     public void deleteRoleByRoleId(Integer roleId) {
-        RolePO rolePO = roleDao.selectByRoleId(roleId);
-        if(rolePO == null) {
+        Role role = roleDao.selectByRoleId(roleId);
+        if(role == null) {
             return;
         }
         // 检查该角色是否和用户绑定
@@ -124,7 +125,7 @@ public class RoleServiceImpl implements RoleService {
         // 逻辑删除（自动）
         roleDao.deleteByRoleId(roleId);
         // 保存操作日志
-        OplogDTO oplogDTO = new OplogDTO("角色管理", "删除", "角色", rolePO.getRoleName());
+        OplogDTO oplogDTO = new OplogDTO("角色管理", "删除", "角色", role.getRoleName());
         oplogService.saveOplogWithUserId(ThreadLocalUtil.get(), oplogDTO);
     }
 
@@ -135,15 +136,15 @@ public class RoleServiceImpl implements RoleService {
         }
         checkParam(saveDTO, true);
         // 更新角色基本信息
-        RolePO rolePO = CopyBeanUtil.copy(saveDTO, RolePO.class);
+        Role role = CopyBeanUtil.copy(saveDTO, Role.class);
         // 设置修改人信息
         UserBriefVO userBriefVO = userService.getUserBriefByUserId(userId);
         if(userBriefVO != null) {
-            rolePO.setLastReviser(userBriefVO.getUsername());
+            role.setLastReviser(userBriefVO.getUsername());
         }
-        roleDao.update(rolePO);
+        roleDao.update(role);
         // 更新角色与权限关联信息
-        rolePermissionService.updateRolePermission(rolePO.getId(), saveDTO.getPermissionIdList());
+        rolePermissionService.updateRolePermission(role.getId(), saveDTO.getPermissionIdList());
         // 保存操作日志
         OplogDTO oplogDTO = new OplogDTO("角色管理", "编辑", "角色", saveDTO.getRoleName());
         oplogService.saveOplogWithUserId(ThreadLocalUtil.get(), oplogDTO);
@@ -174,8 +175,8 @@ public class RoleServiceImpl implements RoleService {
             List<Integer> oldUserIdList = userRoleService.getUserIdListByRoleId(roleId);
             userRoleService.updateUserRoleByRoleId(roleId, assignDTO.getIdList());
             // 保存操作日志
-            RolePO rolePO = roleDao.selectByRoleId(assignDTO.getId());
-            OplogDTO oplogDTO = new OplogDTO("角色管理", "分配用户", "角色", rolePO.getRoleName());
+            Role role = roleDao.selectByRoleId(assignDTO.getId());
+            OplogDTO oplogDTO = new OplogDTO("角色管理", "分配用户", "角色", role.getRoleName());
             Integer oplogId = oplogService.saveOplogWithUserId(ThreadLocalUtil.get(), oplogDTO);
             // 打包和保存角色更新消息
             packAndSaveMessage(oplogId, oldUserIdList, assignDTO);
@@ -184,8 +185,8 @@ public class RoleServiceImpl implements RoleService {
 
     @Override
     public List<RoleBriefVO> getRoleBriefListByRoleName(String roleName) {
-        List<RolePO> rolePOList = roleDao.selectBriefListByRoleNameAndDescOrderByCreateTime(roleName);
-        return CopyBeanUtil.copyList(rolePOList, RoleBriefVO.class);
+        List<RoleBrief> roleBriefList = roleDao.selectBriefListByRoleNameAndDescOrderByCreateTime(roleName);
+        return CopyBeanUtil.copyList(roleBriefList, RoleBriefVO.class);
     }
 
     @Override
@@ -209,8 +210,8 @@ public class RoleServiceImpl implements RoleService {
 
     @Override
     public List<RoleBriefVO> getAllRoleBriefList() {
-        List<RolePO> rolePOList = roleDao.selectBriefList();
-        return CopyBeanUtil.copyList(rolePOList, RoleBriefVO.class);
+        List<RoleBrief> roleBriefList = roleDao.selectAllBrief();
+        return CopyBeanUtil.copyList(roleBriefList, RoleBriefVO.class);
     }
 
     @Override
@@ -220,8 +221,8 @@ public class RoleServiceImpl implements RoleService {
         if(CollectionUtils.isEmpty(roleIdList)) {
             return new ArrayList<>();
         }
-        List<RolePO> rolePOList =  roleDao.selectBriefListByRoleIdList(roleIdList);
-        return CopyBeanUtil.copyList(rolePOList, RoleBriefVO.class);
+        List<RoleBrief> roleBriefList =  roleDao.selectBriefListByRoleIdList(roleIdList);
+        return CopyBeanUtil.copyList(roleBriefList, RoleBriefVO.class);
     }
 
     @Override
@@ -323,13 +324,13 @@ public class RoleServiceImpl implements RoleService {
     }
 
     private String spliceRoleNameByRoleIdList(List<Integer> roleIdList) {
-        List<RolePO> rolePOList = roleDao.selectBriefListByRoleIdList(roleIdList);
+        List<RoleBrief> roleBriefList = roleDao.selectBriefListByRoleIdList(roleIdList);
         // 拼接角色信息
         StringBuilder sb = new StringBuilder();
-        for(int i = 0; i < rolePOList.size() - 1; i++) {
-            sb.append(rolePOList.get(i)).append(",");
+        for(int i = 0; i < roleBriefList.size() - 1; i++) {
+            sb.append(roleBriefList.get(i)).append(",");
         }
-        sb.append(rolePOList.get(rolePOList.size() - 1));
+        sb.append(roleBriefList.get(roleBriefList.size() - 1));
         return sb.toString();
     }
 

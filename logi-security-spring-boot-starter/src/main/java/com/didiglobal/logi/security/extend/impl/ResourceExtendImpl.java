@@ -4,7 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.didiglobal.logi.security.common.PagingData;
-import com.didiglobal.logi.security.common.dto2.ResourceDTO;
+import com.didiglobal.logi.security.common.dto.resource.ResourceDTO;
 import com.didiglobal.logi.security.inside.common.po.ProjectResourcePO;
 import com.didiglobal.logi.security.extend.ResourceExtend;
 import com.didiglobal.logi.security.dao.mapper.ProjectMapper;

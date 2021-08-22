@@ -1,6 +1,7 @@
-package com.didiglobal.logi.security.common.entity;
+package com.didiglobal.logi.security.common.entity.role;
 
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.didiglobal.logi.security.common.entity.BaseEntity;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 

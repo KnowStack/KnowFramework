@@ -1,5 +1,6 @@
 package com.didiglobal.logi.security.dao;
 
+import com.didiglobal.logi.security.common.entity.RolePermission;
 import com.didiglobal.logi.security.common.po.RolePermissionPO;
 
 import java.util.List;
@@ -11,9 +12,9 @@ public interface RolePermissionDao {
 
     /**
      * 批量插入
-     * @param rolePermissionPOList 角色与权限关联信息
+     * @param rolePermissionList 角色与权限关联信息
      */
-    void insertBatch(List<RolePermissionPO> rolePermissionPOList);
+    void insertBatch(List<RolePermission> rolePermissionList);
 
     /**
      * 根据角色id，删除角色权限关联信息

@@ -3,16 +3,16 @@ package com.didiglobal.logi.security.dao.impl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.didiglobal.logi.security.common.PagingData;
 import com.didiglobal.logi.security.common.dto.project.ProjectBriefQueryDTO;
 import com.didiglobal.logi.security.common.dto.project.ProjectQueryDTO;
+import com.didiglobal.logi.security.common.entity.project.Project;
+import com.didiglobal.logi.security.common.entity.project.ProjectBrief;
 import com.didiglobal.logi.security.common.po.ProjectPO;
-import com.didiglobal.logi.security.common.po.RolePO;
 import com.didiglobal.logi.security.dao.ProjectDao;
 import com.didiglobal.logi.security.dao.mapper.ProjectMapper;
+import com.didiglobal.logi.security.util.CopyBeanUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
 import java.util.List;
@@ -27,13 +27,13 @@ public class ProjectDaoImpl implements ProjectDao {
     private ProjectMapper projectMapper;
 
     @Override
-    public ProjectPO selectByProjectId(Integer projectId) {
-        return projectMapper.selectById(projectId);
+    public Project selectByProjectId(Integer projectId) {
+        return CopyBeanUtil.copy(projectMapper.selectById(projectId), Project.class);
     }
 
     @Override
-    public void insert(ProjectPO projectPO) {
-        projectMapper.insert(projectPO);
+    public void insert(Project project) {
+        projectMapper.insert(CopyBeanUtil.copy(project, ProjectPO.class));
     }
 
     @Override
@@ -42,8 +42,8 @@ public class ProjectDaoImpl implements ProjectDao {
     }
 
     @Override
-    public void update(ProjectPO projectPO) {
-        projectMapper.updateById(projectPO);
+    public void update(Project project) {
+        projectMapper.updateById(CopyBeanUtil.copy(project, ProjectPO.class));
     }
 
     @Override
@@ -56,28 +56,31 @@ public class ProjectDaoImpl implements ProjectDao {
     }
 
     @Override
-    public IPage<ProjectPO> selectBriefPage(ProjectBriefQueryDTO queryDTO) {
+    public IPage<ProjectBrief> selectBriefPage(ProjectBriefQueryDTO queryDTO) {
         IPage<ProjectPO> iPage = new Page<>(queryDTO.getPage(), queryDTO.getSize());
         QueryWrapper<ProjectPO> projectWrapper = wrapBriefQuery();
         String projectName = queryDTO.getProjectName();
-        projectWrapper.like(!StringUtils.isEmpty(projectName), "project_name", projectName);
-        return projectMapper.selectPage(iPage, projectWrapper);
+        if(!StringUtils.isEmpty(projectName)) {
+            projectWrapper.like("project_name", projectName);
+        }
+        projectMapper.selectPage(iPage, projectWrapper);
+        return CopyBeanUtil.copyPage(iPage, ProjectBrief.class);
     }
 
     @Override
-    public List<ProjectPO> selectBriefList() {
-        return projectMapper.selectList(wrapBriefQuery());
+    public List<ProjectBrief> selectBriefList() {
+        return CopyBeanUtil.copyList(projectMapper.selectList(wrapBriefQuery()), ProjectBrief.class);
     }
 
     @Override
-    public IPage<ProjectPO> selectPageByDeptIdListAndProjectIdList(ProjectQueryDTO queryDTO,
+    public IPage<Project> selectPageByDeptIdListAndProjectIdList(ProjectQueryDTO queryDTO,
                                                                    List<Integer> deptIdList, List<Integer> projectIdList) {
         IPage<ProjectPO> iPage = new Page<>(queryDTO.getPage(), queryDTO.getSize());
         if((deptIdList != null && deptIdList.size() == 0)) {
-            return iPage;
+            return CopyBeanUtil.copyPage(iPage, Project.class);
         }
         if((projectIdList != null && projectIdList.size() == 0)) {
-            return iPage;
+            return CopyBeanUtil.copyPage(iPage, Project.class);
         }
         QueryWrapper<ProjectPO> projectWrapper = new QueryWrapper<>();
         projectWrapper
@@ -86,7 +89,7 @@ public class ProjectDaoImpl implements ProjectDao {
                 .like(!StringUtils.isEmpty(queryDTO.getProjectName()), "project_name", queryDTO.getProjectName())
                 .in(deptIdList != null, "dept_id", deptIdList)
                 .in(projectIdList != null, "id", projectIdList);
-        return projectMapper.selectPage(iPage, projectWrapper);
+        return CopyBeanUtil.copyPage(projectMapper.selectPage(iPage, projectWrapper), Project.class);
     }
 
     private QueryWrapper<ProjectPO> wrapBriefQuery() {

@@ -1,6 +1,6 @@
 package com.didiglobal.logi.security.service.impl;
 
-import com.didiglobal.logi.security.common.po.RolePermissionPO;
+import com.didiglobal.logi.security.common.entity.RolePermission;
 import com.didiglobal.logi.security.dao.RolePermissionDao;
 import com.didiglobal.logi.security.service.RolePermissionService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -56,16 +56,16 @@ public class RolePermissionServiceImpl implements RolePermissionService {
      * 用于构建可以直接插入角色与权限中间表的数据
      * @param roleId 角色Id
      * @param permissionIdList 权限idList
-     * @return List<RolePermissionPO>
+     * @return List<RolePermission>
      */
-    private List<RolePermissionPO> getRolePermissionList(Integer roleId, List<Integer> permissionIdList) {
-        List<RolePermissionPO> rolePermissionPOList = new ArrayList<>();
+    private List<RolePermission> getRolePermissionList(Integer roleId, List<Integer> permissionIdList) {
+        List<RolePermission> rolePermissionList = new ArrayList<>();
         for(Integer permissionId : permissionIdList) {
-            RolePermissionPO rolePermissionPO = new RolePermissionPO();
-            rolePermissionPO.setRoleId(roleId);
-            rolePermissionPO.setPermissionId(permissionId);
-            rolePermissionPOList.add(rolePermissionPO);
+            RolePermission rolePermission = new RolePermission();
+            rolePermission.setRoleId(roleId);
+            rolePermission.setPermissionId(permissionId);
+            rolePermissionList.add(rolePermission);
         }
-        return rolePermissionPOList;
+        return rolePermissionList;
     }
 }

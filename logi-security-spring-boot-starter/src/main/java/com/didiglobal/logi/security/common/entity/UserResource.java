@@ -1,6 +1,6 @@
 package com.didiglobal.logi.security.common.entity;
 
-import com.didiglobal.logi.security.common.dto2.ResourceDTO;
+import com.didiglobal.logi.security.common.dto.resource.ResourceDTO;
 import lombok.Data;
 
 /**

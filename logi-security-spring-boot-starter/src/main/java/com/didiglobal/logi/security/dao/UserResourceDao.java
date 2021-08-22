@@ -1,6 +1,7 @@
 package com.didiglobal.logi.security.dao;
 
 import com.didiglobal.logi.security.common.dto.resource.UserResourceQueryDTO;
+import com.didiglobal.logi.security.common.entity.UserResource;
 import com.didiglobal.logi.security.common.enums.resource.ControlLevelCode;
 import com.didiglobal.logi.security.common.po.UserResourcePO;
 
@@ -34,15 +35,15 @@ public interface UserResourceDao {
 
     /**
      * 插入
-     * @param userResourcePO 用户与资源关联信息
+     * @param userResource 用户与资源关联信息
      */
-    void insert(UserResourcePO userResourcePO);
+    void insert(UserResource userResource);
 
     /**
      * 批量插入
-     * @param userResourcePOList 用于与资源的关联信息
+     * @param userResourceList 用于与资源的关联信息
      */
-    void insertBatch(List<UserResourcePO> userResourcePOList);
+    void insertBatch(List<UserResource> userResourceList);
 
     /**
      * 根据用户idList删除

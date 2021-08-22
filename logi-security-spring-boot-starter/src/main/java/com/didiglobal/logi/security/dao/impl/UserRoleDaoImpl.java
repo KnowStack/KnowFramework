@@ -1,9 +1,11 @@
 package com.didiglobal.logi.security.dao.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.didiglobal.logi.security.common.entity.UserRole;
 import com.didiglobal.logi.security.common.po.UserRolePO;
 import com.didiglobal.logi.security.dao.UserRoleDao;
 import com.didiglobal.logi.security.dao.mapper.UserRoleMapper;
+import com.didiglobal.logi.security.util.CopyBeanUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
@@ -51,9 +53,9 @@ public class UserRoleDaoImpl implements UserRoleDao {
     }
 
     @Override
-    public void insertBatch(List<UserRolePO> userRolePOList) {
-        if(!CollectionUtils.isEmpty(userRolePOList)) {
-            userRoleMapper.insertBatchSomeColumn(userRolePOList);
+    public void insertBatch(List<UserRole> userRoleList) {
+        if(!CollectionUtils.isEmpty(userRoleList)) {
+            userRoleMapper.insertBatchSomeColumn(CopyBeanUtil.copyList(userRoleList, UserRolePO.class));
         }
     }
 

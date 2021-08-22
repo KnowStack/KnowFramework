@@ -7,13 +7,13 @@ import com.didiglobal.logi.security.common.dto.project.ProjectBriefQueryDTO;
 import com.didiglobal.logi.security.common.dto.resource.*;
 import com.didiglobal.logi.security.common.dto.resource.type.ResourceTypeQueryDTO;
 import com.didiglobal.logi.security.common.dto.user.UserBriefQueryDTO;
-import com.didiglobal.logi.security.common.dto2.ResourceDTO;
+import com.didiglobal.logi.security.common.dto.resource.ResourceDTO;
+import com.didiglobal.logi.security.common.entity.UserResource;
 import com.didiglobal.logi.security.common.enums.ResultCode;
 import com.didiglobal.logi.security.common.enums.resource.ControlLevelCode;
 import com.didiglobal.logi.security.common.enums.resource.HasLevelCode;
 import com.didiglobal.logi.security.common.enums.resource.ShowLevelCode;
 import com.didiglobal.logi.security.common.po.ProjectPO;
-import com.didiglobal.logi.security.common.po.UserResourcePO;
 import com.didiglobal.logi.security.common.vo.project.ProjectBriefVO;
 import com.didiglobal.logi.security.common.vo.resource.*;
 import com.didiglobal.logi.security.common.vo.user.UserBriefVO;
@@ -191,8 +191,8 @@ public class UserResourceServiceImpl implements UserResourceService {
             // 则等于查看权限level的记录都要被删除（因为查看权限控制将被置为false，所有人默认具有查看权限）
             userResourceDao.deleteByControlLevel(ControlLevelCode.VIEW);
             // 构造全0的数据，表示 资源查看权限控制 被开启了
-            UserResourcePO UserResourcePO = new UserResourcePO(0, 0, 0, 0, 0);
-            userResourceDao.insert(UserResourcePO);
+            UserResource UserResource = new UserResource(0, 0, 0, 0, 0);
+            userResourceDao.insert(UserResource);
         }
     }
 
@@ -257,9 +257,9 @@ public class UserResourceServiceImpl implements UserResourceService {
      * @param idList projectId==null，idList为项目idList、resourceTypeId==null，idList为资源类别idList
      * @param controlLevel 资源控制权限level
      * @param userIdList 用户idList
-     * @return List<UserResourcePO>
+     * @return List<UserResource>
      */
-    private List<UserResourcePO> getUserResourceList(Integer projectId, Integer resourceTypeId, int controlLevel,
+    private List<UserResource> getUserResourceList(Integer projectId, Integer resourceTypeId, int controlLevel,
                                                      List<Integer> idList, List<Integer> userIdList) {
         List<Integer> projectIdList;
         List<Integer> resourceTypeIdList;
@@ -298,18 +298,18 @@ public class UserResourceServiceImpl implements UserResourceService {
         return buildUserResourceList(controlLevel, userIdList, resourceDTOList);
     }
 
-    private List<UserResourcePO> buildUserResourceList(int controlLevel, List<Integer> userIdList,
+    private List<UserResource> buildUserResourceList(int controlLevel, List<Integer> userIdList,
                                                        List<ResourceDTO> resourceDTOList) {
-        List<UserResourcePO> userResourcePOList =  new ArrayList<>();
+        List<UserResource> userResourceList =  new ArrayList<>();
         for(Integer userId : userIdList) {
             for(ResourceDTO resourceDTO : resourceDTOList) {
-                UserResourcePO userResourcePO = new UserResourcePO(resourceDTO);
-                userResourcePO.setUserId(userId);
-                userResourcePO.setControlLevel(controlLevel);
-                userResourcePOList.add(userResourcePO);
+                UserResource userResource = new UserResource(resourceDTO);
+                userResource.setUserId(userId);
+                userResource.setControlLevel(controlLevel);
+                userResourceList.add(userResource);
             }
         }
-        return userResourcePOList;
+        return userResourceList;
     }
 
     @Override
@@ -327,9 +327,9 @@ public class UserResourceServiceImpl implements UserResourceService {
 
         List<Integer> idList = assignToOneUserDTO.getIdList();
         List<Integer> userIdList = new ArrayList<Integer>(){{ add(userId); }};
-        List<UserResourcePO> userResourcePOList = getUserResourceList(projectId, resourceTypeId, controlLevel, idList, userIdList);
+        List<UserResource> userResourceList = getUserResourceList(projectId, resourceTypeId, controlLevel, idList, userIdList);
         // 插入new关联信息
-        userResourceDao.insertBatch(userResourcePOList);
+        userResourceDao.insertBatch(userResourceList);
 
         // 保存操作日志 TODO：用户+资源名称 这个信息咋搞比较好，还要记录移除的信息
         OplogDTO oplogDTO = new OplogDTO("资源权限管理", "分配资源", "用户", "用户+资源名称");
@@ -407,11 +407,11 @@ public class UserResourceServiceImpl implements UserResourceService {
         // 先删除全部old关联信息
         deleteOldRelationBeforeBatchAssign(assignDTO.getProjectId(), assignDTO.getResourceTypeId(), assignFlag, controlLevel, idList);
         // 获取新管理信息
-        List<UserResourcePO> userResourcePOList = getUserResourceList(
+        List<UserResource> userResourceList = getUserResourceList(
                 assignDTO.getProjectId(), assignDTO.getResourceTypeId(), controlLevel, idList, userIdList
         );
         // 插入新关联信息
-        userResourceDao.insertBatch(userResourcePOList);
+        userResourceDao.insertBatch(userResourceList);
 
         if(assignFlag) {
             // 保存操作日志 TODO：资源名称+用户 这个信息咋搞比较好？还要记录移除的信息

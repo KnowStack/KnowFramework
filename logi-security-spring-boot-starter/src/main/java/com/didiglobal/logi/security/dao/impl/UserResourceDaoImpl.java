@@ -2,10 +2,12 @@ package com.didiglobal.logi.security.dao.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.didiglobal.logi.security.common.dto.resource.UserResourceQueryDTO;
+import com.didiglobal.logi.security.common.entity.UserResource;
 import com.didiglobal.logi.security.common.enums.resource.ControlLevelCode;
 import com.didiglobal.logi.security.common.po.UserResourcePO;
 import com.didiglobal.logi.security.dao.UserResourceDao;
 import com.didiglobal.logi.security.dao.mapper.UserResourceMapper;
+import com.didiglobal.logi.security.util.CopyBeanUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
@@ -56,14 +58,14 @@ public class UserResourceDaoImpl implements UserResourceDao {
     }
 
     @Override
-    public void insert(UserResourcePO userResourcePO) {
-        userResourceMapper.insert(userResourcePO);
+    public void insert(UserResource userResource) {
+        userResourceMapper.insert(CopyBeanUtil.copy(userResource, UserResourcePO.class));
     }
 
     @Override
-    public void insertBatch(List<UserResourcePO> userResourcePOList) {
-        if(!CollectionUtils.isEmpty(userResourcePOList)) {
-            userResourceMapper.insertBatchSomeColumn(userResourcePOList);
+    public void insertBatch(List<UserResource> userResourceList) {
+        if(!CollectionUtils.isEmpty(userResourceList)) {
+            userResourceMapper.insertBatchSomeColumn(CopyBeanUtil.copyList(userResourceList, UserResourcePO.class));
         }
     }
 

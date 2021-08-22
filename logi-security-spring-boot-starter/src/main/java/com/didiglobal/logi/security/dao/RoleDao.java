@@ -2,6 +2,8 @@ package com.didiglobal.logi.security.dao;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.didiglobal.logi.security.common.dto.role.RoleQueryDTO;
+import com.didiglobal.logi.security.common.entity.role.Role;
+import com.didiglobal.logi.security.common.entity.role.RoleBrief;
 import com.didiglobal.logi.security.common.po.RolePO;
 
 import java.util.List;
@@ -16,20 +18,20 @@ public interface RoleDao {
      * @param roleId 角色id
      * @return 角色信息
      */
-    RolePO selectByRoleId(Integer roleId);
+    Role selectByRoleId(Integer roleId);
 
     /**
      * 分页查询
      * @param queryDTO 查询条件
      * @return 角色信息page
      */
-    IPage<RolePO> selectPage(RoleQueryDTO queryDTO);
+    IPage<Role> selectPage(RoleQueryDTO queryDTO);
 
     /**
      * 新增角色
-     * @param rolePO 角色信息
+     * @param role 角色信息
      */
-    void insert(RolePO rolePO);
+    void insert(Role role);
 
     /**
      * 删除角色
@@ -39,29 +41,29 @@ public interface RoleDao {
 
     /**
      * 更新角色
-     * @param rolePO 角色信息
+     * @param role 角色信息
      */
-    void update(RolePO rolePO);
+    void update(Role role);
 
     /**
      * 获取角色简要信息
      * @param roleName 角色名
      * @return 角色简要信息List
      */
-    List<RolePO> selectBriefListByRoleNameAndDescOrderByCreateTime(String roleName);
+    List<RoleBrief> selectBriefListByRoleNameAndDescOrderByCreateTime(String roleName);
 
     /**
      * 获取全部角色简要信息
      * @return 角色简要信息list
      */
-    List<RolePO> selectBriefList();
+    List<RoleBrief> selectAllBrief();
 
     /**
      * 根据角色idList获取角色简要信息
      * @param roleIdList 角色idList
      * @return List<RolePO>
      */
-    List<RolePO> selectBriefListByRoleIdList(List<Integer> roleIdList);
+    List<RoleBrief> selectBriefListByRoleIdList(List<Integer> roleIdList);
 
     /**
      * 根据角色名查询符合数据数

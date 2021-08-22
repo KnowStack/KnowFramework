@@ -1,6 +1,6 @@
 package com.didiglobal.logi.security.service.impl;
 
-import com.didiglobal.logi.security.common.po.UserProjectPO;
+import com.didiglobal.logi.security.common.entity.UserProject;
 import com.didiglobal.logi.security.dao.UserProjectDao;
 import com.didiglobal.logi.security.service.UserProjectService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,7 +41,7 @@ public class UserProjectServiceImpl implements UserProjectService {
         if(projectId == null || CollectionUtils.isEmpty(userIdList)) {
             return;
         }
-        userProjectDao.insertBatch(getUserProjectPOList(projectId, userIdList));
+        userProjectDao.insertBatch(getUserProjectList(projectId, userIdList));
     }
 
     @Override
@@ -66,14 +66,14 @@ public class UserProjectServiceImpl implements UserProjectService {
      * @param userIdList 用户idList
      * @return List<RolePermissionPO>
      */
-    private List<UserProjectPO> getUserProjectPOList(Integer projectId, List<Integer> userIdList) {
-        List<UserProjectPO> userProjectPOList = new ArrayList<>();
+    private List<UserProject> getUserProjectList(Integer projectId, List<Integer> userIdList) {
+        List<UserProject> userProjectList = new ArrayList<>();
         for(Integer userId : userIdList) {
-            UserProjectPO userProjectPO = new UserProjectPO();
-            userProjectPO.setProjectId(projectId);
-            userProjectPO.setUserId(userId);
-            userProjectPOList.add(userProjectPO);
+            UserProject userProject = new UserProject();
+            userProject.setProjectId(projectId);
+            userProject.setUserId(userId);
+            userProjectList.add(userProject);
         }
-        return userProjectPOList;
+        return userProjectList;
     }
 }

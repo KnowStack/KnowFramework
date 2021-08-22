@@ -3,9 +3,9 @@ package com.didiglobal.logi.security.service.impl;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.didiglobal.logi.security.common.PagingData;
 import com.didiglobal.logi.security.common.dto.oplog.OplogDTO;
+import com.didiglobal.logi.security.common.entity.Oplog;
+import com.didiglobal.logi.security.common.entity.OplogExtra;
 import com.didiglobal.logi.security.common.enums.ResultCode;
-import com.didiglobal.logi.security.common.po.OplogExtraPO;
-import com.didiglobal.logi.security.common.po.OplogPO;
 import com.didiglobal.logi.security.common.dto.oplog.OplogQueryDTO;
 import com.didiglobal.logi.security.common.vo.oplog.OplogVO;
 import com.didiglobal.logi.security.common.vo.user.UserBriefVO;
@@ -40,32 +40,32 @@ public class OplogServiceImpl implements OplogService {
     @Override
     public PagingData<OplogVO> getOplogPage(OplogQueryDTO queryDTO) {
         // 分页查询
-        IPage<OplogPO> iPage = oplogDao.selectPageWithoutDetail(queryDTO);
+        IPage<Oplog> iPage = oplogDao.selectPageWithoutDetail(queryDTO);
         List<OplogVO> oplogVOList = new ArrayList<>();
-        for(OplogPO oplogPO : iPage.getRecords()) {
-            OplogVO oplogVO = CopyBeanUtil.copy(oplogPO, OplogVO.class);
-            oplogVO.setCreateTime(oplogPO.getCreateTime().getTime());
+        for(Oplog oplog : iPage.getRecords()) {
+            OplogVO oplogVO = CopyBeanUtil.copy(oplog, OplogVO.class);
+            oplogVO.setCreateTime(oplog.getCreateTime().getTime());
         }
         return new PagingData<>(oplogVOList, iPage);
     }
 
     @Override
     public OplogVO getOplogDetailByOplogId(Integer oplogId) {
-        OplogPO oplogPO = oplogDao.selectByOplogId(oplogId);
-        if(oplogPO == null) {
+        Oplog oplog = oplogDao.selectByOplogId(oplogId);
+        if(oplog == null) {
             return null;
         }
-        OplogVO oplogVO = CopyBeanUtil.copy(oplogPO, OplogVO.class);
-        oplogVO.setCreateTime(oplogPO.getCreateTime().getTime());
+        OplogVO oplogVO = CopyBeanUtil.copy(oplog, OplogVO.class);
+        oplogVO.setCreateTime(oplog.getCreateTime().getTime());
         return oplogVO;
     }
 
     @Override
     public List<String> getOplogExtraList(Integer type) {
-        List<OplogExtraPO> oplogExtraPOList = oplogExtraService.getOplogExtraListByType(type);
+        List<OplogExtra> oplogExtraList = oplogExtraService.getOplogExtraListByType(type);
         List<String> result = new ArrayList<>();
-        for(OplogExtraPO oplogExtraPO : oplogExtraPOList) {
-            result.add(oplogExtraPO.getInfo());
+        for(OplogExtra oplogExtra : oplogExtraList) {
+            result.add(oplogExtra.getInfo());
         }
         return result;
     }
@@ -79,11 +79,11 @@ public class OplogServiceImpl implements OplogService {
         }
         // 获取客户端真实ip地址
         String realIpAddress = NetworkUtil.getRealIpAddress();
-        OplogPO oplogPO = CopyBeanUtil.copy(oplogDTO, OplogPO.class);
-        oplogPO.setOperatorIp(realIpAddress);
+        Oplog oplog = CopyBeanUtil.copy(oplogDTO, Oplog.class);
+        oplog.setOperatorIp(realIpAddress);
 
-        oplogPO.setOperatorUsername(userBriefVO.getUsername());
-        oplogDao.insert(oplogPO);
-        return oplogPO.getId();
+        oplog.setOperatorUsername(userBriefVO.getUsername());
+        oplogDao.insert(oplog);
+        return oplog.getId();
     }
 }

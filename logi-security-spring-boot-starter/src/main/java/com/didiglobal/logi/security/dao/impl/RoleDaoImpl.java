@@ -4,10 +4,13 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.didiglobal.logi.security.common.dto.role.RoleQueryDTO;
+import com.didiglobal.logi.security.common.entity.role.Role;
+import com.didiglobal.logi.security.common.entity.role.RoleBrief;
 import com.didiglobal.logi.security.common.po.RolePO;
 import com.didiglobal.logi.security.common.po.UserPO;
 import com.didiglobal.logi.security.dao.RoleDao;
 import com.didiglobal.logi.security.dao.mapper.RoleMapper;
+import com.didiglobal.logi.security.util.CopyBeanUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
@@ -26,13 +29,13 @@ public class RoleDaoImpl implements RoleDao {
     private RoleMapper roleMapper;
 
     @Override
-    public RolePO selectByRoleId(Integer roleId) {
-        return roleMapper.selectById(roleId);
+    public Role selectByRoleId(Integer roleId) {
+        return CopyBeanUtil.copy(roleMapper.selectById(roleId), Role.class);
     }
 
     @Override
-    public IPage<RolePO> selectPage(RoleQueryDTO queryDTO) {
-        IPage<RolePO> rolePage = new Page<>(queryDTO.getPage(), queryDTO.getSize());
+    public IPage<Role> selectPage(RoleQueryDTO queryDTO) {
+        IPage<RolePO> iPage = new Page<>(queryDTO.getPage(), queryDTO.getSize());
         QueryWrapper<RolePO> roleWrapper = new QueryWrapper<>();
         if(!StringUtils.isEmpty(queryDTO.getRoleCode())) {
             roleWrapper.eq("role_code", queryDTO.getRoleCode());
@@ -41,12 +44,13 @@ public class RoleDaoImpl implements RoleDao {
                     .like(!StringUtils.isEmpty(queryDTO.getRoleName()), "role_name", queryDTO.getRoleName())
                     .like(!StringUtils.isEmpty(queryDTO.getDescription()), "description", queryDTO.getDescription());
         }
-        return roleMapper.selectPage(rolePage, roleWrapper);
+        roleMapper.selectPage(iPage, roleWrapper);
+        return CopyBeanUtil.copyPage(iPage, Role.class);
     }
 
     @Override
-    public void insert(RolePO rolePO) {
-        roleMapper.insert(rolePO);
+    public void insert(Role role) {
+        roleMapper.insert(CopyBeanUtil.copy(role, RolePO.class));
     }
 
     @Override
@@ -55,33 +59,33 @@ public class RoleDaoImpl implements RoleDao {
     }
 
     @Override
-    public void update(RolePO rolePO) {
-        roleMapper.updateById(rolePO);
+    public void update(Role role) {
+        roleMapper.updateById(CopyBeanUtil.copy(role, RolePO.class));
     }
 
     @Override
-    public List<RolePO> selectBriefListByRoleNameAndDescOrderByCreateTime(String roleName) {
+    public List<RoleBrief> selectBriefListByRoleNameAndDescOrderByCreateTime(String roleName) {
         QueryWrapper<RolePO> queryWrapper = wrapBriefQuery();
         queryWrapper
                 .like(!StringUtils.isEmpty(roleName), "role_name", roleName)
                 // 据角色添加时间排序（倒序）
                 .orderByDesc("create_time");
-        return roleMapper.selectList(queryWrapper);
+        return CopyBeanUtil.copyList(roleMapper.selectList(queryWrapper), RoleBrief.class);
     }
 
     @Override
-    public List<RolePO> selectBriefList() {
-        return roleMapper.selectList(wrapBriefQuery());
+    public List<RoleBrief> selectAllBrief() {
+        return CopyBeanUtil.copyList(roleMapper.selectList(wrapBriefQuery()), RoleBrief.class);
     }
 
     @Override
-    public List<RolePO> selectBriefListByRoleIdList(List<Integer> roleIdList) {
+    public List<RoleBrief> selectBriefListByRoleIdList(List<Integer> roleIdList) {
         if(CollectionUtils.isEmpty(roleIdList)) {
             return new ArrayList<>();
         }
         QueryWrapper<RolePO> queryWrapper = wrapBriefQuery();
         queryWrapper.in("id", roleIdList);
-        return roleMapper.selectList(queryWrapper);
+        return CopyBeanUtil.copyList(roleMapper.selectList(queryWrapper), RoleBrief.class);
     }
 
     @Override

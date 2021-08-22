@@ -1,11 +1,10 @@
 package com.didiglobal.logi.security.service.impl;
 
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.didiglobal.logi.security.common.PagingData;
 import com.didiglobal.logi.security.common.dto.user.UserBriefQueryDTO;
-import com.didiglobal.logi.security.common.po.UserPO;
+import com.didiglobal.logi.security.common.entity.user.User;
+import com.didiglobal.logi.security.common.entity.user.UserBrief;
 import com.didiglobal.logi.security.common.vo.role.AssignInfoVO;
 import com.didiglobal.logi.security.common.vo.role.RoleBriefVO;
 import com.didiglobal.logi.security.common.dto.user.UserQueryDTO;
@@ -13,7 +12,6 @@ import com.didiglobal.logi.security.common.vo.user.UserBriefVO;
 import com.didiglobal.logi.security.common.vo.user.UserVO;
 import com.didiglobal.logi.security.common.enums.ResultCode;
 import com.didiglobal.logi.security.dao.UserDao;
-import com.didiglobal.logi.security.dao.mapper.UserMapper;
 import com.didiglobal.logi.security.exception.SecurityException;
 import com.didiglobal.logi.security.service.*;
 import com.didiglobal.logi.security.util.CopyBeanUtil;
@@ -23,7 +21,6 @@ import java.util.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
-import org.springframework.util.StringUtils;
 
 /**
  * @author cjm
@@ -60,16 +57,16 @@ public class UserServiceImpl implements UserService {
         // 获取该部门下的所有子部门idList
         List<Integer> deptIdList = deptService.getDeptIdListByParentId(queryDTO.getDeptId());
 
-        IPage<UserPO> iPage = userDao.selectPageByDeptIdListAndUserIdList(queryDTO, deptIdList, userIdList);
+        IPage<User> iPage = userDao.selectPageByDeptIdListAndUserIdList(queryDTO, deptIdList, userIdList);
         List<UserVO> userVOList = new ArrayList<>();
-        List<UserPO> userPOList = iPage.getRecords();
-        for (UserPO userPO : userPOList) {
-            UserVO userVo = CopyBeanUtil.copy(userPO, UserVO.class);
+        List<User> userList = iPage.getRecords();
+        for (User user : userList) {
+            UserVO userVo = CopyBeanUtil.copy(user, UserVO.class);
             // 设置角色信息
             userVo.setRoleList(roleService.getRoleBriefListByUserId(userVo.getId()));
             // 设置部门信息
-            userVo.setDeptList(deptService.getDeptBriefListByChildId(userPO.getDeptId()));
-            userVo.setUpdateTime(userPO.getUpdateTime().getTime());
+            userVo.setDeptList(deptService.getDeptBriefListByChildId(user.getDeptId()));
+            userVo.setUpdateTime(user.getUpdateTime().getTime());
             // 隐私信息处理
             privacyProcessing(userVo);
             userVOList.add(userVo);
@@ -82,15 +79,15 @@ public class UserServiceImpl implements UserService {
         // 查找合适的部门idList
         List<Integer> deptIdList = deptService.getDeptIdListByParentIdAndDeptName(queryDTO.getDeptId(), queryDTO.getDeptName());
         // 分页获取
-        IPage<UserPO> iPage = userDao.selectBriefPageByDeptIdList(queryDTO, deptIdList);
+        IPage<UserBrief> iPage = userDao.selectBriefPageByDeptIdList(queryDTO, deptIdList);
         List<UserBriefVO> userBriefVOList = CopyBeanUtil.copyList(iPage.getRecords(), UserBriefVO.class);
         return new PagingData<>(userBriefVOList, iPage);
     }
 
     @Override
     public UserVO getUserDetailByUserId(Integer userId) {
-        UserPO userPO = userDao.selectByUserId(userId);
-        if (userPO == null) {
+        User user = userDao.selectByUserId(userId);
+        if (user == null) {
             return null;
         }
         // 根据用户id获取角色List
@@ -104,14 +101,14 @@ public class UserServiceImpl implements UserService {
             permissionHasSet.addAll(permissionIdList);
         }
 
-        UserVO userVo = CopyBeanUtil.copy(userPO, UserVO.class);
+        UserVO userVo = CopyBeanUtil.copy(user, UserVO.class);
         // 设置角色信息
         userVo.setRoleList(roleBriefVOList);
         // 构建权限树
         userVo.setPermissionTreeVO(permissionService.buildPermissionTree(permissionHasSet));
         // 查找用户所在部门信息
-        userVo.setDeptList(deptService.getDeptBriefListByChildId(userPO.getDeptId()));
-        userVo.setUpdateTime(userPO.getUpdateTime().getTime());
+        userVo.setDeptList(deptService.getDeptBriefListByChildId(user.getDeptId()));
+        userVo.setUpdateTime(user.getUpdateTime().getTime());
         return userVo;
     }
 
@@ -120,8 +117,8 @@ public class UserServiceImpl implements UserService {
         if(userId == null) {
             return null;
         }
-        UserPO userPO = userDao.selectByUserId(userId);
-        return CopyBeanUtil.copy(userPO, UserBriefVO.class);
+        User user = userDao.selectByUserId(userId);
+        return CopyBeanUtil.copy(user, UserBriefVO.class);
     }
 
     @Override
@@ -129,22 +126,22 @@ public class UserServiceImpl implements UserService {
         if(CollectionUtils.isEmpty(userIdList)) {
             return new ArrayList<>();
         }
-        List<UserPO> userPOList = userDao.selectBriefListByUserIdList(userIdList);
-        return CopyBeanUtil.copyList(userPOList, UserBriefVO.class);
+        List<UserBrief> userBriefList = userDao.selectBriefListByUserIdList(userIdList);
+        return CopyBeanUtil.copyList(userBriefList, UserBriefVO.class);
     }
 
     @Override
     public List<UserBriefVO> getUserBriefListByUsernameOrRealName(String name) {
-        List<UserPO> userList = userDao.selectBriefListByNameAndDescOrderByCreateTime(name);
-        return CopyBeanUtil.copyList(userList, UserBriefVO.class);
+        List<UserBrief> userBriefList = userDao.selectBriefListByNameAndDescOrderByCreateTime(name);
+        return CopyBeanUtil.copyList(userBriefList, UserBriefVO.class);
     }
 
     @Override
     public List<Integer> getUserIdListByUsernameOrRealName(String name) {
-        List<UserPO> userList = userDao.selectBriefListByNameAndDescOrderByCreateTime(name);
+        List<UserBrief> userBriefList = userDao.selectBriefListByNameAndDescOrderByCreateTime(name);
         List<Integer> result = new ArrayList<>();
-        for(UserPO userPO : userList) {
-            result.add(userPO.getId());
+        for(UserBrief userBrief : userBriefList) {
+            result.add(userBrief.getId());
         }
         return result;
     }
@@ -153,8 +150,8 @@ public class UserServiceImpl implements UserService {
     public List<UserBriefVO> getUserBriefListByDeptId(Integer deptId) {
         // 根据部门id查找用户，该部门的子部门的用户都属于该部门
         List<Integer> deptIdList = deptService.getDeptIdListByParentId(deptId);
-        List<UserPO> userPOList = userDao.selectBriefListByDeptIdList(deptIdList);
-        return CopyBeanUtil.copyList(userPOList, UserBriefVO.class);
+        List<UserBrief> userBriefList = userDao.selectBriefListByDeptIdList(deptIdList);
+        return CopyBeanUtil.copyList(userBriefList, UserBriefVO.class);
     }
 
     @Override
@@ -186,8 +183,8 @@ public class UserServiceImpl implements UserService {
     public List<UserBriefVO> getUserBriefListByRoleId(Integer roleId) {
         // 先获取拥有该角色的用户id
         List<Integer> userIdList = userRoleService.getUserIdListByRoleId(roleId);
-        List<UserPO> userPOList = userDao.selectBriefListByUserIdList(userIdList);
-        return CopyBeanUtil.copyList(userPOList, UserBriefVO.class);
+        List<UserBrief> userBriefList = userDao.selectBriefListByUserIdList(userIdList);
+        return CopyBeanUtil.copyList(userBriefList, UserBriefVO.class);
     }
 
     /**
