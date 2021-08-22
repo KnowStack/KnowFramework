@@ -39,15 +39,15 @@ public class RoleController {
 
     @PutMapping
     @ApiOperation(value = "更新角色信息", notes = "根据角色id更新角色信息")
-    public Result<String> update(@RequestBody RoleSaveDTO roleSaveDTO) {
-        roleService.updateRoleWithUserId(ThreadLocalUtil.get(), roleSaveDTO);
+    public Result<String> update(@RequestBody RoleSaveDTO saveDTO) {
+        roleService.updateRoleWithUserId(ThreadLocalUtil.get(), saveDTO);
         return Result.success();
     }
 
     @PostMapping
     @ApiOperation(value = "创建角色", notes = "创建角色")
-    public Result<String> create(@RequestBody RoleSaveDTO roleSaveDTO) {
-        roleService.createRoleWithUserId(ThreadLocalUtil.get(), roleSaveDTO);
+    public Result<String> create(@RequestBody RoleSaveDTO saveDTO) {
+        roleService.createRoleWithUserId(ThreadLocalUtil.get(), saveDTO);
         return Result.success();
     }
 
@@ -69,15 +69,15 @@ public class RoleController {
 
     @PostMapping("/page")
     @ApiOperation(value = "分页查询角色列表", notes = "分页和条件查询")
-    public PagingResult<RoleVO> page(@RequestBody RoleQueryDTO queryVo) {
-        PagingData<RoleVO> pageRole = roleService.getRolePage(queryVo);
+    public PagingResult<RoleVO> page(@RequestBody RoleQueryDTO queryDTO) {
+        PagingData<RoleVO> pageRole = roleService.getRolePage(queryDTO);
         return PagingResult.success(pageRole);
     }
 
     @PostMapping("/assign")
     @ApiOperation(value = "分配角色", notes = "分配一个角色给多个用户或分配多个角色给一个用户")
-    public Result<String> assign(@RequestBody RoleAssignDTO assignVo) {
-        roleService.assignRoles(assignVo);
+    public Result<String> assign(@RequestBody RoleAssignDTO assignDTO) {
+        roleService.assignRoles(assignDTO);
         return Result.success();
     }
 

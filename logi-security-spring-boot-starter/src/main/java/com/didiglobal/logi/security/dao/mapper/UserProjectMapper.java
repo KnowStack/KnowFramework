@@ -1,6 +1,5 @@
-package com.didiglobal.logi.security.mapper;
+package com.didiglobal.logi.security.dao.mapper;
 
-import com.didiglobal.logi.security.common.entity.UserProject;
 import com.didiglobal.logi.security.common.po.UserProjectPO;
 import org.apache.ibatis.annotations.Mapper;
 

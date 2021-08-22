@@ -30,7 +30,7 @@ public class MessageController {
     public Result<List<MessageVO>> list(@PathVariable(required = false) Boolean readTag) {
         // 获取当前用户id
         Integer userId = ThreadLocalUtil.get();
-        List<MessageVO> messageVOList = messageService.getMessageListByUserId(userId, readTag);
+        List<MessageVO> messageVOList = messageService.getMessageListByUserIdAndReadTag(userId, readTag);
         return Result.success(messageVOList);
     }
 

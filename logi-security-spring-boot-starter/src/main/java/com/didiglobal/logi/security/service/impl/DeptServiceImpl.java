@@ -6,8 +6,9 @@ import com.didiglobal.logi.security.common.vo.dept.DeptBriefVO;
 import com.didiglobal.logi.security.common.enums.ResultCode;
 import com.didiglobal.logi.security.common.vo.dept.DeptTreeVO;
 import com.didiglobal.logi.security.common.po.DeptPO;
+import com.didiglobal.logi.security.dao.DeptDao;
 import com.didiglobal.logi.security.exception.SecurityException;
-import com.didiglobal.logi.security.mapper.DeptMapper;
+import com.didiglobal.logi.security.dao.mapper.DeptMapper;
 import com.didiglobal.logi.security.service.DeptService;
 import com.didiglobal.logi.security.util.CopyBeanUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,12 +25,12 @@ import java.util.*;
 public class DeptServiceImpl implements DeptService {
 
     @Autowired
-    private DeptMapper deptMapper;
+    private DeptDao deptDao;
 
     @Override
     public DeptTreeVO buildDeptTree() {
         // 获取全部部门
-        List<DeptPO> deptPOList = deptMapper.selectList(null);
+        List<DeptPO> deptPOList = deptDao.selectAll();
         // 根据level小到大排序
         deptPOList.sort(Comparator.comparingInt(DeptPO::getLevel));
 
@@ -77,18 +78,18 @@ public class DeptServiceImpl implements DeptService {
 
     @Override
     public List<Integer> getDeptIdListByParentIdAndDeptName(Integer deptId, String deptName) {
-        List<Integer> deptIdList = getDeptIdListByParentId(deptId);
-        QueryWrapper<DeptPO> queryWrapper = new QueryWrapper<>();
-        if(CollectionUtils.isEmpty(deptIdList)) {
+        // 获取所有子部门的id
+        Set<Integer> deptIdSet = new HashSet<>(getDeptIdListByParentId(deptId));
+        if(CollectionUtils.isEmpty(deptIdSet)) {
             return new ArrayList<>();
         }
-        queryWrapper.select("id")
-                .like(!StringUtils.isEmpty(deptName), "dept_name", deptName)
-                .in("id", deptIdList);
-        List<Object> deptIdList2 = deptMapper.selectObjs(queryWrapper);
         List<Integer> result = new ArrayList<>();
-        for(Object id : deptIdList2) {
-            result.add((Integer) id);
+        // 获取和deptName相似的部门id
+        List<Integer> deptIdList = deptDao.selectIdListByLikeDeptName(deptName);
+        for(Integer id : deptIdList) {
+            if(deptIdSet.contains(id)) {
+                result.add(id);
+            }
         }
         return result;
     }
@@ -97,7 +98,7 @@ public class DeptServiceImpl implements DeptService {
         if(deptId == null || deptId == 0) {
             return;
         }
-        DeptPO deptPO = deptMapper.selectById(deptId);
+        DeptPO deptPO = deptDao.selectByDeptId(deptId);
         if(child != null && deptPO.getLevel() >= child.getLevel()) {
             // 如果出现这种情况，则数据有误，中断递归
             throw new SecurityException(ResultCode.DEPT_DATA_ERROR);
@@ -111,9 +112,7 @@ public class DeptServiceImpl implements DeptService {
             return;
         }
         deptIdList.add(deptId);
-        QueryWrapper<DeptPO> deptWrapper = new QueryWrapper<>();
-        deptWrapper.select("id", "leaf").eq("parent_id", deptId);
-        List<DeptPO> deptPOList = deptMapper.selectList(deptWrapper);
+        List<DeptPO> deptPOList = deptDao.selectIdListAndDeptNameByParentId(deptId);
         for(DeptPO deptPO : deptPOList) {
             if(deptPO.getLeaf()) {
                 // 如果是叶子部门

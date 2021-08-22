@@ -44,15 +44,15 @@ public class ProjectController {
 
     @PutMapping
     @ApiOperation(value = "更新项目", notes = "根据项目id更新项目信息")
-    public Result<String> update(@RequestBody ProjectSaveDTO projectSaveDTO) {
-        projectService.updateProject(projectSaveDTO);
+    public Result<String> update(@RequestBody ProjectSaveDTO saveDTO) {
+        projectService.updateProject(saveDTO);
         return Result.success();
     }
 
     @PostMapping
     @ApiOperation(value = "创建项目", notes = "创建项目")
-    public Result<String> create(@RequestBody ProjectSaveDTO projectSaveDTO) {
-        projectService.createProject(projectSaveDTO);
+    public Result<String> create(@RequestBody ProjectSaveDTO saveDTO) {
+        projectService.createProject(saveDTO);
         return Result.success();
     }
 
@@ -74,8 +74,8 @@ public class ProjectController {
 
     @PostMapping("/page")
     @ApiOperation(value = "查询项目列表", notes = "分页和条件查询")
-    public PagingResult<ProjectVO> page(@RequestBody ProjectQueryDTO queryVo) {
-        PagingData<ProjectVO> pageProject = projectService.getProjectPage(queryVo);
+    public PagingResult<ProjectVO> page(@RequestBody ProjectQueryDTO queryDTO) {
+        PagingData<ProjectVO> pageProject = projectService.getProjectPage(queryDTO);
         return PagingResult.success(pageProject);
     }
 

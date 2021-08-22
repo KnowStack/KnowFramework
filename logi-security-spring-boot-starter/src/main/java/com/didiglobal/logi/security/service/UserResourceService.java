@@ -26,18 +26,18 @@ public interface UserResourceService {
     /**
      * 资源权限管理>按资源管理的列表信息
      * 获取分页列表信息
-     * @param queryVo 查询条件
+     * @param queryDTO 查询条件
      * @return PagingData<ManageByResourceVo>
      */
-    PagingData<MByRVO> getManageByResourcePage(MByRQueryDTO queryVo);
+    PagingData<MByRVO> getManageByResourcePage(MByRQueryDTO queryDTO);
 
     /**
      * 资源权限管理>按用户管理的列表信息
      * 获取分页列表信息
-     * @param queryVo 查询条件
+     * @param queryDTO 查询条件
      * @return PagingData<ManageByUserVo>
      */
-    PagingData<MByUVO> getManageByUserPage(MByUQueryDTO queryVo);
+    PagingData<MByUVO> getManageByUserPage(MByUQueryDTO queryDTO);
 
     /**
      * 分配资源的权限给用户（N资源权限分配给某用户）
@@ -61,17 +61,17 @@ public interface UserResourceService {
 
     /**
      * 资源权限管理/按用户管理/分配资源/数据列表的信息
-     * @param queryVo 查询条件
+     * @param queryDTO 查询条件
      * @return 数据列表信息
      */
-    List<MByUDataVO> getManagerByUserDataList(MByUDataQueryDTO queryVo);
+    List<MByUDataVO> getManagerByUserDataList(MByUDataQueryDTO queryDTO);
 
     /**
      * 资源权限管理/按资源管理/分配用户/数据列表的信息
-     * @param queryVo 查询条件
+     * @param queryDTO 查询条件
      * @return 数据列表信息
      */
-    List<MByRDataVO> getManagerByResourceDataList(MByRDataQueryDTO queryVo);
+    List<MByRDataVO> getManagerByResourceDataList(MByRDataQueryDTO queryDTO);
 
     /**
      * 获取资源查看权限控制状态

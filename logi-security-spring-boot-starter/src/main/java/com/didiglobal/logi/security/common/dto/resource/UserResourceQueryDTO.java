@@ -8,8 +8,6 @@ import lombok.Data;
 @Data
 public class UserResourceQueryDTO {
 
-    private int showLevel;
-
     private int controlLevel;
 
     private Integer projectId;
@@ -17,4 +15,11 @@ public class UserResourceQueryDTO {
     private Integer resourceTypeId;
 
     private Integer resourceId;
+
+    public UserResourceQueryDTO(int controlLevel, Integer projectId, Integer resourceTypeId, Integer resourceId) {
+        this.controlLevel = controlLevel;
+        this.projectId = projectId;
+        this.resourceTypeId = resourceTypeId;
+        this.resourceId = resourceId;
+    }
 }

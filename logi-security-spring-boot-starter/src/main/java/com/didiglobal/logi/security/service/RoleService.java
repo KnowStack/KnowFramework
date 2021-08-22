@@ -27,18 +27,18 @@ public interface RoleService {
     /**
      * 分页获取角色列表
      *
-     * @param queryVo 查询角色列表条件
+     * @param queryDTO 查询角色列表条件
      * @return 角色列表
      */
-    PagingData<RoleVO> getRolePage(RoleQueryDTO queryVo);
+    PagingData<RoleVO> getRolePage(RoleQueryDTO queryDTO);
 
     /**
      * 保存角色
      * @param userId 角色创建者的用户id
-     * @param roleSaveDTO 角色信息
+     * @param saveDTO 角色信息
      * @throws SecurityException 参数检查错误信息
      */
-    void createRoleWithUserId(Integer userId, RoleSaveDTO roleSaveDTO) throws SecurityException;
+    void createRoleWithUserId(Integer userId, RoleSaveDTO saveDTO) throws SecurityException;
 
     /**
      * 删除角色
@@ -49,16 +49,16 @@ public interface RoleService {
     /**
      * 更新角色信息
      * @param userId 角色更新者的用户id
-     * @param roleSaveDTO 角色信息
+     * @param saveDTO 角色信息
      */
-    void updateRoleWithUserId(Integer userId, RoleSaveDTO roleSaveDTO);
+    void updateRoleWithUserId(Integer userId, RoleSaveDTO saveDTO);
 
     /**
      * 分配角色给用户
-     * @param roleAssignDTO 分配信息
+     * @param assignDTO 分配信息
      * @throws SecurityException 角色分配flag不可为空
      */
-    void assignRoles(RoleAssignDTO roleAssignDTO) throws SecurityException;
+    void assignRoles(RoleAssignDTO assignDTO) throws SecurityException;
 
     /**
      * 根据角色id，获取分配信息

@@ -19,9 +19,9 @@ public interface ProjectService {
 
     /**
      * 创建项目
-     * @param saveVo 项目信息
+     * @param saveDTO 项目信息
      */
-    void createProject(ProjectSaveDTO saveVo);
+    void createProject(ProjectSaveDTO saveDTO);
 
     /**
      * 获取项目详情，通过项目id
@@ -39,10 +39,10 @@ public interface ProjectService {
 
     /**
      * 条件分页查询项目信息
-     * @param queryVo 条件信息
+     * @param queryDTO 条件信息
      * @return PagingData<ProjectVo>
      */
-    PagingData<ProjectVO> getProjectPage(ProjectQueryDTO queryVo);
+    PagingData<ProjectVO> getProjectPage(ProjectQueryDTO queryDTO);
 
     /**
      * 删除项目
@@ -52,9 +52,9 @@ public interface ProjectService {
 
     /**
      * 更新项目信息
-     * @param saveVo 项目信息
+     * @param saveDTO 项目信息
      */
-    void updateProject(ProjectSaveDTO saveVo);
+    void updateProject(ProjectSaveDTO saveDTO);
 
     /**
      * 更改项目运行状态，旧状态取反

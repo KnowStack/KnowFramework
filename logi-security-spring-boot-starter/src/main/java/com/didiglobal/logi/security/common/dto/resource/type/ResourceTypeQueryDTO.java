@@ -17,9 +17,9 @@ public class ResourceTypeQueryDTO extends PageParamDTO {
      */
     private String typeName;
 
-    public ResourceTypeQueryDTO(MByRQueryDTO queryVo) {
-        this.setPage(queryVo.getPage());
-        this.setSize(queryVo.getSize());
-        this.typeName = queryVo.getName();
+    public ResourceTypeQueryDTO(MByRQueryDTO queryDTO) {
+        this.setPage(queryDTO.getPage());
+        this.setSize(queryDTO.getSize());
+        this.typeName = queryDTO.getName();
     }
 }

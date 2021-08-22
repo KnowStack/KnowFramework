@@ -23,13 +23,13 @@ public interface MessageService {
      * @param readTag true已读、false未读、null则全部读
      * @return 消息List
      */
-    List<MessageVO> getMessageListByUserId(Integer userId, Boolean readTag);
+    List<MessageVO> getMessageListByUserIdAndReadTag(Integer userId, Boolean readTag);
 
     /**
      * 更改消息状态，旧状态取反
-     * @param idList 消息idList
+     * @param messageIdList 消息idList
      */
-    void changeMessageStatus(List<Integer> idList);
+    void changeMessageStatus(List<Integer> messageIdList);
 
     /**
      * 批量保存消息

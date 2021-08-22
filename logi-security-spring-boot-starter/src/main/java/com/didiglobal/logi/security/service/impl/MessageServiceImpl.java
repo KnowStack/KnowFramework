@@ -4,11 +4,10 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.didiglobal.logi.security.common.dto.message.MessageDTO;
 import com.didiglobal.logi.security.common.vo.message.MessageVO;
 import com.didiglobal.logi.security.common.po.MessagePO;
-import com.didiglobal.logi.security.mapper.MessageMapper;
-import com.didiglobal.logi.security.mapper.UserMapper;
+import com.didiglobal.logi.security.dao.MessageDao;
+import com.didiglobal.logi.security.dao.mapper.MessageMapper;
 import com.didiglobal.logi.security.service.MessageService;
 import com.didiglobal.logi.security.util.CopyBeanUtil;
-import com.didiglobal.logi.security.util.ThreadLocalUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
@@ -23,21 +22,18 @@ import java.util.List;
 public class MessageServiceImpl implements MessageService {
 
     @Autowired
-    private MessageMapper messageMapper;
+    private MessageDao messageDao;
 
     @Override
     public void saveMessage(MessageDTO messageDto) {
         MessagePO messagePO = CopyBeanUtil.copy(messageDto, MessagePO.class);
-        messageMapper.insert(messagePO);
+        messageDao.insert(messagePO);
     }
 
     @Override
-    public List<MessageVO> getMessageListByUserId(Integer userId, Boolean readTag) {
-        QueryWrapper<MessagePO> queryWrapper = new QueryWrapper<>();
-        queryWrapper
-                .eq( userId != null, "user_id", userId)
-                .eq(readTag != null, "read_tag", readTag);
-        List<MessagePO> messagePOList = messageMapper.selectList(queryWrapper);
+    public List<MessageVO> getMessageListByUserIdAndReadTag(Integer userId, Boolean readTag) {
+        List<MessagePO> messagePOList = messageDao.selectListByUserIdAndReadTag(userId, readTag);
+
         List<MessageVO> result = new ArrayList<>();
         for(MessagePO messagePO : messagePOList) {
             MessageVO messageVO = CopyBeanUtil.copy(messagePO, MessageVO.class);
@@ -48,17 +44,15 @@ public class MessageServiceImpl implements MessageService {
     }
 
     @Override
-    public void changeMessageStatus(List<Integer> idList) {
-        if(CollectionUtils.isEmpty(idList)) {
+    public void changeMessageStatus(List<Integer> messageIdList) {
+        if(CollectionUtils.isEmpty(messageIdList)) {
             return;
         }
-        QueryWrapper<MessagePO> messageWrapper = new QueryWrapper<>();
-        messageWrapper.in("id", idList);
-        List<MessagePO> messagePOList = messageMapper.selectList(messageWrapper);
+        List<MessagePO> messagePOList = messageDao.selectListByMessageIdList(messageIdList);
         for(MessagePO messagePO : messagePOList) {
             // 反转已读状态
             messagePO.setReadTag(!messagePO.getReadTag());
-            messageMapper.updateById(messagePO);
+            messageDao.update(messagePO);
         }
     }
 
@@ -68,6 +62,6 @@ public class MessageServiceImpl implements MessageService {
             return;
         }
         List<MessagePO> messagePOList = CopyBeanUtil.copyList(messageDTOList, MessagePO.class);
-        messageMapper.insertBatchSomeColumn(messagePOList);
+        messageDao.insertBatch(messagePOList);
     }
 }

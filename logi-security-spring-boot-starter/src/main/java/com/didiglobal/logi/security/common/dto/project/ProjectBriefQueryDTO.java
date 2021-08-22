@@ -3,10 +3,12 @@ package com.didiglobal.logi.security.common.dto.project;
 import com.didiglobal.logi.security.common.dto.PageParamDTO;
 import com.didiglobal.logi.security.common.dto.resource.MByRQueryDTO;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 /**
  * @author cjm
  */
+@EqualsAndHashCode(callSuper = true)
 @Data
 public class ProjectBriefQueryDTO extends PageParamDTO {
 
@@ -15,9 +17,9 @@ public class ProjectBriefQueryDTO extends PageParamDTO {
      */
     private String projectName;
 
-    public ProjectBriefQueryDTO(MByRQueryDTO queryVo) {
-        this.setPage(queryVo.getPage());
-        this.setSize(queryVo.getSize());
-        this.projectName = queryVo.getName();
+    public ProjectBriefQueryDTO(MByRQueryDTO queryDTO) {
+        this.setPage(queryDTO.getPage());
+        this.setSize(queryDTO.getSize());
+        this.projectName = queryDTO.getName();
     }
 }

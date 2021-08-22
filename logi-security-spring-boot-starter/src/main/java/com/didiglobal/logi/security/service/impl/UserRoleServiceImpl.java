@@ -1,18 +1,15 @@
 package com.didiglobal.logi.security.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.didiglobal.logi.security.common.enums.ResultCode;
 import com.didiglobal.logi.security.common.po.UserRolePO;
-import com.didiglobal.logi.security.exception.SecurityException;
-import com.didiglobal.logi.security.mapper.UserRoleMapper;
+import com.didiglobal.logi.security.dao.UserRoleDao;
+import com.didiglobal.logi.security.dao.mapper.UserRoleMapper;
 import com.didiglobal.logi.security.service.UserRoleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -22,21 +19,14 @@ import java.util.List;
 public class UserRoleServiceImpl implements UserRoleService {
 
     @Autowired
-    private UserRoleMapper userRoleMapper;
+    private UserRoleDao userRoleDao;
 
     @Override
     public List<Integer> getUserIdListByRoleId(Integer roleId) {
         if(roleId == null) {
             return new ArrayList<>();
         }
-        QueryWrapper<UserRolePO> userRoleWrapper = new QueryWrapper<>();
-        userRoleWrapper.select("user_id").eq("role_id", roleId);
-        List<Object> userIdList = userRoleMapper.selectObjs(userRoleWrapper);
-        List<Integer> result = new ArrayList<>();
-        for(Object userId : userIdList) {
-            result.add((Integer) userId);
-        }
-        return result;
+        return userRoleDao.selectUserIdListByRoleId(roleId);
     }
 
     @Override
@@ -44,14 +34,7 @@ public class UserRoleServiceImpl implements UserRoleService {
         if(userId == null) {
             return new ArrayList<>();
         }
-        QueryWrapper<UserRolePO> userRoleWrapper = new QueryWrapper<>();
-        userRoleWrapper.select("role_id").eq("user_id", userId);
-        List<Object> roleIdList = userRoleMapper.selectObjs(userRoleWrapper);
-        List<Integer> result = new ArrayList<>();
-        for(Object roleId : roleIdList) {
-            result.add((Integer) roleId);
-        }
-        return result;
+        return userRoleDao.selectRoleIdListByUserId(userId);
     }
 
     @Override
@@ -61,15 +44,14 @@ public class UserRoleServiceImpl implements UserRoleService {
         }
 
         // 删除old的全部角色用户关联信息
-        deleteUserRoleByUserIdOrRoleId(userId, null);
+        userRoleDao.deleteByUserIdOrRoleId(userId, null);
 
         if(CollectionUtils.isEmpty(roleIdList)) {
             return;
         }
 
         // 插入new的角色与用户关联关系
-        List<UserRolePO> userRolePOList = getUserRoleList(true, userId, roleIdList);
-        userRoleMapper.insertBatchSomeColumn(userRolePOList);
+        userRoleDao.insertBatch(getUserRoleList(true, userId, roleIdList));
     }
 
     @Override
@@ -79,15 +61,14 @@ public class UserRoleServiceImpl implements UserRoleService {
         }
 
         // 删除old的全部角色用户关联信息
-        deleteUserRoleByUserIdOrRoleId(null, roleId);
+        userRoleDao.deleteByUserIdOrRoleId(null, roleId);
 
         if(CollectionUtils.isEmpty(userIdList)) {
             return;
         }
 
         // 插入new的角色与用户关联关系
-        List<UserRolePO> userRolePOList = getUserRoleList(false, roleId, userIdList);
-        userRoleMapper.insertBatchSomeColumn(userRolePOList);
+        userRoleDao.insertBatch(getUserRoleList(false, roleId, userIdList));
     }
 
     private List<UserRolePO> getUserRoleList(boolean isUserId, Integer id, List<Integer> idList) {
@@ -96,18 +77,5 @@ public class UserRoleServiceImpl implements UserRoleService {
             result.add(isUserId ? new UserRolePO(id, id2) : new UserRolePO(id2, id));
         }
         return result;
-    }
-
-    /**
-     * 根据角色或者用户id，删除用户与角色的关系
-     * @param userId 用户id
-     * @param roleId 角色id
-     */
-    private void deleteUserRoleByUserIdOrRoleId(Integer userId, Integer roleId) {
-        QueryWrapper<UserRolePO> userRoleWrapper = new QueryWrapper<>();
-        userRoleWrapper
-                .eq(userId != null, "user_id", userId)
-                .eq(roleId != null, "role_id", roleId);
-        userRoleMapper.delete(userRoleWrapper);
     }
 }

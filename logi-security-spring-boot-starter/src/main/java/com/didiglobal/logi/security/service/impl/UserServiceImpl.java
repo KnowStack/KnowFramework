@@ -12,8 +12,9 @@ import com.didiglobal.logi.security.common.dto.user.UserQueryDTO;
 import com.didiglobal.logi.security.common.vo.user.UserBriefVO;
 import com.didiglobal.logi.security.common.vo.user.UserVO;
 import com.didiglobal.logi.security.common.enums.ResultCode;
+import com.didiglobal.logi.security.dao.UserDao;
+import com.didiglobal.logi.security.dao.mapper.UserMapper;
 import com.didiglobal.logi.security.exception.SecurityException;
-import com.didiglobal.logi.security.mapper.*;
 import com.didiglobal.logi.security.service.*;
 import com.didiglobal.logi.security.util.CopyBeanUtil;
 
@@ -31,7 +32,7 @@ import org.springframework.util.StringUtils;
 public class UserServiceImpl implements UserService {
 
     @Autowired
-    private UserMapper userMapper;
+    private UserDao userDao;
 
     @Autowired
     private PermissionService permissionService;
@@ -50,29 +51,18 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public PagingData<UserVO> getUserPage(UserQueryDTO queryDTO) {
-        QueryWrapper<UserPO> userWrapper = new QueryWrapper<>();
-        // 分页查询
-        IPage<UserPO> userPage = new Page<>(queryDTO.getPage(), queryDTO.getSize());
+        List<Integer> userIdList = null;
         // 是否有角色id条件
         if(queryDTO.getRoleId() != null) {
             // 根据角色获取用户IdList
-            List<Integer> userIdList = userRoleService.getUserIdListByRoleId(queryDTO.getRoleId());
-            if(CollectionUtils.isEmpty(userIdList)) {
-                return new PagingData<>(userPage);
-            }
-            // 只获取拥有该角色的用户信息
-            userWrapper.in("id", userIdList);
+            userIdList = userRoleService.getUserIdListByRoleId(queryDTO.getRoleId());
         }
         // 获取该部门下的所有子部门idList
         List<Integer> deptIdList = deptService.getDeptIdListByParentId(queryDTO.getDeptId());
-        userWrapper
-                .in(queryDTO.getDeptId() != null, "dept_id", deptIdList)
-                .like(queryDTO.getUsername() != null, "username", queryDTO.getUsername())
-                .like(queryDTO.getRealName() != null, "real_name", queryDTO.getRealName());
-        userMapper.selectPage(userPage, userWrapper);
 
+        IPage<UserPO> iPage = userDao.selectPageByDeptIdListAndUserIdList(queryDTO, deptIdList, userIdList);
         List<UserVO> userVOList = new ArrayList<>();
-        List<UserPO> userPOList = userPage.getRecords();
+        List<UserPO> userPOList = iPage.getRecords();
         for (UserPO userPO : userPOList) {
             UserVO userVo = CopyBeanUtil.copy(userPO, UserVO.class);
             // 设置角色信息
@@ -84,30 +74,22 @@ public class UserServiceImpl implements UserService {
             privacyProcessing(userVo);
             userVOList.add(userVo);
         }
-        return new PagingData<>(userVOList, userPage);
+        return new PagingData<>(userVOList, iPage);
     }
 
     @Override
     public PagingData<UserBriefVO> getUserBriefPage(UserBriefQueryDTO queryDTO) {
-        QueryWrapper<UserPO> userWrapper = new QueryWrapper<>();
-        IPage<UserPO> userPage = new Page<>(queryDTO.getPage(), queryDTO.getSize());
-
         // 查找合适的部门idList
         List<Integer> deptIdList = deptService.getDeptIdListByParentIdAndDeptName(queryDTO.getDeptId(), queryDTO.getDeptName());
-
-        userWrapper
-                .like(queryDTO.getUsername() != null, "username", queryDTO.getUsername())
-                .like(queryDTO.getRealName() != null, "real_name", queryDTO.getRealName())
-                .in(!CollectionUtils.isEmpty(deptIdList), "dept_id", deptIdList);
-        userMapper.selectPage(userPage, userWrapper);
-
-        List<UserBriefVO> list = CopyBeanUtil.copyList(userPage.getRecords(), UserBriefVO.class);
-        return new PagingData<>(list, userPage);
+        // 分页获取
+        IPage<UserPO> iPage = userDao.selectBriefPageByDeptIdList(queryDTO, deptIdList);
+        List<UserBriefVO> userBriefVOList = CopyBeanUtil.copyList(iPage.getRecords(), UserBriefVO.class);
+        return new PagingData<>(userBriefVOList, iPage);
     }
 
     @Override
     public UserVO getUserDetailByUserId(Integer userId) {
-        UserPO userPO = userMapper.selectById(userId);
+        UserPO userPO = userDao.selectByUserId(userId);
         if (userPO == null) {
             return null;
         }
@@ -138,9 +120,7 @@ public class UserServiceImpl implements UserService {
         if(userId == null) {
             return null;
         }
-        QueryWrapper<UserPO> queryWrapper = new QueryWrapper<>();
-        queryWrapper.select("id", "username", "real_name").eq("id", userId);
-        UserPO userPO = userMapper.selectOne(queryWrapper);
+        UserPO userPO = userDao.selectByUserId(userId);
         return CopyBeanUtil.copy(userPO, UserBriefVO.class);
     }
 
@@ -149,50 +129,32 @@ public class UserServiceImpl implements UserService {
         if(CollectionUtils.isEmpty(userIdList)) {
             return new ArrayList<>();
         }
-        QueryWrapper<UserPO> queryWrapper = new QueryWrapper<>();
-        queryWrapper.select("id", "username", "real_name").in("id", userIdList);
-        List<UserPO> userPOList = userMapper.selectList(queryWrapper);
+        List<UserPO> userPOList = userDao.selectBriefListByUserIdList(userIdList);
         return CopyBeanUtil.copyList(userPOList, UserBriefVO.class);
     }
 
     @Override
     public List<UserBriefVO> getUserBriefListByUsernameOrRealName(String name) {
-        QueryWrapper<UserPO> queryWrapper = new QueryWrapper<>();
-        queryWrapper.select("id", "username", "real_name")
-                .like(!StringUtils.isEmpty(name), "username", name)
-                .or()
-                .like(!StringUtils.isEmpty(name), "real_name", name)
-                .orderByDesc("create_time");
-        List<UserPO> userList = userMapper.selectList(queryWrapper);
+        List<UserPO> userList = userDao.selectBriefListByNameAndDescOrderByCreateTime(name);
         return CopyBeanUtil.copyList(userList, UserBriefVO.class);
     }
 
     @Override
     public List<Integer> getUserIdListByUsernameOrRealName(String name) {
-        QueryWrapper<UserPO> queryWrapper = new QueryWrapper<>();
-        queryWrapper.select("id")
-                .like(!StringUtils.isEmpty(name), "username", name)
-                .or()
-                .like(!StringUtils.isEmpty(name), "real_name", name)
-                .orderByDesc("create_time");
-        List<Object> userIdList = userMapper.selectObjs(queryWrapper);
+        List<UserPO> userList = userDao.selectBriefListByNameAndDescOrderByCreateTime(name);
         List<Integer> result = new ArrayList<>();
-        for(Object userId : userIdList) {
-            result.add((Integer) userId);
+        for(UserPO userPO : userList) {
+            result.add(userPO.getId());
         }
         return result;
     }
 
     @Override
     public List<UserBriefVO> getUserBriefListByDeptId(Integer deptId) {
-        QueryWrapper<UserPO> userWrapper = new QueryWrapper<>();
-        List<Integer> deptIdList = deptService.getDeptIdListByParentId(deptId);
         // 根据部门id查找用户，该部门的子部门的用户都属于该部门
-        userWrapper
-                .select("id", "username", "real_name")
-                .in(!CollectionUtils.isEmpty(deptIdList), "dept_id", deptIdList);
-        List<UserPO> userList = userMapper.selectList(userWrapper);
-        return CopyBeanUtil.copyList(userList, UserBriefVO.class);
+        List<Integer> deptIdList = deptService.getDeptIdListByParentId(deptId);
+        List<UserPO> userPOList = userDao.selectBriefListByDeptIdList(deptIdList);
+        return CopyBeanUtil.copyList(userPOList, UserBriefVO.class);
     }
 
     @Override
@@ -224,15 +186,8 @@ public class UserServiceImpl implements UserService {
     public List<UserBriefVO> getUserBriefListByRoleId(Integer roleId) {
         // 先获取拥有该角色的用户id
         List<Integer> userIdList = userRoleService.getUserIdListByRoleId(roleId);
-
-        // 封装List<UserPO>
-        QueryWrapper<UserPO> userWrapper = new QueryWrapper<>();
-        if(CollectionUtils.isEmpty(userIdList)) {
-            return new ArrayList<>();
-        }
-        userWrapper.select("id", "username", "real_name").in("id", userIdList);
-        List<UserPO> userList = userMapper.selectList(userWrapper);
-        return CopyBeanUtil.copyList(userList, UserBriefVO.class);
+        List<UserPO> userPOList = userDao.selectBriefListByUserIdList(userIdList);
+        return CopyBeanUtil.copyList(userPOList, UserBriefVO.class);
     }
 
     /**

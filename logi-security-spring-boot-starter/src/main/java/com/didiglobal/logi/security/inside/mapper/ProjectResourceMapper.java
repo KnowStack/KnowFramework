@@ -1,7 +1,7 @@
 package com.didiglobal.logi.security.inside.mapper;
 
 import com.didiglobal.logi.security.inside.common.po.ProjectResourcePO;
-import com.didiglobal.logi.security.mapper.EasyBaseMapper;
+import com.didiglobal.logi.security.dao.mapper.EasyBaseMapper;
 import org.apache.ibatis.annotations.Mapper;
 
 /**

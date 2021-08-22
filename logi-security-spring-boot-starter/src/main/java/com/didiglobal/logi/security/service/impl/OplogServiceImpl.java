@@ -1,8 +1,6 @@
 package com.didiglobal.logi.security.service.impl;
 
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.didiglobal.logi.security.common.PagingData;
 import com.didiglobal.logi.security.common.dto.oplog.OplogDTO;
 import com.didiglobal.logi.security.common.enums.ResultCode;
@@ -11,9 +9,9 @@ import com.didiglobal.logi.security.common.po.OplogPO;
 import com.didiglobal.logi.security.common.dto.oplog.OplogQueryDTO;
 import com.didiglobal.logi.security.common.vo.oplog.OplogVO;
 import com.didiglobal.logi.security.common.vo.user.UserBriefVO;
+import com.didiglobal.logi.security.dao.OplogDao;
 import com.didiglobal.logi.security.exception.SecurityException;
-import com.didiglobal.logi.security.mapper.OplogExtraMapper;
-import com.didiglobal.logi.security.mapper.OplogMapper;
+import com.didiglobal.logi.security.service.OplogExtraService;
 import com.didiglobal.logi.security.service.OplogService;
 import com.didiglobal.logi.security.service.UserService;
 import com.didiglobal.logi.security.util.CopyBeanUtil;
@@ -31,31 +29,18 @@ import java.util.List;
 public class OplogServiceImpl implements OplogService {
 
     @Autowired
-    private OplogMapper oplogMapper;
+    private OplogDao oplogDao;
 
-    @Autowired
-    private OplogExtraMapper oplogExtraMapper;
-    
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private OplogExtraService oplogExtraService;
     
     @Override
-    public PagingData<OplogVO> getOplogPage(OplogQueryDTO queryVo) {
-        QueryWrapper<OplogPO> queryWrapper = new QueryWrapper<>();
+    public PagingData<OplogVO> getOplogPage(OplogQueryDTO queryDTO) {
         // 分页查询
-        IPage<OplogPO> iPage = new Page<>(queryVo.getPage(), queryVo.getSize());
-        // 不查找detail字段
-        queryWrapper.select(OplogPO.class, oplog -> !"detail".equals(oplog.getColumn()));
-        queryWrapper
-                .eq(queryVo.getOperateType() != null, "operate_type", queryVo.getOperateType())
-                .eq(queryVo.getTargetType() != null, "target_type", queryVo.getTargetType())
-                .ge(queryVo.getStartTime() != null, "create_time", queryVo.getStartTime())
-                .le(queryVo.getEndTime() != null, "create_time", queryVo.getEndTime())
-                .like(queryVo.getTarget() != null, "target", queryVo.getTarget())
-                .like(queryVo.getOperatorIp() != null, "operator_ip", queryVo.getOperatorIp())
-                .like(queryVo.getOperatorUsername() != null, "operator_username", queryVo.getOperatorUsername());
-        oplogMapper.selectPage(iPage, queryWrapper);
-
+        IPage<OplogPO> iPage = oplogDao.selectPageWithoutDetail(queryDTO);
         List<OplogVO> oplogVOList = new ArrayList<>();
         for(OplogPO oplogPO : iPage.getRecords()) {
             OplogVO oplogVO = CopyBeanUtil.copy(oplogPO, OplogVO.class);
@@ -66,7 +51,7 @@ public class OplogServiceImpl implements OplogService {
 
     @Override
     public OplogVO getOplogDetailByOplogId(Integer oplogId) {
-        OplogPO oplogPO = oplogMapper.selectById(oplogId);
+        OplogPO oplogPO = oplogDao.selectByOplogId(oplogId);
         if(oplogPO == null) {
             return null;
         }
@@ -77,9 +62,7 @@ public class OplogServiceImpl implements OplogService {
 
     @Override
     public List<String> getOplogExtraList(Integer type) {
-        QueryWrapper<OplogExtraPO> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("type", type);
-        List<OplogExtraPO> oplogExtraPOList = oplogExtraMapper.selectList(queryWrapper);
+        List<OplogExtraPO> oplogExtraPOList = oplogExtraService.getOplogExtraListByType(type);
         List<String> result = new ArrayList<>();
         for(OplogExtraPO oplogExtraPO : oplogExtraPOList) {
             result.add(oplogExtraPO.getInfo());
@@ -100,7 +83,7 @@ public class OplogServiceImpl implements OplogService {
         oplogPO.setOperatorIp(realIpAddress);
 
         oplogPO.setOperatorUsername(userBriefVO.getUsername());
-        oplogMapper.insert(oplogPO);
+        oplogDao.insert(oplogPO);
         return oplogPO.getId();
     }
 }

@@ -5,9 +5,9 @@ import com.didiglobal.logi.security.common.enums.ResultCode;
 import com.didiglobal.logi.security.common.po.PermissionPO;
 import com.didiglobal.logi.security.common.po.RolePermissionPO;
 import com.didiglobal.logi.security.common.vo.permission.PermissionTreeVO;
+import com.didiglobal.logi.security.dao.PermissionDao;
 import com.didiglobal.logi.security.exception.SecurityException;
-import com.didiglobal.logi.security.mapper.PermissionMapper;
-import com.didiglobal.logi.security.mapper.RolePermissionMapper;
+import com.didiglobal.logi.security.dao.mapper.PermissionMapper;
 import com.didiglobal.logi.security.service.PermissionService;
 import com.didiglobal.logi.security.service.RolePermissionService;
 import com.didiglobal.logi.security.util.CopyBeanUtil;
@@ -23,17 +23,15 @@ import java.util.*;
 public class PermissionServiceImpl implements PermissionService {
 
     @Autowired
-    private PermissionMapper permissionMapper;
+    private PermissionDao permissionDao;
 
     @Autowired
     private RolePermissionService rolePermissionService;
 
     @Override
     public PermissionTreeVO buildPermissionTree(Set<Integer> permissionHasSet) {
-        // 获取全部权限（为了效率就先全部读出来）
-        List<PermissionPO> permissionPOList = permissionMapper.selectList(null);
-        // 根据level小到大排序（保证树是层序遍历的）
-        permissionPOList.sort(Comparator.comparingInt(PermissionPO::getLevel));
+        // 获取全部权限，根据level小到大排序
+        List<PermissionPO> permissionPOList = permissionDao.selectAllAndAscOrderByLevel();
 
         // 创建一个虚拟根节点
         PermissionTreeVO root = PermissionTreeVO

@@ -34,12 +34,12 @@ public class UserBriefQueryDTO extends PageParamDTO {
      */
     private String deptName;
 
-    public UserBriefQueryDTO(MByUQueryDTO queryVo) {
-        this.setPage(queryVo.getPage());
-        this.setSize(queryVo.getSize());
-        this.username = queryVo.getUsername();
-        this.realName = queryVo.getRealName();
-        this.deptId = queryVo.getDeptId();
-        this.deptName = queryVo.getDeptName();
+    public UserBriefQueryDTO(MByUQueryDTO queryDTO) {
+        this.setPage(queryDTO.getPage());
+        this.setSize(queryDTO.getSize());
+        this.username = queryDTO.getUsername();
+        this.realName = queryDTO.getRealName();
+        this.deptId = queryDTO.getDeptId();
+        this.deptName = queryDTO.getDeptName();
     }
 }

@@ -38,8 +38,8 @@ public class UserController {
 
     @PostMapping("/page")
     @ApiOperation(value = "查询用户列表", notes = "分页和条件查询")
-    public PagingResult<UserVO> page(@RequestBody UserQueryDTO queryVo) {
-        PagingData<UserVO> pageUser = userService.getUserPage(queryVo);
+    public PagingResult<UserVO> page(@RequestBody UserQueryDTO queryDTO) {
+        PagingData<UserVO> pageUser = userService.getUserPage(queryDTO);
         return PagingResult.success(pageUser);
     }
 

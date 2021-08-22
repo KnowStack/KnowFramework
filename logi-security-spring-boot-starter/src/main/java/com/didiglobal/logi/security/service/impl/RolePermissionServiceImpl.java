@@ -1,8 +1,7 @@
 package com.didiglobal.logi.security.service.impl;
 
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.didiglobal.logi.security.common.po.RolePermissionPO;
-import com.didiglobal.logi.security.mapper.RolePermissionMapper;
+import com.didiglobal.logi.security.dao.RolePermissionDao;
 import com.didiglobal.logi.security.service.RolePermissionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,16 +17,15 @@ import java.util.List;
 public class RolePermissionServiceImpl implements RolePermissionService {
 
     @Autowired
-    private RolePermissionMapper rolePermissionMapper;
+    private RolePermissionDao rolePermissionDao;
 
     @Override
     public void saveRolePermission(Integer roleId, List<Integer> permissionIdList) {
         if(roleId == null || CollectionUtils.isEmpty(permissionIdList)) {
             return;
         }
-        List<RolePermissionPO> rolePermissionList = getRolePermissionList(roleId, permissionIdList);
         // 插入新的关联信息
-        rolePermissionMapper.insertBatchSomeColumn(rolePermissionList);
+        rolePermissionDao.insertBatch(getRolePermissionList(roleId, permissionIdList));
     }
 
     @Override
@@ -43,9 +41,7 @@ public class RolePermissionServiceImpl implements RolePermissionService {
         if(roleId == null) {
             return;
         }
-        QueryWrapper<RolePermissionPO> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("role_id", roleId);
-        rolePermissionMapper.delete(queryWrapper);
+        rolePermissionDao.deleteByRoleId(roleId);
     }
 
     @Override
@@ -53,14 +49,7 @@ public class RolePermissionServiceImpl implements RolePermissionService {
         if(roleId == null) {
             return new ArrayList<>();
         }
-        QueryWrapper<RolePermissionPO> queryWrapper = new QueryWrapper<>();
-        queryWrapper.select("permission_id").eq("role_id", roleId);
-        List<Object> permissionIdList = rolePermissionMapper.selectObjs(queryWrapper);
-        List<Integer> result = new ArrayList<>();
-        for(Object permissionId : permissionIdList) {
-            result.add((Integer) permissionId);
-        }
-        return result;
+        return rolePermissionDao.selectPermissionIdListByRoleId(roleId);
     }
 
     /**
