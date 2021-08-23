@@ -13,6 +13,7 @@ import org.springframework.util.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author cjm
@@ -53,11 +54,7 @@ public class DeptDaoImpl implements DeptDao {
                 .select("id")
                 .like(!StringUtils.isEmpty(deptName), "dept_name", deptName);
         List<Object> deptIdList = deptMapper.selectObjs(queryWrapper);
-        List<Integer> result = new ArrayList<>();
-        for(Object id : deptIdList) {
-            result.add((Integer) id);
-        }
-        return result;
+        return deptIdList.stream().map(obj -> (Integer) obj).collect(Collectors.toList());
     }
 
     @Override

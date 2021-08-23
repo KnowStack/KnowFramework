@@ -87,4 +87,12 @@ public interface UserResourceDao {
      * @return 用户资源关联数
      */
     int selectCount(UserResourceQueryDTO queryDTO);
+
+    /**
+     * 根据用户id和其他条件获取具体资源idList
+     * @param userId 用户id
+     * @param queryDTO 查询条件
+     * @return 具体资源idList
+     */
+    List<Integer> selectResourceIdListByUserId(Integer userId, UserResourceQueryDTO queryDTO);
 }

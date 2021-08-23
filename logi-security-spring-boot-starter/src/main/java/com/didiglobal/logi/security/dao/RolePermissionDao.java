@@ -28,4 +28,11 @@ public interface RolePermissionDao {
      * @return 权限idList
      */
     List<Integer> selectPermissionIdListByRoleId(Integer roleId);
+
+    /**
+     * 根据角色idList，获取权限idList
+     * @param roleIdList 角色idList
+     * @return 权限idList
+     */
+    List<Integer> selectPermissionIdListByRoleIdList(List<Integer> roleIdList);
 }

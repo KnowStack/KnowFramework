@@ -12,6 +12,7 @@ import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author cjm
@@ -31,6 +32,9 @@ public class RolePermissionDaoImpl implements RolePermissionDao {
 
     @Override
     public void deleteByRoleId(Integer roleId) {
+        if (roleId == null) {
+            return;
+        }
         QueryWrapper<RolePermissionPO> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("role_id", roleId);
         rolePermissionMapper.delete(queryWrapper);
@@ -38,13 +42,21 @@ public class RolePermissionDaoImpl implements RolePermissionDao {
 
     @Override
     public List<Integer> selectPermissionIdListByRoleId(Integer roleId) {
-        QueryWrapper<RolePermissionPO> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("role_id", roleId);
-        List<RolePermissionPO> rolePermissionPOList = rolePermissionMapper.selectList(queryWrapper);
-        List<Integer> result = new ArrayList<>();
-        for(RolePermissionPO rolePermissionPO : rolePermissionPOList) {
-            result.add(rolePermissionPO.getPermissionId());
+        if(roleId == null) {
+            return new ArrayList<>();
         }
-        return result;
+        List<Integer> roleIdList = new ArrayList<Integer>(){{ add(roleId); }};
+        return  selectPermissionIdListByRoleIdList(roleIdList);
+    }
+
+    @Override
+    public List<Integer> selectPermissionIdListByRoleIdList(List<Integer> roleIdList) {
+        if(CollectionUtils.isEmpty(roleIdList)) {
+            return new ArrayList<>();
+        }
+        QueryWrapper<RolePermissionPO> queryWrapper = new QueryWrapper<>();
+        queryWrapper.select("permission_id").in("role_id", roleIdList);
+        List<Object> permissionIdList = rolePermissionMapper.selectObjs(queryWrapper);
+        return permissionIdList.stream().map(obj -> (Integer) obj).collect(Collectors.toList());
     }
 }

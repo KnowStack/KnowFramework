@@ -235,8 +235,7 @@ public class UserResourceServiceImpl implements UserResourceService {
     }
 
     private void checkParam(AssignToOneUserDTO assignToOneUserDTO) throws LogiSecurityException {
-        Integer userId = assignToOneUserDTO.getUserId();
-        if(userId == null) {
+        if(assignToOneUserDTO.getUserId() == null) {
             throw new LogiSecurityException(ResultCode.USER_ID_CANNOT_BE_NULL);
         }
         if(ControlLevelCode.getByType(assignToOneUserDTO.getControlLevel()) == null) {
@@ -331,7 +330,7 @@ public class UserResourceServiceImpl implements UserResourceService {
         // 插入new关联信息
         userResourceDao.insertBatch(userResourceList);
 
-        // 保存操作日志 TODO：用户+资源名称 这个信息咋搞比较好，还要记录移除的信息
+        // 保存操作日志 TODO：用户+资源名称
         OplogDTO oplogDTO = new OplogDTO("资源权限管理", "分配资源", "用户", "用户+资源名称");
         oplogService.saveOplogWithUserId(userId, oplogDTO);
     }
@@ -361,7 +360,7 @@ public class UserResourceServiceImpl implements UserResourceService {
         // 插入new关联信息
         userResourceDao.insertBatch(buildUserResourceList(controlLevel, userIdList, resourceDTOList));
 
-        // 保存操作日志 TODO：资源名称+用户 这个信息咋搞比较好？还要记录移除的信息
+        // 保存操作日志 TODO：资源名称+用户
         OplogDTO oplogDTO = new OplogDTO("资源权限管理", "分配用户", "资源", "资源名称+用户");
         oplogService.saveOplogWithUserId(ThreadLocalUtil.get(), oplogDTO);
     }
@@ -406,19 +405,15 @@ public class UserResourceServiceImpl implements UserResourceService {
         boolean assignFlag = assignDTO.getAssignFlag();
         // 先删除全部old关联信息
         deleteOldRelationBeforeBatchAssign(assignDTO.getProjectId(), assignDTO.getResourceTypeId(), assignFlag, controlLevel, idList);
-        // 获取新管理信息
-        List<UserResource> userResourceList = getUserResourceList(
-                assignDTO.getProjectId(), assignDTO.getResourceTypeId(), controlLevel, idList, userIdList
-        );
         // 插入新关联信息
-        userResourceDao.insertBatch(userResourceList);
+        userResourceDao.insertBatch(getUserResourceList(assignDTO.getProjectId(), assignDTO.getResourceTypeId(), controlLevel, idList, userIdList));
 
         if(assignFlag) {
-            // 保存操作日志 TODO：资源名称+用户 这个信息咋搞比较好？还要记录移除的信息
+            // 保存操作日志 TODO：资源名称+用户
             OplogDTO oplogDTO = new OplogDTO("资源权限管理", "批量分配用户", "资源", "资源名称+用户");
             oplogService.saveOplogWithUserId(ThreadLocalUtil.get(), oplogDTO);
         } else {
-            // 保存操作日志 TODO：用户+资源名称 这个信息咋搞比较好？还要记录移除的信息
+            // 保存操作日志 TODO：用户+资源名称
             OplogDTO oplogDTO = new OplogDTO("资源权限管理", "批量分配资源", "用户", "用户+资源名称");
             oplogService.saveOplogWithUserId(ThreadLocalUtil.get(), oplogDTO);
         }

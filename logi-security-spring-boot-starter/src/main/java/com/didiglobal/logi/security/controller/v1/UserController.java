@@ -75,7 +75,6 @@ public class UserController {
             e.printStackTrace();
             return Result.fail(e);
         }
-
     }
 
     @GetMapping(value = {"/list/{name}", "/list"})

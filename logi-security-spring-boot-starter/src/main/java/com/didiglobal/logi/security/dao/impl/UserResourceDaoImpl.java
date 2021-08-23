@@ -12,7 +12,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author cjm
@@ -109,5 +111,13 @@ public class UserResourceDaoImpl implements UserResourceDao {
     @Override
     public int selectCount(UserResourceQueryDTO queryDTO) {
         return userResourceMapper.selectCount(wrapQueryCriteria(null, queryDTO));
+    }
+
+    @Override
+    public List<Integer> selectResourceIdListByUserId(Integer userId, UserResourceQueryDTO queryDTO) {
+        QueryWrapper<UserResourcePO> queryWrapper = wrapQueryCriteria(userId, queryDTO);
+        queryWrapper.select("resource_id");
+        List<Object> resourceIdList = userResourceMapper.selectObjs(queryWrapper);
+        return resourceIdList.stream().map(obj -> (Integer) obj).collect(Collectors.toList());
     }
 }

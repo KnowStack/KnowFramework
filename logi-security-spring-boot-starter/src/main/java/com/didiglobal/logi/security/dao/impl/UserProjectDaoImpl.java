@@ -12,6 +12,7 @@ import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author cjm
@@ -30,11 +31,7 @@ public class UserProjectDaoImpl implements UserProjectDao {
         QueryWrapper<UserProjectPO> queryWrapper = new QueryWrapper<>();
         queryWrapper.select("user_id").eq("project_id", projectId);
         List<Object> userIdList = userProjectMapper.selectObjs(queryWrapper);
-        List<Integer> result = new ArrayList<>();
-        for(Object userId : userIdList) {
-            result.add((Integer) userId);
-        }
-        return result;
+        return userIdList.stream().map(obj -> (Integer) obj).collect(Collectors.toList());
     }
 
     @Override
@@ -45,12 +42,7 @@ public class UserProjectDaoImpl implements UserProjectDao {
         QueryWrapper<UserProjectPO> queryWrapper = new QueryWrapper<>();
         queryWrapper.select("project_id").in("user_id", userIdList);
         List<Object> projectIdList = userProjectMapper.selectObjs(queryWrapper);
-
-        List<Integer> result = new ArrayList<>();
-        for(Object projectId : projectIdList) {
-            result.add((Integer) projectId);
-        }
-        return result;
+        return projectIdList.stream().map(obj -> (Integer) obj).collect(Collectors.toList());
     }
 
     @Override

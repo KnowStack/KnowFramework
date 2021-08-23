@@ -1,6 +1,7 @@
 package com.didiglobal.logi.security.service;
 
 import java.util.List;
+import java.util.Set;
 
 /**
  * @author cjm
@@ -33,4 +34,11 @@ public interface RolePermissionService {
      * @return 权限idList
      */
     List<Integer> getPermissionIdListByRoleId(Integer roleId);
+
+    /**
+     * 根据角色idList，获取权限idList
+     * @param roleIdList 角色idList
+     * @return 权限idList
+     */
+    List<Integer> getPermissionIdListByRoleIdList(List<Integer> roleIdList);
 }

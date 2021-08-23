@@ -17,6 +17,7 @@ import com.didiglobal.logi.security.service.*;
 import com.didiglobal.logi.security.util.CopyBeanUtil;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -90,24 +91,22 @@ public class UserServiceImpl implements UserService {
         if (user == null) {
             return null;
         }
+        UserVO userVo = CopyBeanUtil.copy(user, UserVO.class);
+
         // 根据用户id获取角色List
         List<RoleBriefVO> roleBriefVOList = roleService.getRoleBriefListByUserId(userId);
-
-        List<Integer> permissionHasSet = new ArrayList<>();
-        for (RoleBriefVO roleBriefVO : roleBriefVOList) {
-            // 获取角色拥有的权限idList
-            List<Integer> permissionIdList = rolePermissionService.getPermissionIdListByRoleId(roleBriefVO.getId());
-            // 添加到用户拥有的所有权限集合
-            permissionHasSet.addAll(permissionIdList);
-        }
-
-        UserVO userVo = CopyBeanUtil.copy(user, UserVO.class);
         // 设置角色信息
         userVo.setRoleList(roleBriefVOList);
+
+        List<Integer> roleIdList = roleBriefVOList.stream().map(RoleBriefVO::getId).collect(Collectors.toList());
+        // 根据角色idList获取权限idList
+        List<Integer> hasPermissionIdList = rolePermissionService.getPermissionIdListByRoleIdList(roleIdList);
         // 构建权限树
-        userVo.setPermissionTreeVO(permissionService.buildPermissionTreeWithHas(permissionHasSet));
+        userVo.setPermissionTreeVO(permissionService.buildPermissionTreeWithHas(hasPermissionIdList));
+
         // 查找用户所在部门信息
         userVo.setDeptList(deptService.getDeptBriefListByChildId(user.getDeptId()));
+
         userVo.setUpdateTime(user.getUpdateTime().getTime());
         return userVo;
     }
@@ -162,12 +161,8 @@ public class UserServiceImpl implements UserService {
         // 根据角色名，模糊查询
         List<RoleBriefVO> roleBriefVOList = roleService.getRoleBriefListByRoleName(roleName);
         // 获取该用户拥有的角色
-        List<RoleBriefVO> hasRoleBriefVOList = roleService.getRoleBriefListByUserId(userId);
-        // 把角色id转为set
-        Set<Integer> hasRoleIdSet = new HashSet<>();
-        for(RoleBriefVO roleBriefVO : hasRoleBriefVOList) {
-            hasRoleIdSet.add(roleBriefVO.getId());
-        }
+        Set<Integer> hasRoleIdSet = new HashSet<>(userRoleService.getRoleIdListByUserId(userId));
+
         List<AssignInfoVO> list = new ArrayList<>();
         for(RoleBriefVO roleBriefVO : roleBriefVOList) {
             AssignInfoVO data = new AssignInfoVO();

@@ -12,6 +12,7 @@ import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author cjm
@@ -30,11 +31,7 @@ public class UserRoleDaoImpl implements UserRoleDao {
         QueryWrapper<UserRolePO> queryWrapper = new QueryWrapper<>();
         queryWrapper.select("user_id").eq("role_id", roleId);
         List<Object> userIdList = userRoleMapper.selectObjs(queryWrapper);
-        List<Integer> result = new ArrayList<>();
-        for(Object userId : userIdList) {
-            result.add((Integer) userId);
-        }
-        return result;
+        return userIdList.stream().map(obj -> (Integer) obj).collect(Collectors.toList());
     }
 
     @Override
@@ -45,11 +42,7 @@ public class UserRoleDaoImpl implements UserRoleDao {
         QueryWrapper<UserRolePO> userRoleWrapper = new QueryWrapper<>();
         userRoleWrapper.select("role_id").eq("user_id", userId);
         List<Object> roleIdList = userRoleMapper.selectObjs(userRoleWrapper);
-        List<Integer> result = new ArrayList<>();
-        for(Object roleId : roleIdList) {
-            result.add((Integer) roleId);
-        }
-        return result;
+        return roleIdList.stream().map(obj -> (Integer) obj).collect(Collectors.toList());
     }
 
     @Override
