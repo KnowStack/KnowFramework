@@ -11,13 +11,6 @@ import java.util.List;
 public interface DeptDao {
 
     /**
-     * 根据parentId获取部门简要信息List
-     * @param parentId 父id
-     * @return 部门简要信息List
-     */
-    List<DeptBrief> selectBriefListByParentId(Integer parentId);
-
-    /**
      * 获取全部
      * @return List<Dept>
      */
@@ -31,9 +24,22 @@ public interface DeptDao {
     List<Integer> selectIdListByLikeDeptName(String deptName);
 
     /**
-     * 根据部门id获取部门信息
+     * 根据部门id获取部门简要信息
      * @param deptId 部门id
-     * @return 部门信息
+     * @return 部门简要信息
      */
-    Dept selectByDeptId(Integer deptId);
+    DeptBrief selectBriefByDeptId(Integer deptId);
+
+    /**
+     * 获取全部deptId
+     * @return deptIdList
+     */
+    List<Integer> selectAllDeptIdList();
+
+    /**
+     * 根据部门id，获取该部门下（包括该部门）所有子部门idList
+     * @param deptId 部门id
+     * @return child部门idList
+     */
+    List<Integer> selectIdListByParentId(Integer deptId);
 }

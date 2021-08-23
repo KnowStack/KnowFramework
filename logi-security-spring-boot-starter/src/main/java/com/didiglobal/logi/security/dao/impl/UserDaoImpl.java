@@ -50,7 +50,7 @@ public class UserDaoImpl implements UserDao {
     @Override
     public IPage<UserBrief> selectBriefPageByDeptIdList(UserBriefQueryDTO queryDTO, List<Integer> deptIdList) {
         IPage<UserPO> iPage = new Page<>(queryDTO.getPage(), queryDTO.getSize());
-        if(deptIdList != null && deptIdList.size() == 0) {
+        if(deptIdList != null && deptIdList.isEmpty()) {
             return CopyBeanUtil.copyPage(iPage, UserBrief.class);
         }
         QueryWrapper<UserPO> queryWrapper = wrapBriefQuery();

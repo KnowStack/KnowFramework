@@ -9,11 +9,13 @@ import com.didiglobal.logi.security.common.dto.resource.type.ResourceTypeQueryDT
 import com.didiglobal.logi.security.common.dto.user.UserBriefQueryDTO;
 import com.didiglobal.logi.security.common.dto.resource.ResourceDTO;
 import com.didiglobal.logi.security.common.entity.UserResource;
+import com.didiglobal.logi.security.common.entity.dept.Dept;
 import com.didiglobal.logi.security.common.enums.ResultCode;
 import com.didiglobal.logi.security.common.enums.resource.ControlLevelCode;
 import com.didiglobal.logi.security.common.enums.resource.HasLevelCode;
 import com.didiglobal.logi.security.common.enums.resource.ShowLevelCode;
 import com.didiglobal.logi.security.common.po.ProjectPO;
+import com.didiglobal.logi.security.common.vo.dept.DeptBriefVO;
 import com.didiglobal.logi.security.common.vo.project.ProjectBriefVO;
 import com.didiglobal.logi.security.common.vo.resource.*;
 import com.didiglobal.logi.security.common.vo.user.UserBriefVO;
@@ -27,7 +29,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author cjm
@@ -78,6 +82,9 @@ public class UserResourceServiceImpl implements UserResourceService {
 
     @Override
     public List<MByUDataVO> getManagerByUserDataList(MByUDataQueryDTO queryDTO) throws LogiSecurityException {
+        long start = System.currentTimeMillis();
+
+
         // 检查参数
         checkParam(queryDTO);
 
@@ -117,6 +124,8 @@ public class UserResourceServiceImpl implements UserResourceService {
                 resultList.add(dataVo);
             }
         }
+        long end = System.currentTimeMillis();
+        System.out.println(end - start);
         return resultList;
     }
 
@@ -131,8 +140,8 @@ public class UserResourceServiceImpl implements UserResourceService {
 
         List<UserBriefVO> UserBriefVOList = userService.getUserBriefListByUsernameOrRealName(queryDTO.getName());
 
-        List<MByRDataVO> result = new ArrayList<>();
-        for(UserBriefVO userBriefVO : UserBriefVOList) {
+        List<MByRDataVO> result = Collections.synchronizedList(new ArrayList<>());
+        UserBriefVOList.parallelStream().forEach(userBriefVO -> {
             MByRDataVO dataVo = new MByRDataVO();
             dataVo.setUserId(userBriefVO.getId());
             dataVo.setUsername(userBriefVO.getUsername());
@@ -140,7 +149,7 @@ public class UserResourceServiceImpl implements UserResourceService {
             HasLevelCode hasLevel = getHasLevel(isBatch, controlLevel, userBriefVO.getId(), projectId, resourceTypeId, resourceId);
             dataVo.setHasLevel(hasLevel.getType());
             result.add(dataVo);
-        }
+        });
         return result;
     }
 
@@ -156,7 +165,6 @@ public class UserResourceServiceImpl implements UserResourceService {
      */
     private HasLevelCode getHasLevel(boolean isBatch, int controlLevel, int userId,
                                      Integer projectId, Integer resourceTypeId, Integer resourceId) {
-
         if(isBatch) {
             // 如果是批量操作，则默认假设都不拥有权限
             return HasLevelCode.NONE;
@@ -420,6 +428,10 @@ public class UserResourceServiceImpl implements UserResourceService {
     }
 
     private void checkParam(BatchAssignDTO assignDTO) throws LogiSecurityException {
+        if(assignDTO.getUserIdList() == null) {
+            // TODO;
+            throw new LogiSecurityException(ResultCode.USER_ID_CANNOT_BE_NULL);
+        }
         if(assignDTO.getAssignFlag() == null) {
             throw new LogiSecurityException(ResultCode.RESOURCE_ASSIGN_BATCH_FLAG_CANNOT_BE_NULL);
         }
@@ -443,25 +455,28 @@ public class UserResourceServiceImpl implements UserResourceService {
 
     @Override
     public PagingData<MByUVO> getManageByUserPage(MByUQueryDTO queryDTO) {
+        // 提前获取所有部门
+        Map<Integer, Dept> deptMap = deptService.getAllDeptMap();
         PagingData<UserBriefVO> userPage = userService.getUserBriefPage(new UserBriefQueryDTO(queryDTO));
-        List<MByUVO> result = new ArrayList<>();
+        List<MByUVO> result = Collections.synchronizedList(new ArrayList<>());
+
         // 判断 资源查看控制权限 是否开启
-        boolean isOn = getViewPermissionControlStatus();
-        for(UserBriefVO userBriefVO : userPage.getBizData()) {
+        final boolean isOn = getViewPermissionControlStatus();
+        userPage.getBizData().parallelStream().forEach(userBriefVO -> {
             MByUVO dataVo = CopyBeanUtil.copy(userBriefVO, MByUVO.class);
             dataVo.setUserId(userBriefVO.getId());
             // 设置部门信息
-            dataVo.setDeptList(deptService.getDeptBriefListByChildId(userBriefVO.getDeptId()));
+            dataVo.setDeptList(deptService.getDeptBriefListByChildId(deptMap, userBriefVO.getDeptId()));
             // 计算管理权限资源数
             dataVo.setAdminResourceCnt(userResourceDao.selectCountByUserIdAndControlLevel(userBriefVO.getId(), ControlLevelCode.ADMIN));
-
             // 如果 资源查看控制权限 没开启，就不计算了
             if(isOn) {
                 // 计算查看权限资源数
                 dataVo.setViewResourceCnt(userResourceDao.selectCountByUserIdAndControlLevel(userBriefVO.getId(), ControlLevelCode.VIEW));
             }
             result.add(dataVo);
-        }
+        });
+
         return new PagingData<>(result, userPage.getPagination());
     }
 
@@ -476,17 +491,18 @@ public class UserResourceServiceImpl implements UserResourceService {
 
         // 判断 资源查看控制权限 是否开启
         boolean isOn = getViewPermissionControlStatus();
-
+        PagingData<MByRVO> result = null;
         if(queryDTO.getShowLevel().equals(ShowLevelCode.PROJECT.getType())) {
             // 项目展示级别，表示查找所有项目
-            return dealProjectLevel(queryDTO, isOn);
+            result = dealProjectLevel(queryDTO, isOn);
         } else if(queryDTO.getShowLevel().equals(ShowLevelCode.RESOURCE_TYPE.getType())) {
             // 资源类别展示级别，表示查找某个项目下所有资源类别
-            return dealResourceTypeLevel(queryDTO, isOn);
+            result = dealResourceTypeLevel(queryDTO, isOn);
         } else {
             // 具体资源展示级别，表示查找该项目下该资源类别对应的资源
-            return dealResourceLevel(queryDTO, isOn);
+            result = dealResourceLevel(queryDTO, isOn);
         }
+        return result;
     }
 
     private void checkParam(Integer showLevel, Integer projectId, Integer resourceTypeId) throws LogiSecurityException {
@@ -522,8 +538,8 @@ public class UserResourceServiceImpl implements UserResourceService {
     private PagingData<MByRVO> dealProjectLevel(MByRQueryDTO mByRQueryDTO, boolean isOn) {
         PagingData<ProjectBriefVO> projectPage = projectService.getProjectBriefPage(new ProjectBriefQueryDTO(mByRQueryDTO));
 
-        List<MByRVO> list = new ArrayList<>();
-        for(ProjectBriefVO projectBriefVO : projectPage.getBizData()) {
+        List<MByRVO> result = Collections.synchronizedList(new ArrayList<>());
+        projectPage.getBizData().parallelStream().forEach(projectBriefVO -> {
             MByRVO data = new MByRVO();
             data.setProjectId(projectBriefVO.getId());
             data.setProjectCode(projectBriefVO.getProjectCode());
@@ -538,9 +554,9 @@ public class UserResourceServiceImpl implements UserResourceService {
                 queryDTO = new UserResourceQueryDTO(ControlLevelCode.VIEW.getType(), mByRQueryDTO.getProjectId(), null, null);
                 data.setViewUserCnt(userResourceDao.selectCount(queryDTO));
             }
-            list.add(data);
-        }
-        return new PagingData<>(list, projectPage.getPagination());
+            result.add(data);
+        });
+        return new PagingData<>(result, projectPage.getPagination());
     }
 
     /**
@@ -550,13 +566,13 @@ public class UserResourceServiceImpl implements UserResourceService {
      * @return PagingData<ManageByResourceVo>
      */
     private PagingData<MByRVO> dealResourceTypeLevel(MByRQueryDTO queryDTO, boolean isOn) {
-        List<MByRVO> list = new ArrayList<>();
+        List<MByRVO> result = Collections.synchronizedList(new ArrayList<>());
 
         PagingData<ResourceTypeVO> resourceTypePage = resourceTypeService.getResourceTypePage(new ResourceTypeQueryDTO(queryDTO));
 
         // 获取项目信息
         ProjectBriefVO projectBriefVO = projectService.getProjectBriefByProjectId(queryDTO.getProjectId());
-        for(ResourceTypeVO resourceTypeVO : resourceTypePage.getBizData()) {
+        resourceTypePage.getBizData().parallelStream().forEach(resourceTypeVO -> {
             MByRVO data = new MByRVO();
             data.setResourceTypeId(resourceTypeVO.getId());
             data.setResourceTypeName(resourceTypeVO.getTypeName());
@@ -572,9 +588,9 @@ public class UserResourceServiceImpl implements UserResourceService {
                 queryDTO2 = new UserResourceQueryDTO(ControlLevelCode.VIEW.getType(), queryDTO.getProjectId(), resourceTypeVO.getId(), null);
                 data.setViewUserCnt(userResourceDao.selectCount(queryDTO2));
             }
-            list.add(data);
-        }
-        return new PagingData<>(list, resourceTypePage.getPagination());
+            result.add(data);
+        });
+        return new PagingData<>(result, resourceTypePage.getPagination());
     }
 
     /**

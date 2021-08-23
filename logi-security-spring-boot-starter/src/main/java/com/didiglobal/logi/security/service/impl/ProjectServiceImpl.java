@@ -5,6 +5,7 @@ import com.didiglobal.logi.security.common.PagingData;
 import com.didiglobal.logi.security.common.dto.oplog.OplogDTO;
 import com.didiglobal.logi.security.common.dto.project.ProjectBriefQueryDTO;
 import com.didiglobal.logi.security.common.dto.resource.ResourceDTO;
+import com.didiglobal.logi.security.common.entity.dept.Dept;
 import com.didiglobal.logi.security.common.entity.project.Project;
 import com.didiglobal.logi.security.common.entity.project.ProjectBrief;
 import com.didiglobal.logi.security.common.enums.ResultCode;
@@ -27,6 +28,7 @@ import org.springframework.util.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 
@@ -106,13 +108,17 @@ public class ProjectServiceImpl implements ProjectService {
         // 分页获取
         IPage<Project> iPage = projectDao.selectPageByDeptIdListAndProjectIdList(queryDTO, deptIdList, projectIdList);
         List<ProjectVO> projectVOList = new ArrayList<>();
+
+        // 提前获取所有部门
+        Map<Integer, Dept> deptMap = deptService.getAllDeptMap();
         for(Project project : iPage.getRecords()) {
             ProjectVO projectVO = CopyBeanUtil.copy(project, ProjectVO.class);
             // 获取负责人信息
             List<Integer> userIdList = userProjectService.getUserIdListByProjectId(project.getId());
             projectVO.setUserList(userService.getUserBriefListByUserIdList(userIdList));
             // 获取部门信息
-            projectVO.setDeptList(deptService.getDeptBriefListByChildId(project.getDeptId()));
+            // projectVO.setDeptList(deptService.getDeptBriefListByChildId(project.getDeptId()));
+            projectVO.setDeptList(deptService.getDeptBriefListByChildId(deptMap, project.getDeptId()));
             projectVO.setCreateTime(project.getCreateTime().getTime());
             projectVOList.add(projectVO);
         }
@@ -193,7 +199,7 @@ public class ProjectServiceImpl implements ProjectService {
     @Override
     public PagingData<ProjectBriefVO> getProjectBriefPage(ProjectBriefQueryDTO queryDTO) {
         IPage<ProjectBrief> iPage = projectDao.selectBriefPage(queryDTO);
-        List<ProjectBriefVO> list = CopyBeanUtil.copyList(iPage.getRecords(),ProjectBriefVO.class);
+        List<ProjectBriefVO> list = CopyBeanUtil.copyList(iPage.getRecords(), ProjectBriefVO.class);
         return new PagingData<>(list, iPage);
     }
 

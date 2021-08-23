@@ -69,6 +69,14 @@ public class UserRoleServiceImpl implements UserRoleService {
         userRoleDao.insertBatch(getUserRoleList(false, roleId, userIdList));
     }
 
+    @Override
+    public int getUserRoleCountByRoleId(Integer roleId) {
+        if(roleId == 0) {
+            return 0;
+        }
+        return userRoleDao.selectCountByRoleId(roleId);
+    }
+
     private List<UserRole> getUserRoleList(boolean isUserId, Integer id, List<Integer> idList) {
         List<UserRole> result = new ArrayList<>();
         for(Integer id2 : idList) {

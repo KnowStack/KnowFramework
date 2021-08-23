@@ -57,10 +57,20 @@ public class UserRoleDaoImpl implements UserRoleDao {
         if(userId == null && roleId == null) {
             return;
         }
-        QueryWrapper<UserRolePO> userRoleWrapper = new QueryWrapper<>();
-        userRoleWrapper
+        QueryWrapper<UserRolePO> queryWrapper = new QueryWrapper<>();
+        queryWrapper
                 .eq(userId != null, "user_id", userId)
                 .eq(roleId != null, "role_id", roleId);
-        userRoleMapper.delete(userRoleWrapper);
+        userRoleMapper.delete(queryWrapper);
+    }
+
+    @Override
+    public int selectCountByRoleId(Integer roleId) {
+        if(roleId == null) {
+            return 0;
+        }
+        QueryWrapper<UserRolePO> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("role_id", roleId);
+        return userRoleMapper.selectCount(queryWrapper);
     }
 }

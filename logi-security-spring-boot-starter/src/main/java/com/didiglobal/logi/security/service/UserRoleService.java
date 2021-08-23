@@ -34,4 +34,11 @@ public interface UserRoleService {
      * @param userIdList 用户idList
      */
     void updateUserRoleByRoleId(Integer roleId, List<Integer> userIdList);
+
+    /**
+     * 根据角色id获取授予用户数
+     * @param roleId 角色id
+     * @return 角色授予用户数
+     */
+    int getUserRoleCountByRoleId(Integer roleId);
 }

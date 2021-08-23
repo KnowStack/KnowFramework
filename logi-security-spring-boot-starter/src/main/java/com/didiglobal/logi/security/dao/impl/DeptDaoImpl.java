@@ -26,18 +26,8 @@ public class DeptDaoImpl implements DeptDao {
 
     private QueryWrapper<DeptPO> wrapBriefQuery() {
         QueryWrapper<DeptPO> queryWrapper = new QueryWrapper<>();
-        queryWrapper.select("id", "dept_name", "leaf", "level");
+        queryWrapper.select("id", "dept_name", "leaf", "level", "parent_id");
         return queryWrapper;
-    }
-
-    @Override
-    public List<DeptBrief> selectBriefListByParentId(Integer parentId) {
-        if(parentId == null) {
-            return new ArrayList<>();
-        }
-        QueryWrapper<DeptPO> queryWrapper = wrapBriefQuery();
-        queryWrapper.eq("parent_id", parentId);
-        return CopyBeanUtil.copyList(deptMapper.selectList(queryWrapper), DeptBrief.class);
     }
 
     @Override
@@ -58,7 +48,25 @@ public class DeptDaoImpl implements DeptDao {
     }
 
     @Override
-    public Dept selectByDeptId(Integer deptId) {
-        return CopyBeanUtil.copy(deptMapper.selectById(deptId), Dept.class);
+    public DeptBrief selectBriefByDeptId(Integer deptId) {
+        QueryWrapper<DeptPO> queryWrapper = wrapBriefQuery();
+        queryWrapper.eq("id", deptId);
+        return CopyBeanUtil.copy(deptMapper.selectOne(queryWrapper), DeptBrief.class);
+    }
+
+    @Override
+    public List<Integer> selectAllDeptIdList() {
+        QueryWrapper<DeptPO> queryWrapper = new QueryWrapper<>();
+        queryWrapper.select("id");
+        List<Object> deptIdList = deptMapper.selectObjs(queryWrapper);
+        return deptIdList.stream().map(deptId -> (Integer) deptId).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<Integer> selectIdListByParentId(Integer deptId) {
+        QueryWrapper<DeptPO> queryWrapper = new QueryWrapper<>();
+        queryWrapper.select("id").eq("parent_id", deptId);
+        List<Object> deptIdList = deptMapper.selectObjs(queryWrapper);
+        return deptIdList.stream().map(dpId -> (Integer) dpId).collect(Collectors.toList());
     }
 }

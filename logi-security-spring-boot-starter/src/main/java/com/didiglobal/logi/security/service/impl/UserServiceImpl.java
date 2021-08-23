@@ -3,6 +3,7 @@ package com.didiglobal.logi.security.service.impl;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.didiglobal.logi.security.common.PagingData;
 import com.didiglobal.logi.security.common.dto.user.UserBriefQueryDTO;
+import com.didiglobal.logi.security.common.entity.dept.Dept;
 import com.didiglobal.logi.security.common.entity.user.User;
 import com.didiglobal.logi.security.common.entity.user.UserBrief;
 import com.didiglobal.logi.security.common.vo.role.AssignInfoVO;
@@ -61,12 +62,16 @@ public class UserServiceImpl implements UserService {
         IPage<User> iPage = userDao.selectPageByDeptIdListAndUserIdList(queryDTO, deptIdList, userIdList);
         List<UserVO> userVOList = new ArrayList<>();
         List<User> userList = iPage.getRecords();
+
+        // 提前获取所有部门
+        Map<Integer, Dept> deptMap = deptService.getAllDeptMap();
         for (User user : userList) {
             UserVO userVo = CopyBeanUtil.copy(user, UserVO.class);
             // 设置角色信息
             userVo.setRoleList(roleService.getRoleBriefListByUserId(userVo.getId()));
             // 设置部门信息
-            userVo.setDeptList(deptService.getDeptBriefListByChildId(user.getDeptId()));
+            // userVo.setDeptList(deptService.getDeptBriefListByChildId(user.getDeptId()));
+            userVo.setDeptList(deptService.getDeptBriefListByChildId(deptMap, user.getDeptId()));
             userVo.setUpdateTime(user.getUpdateTime().getTime());
             // 隐私信息处理
             privacyProcessing(userVo);

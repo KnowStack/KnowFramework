@@ -25,4 +25,9 @@ public class DeptBrief {
      * 部门的层级（parentId为0的层级为1）
      */
     private Integer level;
+
+    /**
+     * 父部门id
+     */
+    private Integer parentId;
 }

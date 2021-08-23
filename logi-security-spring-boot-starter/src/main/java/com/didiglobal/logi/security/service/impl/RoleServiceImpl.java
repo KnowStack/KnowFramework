@@ -84,8 +84,7 @@ public class RoleServiceImpl implements RoleService {
         for(Role role : iPage.getRecords()) {
             RoleVO roleVO = CopyBeanUtil.copy(role, RoleVO.class);
             // 获取该角色已分配给的用户数
-            List<Integer> userIdList = userRoleService.getUserIdListByRoleId(role.getId());
-            roleVO.setAuthedUserCnt(userIdList.size());
+            roleVO.setAuthedUserCnt(userRoleService.getUserRoleCountByRoleId(role.getId()));
             roleVO.setCreateTime(role.getCreateTime().getTime());
             roleVOList.add(roleVO);
         }

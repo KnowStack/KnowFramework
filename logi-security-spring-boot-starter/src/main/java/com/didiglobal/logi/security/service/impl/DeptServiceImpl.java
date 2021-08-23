@@ -13,6 +13,7 @@ import com.didiglobal.logi.security.util.CopyBeanUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.StringUtils;
 
 import java.util.*;
 
@@ -61,7 +62,7 @@ public class DeptServiceImpl implements DeptService {
             getParentDeptListByChildId(null, deptId, deptBriefVOList);
         } catch (LogiSecurityException e) {
             e.printStackTrace();
-            return null;
+            return new ArrayList<>();
         }
         return deptBriefVOList;
     }
@@ -69,23 +70,33 @@ public class DeptServiceImpl implements DeptService {
     @Override
     public List<Integer> getDeptIdListByParentId(Integer deptId) {
         if(deptId == null) {
+            // 如果为null，则获取全部部门的id
+            return deptDao.selectAllDeptIdList();
+        }
+        Set<Integer> deptIdSet = new HashSet<>();
+        try {
+            getChildDeptIdListByParentId(deptIdSet, deptId);
+            return new ArrayList<>(deptIdSet);
+        } catch (LogiSecurityException e) {
+            e.printStackTrace();
             return new ArrayList<>();
         }
-        List<Integer> deptIdList = new ArrayList<>();
-        getChildDeptIdListByParentId(deptIdList, deptId);
-        return deptIdList;
     }
 
     @Override
     public List<Integer> getDeptIdListByParentIdAndDeptName(Integer deptId, String deptName) {
         // 获取所有子部门的id
-        Set<Integer> deptIdSet = new HashSet<>(getDeptIdListByParentId(deptId));
-        if(CollectionUtils.isEmpty(deptIdSet)) {
+        List<Integer> deptIdList = getDeptIdListByParentId(deptId);
+        if(deptIdList == null) {
             return new ArrayList<>();
         }
+        if(deptIdList.isEmpty() || StringUtils.isEmpty(deptName)) {
+            return deptIdList;
+        }
+        Set<Integer> deptIdSet = new HashSet<>(deptIdList);
         List<Integer> result = new ArrayList<>();
         // 获取和deptName相似的部门id
-        List<Integer> deptIdList = deptDao.selectIdListByLikeDeptName(deptName);
+        deptIdList = deptDao.selectIdListByLikeDeptName(deptName);
         for(Integer id : deptIdList) {
             if(deptIdSet.contains(id)) {
                 result.add(id);
@@ -94,33 +105,69 @@ public class DeptServiceImpl implements DeptService {
         return result;
     }
 
-    private void getParentDeptListByChildId(Dept child, Integer deptId, List<DeptBriefVO> deptBriefVOList) throws LogiSecurityException {
+    @Override
+    public Map<Integer, Dept> getAllDeptMap() {
+        List<Dept> deptList = deptDao.selectAllAndAscOrderByLevel();
+        Map<Integer, Dept> map = new HashMap<>();
+        for(Dept dept : deptList) {
+            map.put(dept.getId(), dept);
+        }
+        return map;
+    }
+
+    private void getDeptBriefListByChildId(Map<Integer, Dept> deptMap, Integer deptId, List<DeptBriefVO> deptBriefVOList) {
         if(deptId == null || deptId == 0) {
             return;
         }
-        Dept dept = deptDao.selectByDeptId(deptId);
-        if(child != null && dept.getLevel() >= child.getLevel()) {
+        Dept dept = deptMap.get(deptId);
+        deptBriefVOList.add(CopyBeanUtil.copy(dept, DeptBriefVO.class));
+        getDeptBriefListByChildId(deptMap, dept.getParentId(), deptBriefVOList);
+    }
+
+    @Override
+    public List<DeptBriefVO> getDeptBriefListByChildId(Map<Integer, Dept> deptMap, Integer deptId) {
+        if(deptId == null || deptId == 0 || deptMap.isEmpty()) {
+            return new ArrayList<>();
+        }
+        List<DeptBriefVO> deptBriefVOList = new ArrayList<>();
+        getDeptBriefListByChildId(deptMap, deptId, deptBriefVOList);
+        return deptBriefVOList;
+    }
+
+    private void getParentDeptListByChildId(DeptBrief child, Integer deptId, List<DeptBriefVO> deptBriefVOList) throws LogiSecurityException {
+        if(deptId == null || deptId == 0) {
+            return;
+        }
+        DeptBrief deptBrief = deptDao.selectBriefByDeptId(deptId);
+        if(child != null && deptBrief.getLevel() >= child.getLevel()) {
             // 如果出现这种情况，则数据有误，中断递归
             throw new LogiSecurityException(ResultCode.DEPT_DATA_ERROR);
         }
-        getParentDeptListByChildId(dept, dept.getParentId(), deptBriefVOList);
-        deptBriefVOList.add(CopyBeanUtil.copy(dept, DeptBriefVO.class));
+        try {
+            getParentDeptListByChildId(deptBrief, deptBrief.getParentId(), deptBriefVOList);
+        } catch (LogiSecurityException e) {
+            throw new LogiSecurityException(ResultCode.DEPT_DATA_ERROR);
+        }
+        deptBriefVOList.add(CopyBeanUtil.copy(deptBrief, DeptBriefVO.class));
     }
 
-    private void getChildDeptIdListByParentId(List<Integer> deptIdList, Integer deptId) {
+    private void getChildDeptIdListByParentId(Set<Integer> deptIdSet, Integer deptId) throws LogiSecurityException {
         if(deptId == null) {
             return;
         }
-        deptIdList.add(deptId);
-        List<DeptBrief> deptBriefList = deptDao.selectBriefListByParentId(deptId);
-        for(DeptBrief deptBrief : deptBriefList) {
-            if(deptBrief.getLeaf()) {
-                // 如果是叶子部门
-                // 如果确实就是叶子部门，但是leaf为恶意修改为false，不过下一次递归也不会进入for循环，所以不会递归爆炸
-                continue;
+        deptIdSet.add(deptId);
+        List<Integer> childIdList = deptDao.selectIdListByParentId(deptId);
+        for(Integer childId : childIdList) {
+            if(deptIdSet.contains(childId)) {
+                // 如果出现这种情况，则数据有误，中断递归
+                // 这是为了防止，child的parentId是parent，但parent的parentId却是child
+                throw new LogiSecurityException(ResultCode.DEPT_DATA_ERROR);
             }
-            getChildDeptIdListByParentId(deptIdList, deptBrief.getId());
+            try {
+                getChildDeptIdListByParentId(deptIdSet, childId);
+            } catch (LogiSecurityException e) {
+                throw new LogiSecurityException(ResultCode.DEPT_DATA_ERROR);
+            }
         }
     }
-
 }
