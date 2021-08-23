@@ -23,6 +23,7 @@ import com.didiglobal.logi.security.service.*;
 
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import com.didiglobal.logi.security.util.CopyBeanUtil;
 import com.didiglobal.logi.security.util.MathUtil;
@@ -176,6 +177,7 @@ public class RoleServiceImpl implements RoleService {
             Integer roleId = assignDTO.getId();
             // 获取old的用户与角色的关系
             List<Integer> oldUserIdList = userRoleService.getUserIdListByRoleId(roleId);
+            // 更新关联信息
             userRoleService.updateUserRoleByRoleId(roleId, assignDTO.getIdList());
             // 保存操作日志
             Role role = roleDao.selectByRoleId(assignDTO.getId());
@@ -203,11 +205,8 @@ public class RoleServiceImpl implements RoleService {
         List<Integer> userIdList = userRoleService.getUserIdListByRoleId(roleId);
         if(!CollectionUtils.isEmpty(userIdList)) {
             // 获取用户简要信息List
-            List<UserBriefVO> userBriefVOList = userService.getUserBriefListByUserIdList(userIdList);
-            List<String> usernameList = new ArrayList<>();
-            for(UserBriefVO userBriefVO : userBriefVOList) {
-                usernameList.add(userBriefVO.getUsername());
-            }
+            List<UserBriefVO> list = userService.getUserBriefListByUserIdList(userIdList);
+            List<String> usernameList = list.stream().map(UserBriefVO::getUsername).collect(Collectors.toList());
             roleDeleteCheckVO.setUsernameList(usernameList);
         }
         return roleDeleteCheckVO;

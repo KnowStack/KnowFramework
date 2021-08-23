@@ -138,11 +138,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public List<Integer> getUserIdListByUsernameOrRealName(String name) {
         List<UserBrief> userBriefList = userDao.selectBriefListByNameAndDescOrderByCreateTime(name);
-        List<Integer> result = new ArrayList<>();
-        for(UserBrief userBrief : userBriefList) {
-            result.add(userBrief.getId());
-        }
-        return result;
+        return userBriefList.stream().map(UserBrief::getId).collect(Collectors.toList());
     }
 
     @Override

@@ -27,6 +27,7 @@ import org.springframework.util.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 
 /**
@@ -183,11 +184,8 @@ public class ProjectServiceImpl implements ProjectService {
         // 获取与该项目相关联的具体资源
         List<ResourceDTO> resourceDTOList = resourceExtend.getResourceList(projectId, null);
         if(!CollectionUtils.isEmpty(resourceDTOList)) {
-            List<String> resourceNameList = new ArrayList<>();
-            for(ResourceDTO resourceDto : resourceDTOList) {
-                resourceNameList.add(resourceDto.getResourceName());
-            }
-            projectDeleteCheckVO.setResourceNameList(resourceNameList);
+            List<String> list = resourceDTOList.stream().map(ResourceDTO::getResourceName).collect(Collectors.toList());
+            projectDeleteCheckVO.setResourceNameList(list);
         }
         return projectDeleteCheckVO;
     }
