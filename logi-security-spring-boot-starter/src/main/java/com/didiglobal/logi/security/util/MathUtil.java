@@ -18,7 +18,7 @@ public class MathUtil {
         if(len <= 0 || len > 18) {
             return 0;
         }
-        return (long) ((Math.random() + 1) * len);
+        return (long) ((Math.random() + 1) * Math.pow(10, len));
     }
 
     /**

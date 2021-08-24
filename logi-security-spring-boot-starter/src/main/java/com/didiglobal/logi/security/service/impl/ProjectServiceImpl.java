@@ -58,9 +58,6 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Override
     public ProjectVO getProjectDetailByProjectId(Integer projectId) throws LogiSecurityException {
-        if(projectId == null) {
-            return null;
-        }
         Project project = projectDao.selectByProjectId(projectId);
         if(project == null) {
             throw new LogiSecurityException(ResultCode.PROJECT_NOT_EXISTS);
@@ -178,7 +175,7 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Override
     public List<ProjectBriefVO> getProjectBriefList() {
-        List<ProjectBrief> projectBriefList = projectDao.selectBriefList();
+        List<ProjectBrief> projectBriefList = projectDao.selectAllBriefList();
         return CopyBeanUtil.copyList(projectBriefList, ProjectBriefVO.class);
     }
 

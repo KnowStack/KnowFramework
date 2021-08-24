@@ -26,6 +26,7 @@ import com.didiglobal.logi.security.util.CopyBeanUtil;
 import com.didiglobal.logi.security.util.ThreadLocalUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -81,9 +82,6 @@ public class UserResourceServiceImpl implements UserResourceService {
 
     @Override
     public List<MByUDataVO> getManagerByUserDataList(MByUDataQueryDTO queryDTO) throws LogiSecurityException {
-        long start = System.currentTimeMillis();
-
-
         // 检查参数
         checkParam(queryDTO);
 
@@ -123,8 +121,7 @@ public class UserResourceServiceImpl implements UserResourceService {
                 resultList.add(dataVo);
             }
         }
-        long end = System.currentTimeMillis();
-        System.out.println(end - start);
+
         return resultList;
     }
 
@@ -137,7 +134,7 @@ public class UserResourceServiceImpl implements UserResourceService {
         int controlLevel = queryDTO.getControlLevel();
         boolean isBatch = queryDTO.getBatch();
 
-        List<UserBriefVO> UserBriefVOList = userService.getUserBriefListByUsernameOrRealName(queryDTO.getName());
+        List<UserBriefVO> UserBriefVOList = userService.getAllUserBriefListOrderByCreateTime(false);
 
         List<MByRDataVO> result = Collections.synchronizedList(new ArrayList<>());
         UserBriefVOList.parallelStream().forEach(userBriefVO -> {
@@ -241,16 +238,14 @@ public class UserResourceServiceImpl implements UserResourceService {
         checkParam(queryDTO.getShowLevel(), queryDTO.getProjectId(), queryDTO.getResourceTypeId());
     }
 
-    private void checkParam(AssignToOneUserDTO assignToOneUserDTO) throws LogiSecurityException {
-        if(assignToOneUserDTO.getUserId() == null) {
+    private void checkParam(AssignToOneUserDTO assignDTO) throws LogiSecurityException {
+        if(assignDTO.getUserId() == null) {
             throw new LogiSecurityException(ResultCode.USER_ID_CANNOT_BE_NULL);
         }
-        if(ControlLevelCode.getByType(assignToOneUserDTO.getControlLevel()) == null) {
+        if(ControlLevelCode.getByType(assignDTO.getControlLevel()) == null) {
             throw new LogiSecurityException(ResultCode.RESOURCE_INVALID_CONTROL_LEVEL);
         }
-        Integer projectId = assignToOneUserDTO.getProjectId();
-        Integer resourceTypeId = assignToOneUserDTO.getResourceTypeId();
-        if(projectId == null && resourceTypeId != null) {
+        if(assignDTO.getProjectId() == null && assignDTO.getResourceTypeId() != null) {
             // 资源类别id不为null，则项目id不可为null
             throw new LogiSecurityException(ResultCode.RESOURCE_ASSIGN_ERROR_2);
         }
@@ -319,19 +314,25 @@ public class UserResourceServiceImpl implements UserResourceService {
     }
 
     @Override
-    public void assignResourcePermission(AssignToOneUserDTO assignToOneUserDTO) throws LogiSecurityException {
+    public void assignResourcePermission(AssignToOneUserDTO assignDTO) throws LogiSecurityException {
         // 检查参数
-        checkParam(assignToOneUserDTO);
-        Integer userId = assignToOneUserDTO.getUserId();
-        Integer projectId = assignToOneUserDTO.getProjectId();
-        Integer resourceTypeId = assignToOneUserDTO.getResourceTypeId();
-        int controlLevel = assignToOneUserDTO.getControlLevel();
+        checkParam(assignDTO);
+        Integer userId = assignDTO.getUserId();
+        Integer projectId = assignDTO.getProjectId();
+        Integer resourceTypeId = assignDTO.getResourceTypeId();
+        int controlLevel = assignDTO.getControlLevel();
 
         // 删除old的关联信息
         UserResourceQueryDTO queryDTO = new UserResourceQueryDTO(controlLevel, projectId, resourceTypeId, null);
-        userResourceDao.deleteByUserId(userId, queryDTO);
+        if(CollectionUtils.isEmpty(assignDTO.getExcludeIdList())) {
+            userResourceDao.deleteByUserId(userId, queryDTO);
+        } else if(projectId == null) {
+            userResourceDao.deleteByUserIdWithoutProjectIdList(userId, queryDTO, assignDTO.getExcludeIdList());
+        } else if(resourceTypeId == null) {
+            userResourceDao.deleteByUserIdWithoutResourceTypeIdList(userId, queryDTO, assignDTO.getExcludeIdList());
+        }
 
-        List<Integer> idList = assignToOneUserDTO.getIdList();
+        List<Integer> idList = assignDTO.getIdList();
         List<Integer> userIdList = new ArrayList<Integer>(){{ add(userId); }};
         List<UserResource> userResourceList = getUserResourceList(projectId, resourceTypeId, controlLevel, idList, userIdList);
         // 插入new关联信息
@@ -343,18 +344,18 @@ public class UserResourceServiceImpl implements UserResourceService {
     }
 
     @Override
-    public void assignResourcePermission(AssignToManyUserDTO assignToManyUserDTO) throws LogiSecurityException {
+    public void assignResourcePermission(AssignToManyUserDTO assignDTO) throws LogiSecurityException {
         // 检查参数
-        checkParam(assignToManyUserDTO);
-        List<Integer> userIdList = assignToManyUserDTO.getUserIdList();
-        Integer projectId = assignToManyUserDTO.getProjectId();
-        Integer resourceTypeId = assignToManyUserDTO.getResourceTypeId();
-        Integer resourceId = assignToManyUserDTO.getResourceId();
-        int controlLevel = assignToManyUserDTO.getControlLevel();
+        checkParam(assignDTO);
+        List<Integer> userIdList = assignDTO.getUserIdList();
+        Integer projectId = assignDTO.getProjectId();
+        Integer resourceTypeId = assignDTO.getResourceTypeId();
+        Integer resourceId = assignDTO.getResourceId();
+        int controlLevel = assignDTO.getControlLevel();
 
-        // 删除old关联信息
+        // 删除old关联信息，并排除指定的id
         UserResourceQueryDTO queryDTO = new UserResourceQueryDTO(controlLevel, projectId, resourceTypeId, resourceId);
-        userResourceDao.deleteByUserId(null, queryDTO);
+        userResourceDao.deleteWithoutUserIdList(queryDTO, assignDTO.getExcludeUserIdList());
 
         List<ResourceDTO> resourceDTOList = new ArrayList<>();
         if(resourceId == null) {
@@ -428,7 +429,6 @@ public class UserResourceServiceImpl implements UserResourceService {
 
     private void checkParam(BatchAssignDTO assignDTO) throws LogiSecurityException {
         if(assignDTO.getUserIdList() == null) {
-            // TODO;
             throw new LogiSecurityException(ResultCode.USER_ID_CANNOT_BE_NULL);
         }
         if(assignDTO.getAssignFlag() == null) {
@@ -443,10 +443,10 @@ public class UserResourceServiceImpl implements UserResourceService {
         }
     }
 
-    private void checkParam(AssignToManyUserDTO assignToManyUserDTO) throws LogiSecurityException {
+    private void checkParam(AssignToManyUserDTO assignDTO) throws LogiSecurityException {
         checkParam(
-                assignToManyUserDTO.getControlLevel(), assignToManyUserDTO.getProjectId(),
-                assignToManyUserDTO.getResourceTypeId(), assignToManyUserDTO.getResourceId()
+                assignDTO.getControlLevel(), assignDTO.getProjectId(),
+                assignDTO.getResourceTypeId(), assignDTO.getResourceId()
         );
     }
 
@@ -459,7 +459,7 @@ public class UserResourceServiceImpl implements UserResourceService {
         Map<Integer, Dept> deptMap = deptService.getAllDeptMap();
         PagingData<UserBriefVO> userPage = userService.getUserBriefPage(new UserBriefQueryDTO(queryDTO));
         List<MByUVO> result = Collections.synchronizedList(new ArrayList<>());
-        long start = System.currentTimeMillis();
+
         // 判断 资源查看控制权限 是否开启
         final boolean isOn = getViewPermissionControlStatus();
         userPage.getBizData().parallelStream().forEach(userBriefVO -> {
@@ -476,8 +476,7 @@ public class UserResourceServiceImpl implements UserResourceService {
             }
             result.add(dataVo);
         });
-        long end = System.currentTimeMillis();
-        System.out.println(end - start);
+
         return new PagingData<>(result, userPage.getPagination());
     }
 
@@ -530,6 +529,19 @@ public class UserResourceServiceImpl implements UserResourceService {
         checkParam(queryDTO.getShowLevel(), queryDTO.getProjectId(), queryDTO.getResourceTypeId());
     }
 
+    private int getAdminOrViewUserCnt(UserResourceQueryDTO queryDTO) {
+        List<Integer> userIdList = userResourceDao.selectUserIdListGroupByUserId(queryDTO);
+        int total = resourceExtend.getResourceCnt(queryDTO.getProjectId(), queryDTO.getResourceTypeId());
+        int cnt = userIdList.size();
+        for(Integer userId : userIdList) {
+            if(total != userResourceDao.selectCountByUserId(userId, queryDTO)) {
+                // 该用户不拥有 该项目下 或 该项目下某资源类别下 的全部具体资源
+                cnt--;
+            }
+        }
+        return cnt;
+    }
+
     /**
      * 资源权限管理>按资源管理的列表信息>项目级别
      * @param mByRQueryDTO 查询条件
@@ -547,13 +559,13 @@ public class UserResourceServiceImpl implements UserResourceService {
             data.setProjectName(projectBriefVO.getProjectName());
 
             // 获取管理权限用户数
-            UserResourceQueryDTO queryDTO = new UserResourceQueryDTO(ControlLevelCode.ADMIN.getType(), mByRQueryDTO.getProjectId(), null, null);
-            data.setAdminUserCnt(userResourceDao.selectCount(queryDTO));
+            UserResourceQueryDTO queryDTO = new UserResourceQueryDTO(ControlLevelCode.ADMIN.getType(), projectBriefVO.getId(), null, null);
+            data.setAdminUserCnt(getAdminOrViewUserCnt(queryDTO));
 
             if(isOn) {
                 // 获取查看权限用户数
-                queryDTO = new UserResourceQueryDTO(ControlLevelCode.VIEW.getType(), mByRQueryDTO.getProjectId(), null, null);
-                data.setViewUserCnt(userResourceDao.selectCount(queryDTO));
+                queryDTO = new UserResourceQueryDTO(ControlLevelCode.VIEW.getType(), projectBriefVO.getId(), null, null);
+                data.setViewUserCnt(getAdminOrViewUserCnt(queryDTO));
             }
             result.add(data);
         });
@@ -582,12 +594,12 @@ public class UserResourceServiceImpl implements UserResourceService {
 
             // 获取管理权限用户数
             UserResourceQueryDTO queryDTO2 = new UserResourceQueryDTO(ControlLevelCode.ADMIN.getType(), queryDTO.getProjectId(), resourceTypeVO.getId(), null);
-            data.setAdminUserCnt(userResourceDao.selectCount(queryDTO2));
+            data.setAdminUserCnt(getAdminOrViewUserCnt(queryDTO2));
 
             if(isOn) {
                 // 获取查看权限用户数
                 queryDTO2 = new UserResourceQueryDTO(ControlLevelCode.VIEW.getType(), queryDTO.getProjectId(), resourceTypeVO.getId(), null);
-                data.setViewUserCnt(userResourceDao.selectCount(queryDTO2));
+                data.setViewUserCnt(getAdminOrViewUserCnt(queryDTO2));
             }
             result.add(data);
         });
@@ -619,13 +631,13 @@ public class UserResourceServiceImpl implements UserResourceService {
             data.setResourceName(resourceDTO.getResourceName());
 
             // 获取管理权限用户数
-            UserResourceQueryDTO queryDTO2 = new UserResourceQueryDTO(ControlLevelCode.ADMIN.getType(), queryDTO.getProjectId(), resourceTypeVO.getId(), resourceDTO.getResourceId());
-            data.setAdminUserCnt(userResourceDao.selectCount(queryDTO2));
+            UserResourceQueryDTO queryDTO2 = new UserResourceQueryDTO(ControlLevelCode.ADMIN.getType(), queryDTO.getProjectId(), queryDTO.getResourceTypeId(), resourceDTO.getResourceId());
+            data.setAdminUserCnt(userResourceDao.selectCountGroupByUserId(queryDTO2));
 
             if(isOn) {
                 // 获取查看权限用户数
-                queryDTO2 = new UserResourceQueryDTO(ControlLevelCode.VIEW.getType(), queryDTO.getProjectId(), resourceTypeVO.getId(), resourceDTO.getResourceId());
-                data.setViewUserCnt(userResourceDao.selectCount(queryDTO2));
+                queryDTO2 = new UserResourceQueryDTO(ControlLevelCode.VIEW.getType(), queryDTO.getProjectId(), queryDTO.getResourceTypeId(), resourceDTO.getResourceId());
+                data.setViewUserCnt(userResourceDao.selectCountGroupByUserId(queryDTO2));
             }
             list.add(data);
         }

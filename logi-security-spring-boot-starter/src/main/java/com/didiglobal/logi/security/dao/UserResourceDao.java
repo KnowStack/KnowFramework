@@ -95,4 +95,33 @@ public interface UserResourceDao {
      * @return 具体资源idList
      */
     List<Integer> selectResourceIdListByUserId(Integer userId, UserResourceQueryDTO queryDTO);
+
+    /**
+     * @param queryDTO 删除条件
+     * @param excludeUserIdList 不删除与这些userId关联的数据
+     */
+    void deleteWithoutUserIdList(UserResourceQueryDTO queryDTO, List<Integer> excludeUserIdList);
+
+    /**
+     * @param userId 用户id
+     * @param queryDTO 删除条件
+     * @param excludeIdList 不删除与这些projectId关联的数据
+     */
+    void deleteByUserIdWithoutProjectIdList(Integer userId, UserResourceQueryDTO queryDTO, List<Integer> excludeIdList);
+
+    /**
+     * @param userId 用户id
+     * @param queryDTO 删除条件
+     * @param excludeIdList 不删除与这些resourceTypeId关联的数据
+     */
+    void deleteByUserIdWithoutResourceTypeIdList(Integer userId, UserResourceQueryDTO queryDTO, List<Integer> excludeIdList);
+
+    /**
+     * 根据指定条件查询，并根据用户id分组
+     * @param queryDTO 查询条件
+     * @return 用户资源关联数
+     */
+    int selectCountGroupByUserId(UserResourceQueryDTO queryDTO);
+
+    List<Integer> selectUserIdListGroupByUserId(UserResourceQueryDTO queryDTO);
 }

@@ -30,6 +30,7 @@ public interface UserService {
      * 获取用户详情（主要是获取用户所拥有的权限信息）
      * @param userId 用户id
      * @return 用户详情
+     * @throws LogiSecurityException 用户不存在
      */
     UserVO getUserDetailByUserId(Integer userId);
 
@@ -57,11 +58,10 @@ public interface UserService {
     /**
      * 根据用户id和roleName获取角色list
      * @param userId 用户id
-     * @param roleName 角色名
      * @return List<AssignDataVo>
      * @throws LogiSecurityException 用户id不可为null
      */
-    List<AssignInfoVO> getAssignDataByUserId(Integer userId, String roleName) throws LogiSecurityException;
+    List<AssignInfoVO> getAssignDataByUserId(Integer userId) throws LogiSecurityException;
 
     /**
      * 根据角色id获取用户list
@@ -79,10 +79,22 @@ public interface UserService {
     List<UserBriefVO> getUserBriefListByUsernameOrRealName(String name);
 
     /**
+     * 获取用户简要信息List并根据创建时间排序
+     * @param isAsc 是否升序
+     * @return 用户简要信息List
+     */
+    List<UserBriefVO> getAllUserBriefListOrderByCreateTime(boolean isAsc);
+
+    /**
      * 会分别以账户名和实名去模糊查询，返回两者的并集
      * @param name 账户名或实名
      * @return List<Integer> 用户IdList
      */
     List<Integer> getUserIdListByUsernameOrRealName(String name);
 
+    /**
+     * 获取所有用户简要信息
+     * @return 用户简要信息List
+     */
+    List<UserBriefVO> getAllUserBriefList();
 }

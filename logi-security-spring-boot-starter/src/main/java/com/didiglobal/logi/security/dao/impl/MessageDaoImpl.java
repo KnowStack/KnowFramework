@@ -23,7 +23,9 @@ public class MessageDaoImpl implements MessageDao {
 
     @Override
     public void insert(Message message) {
-        messageMapper.insert(CopyBeanUtil.copy(message, MessagePO.class));
+        MessagePO messagePO = CopyBeanUtil.copy(message, MessagePO.class);
+        messageMapper.insert(messagePO);
+        message.setId(messagePO.getId());
     }
 
     @Override

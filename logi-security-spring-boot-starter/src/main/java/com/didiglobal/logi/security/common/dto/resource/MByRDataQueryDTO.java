@@ -13,9 +13,6 @@ import lombok.Data;
 @ApiModel(description = "按资源管理/分配用户/数据列表的查询条件")
 public class MByRDataQueryDTO {
 
-    @ApiModelProperty(value = "账户名或用户实名（会分别以账户名和实名去模糊查询，返回两者的并集）", dataType = "String", required = false)
-    private String name;
-
     @ApiModelProperty(value = "项目id", dataType = "Integer", required = true)
     private Integer projectId;
 

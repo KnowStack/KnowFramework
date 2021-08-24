@@ -49,7 +49,9 @@ public class RoleDaoImpl implements RoleDao {
 
     @Override
     public void insert(Role role) {
-        roleMapper.insert(CopyBeanUtil.copy(role, RolePO.class));
+        RolePO rolePO = CopyBeanUtil.copy(role, RolePO.class);
+        roleMapper.insert(rolePO);
+        role.setId(rolePO.getId());
     }
 
     @Override

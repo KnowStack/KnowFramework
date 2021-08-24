@@ -55,6 +55,8 @@ public class OplogDaoImpl implements OplogDao {
 
     @Override
     public void insert(Oplog oplog) {
-        oplogMapper.insert(CopyBeanUtil.copy(oplog, OplogPO.class));
+        OplogPO oplogPO = CopyBeanUtil.copy(oplog, OplogPO.class);
+        oplogMapper.insert(oplogPO);
+        oplog.setId(oplogPO.getId());
     }
 }

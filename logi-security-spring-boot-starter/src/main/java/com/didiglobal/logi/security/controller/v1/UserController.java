@@ -33,8 +33,12 @@ public class UserController {
     @ApiOperation(value = "获取用户详情", notes = "根据用户id获取用户详情")
     @ApiImplicitParam(name = "id", value = "用户id", dataType = "int", required = true)
     public Result<UserVO> detail(@PathVariable Integer id) {
-        UserVO userVo = userService.getUserDetailByUserId(id);
-        return Result.success(userVo);
+        try {
+            UserVO userVo = userService.getUserDetailByUserId(id);
+            return Result.success(userVo);
+        } catch (LogiSecurityException e) {
+            return Result.fail(e);
+        }
     }
 
     @PostMapping("/page")
@@ -60,16 +64,12 @@ public class UserController {
         return Result.success(userBriefVOList);
     }
 
-    @GetMapping(value = {"/assign/list/{userId}/{roleName}", "/assign/list/{userId}"})
+    @GetMapping(value = "/assign/list/{userId}")
     @ApiOperation(value = "用户管理/分配角色/列表", notes = "根据用户id和角色名模糊查询")
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "userId", value = "用户id", dataType = "int", required = true),
-            @ApiImplicitParam(name = "roleName", value = "角色名（为null，则获取全部角色）", dataType = "String", required = false),
-    })
-    public Result<List<AssignInfoVO>> assignList(@PathVariable(value = "userId", required = true) Integer userId,
-                                                 @PathVariable(value = "roleName", required = false) String roleName) {
+    @ApiImplicitParam(name = "userId", value = "用户id", dataType = "int", required = true)
+    public Result<List<AssignInfoVO>> assignList(@PathVariable Integer userId) {
         try {
-            List<AssignInfoVO> assignInfoVOList = userService.getAssignDataByUserId(userId, roleName);
+            List<AssignInfoVO> assignInfoVOList = userService.getAssignDataByUserId(userId);
             return Result.success(assignInfoVOList);
         } catch (LogiSecurityException e) {
             e.printStackTrace();

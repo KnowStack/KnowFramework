@@ -120,4 +120,45 @@ public class UserResourceDaoImpl implements UserResourceDao {
         List<Object> resourceIdList = userResourceMapper.selectObjs(queryWrapper);
         return resourceIdList.stream().map(obj -> (Integer) obj).collect(Collectors.toList());
     }
+
+    @Override
+    public void deleteWithoutUserIdList(UserResourceQueryDTO queryDTO, List<Integer> excludeUserIdList) {
+        QueryWrapper<UserResourcePO> queryWrapper = wrapQueryCriteria(null, queryDTO);
+        if(!CollectionUtils.isEmpty(excludeUserIdList)) {
+            queryWrapper.notIn("user_id", excludeUserIdList);
+        }
+        userResourceMapper.delete(queryWrapper);
+    }
+
+    @Override
+    public void deleteByUserIdWithoutProjectIdList(Integer userId, UserResourceQueryDTO queryDTO, List<Integer> excludeIdList) {
+        QueryWrapper<UserResourcePO> queryWrapper = wrapQueryCriteria(userId, queryDTO);
+        if(!CollectionUtils.isEmpty(excludeIdList)) {
+            queryWrapper.notIn("project_id", excludeIdList);
+        }
+        userResourceMapper.delete(queryWrapper);
+    }
+
+    @Override
+    public void deleteByUserIdWithoutResourceTypeIdList(Integer userId, UserResourceQueryDTO queryDTO, List<Integer> excludeIdList) {
+        QueryWrapper<UserResourcePO> queryWrapper = wrapQueryCriteria(userId, queryDTO);
+        if(!CollectionUtils.isEmpty(excludeIdList)) {
+            queryWrapper.notIn("resource_type_id", excludeIdList);
+        }
+        userResourceMapper.delete(queryWrapper);
+    }
+
+    @Override
+    public int selectCountGroupByUserId(UserResourceQueryDTO queryDTO) {
+        QueryWrapper<UserResourcePO> queryWrapper = wrapQueryCriteria(null, queryDTO);
+        queryWrapper.select("COUNT(*)").groupBy("user_id");
+        return userResourceMapper.selectObjs(queryWrapper).size();
+    }
+
+    @Override
+    public List<Integer> selectUserIdListGroupByUserId(UserResourceQueryDTO queryDTO) {
+        QueryWrapper<UserResourcePO> queryWrapper = wrapQueryCriteria(null, queryDTO);
+        queryWrapper.select("user_id").groupBy("user_id");
+        return userResourceMapper.selectObjs(queryWrapper).stream().map(obj -> (Integer) obj).collect(Collectors.toList());
+    }
 }

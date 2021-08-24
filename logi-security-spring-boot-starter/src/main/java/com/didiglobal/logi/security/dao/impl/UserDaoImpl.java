@@ -101,6 +101,24 @@ public class UserDaoImpl implements UserDao {
         return CopyBeanUtil.copyList(userMapper.selectList(queryWrapper), UserBrief.class);
     }
 
+    @Override
+    public List<UserBrief> selectBriefListOrderByCreateTime(boolean isAsc) {
+        QueryWrapper<UserPO> queryWrapper = wrapBriefQuery();
+        if(isAsc) {
+            queryWrapper.orderByAsc("create_time");
+        } else {
+            queryWrapper.orderByDesc("create_time");
+        }
+        userMapper.selectList(queryWrapper);
+        return CopyBeanUtil.copyList(userMapper.selectList(queryWrapper), UserBrief.class);
+    }
+
+    @Override
+    public List<UserBrief> selectAllBriefList() {
+        QueryWrapper<UserPO> queryWrapper = wrapBriefQuery();
+        return CopyBeanUtil.copyList(userMapper.selectList(queryWrapper), UserBrief.class);
+    }
+
     private QueryWrapper<UserPO> wrapBriefQuery() {
         QueryWrapper<UserPO> queryWrapper = new QueryWrapper<>();
         queryWrapper.select("id", "username", "real_name", "dept_id");

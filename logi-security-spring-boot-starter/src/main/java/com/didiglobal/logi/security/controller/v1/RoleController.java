@@ -102,15 +102,11 @@ public class RoleController {
         }
     }
 
-    @GetMapping(value = {"/assign/list/{roleId}/{name}", "/assign/list/{roleId}"})
+    @GetMapping(value = "/assign/list/{roleId}")
     @ApiOperation(value = "角色管理/分配用户/列表", notes = "根据角色id和用户实名或账户名模糊查询")
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "roleId", value = "角色id", dataType = "int", required = true),
-            @ApiImplicitParam(name = "name", value = "用户实名或账户名（为null，则获取全部用户）", dataType = "String", required = false),
-    })
-    public Result<List<AssignInfoVO>> assignList(@PathVariable(value = "roleId", required = true) Integer roleId,
-                                                 @PathVariable(value = "name", required = false) String name) {
-        List<AssignInfoVO> assignInfoVOList = roleService.getAssignInfoByRoleId(roleId, name);
+    @ApiImplicitParam(name = "roleId", value = "角色id", dataType = "int", required = true)
+    public Result<List<AssignInfoVO>> assignList(@PathVariable Integer roleId) {
+        List<AssignInfoVO> assignInfoVOList = roleService.getAssignInfoByRoleId(roleId);
         return Result.success(assignInfoVOList);
     }
 

@@ -91,10 +91,10 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserVO getUserDetailByUserId(Integer userId) {
+    public UserVO getUserDetailByUserId(Integer userId) throws LogiSecurityException {
         User user = userDao.selectByUserId(userId);
         if (user == null) {
-            return null;
+            throw new LogiSecurityException(ResultCode.USER_NOT_EXISTS);
         }
         UserVO userVo = CopyBeanUtil.copy(user, UserVO.class);
 
@@ -141,9 +141,21 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public List<UserBriefVO> getAllUserBriefListOrderByCreateTime(boolean isAsc) {
+        List<UserBrief> userBriefList = userDao.selectBriefListOrderByCreateTime(isAsc);
+        return CopyBeanUtil.copyList(userBriefList, UserBriefVO.class);
+    }
+
+    @Override
     public List<Integer> getUserIdListByUsernameOrRealName(String name) {
         List<UserBrief> userBriefList = userDao.selectBriefListByNameAndDescOrderByCreateTime(name);
         return userBriefList.stream().map(UserBrief::getId).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<UserBriefVO> getAllUserBriefList() {
+        List<UserBrief> userBriefList = userDao.selectAllBriefList();
+        return CopyBeanUtil.copyList(userBriefList, UserBriefVO.class);
     }
 
     @Override
@@ -155,12 +167,12 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<AssignInfoVO> getAssignDataByUserId(Integer userId, String roleName) throws LogiSecurityException {
+    public List<AssignInfoVO> getAssignDataByUserId(Integer userId) throws LogiSecurityException {
         if(userId == null) {
             throw new LogiSecurityException(ResultCode.USER_ID_CANNOT_BE_NULL);
         }
-        // 根据角色名，模糊查询
-        List<RoleBriefVO> roleBriefVOList = roleService.getRoleBriefListByRoleName(roleName);
+        // 获取所有角色
+        List<RoleBriefVO> roleBriefVOList = roleService.getAllRoleBriefList();
         // 获取该用户拥有的角色
         Set<Integer> hasRoleIdSet = new HashSet<>(userRoleService.getRoleIdListByUserId(userId));
 

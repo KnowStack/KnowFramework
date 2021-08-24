@@ -37,6 +37,9 @@ public class AssignToManyUserDTO {
     @ApiModelProperty(value = "用户idList（数组长度可以为0，但是不可为null）", dataType = "List<Integer>", required = true)
     private List<Integer> userIdList;
 
+    @ApiModelProperty(value = "排除的用户idList（不删除该用户对资源的权限，用于半选状态的用户）", dataType = "List<Integer>", required = false)
+    private List<Integer> excludeUserIdList;
+
     /**
      * 资源管理级别：
      * 1（查看权限）

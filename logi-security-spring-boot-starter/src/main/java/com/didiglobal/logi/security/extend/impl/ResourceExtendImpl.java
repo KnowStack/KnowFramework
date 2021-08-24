@@ -52,8 +52,8 @@ public class ResourceExtendImpl implements ResourceExtend {
         queryWrapper
                 .eq(projectId != null, "project_id", projectId)
                 .eq(resourceTypeId != null, "resource_type_id", resourceTypeId);
-        List<ProjectResourcePO> projectResources = projectResourceMapper.selectList(queryWrapper);
-        return CopyBeanUtil.copyList(projectResources, ResourceDTO.class);
+        List<ProjectResourcePO> projectResourcePOList = projectResourceMapper.selectList(queryWrapper);
+        return CopyBeanUtil.copyList(projectResourcePOList, ResourceDTO.class);
     }
 
     @Override

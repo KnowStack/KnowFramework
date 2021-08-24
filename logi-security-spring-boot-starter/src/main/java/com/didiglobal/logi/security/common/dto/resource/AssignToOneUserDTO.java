@@ -36,11 +36,24 @@ public class AssignToOneUserDTO {
     private List<Integer> idList;
 
     /**
+     * 排除的idList，对于半选中状态的数据，如果用户不取消或者勾选，则放入此数组
+     * projectId为null，则excludeIdList存放projectId
+     * projectId不为null，resourceTypeId为null，则excludeIdList存放resourceTypeId
+     * 具体资源无半选中状态
+     */
+    @ApiModelProperty(
+            value = "排除的idList，对于半选中状态的数据，如果用户不取消或者勾选，则放入此数组\n" +
+                    "projectId == null，resourceTypeId == null，则表示项目idList\n" +
+                    "projectId != null，resourceTypeId == null，则表示资源类别idList\n" +
+                    "具体资源无半选中状态",
+            dataType = "Integer", required = true)
+    private List<Integer> excludeIdList;
+
+    /**
      * 资源管理级别：
      * 1（查看权限）
      * 2（管理权限）
      */
     @ApiModelProperty(value = "资源管理级别：1（查看权限）、2（管理权限）", dataType = "Integer", required = true)
     private Integer controlLevel;
-
 }

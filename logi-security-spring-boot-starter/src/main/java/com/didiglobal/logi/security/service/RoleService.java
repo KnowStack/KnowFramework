@@ -65,10 +65,9 @@ public interface RoleService {
     /**
      * 根据角色id，获取分配信息
      * @param roleId 角色id
-     * @param name 用户实名或账户名
      * @return List<AssignDataVo> 分配信息
      */
-    List<AssignInfoVO> getAssignInfoByRoleId(Integer roleId, String name);
+    List<AssignInfoVO> getAssignInfoByRoleId(Integer roleId);
 
     /**
      * 根据角色名模糊查询

@@ -61,7 +61,7 @@ public interface ProjectDao {
      * 获取所有项目简要信息
      * @return 项目简要信息List
      */
-    List<ProjectBrief> selectBriefList();
+    List<ProjectBrief> selectAllBriefList();
 
     /**
      * 更新项目

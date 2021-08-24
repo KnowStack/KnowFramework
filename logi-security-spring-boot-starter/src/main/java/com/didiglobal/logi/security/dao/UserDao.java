@@ -57,4 +57,17 @@ public interface UserDao {
      * @return 用户简要信息List
      */
     List<UserBrief> selectBriefListByDeptIdList(List<Integer> deptIdList);
+
+    /**
+     * 查找所有用户简要信息，并根据创建时间排序（降序）
+     * @param isAsc 是否升序
+     * @return 用户简要信息List
+     */
+    List<UserBrief> selectBriefListOrderByCreateTime(boolean isAsc);
+
+    /**
+     * 获取所有用户简要信息
+     * @return 用户简要信息List
+     */
+    List<UserBrief> selectAllBriefList();
 }

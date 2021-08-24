@@ -33,7 +33,9 @@ public class ProjectDaoImpl implements ProjectDao {
 
     @Override
     public void insert(Project project) {
-        projectMapper.insert(CopyBeanUtil.copy(project, ProjectPO.class));
+        ProjectPO projectPO = CopyBeanUtil.copy(project, ProjectPO.class);
+        projectMapper.insert(projectPO);
+        project.setId(projectPO.getId());
     }
 
     @Override
@@ -68,7 +70,7 @@ public class ProjectDaoImpl implements ProjectDao {
     }
 
     @Override
-    public List<ProjectBrief> selectBriefList() {
+    public List<ProjectBrief> selectAllBriefList() {
         return CopyBeanUtil.copyList(projectMapper.selectList(wrapBriefQuery()), ProjectBrief.class);
     }
 

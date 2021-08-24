@@ -229,12 +229,12 @@ public class RoleServiceImpl implements RoleService {
     }
 
     @Override
-    public List<AssignInfoVO> getAssignInfoByRoleId(Integer roleId, String name) {
+    public List<AssignInfoVO> getAssignInfoByRoleId(Integer roleId) {
         if(roleId == null) {
             return null;
         }
         // 获取用户List
-        List<UserBriefVO> userBriefVOList = userService.getUserBriefListByUsernameOrRealName(name);
+        List<UserBriefVO> userBriefVOList = userService.getAllUserBriefList();
 
         // 先获取该角色已分配的用户，并转为set
         List<Integer> userIdList = userRoleService.getUserIdListByRoleId(roleId);
@@ -307,33 +307,41 @@ public class RoleServiceImpl implements RoleService {
         String removeRoleInfo = spliceRoleNameByRoleIdList(removeRoleIdList);
 
         List<MessageDTO> messageDTOList = new ArrayList<>();
-        for(Integer userId : addUserIdList) {
-            MessageDTO messageDTO = new MessageDTO(userId, oplogId);
-            // 赋值占位符
-            String content = String.format(MessageCode.ROLE_ADD_MESSAGE.getContent(), time, addRoleInfo);
-            messageDTO.setContent(content);
-            messageDTO.setTitle(MessageCode.ROLE_ADD_MESSAGE.getTitle());
-            messageDTOList.add(messageDTO);
+        if(!StringUtils.isEmpty(addRoleInfo)) {
+            for(Integer userId : addUserIdList) {
+                MessageDTO messageDTO = new MessageDTO(userId, oplogId);
+                // 赋值占位符
+                String content = String.format(MessageCode.ROLE_ADD_MESSAGE.getContent(), time, addRoleInfo);
+                messageDTO.setContent(content);
+                messageDTO.setTitle(MessageCode.ROLE_ADD_MESSAGE.getTitle());
+                messageDTOList.add(messageDTO);
+            }
         }
-        for(Integer userId : removeUserIdList) {
-            MessageDTO messageDTO = new MessageDTO(userId, oplogId);
-            // 赋值占位符
-            String content = String.format(MessageCode.ROLE_REMOVE_MESSAGE.getContent(), time, removeRoleInfo);
-            messageDTO.setContent(content);
-            messageDTO.setTitle(MessageCode.ROLE_REMOVE_MESSAGE.getTitle());
-            messageDTOList.add(messageDTO);
+        if(!StringUtils.isEmpty(removeRoleInfo)) {
+            for(Integer userId : removeUserIdList) {
+                MessageDTO messageDTO = new MessageDTO(userId, oplogId);
+                // 赋值占位符
+                String content = String.format(MessageCode.ROLE_REMOVE_MESSAGE.getContent(), time, removeRoleInfo);
+                messageDTO.setContent(content);
+                messageDTO.setTitle(MessageCode.ROLE_REMOVE_MESSAGE.getTitle());
+                messageDTOList.add(messageDTO);
+            }
         }
+
         messageService.saveMessages(messageDTOList);
     }
 
     private String spliceRoleNameByRoleIdList(List<Integer> roleIdList) {
         List<RoleBrief> roleBriefList = roleDao.selectBriefListByRoleIdList(roleIdList);
+        if(roleBriefList.isEmpty()) {
+            return null;
+        }
         // 拼接角色信息
         StringBuilder sb = new StringBuilder();
         for(int i = 0; i < roleBriefList.size() - 1; i++) {
-            sb.append(roleBriefList.get(i)).append(",");
+            sb.append(roleBriefList.get(i).getRoleName()).append(",");
         }
-        sb.append(roleBriefList.get(roleBriefList.size() - 1));
+        sb.append(roleBriefList.get(roleBriefList.size() - 1).getRoleName());
         return sb.toString();
     }
 
