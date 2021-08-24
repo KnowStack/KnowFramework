@@ -28,8 +28,9 @@ public interface ProjectService {
      * 获取项目详情，通过项目id
      * @param projectId 项目id
      * @return ProjectVo 项目信息
+     * @throws LogiSecurityException 项目不存在
      */
-    ProjectVO getProjectDetailByProjectId(Integer projectId);
+    ProjectVO getProjectDetailByProjectId(Integer projectId)  throws LogiSecurityException;
 
     /**
      * 根据项目id获取项目简要信息

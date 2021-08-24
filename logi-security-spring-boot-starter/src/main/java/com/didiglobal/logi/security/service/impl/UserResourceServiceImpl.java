@@ -15,7 +15,6 @@ import com.didiglobal.logi.security.common.enums.resource.ControlLevelCode;
 import com.didiglobal.logi.security.common.enums.resource.HasLevelCode;
 import com.didiglobal.logi.security.common.enums.resource.ShowLevelCode;
 import com.didiglobal.logi.security.common.po.ProjectPO;
-import com.didiglobal.logi.security.common.vo.dept.DeptBriefVO;
 import com.didiglobal.logi.security.common.vo.project.ProjectBriefVO;
 import com.didiglobal.logi.security.common.vo.resource.*;
 import com.didiglobal.logi.security.common.vo.user.UserBriefVO;
@@ -455,11 +454,12 @@ public class UserResourceServiceImpl implements UserResourceService {
 
     @Override
     public PagingData<MByUVO> getManageByUserPage(MByUQueryDTO queryDTO) {
+
         // 提前获取所有部门
         Map<Integer, Dept> deptMap = deptService.getAllDeptMap();
         PagingData<UserBriefVO> userPage = userService.getUserBriefPage(new UserBriefQueryDTO(queryDTO));
         List<MByUVO> result = Collections.synchronizedList(new ArrayList<>());
-
+        long start = System.currentTimeMillis();
         // 判断 资源查看控制权限 是否开启
         final boolean isOn = getViewPermissionControlStatus();
         userPage.getBizData().parallelStream().forEach(userBriefVO -> {
@@ -476,7 +476,8 @@ public class UserResourceServiceImpl implements UserResourceService {
             }
             result.add(dataVo);
         });
-
+        long end = System.currentTimeMillis();
+        System.out.println(end - start);
         return new PagingData<>(result, userPage.getPagination());
     }
 
@@ -491,7 +492,7 @@ public class UserResourceServiceImpl implements UserResourceService {
 
         // 判断 资源查看控制权限 是否开启
         boolean isOn = getViewPermissionControlStatus();
-        PagingData<MByRVO> result = null;
+        PagingData<MByRVO> result;
         if(queryDTO.getShowLevel().equals(ShowLevelCode.PROJECT.getType())) {
             // 项目展示级别，表示查找所有项目
             result = dealProjectLevel(queryDTO, isOn);

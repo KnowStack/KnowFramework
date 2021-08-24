@@ -31,8 +31,12 @@ public class ProjectController {
     @ApiOperation(value = "获取项目详情", notes = "根据项目id获取项目详情")
     @ApiImplicitParam(name = "id", value = "项目id", dataType = "int", required = true)
     public Result<ProjectVO> detail(@PathVariable Integer id) {
-        ProjectVO projectVO = projectService.getProjectDetailByProjectId(id);
-        return Result.success(projectVO);
+        try {
+            ProjectVO projectVO = projectService.getProjectDetailByProjectId(id);
+            return Result.success(projectVO);
+        } catch (LogiSecurityException e) {
+            return Result.fail(e);
+        }
     }
 
     @PutMapping("/switch/{id}")

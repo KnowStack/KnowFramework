@@ -57,11 +57,14 @@ public class ProjectServiceImpl implements ProjectService {
     private ResourceExtend resourceExtend;
 
     @Override
-    public ProjectVO getProjectDetailByProjectId(Integer projectId) {
+    public ProjectVO getProjectDetailByProjectId(Integer projectId) throws LogiSecurityException {
         if(projectId == null) {
             return null;
         }
         Project project = projectDao.selectByProjectId(projectId);
+        if(project == null) {
+            throw new LogiSecurityException(ResultCode.PROJECT_NOT_EXISTS);
+        }
         ProjectVO projectVO = CopyBeanUtil.copy(project, ProjectVO.class);
         // 获取负责人信息
         List<Integer> userIdList = userProjectService.getUserIdListByProjectId(projectId);
