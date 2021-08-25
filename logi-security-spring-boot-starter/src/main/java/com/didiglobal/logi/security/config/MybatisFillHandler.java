@@ -21,6 +21,7 @@ public class MybatisFillHandler implements MetaObjectHandler {
 
     @Override
     public void insertFill(MetaObject metaObject) {
+        // 在插入数据的时候自动填充默认字段值 appName
         metaObject.setValue("appName", logiSecurityProper.getAppName());
     }
 
