@@ -71,7 +71,7 @@ public class UserServiceImpl implements UserService {
             userVo.setRoleList(roleService.getRoleBriefListByUserId(userVo.getId()));
             // 设置部门信息
             // userVo.setDeptList(deptService.getDeptBriefListByChildId(user.getDeptId()));
-            userVo.setDeptList(deptService.getDeptBriefListByChildId(deptMap, user.getDeptId()));
+            userVo.setDeptList(deptService.getDeptBriefListFromDeptMapByChildId(deptMap, user.getDeptId()));
             userVo.setUpdateTime(user.getUpdateTime().getTime());
             // 隐私信息处理
             privacyProcessing(userVo);
@@ -148,8 +148,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<Integer> getUserIdListByUsernameOrRealName(String name) {
-        List<UserBrief> userBriefList = userDao.selectBriefListByNameAndDescOrderByCreateTime(name);
-        return userBriefList.stream().map(UserBrief::getId).collect(Collectors.toList());
+        return userDao.selectUserIdListByUsernameOrRealName(name);
     }
 
     @Override

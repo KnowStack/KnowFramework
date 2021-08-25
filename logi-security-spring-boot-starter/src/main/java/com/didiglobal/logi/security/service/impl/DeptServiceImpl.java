@@ -12,7 +12,6 @@ import com.didiglobal.logi.security.service.DeptService;
 import com.didiglobal.logi.security.util.CopyBeanUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
 import java.util.*;
@@ -115,22 +114,22 @@ public class DeptServiceImpl implements DeptService {
         return map;
     }
 
-    private void getDeptBriefListByChildId(Map<Integer, Dept> deptMap, Integer deptId, List<DeptBriefVO> deptBriefVOList) {
+    private void getDeptBriefListFromDeptMapByChildId(Map<Integer, Dept> deptMap, Integer deptId, List<DeptBriefVO> deptBriefVOList) {
         if(deptId == null || deptId == 0) {
             return;
         }
         Dept dept = deptMap.get(deptId);
         deptBriefVOList.add(CopyBeanUtil.copy(dept, DeptBriefVO.class));
-        getDeptBriefListByChildId(deptMap, dept.getParentId(), deptBriefVOList);
+        getDeptBriefListFromDeptMapByChildId(deptMap, dept.getParentId(), deptBriefVOList);
     }
 
     @Override
-    public List<DeptBriefVO> getDeptBriefListByChildId(Map<Integer, Dept> deptMap, Integer deptId) {
+    public List<DeptBriefVO> getDeptBriefListFromDeptMapByChildId(Map<Integer, Dept> deptMap, Integer deptId) {
         if(deptId == null || deptId == 0 || deptMap.isEmpty()) {
             return new ArrayList<>();
         }
         List<DeptBriefVO> deptBriefVOList = new ArrayList<>();
-        getDeptBriefListByChildId(deptMap, deptId, deptBriefVOList);
+        getDeptBriefListFromDeptMapByChildId(deptMap, deptId, deptBriefVOList);
         return deptBriefVOList;
     }
 

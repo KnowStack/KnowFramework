@@ -18,6 +18,7 @@ import org.springframework.util.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author cjm
@@ -117,6 +118,17 @@ public class UserDaoImpl implements UserDao {
     public List<UserBrief> selectAllBriefList() {
         QueryWrapper<UserPO> queryWrapper = wrapBriefQuery();
         return CopyBeanUtil.copyList(userMapper.selectList(queryWrapper), UserBrief.class);
+    }
+
+    @Override
+    public List<Integer> selectUserIdListByUsernameOrRealName(String name) {
+        QueryWrapper<UserPO> queryWrapper = new QueryWrapper<>();
+        queryWrapper.select("id")
+                .like(!StringUtils.isEmpty(name), "username", name)
+                .or()
+                .like(!StringUtils.isEmpty(name), "real_name", name);
+        List<Object> userIdList = userMapper.selectObjs(queryWrapper);
+        return userIdList.stream().map(userId -> (Integer) userId).collect(Collectors.toList());
     }
 
     private QueryWrapper<UserPO> wrapBriefQuery() {

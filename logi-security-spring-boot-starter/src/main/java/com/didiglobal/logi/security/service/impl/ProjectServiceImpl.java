@@ -118,7 +118,7 @@ public class ProjectServiceImpl implements ProjectService {
             projectVO.setUserList(userService.getUserBriefListByUserIdList(userIdList));
             // 获取部门信息
             // projectVO.setDeptList(deptService.getDeptBriefListByChildId(project.getDeptId()));
-            projectVO.setDeptList(deptService.getDeptBriefListByChildId(deptMap, project.getDeptId()));
+            projectVO.setDeptList(deptService.getDeptBriefListFromDeptMapByChildId(deptMap, project.getDeptId()));
             projectVO.setCreateTime(project.getCreateTime().getTime());
             projectVOList.add(projectVO);
         }

@@ -466,7 +466,7 @@ public class UserResourceServiceImpl implements UserResourceService {
             MByUVO dataVo = CopyBeanUtil.copy(userBriefVO, MByUVO.class);
             dataVo.setUserId(userBriefVO.getId());
             // 设置部门信息
-            dataVo.setDeptList(deptService.getDeptBriefListByChildId(deptMap, userBriefVO.getDeptId()));
+            dataVo.setDeptList(deptService.getDeptBriefListFromDeptMapByChildId(deptMap, userBriefVO.getDeptId()));
             // 计算管理权限资源数
             dataVo.setAdminResourceCnt(userResourceDao.selectCountByUserIdAndControlLevel(userBriefVO.getId(), ControlLevelCode.ADMIN));
             // 如果 资源查看控制权限 没开启，就不计算了

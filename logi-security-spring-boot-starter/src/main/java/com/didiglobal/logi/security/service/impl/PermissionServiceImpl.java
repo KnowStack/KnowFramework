@@ -69,13 +69,7 @@ public class PermissionServiceImpl implements PermissionService {
 
     @Override
     public PermissionTreeVO buildPermissionTree() {
-        PermissionTreeVO permissionTreeVO = null;
-        try {
-            permissionTreeVO = buildPermissionTree(new HashSet<>());
-        } catch (LogiSecurityException e) {
-            e.printStackTrace();
-        }
-        return permissionTreeVO;
+        return buildPermissionTreeWithHas(new ArrayList<>());
     }
 
     @Override

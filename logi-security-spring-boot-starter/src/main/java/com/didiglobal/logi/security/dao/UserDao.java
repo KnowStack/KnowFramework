@@ -70,4 +70,11 @@ public interface UserDao {
      * @return 用户简要信息List
      */
     List<UserBrief> selectAllBriefList();
+
+    /**
+     * 会分别以账户名和实名去模糊查询，返回两者的并集用户的id
+     * @param name 账户名或实名
+     * @return 用户idList
+     */
+    List<Integer> selectUserIdListByUsernameOrRealName(String name);
 }

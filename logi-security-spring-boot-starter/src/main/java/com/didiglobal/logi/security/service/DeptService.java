@@ -50,10 +50,10 @@ public interface DeptService {
     Map<Integer, Dept> getAllDeptMap();
 
     /**
-     * 获取该子部门所有祖先部门的信息（数据源来自deptMap）
+     * 从已有的deptMap（传入的参数），获取该子部门所有祖先部门的信息（数据源来自deptMap）
      * @param deptMap key: deptId、value: Dept
      * @param deptId 部门id
      * @return 子部门和祖先部门的信息
      */
-    List<DeptBriefVO> getDeptBriefListByChildId(Map<Integer, Dept> deptMap, Integer deptId);
+    List<DeptBriefVO> getDeptBriefListFromDeptMapByChildId(Map<Integer, Dept> deptMap, Integer deptId);
 }
