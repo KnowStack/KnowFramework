@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
  * @author cjm
  */
 @Component
-public class RolePermissionDaoImpl implements RolePermissionDao {
+public class RolePermissionDaoImpl extends BaseDaoImpl<RolePermissionPO> implements RolePermissionDao {
 
     @Autowired
     private RolePermissionMapper rolePermissionMapper;
@@ -35,7 +35,7 @@ public class RolePermissionDaoImpl implements RolePermissionDao {
         if (roleId == null) {
             return;
         }
-        QueryWrapper<RolePermissionPO> queryWrapper = new QueryWrapper<>();
+        QueryWrapper<RolePermissionPO> queryWrapper = getQueryWrapper();
         queryWrapper.eq("role_id", roleId);
         rolePermissionMapper.delete(queryWrapper);
     }
@@ -46,7 +46,7 @@ public class RolePermissionDaoImpl implements RolePermissionDao {
             return new ArrayList<>();
         }
         List<Integer> roleIdList = new ArrayList<Integer>(){{ add(roleId); }};
-        return  selectPermissionIdListByRoleIdList(roleIdList);
+        return selectPermissionIdListByRoleIdList(roleIdList);
     }
 
     @Override
@@ -54,7 +54,7 @@ public class RolePermissionDaoImpl implements RolePermissionDao {
         if(CollectionUtils.isEmpty(roleIdList)) {
             return new ArrayList<>();
         }
-        QueryWrapper<RolePermissionPO> queryWrapper = new QueryWrapper<>();
+        QueryWrapper<RolePermissionPO> queryWrapper = getQueryWrapper();
         queryWrapper.select("permission_id").in("role_id", roleIdList);
         List<Object> permissionIdList = rolePermissionMapper.selectObjs(queryWrapper);
         return permissionIdList.stream().map(obj -> (Integer) obj).collect(Collectors.toList());

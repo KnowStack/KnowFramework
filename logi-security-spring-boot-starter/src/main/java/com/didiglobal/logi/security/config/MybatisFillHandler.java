@@ -1,0 +1,31 @@
+package com.didiglobal.logi.security.config;
+
+import com.baomidou.mybatisplus.core.handlers.MetaObjectHandler;
+import com.didiglobal.logi.security.properties.LogiSecurityProper;
+import org.apache.ibatis.reflection.MetaObject;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+import java.util.Arrays;
+
+/**
+ * @author cjm
+ *
+ * 这个是mybatis-plus，在插入或更新数据的时候会自动填充默认字段值
+ */
+@Component
+public class MybatisFillHandler implements MetaObjectHandler {
+
+    @Autowired
+    private LogiSecurityProper logiSecurityProper;
+
+    @Override
+    public void insertFill(MetaObject metaObject) {
+        metaObject.setValue("appName", logiSecurityProper.getAppName());
+    }
+
+    @Override
+    public void updateFill(MetaObject metaObject) {
+
+    }
+}

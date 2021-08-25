@@ -2,15 +2,17 @@ package com.didiglobal.logi.security.common.po;
 
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 /**
  * @author cjm
  *
  * 权限信息
  */
+@EqualsAndHashCode(callSuper = true)
 @Data
 @TableName(value = "logi_permission")
-public class PermissionPO {
+public class PermissionPO extends AppBasePO {
 
     private Integer id;
 

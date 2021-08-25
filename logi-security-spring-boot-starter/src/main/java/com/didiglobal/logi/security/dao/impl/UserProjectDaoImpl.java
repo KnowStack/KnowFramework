@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
  * @author cjm
  */
 @Component
-public class UserProjectDaoImpl implements UserProjectDao {
+public class UserProjectDaoImpl extends BaseDaoImpl<UserProjectPO> implements UserProjectDao {
 
     @Autowired
     private UserProjectMapper userProjectMapper;
@@ -28,7 +28,7 @@ public class UserProjectDaoImpl implements UserProjectDao {
         if(projectId == null) {
             return new ArrayList<>();
         }
-        QueryWrapper<UserProjectPO> queryWrapper = new QueryWrapper<>();
+        QueryWrapper<UserProjectPO> queryWrapper = getQueryWrapper();
         queryWrapper.select("user_id").eq("project_id", projectId);
         List<Object> userIdList = userProjectMapper.selectObjs(queryWrapper);
         return userIdList.stream().map(obj -> (Integer) obj).collect(Collectors.toList());
@@ -39,7 +39,7 @@ public class UserProjectDaoImpl implements UserProjectDao {
         if(CollectionUtils.isEmpty(userIdList)) {
             return new ArrayList<>();
         }
-        QueryWrapper<UserProjectPO> queryWrapper = new QueryWrapper<>();
+        QueryWrapper<UserProjectPO> queryWrapper = getQueryWrapper();
         queryWrapper.select("project_id").in("user_id", userIdList);
         List<Object> projectIdList = userProjectMapper.selectObjs(queryWrapper);
         return projectIdList.stream().map(obj -> (Integer) obj).collect(Collectors.toList());
@@ -54,7 +54,7 @@ public class UserProjectDaoImpl implements UserProjectDao {
 
     @Override
     public void deleteByProjectId(Integer projectId) {
-        QueryWrapper<UserProjectPO> queryWrapper = new QueryWrapper<>();
+        QueryWrapper<UserProjectPO> queryWrapper = getQueryWrapper();
         queryWrapper.eq("project_id", projectId);
         userProjectMapper.delete(queryWrapper);
     }

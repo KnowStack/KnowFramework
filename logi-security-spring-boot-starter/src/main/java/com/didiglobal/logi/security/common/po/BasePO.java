@@ -1,17 +1,17 @@
 package com.didiglobal.logi.security.common.po;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableLogic;
+import com.baomidou.mybatisplus.annotation.*;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import java.sql.Timestamp;
 
 /**
  * @author cjm
  */
+@EqualsAndHashCode(callSuper = true)
 @Data
-public class BasePO {
+public class BasePO extends AppBasePO {
 
     // 根据数据库类型设置自增，否则只能使用Long类型
     @TableId(type = IdType.AUTO)

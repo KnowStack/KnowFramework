@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
  * @author cjm
  */
 @Component
-public class UserRoleDaoImpl implements UserRoleDao {
+public class UserRoleDaoImpl extends BaseDaoImpl<UserRolePO> implements UserRoleDao {
 
     @Autowired
     private UserRoleMapper userRoleMapper;
@@ -28,7 +28,7 @@ public class UserRoleDaoImpl implements UserRoleDao {
         if(roleId == null) {
             return new ArrayList<>();
         }
-        QueryWrapper<UserRolePO> queryWrapper = new QueryWrapper<>();
+        QueryWrapper<UserRolePO> queryWrapper = getQueryWrapper();
         queryWrapper.select("user_id").eq("role_id", roleId);
         List<Object> userIdList = userRoleMapper.selectObjs(queryWrapper);
         return userIdList.stream().map(obj -> (Integer) obj).collect(Collectors.toList());
@@ -39,7 +39,7 @@ public class UserRoleDaoImpl implements UserRoleDao {
         if(userId == null) {
             return new ArrayList<>();
         }
-        QueryWrapper<UserRolePO> userRoleWrapper = new QueryWrapper<>();
+        QueryWrapper<UserRolePO> userRoleWrapper = getQueryWrapper();
         userRoleWrapper.select("role_id").eq("user_id", userId);
         List<Object> roleIdList = userRoleMapper.selectObjs(userRoleWrapper);
         return roleIdList.stream().map(obj -> (Integer) obj).collect(Collectors.toList());
@@ -57,7 +57,7 @@ public class UserRoleDaoImpl implements UserRoleDao {
         if(userId == null && roleId == null) {
             return;
         }
-        QueryWrapper<UserRolePO> queryWrapper = new QueryWrapper<>();
+        QueryWrapper<UserRolePO> queryWrapper = getQueryWrapper();
         queryWrapper
                 .eq(userId != null, "user_id", userId)
                 .eq(roleId != null, "role_id", roleId);
@@ -69,7 +69,7 @@ public class UserRoleDaoImpl implements UserRoleDao {
         if(roleId == null) {
             return 0;
         }
-        QueryWrapper<UserRolePO> queryWrapper = new QueryWrapper<>();
+        QueryWrapper<UserRolePO> queryWrapper = getQueryWrapper();
         queryWrapper.eq("role_id", roleId);
         return userRoleMapper.selectCount(queryWrapper);
     }

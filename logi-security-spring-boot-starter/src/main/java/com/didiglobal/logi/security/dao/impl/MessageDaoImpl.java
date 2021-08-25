@@ -16,7 +16,7 @@ import java.util.List;
  * @author cjm
  */
 @Component
-public class MessageDaoImpl implements MessageDao {
+public class MessageDaoImpl extends BaseDaoImpl<MessagePO> implements MessageDao {
 
     @Autowired
     private MessageMapper messageMapper;
@@ -42,7 +42,7 @@ public class MessageDaoImpl implements MessageDao {
 
     @Override
     public List<Message> selectListByUserIdAndReadTag(Integer userId, Boolean readTag) {
-        QueryWrapper<MessagePO> queryWrapper = new QueryWrapper<>();
+        QueryWrapper<MessagePO> queryWrapper = getQueryWrapper();
         queryWrapper
                 .eq( userId != null, "user_id", userId)
                 .eq(readTag != null, "read_tag", readTag);
@@ -51,7 +51,7 @@ public class MessageDaoImpl implements MessageDao {
 
     @Override
     public List<Message> selectListByMessageIdList(List<Integer> messageIdList) {
-        QueryWrapper<MessagePO> queryWrapper = new QueryWrapper<>();
+        QueryWrapper<MessagePO> queryWrapper = getQueryWrapper();
         queryWrapper.in("id", messageIdList);
         return CopyBeanUtil.copyList(messageMapper.selectList(queryWrapper), Message.class);
     }

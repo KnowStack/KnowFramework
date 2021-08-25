@@ -2,15 +2,17 @@ package com.didiglobal.logi.security.common.po;
 
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 /**
  * @author cjm
  *
  * 操作日志信息（操作页面、操作类型、对象分类）
  */
+@EqualsAndHashCode(callSuper = true)
 @Data
 @TableName(value = "logi_oplog_extra")
-public class OplogExtraPO {
+public class OplogExtraPO extends AppBasePO {
 
     private Integer id;
 

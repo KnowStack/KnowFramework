@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
  * @author cjm
  */
 @Component
-public class UserResourceDaoImpl implements UserResourceDao {
+public class UserResourceDaoImpl extends BaseDaoImpl<UserResourcePO> implements UserResourceDao {
 
     @Autowired
     private UserResourceMapper userResourceMapper;
@@ -32,7 +32,7 @@ public class UserResourceDaoImpl implements UserResourceDao {
      * @return QueryWrapper<UserResourcePO>
      */
     private QueryWrapper<UserResourcePO> wrapQueryCriteria(Integer userId, UserResourceQueryDTO queryDTO) {
-        QueryWrapper<UserResourcePO> queryWrapper = new QueryWrapper<>();
+        QueryWrapper<UserResourcePO> queryWrapper = getQueryWrapper();
         queryWrapper
                 .eq("control_level", queryDTO.getControlLevel())
                 .eq(userId != null, "user_id", userId)
@@ -54,7 +54,7 @@ public class UserResourceDaoImpl implements UserResourceDao {
 
     @Override
     public void deleteByControlLevel(ControlLevelCode controlLevel) {
-        QueryWrapper<UserResourcePO> queryWrapper = new QueryWrapper<>();
+        QueryWrapper<UserResourcePO> queryWrapper = getQueryWrapper();
         queryWrapper.eq("control_level", controlLevel.getType());
         userResourceMapper.delete(queryWrapper);
     }
@@ -101,7 +101,7 @@ public class UserResourceDaoImpl implements UserResourceDao {
 
     @Override
     public int selectCountByUserIdAndControlLevel(Integer userId, ControlLevelCode controlLevel) {
-        QueryWrapper<UserResourcePO> queryWrapper = new QueryWrapper<>();
+        QueryWrapper<UserResourcePO> queryWrapper = getQueryWrapper();
         queryWrapper
                 .eq(userId != null, "user_id", userId)
                 .eq("control_level", controlLevel.getType());

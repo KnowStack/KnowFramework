@@ -2,15 +2,17 @@ package com.didiglobal.logi.security.common.po;
 
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 /**
  * @author cjm
  *
  * 用户角色关系
  */
+@EqualsAndHashCode(callSuper = true)
 @Data
 @TableName(value = "logi_user_role")
-public class UserRolePO {
+public class UserRolePO extends AppBasePO {
 
     /**
      * 用户id

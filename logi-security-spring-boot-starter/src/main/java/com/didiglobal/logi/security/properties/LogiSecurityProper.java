@@ -9,6 +9,10 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
  */
 @Data
 @ConfigurationProperties(prefix = "logi.security")
-public class Proper {
-    private String name;
+public class LogiSecurityProper {
+
+    /**
+     * 应用名称
+     */
+    private String appName;
 }

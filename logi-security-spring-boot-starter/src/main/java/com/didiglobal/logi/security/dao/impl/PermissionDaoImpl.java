@@ -15,14 +15,14 @@ import java.util.List;
  * @author cjm
  */
 @Component
-public class PermissionDaoImpl implements PermissionDao {
+public class PermissionDaoImpl extends BaseDaoImpl<PermissionPO> implements PermissionDao {
 
     @Autowired
     private PermissionMapper permissionMapper;
 
     @Override
     public List<Permission> selectAllAndAscOrderByLevel() {
-        QueryWrapper<PermissionPO> queryWrapper = new QueryWrapper<>();
+        QueryWrapper<PermissionPO> queryWrapper = getQueryWrapper();
         queryWrapper.orderByAsc("level");
         return CopyBeanUtil.copyList(permissionMapper.selectList(queryWrapper), Permission.class);
     }

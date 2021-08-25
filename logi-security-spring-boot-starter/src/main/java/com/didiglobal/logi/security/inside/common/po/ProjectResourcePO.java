@@ -1,5 +1,7 @@
 package com.didiglobal.logi.security.inside.common.po;
 
+import com.baomidou.mybatisplus.annotation.FieldFill;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 
@@ -29,4 +31,10 @@ public class ProjectResourcePO {
      * 具体资源名
      */
     private String resourceName;
+
+    /**
+     * 应用名称
+     */
+    @TableField(fill = FieldFill.INSERT)
+    private String appName;
 }

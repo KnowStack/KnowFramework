@@ -22,20 +22,22 @@ import java.util.List;
  * @author cjm
  */
 @Component
-public class RoleDaoImpl implements RoleDao {
+public class RoleDaoImpl extends BaseDaoImpl<RolePO> implements RoleDao {
 
     @Autowired
     private RoleMapper roleMapper;
 
     @Override
     public Role selectByRoleId(Integer roleId) {
-        return CopyBeanUtil.copy(roleMapper.selectById(roleId), Role.class);
+        QueryWrapper<RolePO> queryWrapper = getQueryWrapper();
+        queryWrapper.eq("id", roleId);
+        return CopyBeanUtil.copy(roleMapper.selectOne(queryWrapper), Role.class);
     }
 
     @Override
     public IPage<Role> selectPage(RoleQueryDTO queryDTO) {
         IPage<RolePO> iPage = new Page<>(queryDTO.getPage(), queryDTO.getSize());
-        QueryWrapper<RolePO> roleWrapper = new QueryWrapper<>();
+        QueryWrapper<RolePO> roleWrapper = getQueryWrapper();
         if(!StringUtils.isEmpty(queryDTO.getRoleCode())) {
             roleWrapper.eq("role_code", queryDTO.getRoleCode());
         } else {
@@ -91,7 +93,7 @@ public class RoleDaoImpl implements RoleDao {
 
     @Override
     public int selectCountByRoleNameAndNotRoleId(String roleName, Integer roleId) {
-        QueryWrapper<RolePO> queryWrapper = new QueryWrapper<>();
+        QueryWrapper<RolePO> queryWrapper = getQueryWrapper();
         queryWrapper
                 .eq("role_name", roleName)
                 .ne(roleId != null, "id", roleId);
@@ -99,7 +101,7 @@ public class RoleDaoImpl implements RoleDao {
     }
 
     private QueryWrapper<RolePO> wrapBriefQuery() {
-        QueryWrapper<RolePO> queryWrapper = new QueryWrapper<>();
+        QueryWrapper<RolePO> queryWrapper = getQueryWrapper();
         queryWrapper.select("id", "role_name");
         return queryWrapper;
     }

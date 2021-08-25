@@ -15,14 +15,14 @@ import java.util.List;
  * @author cjm
  */
 @Component
-public class OplogExtraDaoImpl implements OplogExtraDao {
+public class OplogExtraDaoImpl extends BaseDaoImpl<OplogExtraPO> implements OplogExtraDao {
 
     @Autowired
     private OplogExtraMapper oplogExtraMapper;
 
     @Override
     public List<OplogExtra> selectListByType(Integer type) {
-        QueryWrapper<OplogExtraPO> queryWrapper = new QueryWrapper<>();
+        QueryWrapper<OplogExtraPO> queryWrapper = getQueryWrapper();
         queryWrapper.eq("type", type);
         return CopyBeanUtil.copyList(oplogExtraMapper.selectList(queryWrapper), OplogExtra.class);
     }

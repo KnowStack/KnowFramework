@@ -18,14 +18,14 @@ import java.sql.Timestamp;
  * @author cjm
  */
 @Component
-public class OplogDaoImpl implements OplogDao {
+public class OplogDaoImpl extends BaseDaoImpl<OplogPO> implements OplogDao {
 
     @Autowired
     private OplogMapper oplogMapper;
 
     @Override
     public IPage<Oplog> selectPageWithoutDetail(OplogQueryDTO queryDTO) {
-        QueryWrapper<OplogPO> queryWrapper = new QueryWrapper<>();
+        QueryWrapper<OplogPO> queryWrapper = getQueryWrapper();
         // 分页查询
         IPage<OplogPO> iPage = new Page<>(queryDTO.getPage(), queryDTO.getSize());
         // 不查找detail字段
@@ -50,7 +50,9 @@ public class OplogDaoImpl implements OplogDao {
         if(oplogId == null) {
             return null;
         }
-        return CopyBeanUtil.copy(oplogMapper.selectById(oplogId), Oplog.class);
+        QueryWrapper<OplogPO> queryWrapper = getQueryWrapper();
+        queryWrapper.eq("id", oplogId);
+        return CopyBeanUtil.copy(oplogMapper.selectOne(queryWrapper), Oplog.class);
     }
 
     @Override

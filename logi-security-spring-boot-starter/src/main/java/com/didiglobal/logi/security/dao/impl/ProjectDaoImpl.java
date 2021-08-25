@@ -21,14 +21,16 @@ import java.util.List;
  * @author cjm
  */
 @Component
-public class ProjectDaoImpl implements ProjectDao {
+public class ProjectDaoImpl extends BaseDaoImpl<ProjectPO> implements ProjectDao {
 
     @Autowired
     private ProjectMapper projectMapper;
 
     @Override
     public Project selectByProjectId(Integer projectId) {
-        return CopyBeanUtil.copy(projectMapper.selectById(projectId), Project.class);
+        QueryWrapper<ProjectPO> queryWrapper = getQueryWrapper();
+        queryWrapper.eq("id", projectId);
+        return CopyBeanUtil.copy(projectMapper.selectOne(queryWrapper), Project.class);
     }
 
     @Override
@@ -50,11 +52,17 @@ public class ProjectDaoImpl implements ProjectDao {
 
     @Override
     public int selectCountByProjectNameAndNotProjectId(String projectName, Integer projectId) {
-        QueryWrapper<ProjectPO> queryWrapper = new QueryWrapper<>();
+        QueryWrapper<ProjectPO> queryWrapper = getQueryWrapper();
         queryWrapper
                 .eq("project_name", projectName)
                 .ne(projectId != null, "id", projectId);
         return projectMapper.selectCount(queryWrapper);
+    }
+
+    private QueryWrapper<ProjectPO> wrapBriefQuery() {
+        QueryWrapper<ProjectPO> queryWrapper = getQueryWrapper();
+        queryWrapper.select("id", "project_code", "project_name");
+        return queryWrapper;
     }
 
     @Override
@@ -84,7 +92,7 @@ public class ProjectDaoImpl implements ProjectDao {
         if((projectIdList != null && projectIdList.size() == 0)) {
             return CopyBeanUtil.copyPage(iPage, Project.class);
         }
-        QueryWrapper<ProjectPO> projectWrapper = new QueryWrapper<>();
+        QueryWrapper<ProjectPO> projectWrapper = getQueryWrapper();
         projectWrapper
                 .eq(queryDTO.getRunning() != null, "running", queryDTO.getRunning())
                 .eq(!StringUtils.isEmpty(queryDTO.getProjectCode()), "project_code", queryDTO.getProjectCode())
@@ -92,11 +100,5 @@ public class ProjectDaoImpl implements ProjectDao {
                 .in(deptIdList != null, "dept_id", deptIdList)
                 .in(projectIdList != null, "id", projectIdList);
         return CopyBeanUtil.copyPage(projectMapper.selectPage(iPage, projectWrapper), Project.class);
-    }
-
-    private QueryWrapper<ProjectPO> wrapBriefQuery() {
-        QueryWrapper<ProjectPO> queryWrapper = new QueryWrapper<>();
-        queryWrapper.select("id", "project_code", "project_name");
-        return queryWrapper;
     }
 }

@@ -24,7 +24,7 @@ import java.util.stream.Collectors;
  * @author cjm
  */
 @Component
-public class UserDaoImpl implements UserDao {
+public class UserDaoImpl extends BaseDaoImpl<UserPO> implements UserDao {
 
     @Autowired
     private UserMapper userMapper;
@@ -38,7 +38,7 @@ public class UserDaoImpl implements UserDao {
         if(userIdList != null && userIdList.size() == 0) {
             return CopyBeanUtil.copyPage(iPage, User.class);
         }
-        QueryWrapper<UserPO> queryWrapper = new QueryWrapper<>();
+        QueryWrapper<UserPO> queryWrapper = getQueryWrapper();
         queryWrapper
                 .like(queryDTO.getUsername() != null, "username", queryDTO.getUsername())
                 .like(queryDTO.getRealName() != null, "real_name", queryDTO.getRealName())
@@ -68,7 +68,9 @@ public class UserDaoImpl implements UserDao {
         if(userId == null) {
             return null;
         }
-        return CopyBeanUtil.copy(userMapper.selectById(userId), User.class);
+        QueryWrapper<UserPO> queryWrapper = getQueryWrapper();
+        queryWrapper.eq("id", userId);
+        return CopyBeanUtil.copy(userMapper.selectOne(queryWrapper), User.class);
     }
 
     @Override
@@ -122,7 +124,7 @@ public class UserDaoImpl implements UserDao {
 
     @Override
     public List<Integer> selectUserIdListByUsernameOrRealName(String name) {
-        QueryWrapper<UserPO> queryWrapper = new QueryWrapper<>();
+        QueryWrapper<UserPO> queryWrapper = getQueryWrapper();
         queryWrapper.select("id")
                 .like(!StringUtils.isEmpty(name), "username", name)
                 .or()
@@ -132,7 +134,7 @@ public class UserDaoImpl implements UserDao {
     }
 
     private QueryWrapper<UserPO> wrapBriefQuery() {
-        QueryWrapper<UserPO> queryWrapper = new QueryWrapper<>();
+        QueryWrapper<UserPO> queryWrapper = getQueryWrapper();
         queryWrapper.select("id", "username", "real_name", "dept_id");
         return queryWrapper;
     }

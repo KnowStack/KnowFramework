@@ -1,8 +1,10 @@
 package com.didiglobal.logi.security.config;
 
+import com.baomidou.mybatisplus.core.config.GlobalConfig;
 import com.baomidou.mybatisplus.extension.plugins.PaginationInterceptor;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 
 /**
@@ -24,5 +26,12 @@ public class MyBatisPlusConfig {
     public EasySqlInjector easySqlInjector() {
         // 配置批量插入
         return new EasySqlInjector();
+    }
+
+    @Bean
+    public GlobalConfig globalConfig() {
+        GlobalConfig globalConfig = new GlobalConfig();
+        globalConfig.setMetaObjectHandler(new MybatisFillHandler());
+        return globalConfig;
     }
 }

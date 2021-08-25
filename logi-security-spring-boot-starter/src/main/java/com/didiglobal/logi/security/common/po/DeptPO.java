@@ -1,16 +1,20 @@
 package com.didiglobal.logi.security.common.po;
 
+import com.baomidou.mybatisplus.annotation.FieldFill;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 /**
  * @author cjm
  *
  * 部门信息
  */
+@EqualsAndHashCode(callSuper = true)
 @Data
 @TableName(value = "logi_dept")
-public class DeptPO {
+public class DeptPO extends AppBasePO {
 
     private Integer id;
 

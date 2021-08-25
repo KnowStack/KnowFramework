@@ -19,7 +19,7 @@ import java.util.List;
  * @author cjm
  */
 @Component
-public class ResourceTypeDaoImpl implements ResourceTypeDao {
+public class ResourceTypeDaoImpl extends BaseDaoImpl<ResourceTypePO> implements ResourceTypeDao {
 
     @Autowired
     private ResourceTypeMapper resourceTypeMapper;
@@ -32,7 +32,7 @@ public class ResourceTypeDaoImpl implements ResourceTypeDao {
     @Override
     public IPage<ResourceType> selectPage(ResourceTypeQueryDTO queryDTO) {
         IPage<ResourceTypePO> iPage = new Page<>(queryDTO.getPage(), queryDTO.getSize());
-        QueryWrapper<ResourceTypePO> queryWrapper = new QueryWrapper<>();
+        QueryWrapper<ResourceTypePO> queryWrapper = getQueryWrapper();
         String typeName = queryDTO.getTypeName();
         queryWrapper.like(!StringUtils.isEmpty(typeName), "type_name", typeName);
         resourceTypeMapper.selectPage(iPage, queryWrapper);
@@ -41,6 +41,8 @@ public class ResourceTypeDaoImpl implements ResourceTypeDao {
 
     @Override
     public ResourceType selectByResourceTypeId(Integer resourceTypeId) {
-        return CopyBeanUtil.copy(resourceTypeMapper.selectById(resourceTypeId), ResourceType.class);
+        QueryWrapper<ResourceTypePO> queryWrapper = getQueryWrapper();
+        queryWrapper.eq("id", resourceTypeId);
+        return CopyBeanUtil.copy(resourceTypeMapper.selectOne(queryWrapper), ResourceType.class);
     }
 }
