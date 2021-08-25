@@ -1,4 +1,4 @@
-package com.didiglobal.logi.security.inside.mapper;
+package com.didiglobal.logi.security.inside.dao.mapper;
 
 import com.didiglobal.logi.security.inside.common.po.ProjectResourcePO;
 import com.didiglobal.logi.security.dao.mapper.EasyBaseMapper;

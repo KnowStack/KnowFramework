@@ -14,6 +14,7 @@ import io.swagger.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 /**
@@ -42,16 +43,16 @@ public class ProjectController {
     @PutMapping("/switch/{id}")
     @ApiOperation(value = "更改项目运行状态", notes = "调用该接口则项目运行状态被反转")
     @ApiImplicitParam(name = "id", value = "项目id", dataType = "int", required = true)
-    public Result<String> switched(@PathVariable Integer id) {
-        projectService.changeProjectStatus(id);
+    public Result<String> switched(@PathVariable Integer id, HttpServletRequest request) {
+        projectService.changeProjectStatus(id, request);
         return Result.success();
     }
 
     @PutMapping
     @ApiOperation(value = "更新项目", notes = "根据项目id更新项目信息")
-    public Result<String> update(@RequestBody ProjectSaveDTO saveDTO) {
+    public Result<String> update(@RequestBody ProjectSaveDTO saveDTO, HttpServletRequest request) {
         try {
-            projectService.updateProject(saveDTO);
+            projectService.updateProject(saveDTO, request);
         } catch (LogiSecurityException e) {
             e.printStackTrace();
             return Result.fail(e);
@@ -61,9 +62,9 @@ public class ProjectController {
 
     @PostMapping
     @ApiOperation(value = "创建项目", notes = "创建项目")
-    public Result<String> create(@RequestBody ProjectSaveDTO saveDTO) {
+    public Result<String> create(@RequestBody ProjectSaveDTO saveDTO, HttpServletRequest request) {
         try {
-            projectService.createProject(saveDTO);
+            projectService.createProject(saveDTO, request);
         } catch (LogiSecurityException e) {
             e.printStackTrace();
             return Result.fail(e);
@@ -82,8 +83,8 @@ public class ProjectController {
     @DeleteMapping("/{id}")
     @ApiOperation(value = "删除项目", notes = "根据项目id删除项目")
     @ApiImplicitParam(name = "id", value = "项目id", dataType = "int", required = true)
-    public Result<String> delete(@PathVariable Integer id) {
-        projectService.deleteProjectByProjectId(id);
+    public Result<String> delete(@PathVariable Integer id, HttpServletRequest request) {
+        projectService.deleteProjectByProjectId(id, request);
         return Result.success();
     }
 

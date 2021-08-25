@@ -77,4 +77,11 @@ public interface UserDao {
      * @return 用户idList
      */
     List<Integer> selectUserIdListByUsernameOrRealName(String name);
+
+    /**
+     * 根据账户名获取用户信息
+     * @param username 账户名
+     * @return 用户信息
+     */
+    User selectByUsername(String username);
 }

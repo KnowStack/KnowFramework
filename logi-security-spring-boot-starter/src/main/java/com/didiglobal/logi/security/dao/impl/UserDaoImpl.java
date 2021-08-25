@@ -133,6 +133,17 @@ public class UserDaoImpl extends BaseDaoImpl<UserPO> implements UserDao {
         return userIdList.stream().map(userId -> (Integer) userId).collect(Collectors.toList());
     }
 
+    @Override
+    public User selectByUsername(String username) {
+        if(StringUtils.isEmpty(username)) {
+            return null;
+        }
+        QueryWrapper<UserPO> queryWrapper = getQueryWrapper();
+        queryWrapper.eq("username", username);
+        UserPO userPO = userMapper.selectOne(queryWrapper);
+        return CopyBeanUtil.copy(userPO, User.class);
+    }
+
     private QueryWrapper<UserPO> wrapBriefQuery() {
         QueryWrapper<UserPO> queryWrapper = getQueryWrapper();
         queryWrapper.select("id", "username", "real_name", "dept_id");

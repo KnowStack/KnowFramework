@@ -13,7 +13,7 @@ import org.springframework.context.annotation.Configuration;
  * @date 2021/1/20 13:10
  */
 @Configuration
-@MapperScan({"com.didiglobal.logi.security.dao.mapper", "com.didiglobal.logi.security.inside.mapper"})
+@MapperScan({"com.didiglobal.logi.security.dao.mapper", "com.didiglobal.logi.security.inside.dao.mapper"})
 public class MyBatisPlusConfig {
 
     @Bean

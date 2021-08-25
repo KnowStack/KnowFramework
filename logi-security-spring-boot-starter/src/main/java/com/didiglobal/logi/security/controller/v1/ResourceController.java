@@ -12,6 +12,7 @@ import io.swagger.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 /**
@@ -94,9 +95,9 @@ public class ResourceController {
 
     @PostMapping("/mbr/assign")
     @ApiOperation(value = "资源权限管理/按资源管理/分配用户", notes = "1个项目或1个资源类别或1个具体资源的权限分配给N个用户")
-    public Result<String> mbrAssign(@RequestBody AssignToManyUserDTO assignToManyUserDTO) {
+    public Result<String> mbrAssign(@RequestBody AssignToManyUserDTO assignDTO, HttpServletRequest request) {
         try {
-            userResourceService.assignResourcePermission(assignToManyUserDTO);
+            userResourceService.assignResourcePermission(assignDTO, request);
         } catch (LogiSecurityException e) {
             e.printStackTrace();
             return Result.fail(e);
@@ -121,9 +122,9 @@ public class ResourceController {
             value = "资源权限管理/批量分配用户和批量分配资源",
             notes = "批量分配用户：分配之前先删除N资源先前已分配的用户、批量分配资源：分配之前先删除N用户已拥有的资源权限"
     )
-    public Result<String> batchAssign(@RequestBody BatchAssignDTO assignDTO) {
+    public Result<String> batchAssign(@RequestBody BatchAssignDTO assignDTO, HttpServletRequest request) {
         try {
-            userResourceService.batchAssignResourcePermission(assignDTO);
+            userResourceService.batchAssignResourcePermission(assignDTO, request);
             return Result.success();
         } catch (LogiSecurityException e) {
             e.printStackTrace();

@@ -1,5 +1,7 @@
 package com.didiglobal.logi.security.util;
 
+import org.springframework.util.DigestUtils;
+
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -8,6 +10,12 @@ import java.util.Set;
  * @author cjm
  */
 public class MathUtil {
+
+    public static void main(String[] args) {
+        String passwd = "12345" + "123456";
+        String md5Password = DigestUtils.md5DigestAsHex(passwd.getBytes());
+        System.out.println(md5Password.length());
+    }
 
     /**
      * 随机获取整数

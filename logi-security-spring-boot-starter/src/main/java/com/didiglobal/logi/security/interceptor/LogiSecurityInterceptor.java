@@ -1,7 +1,8 @@
 package com.didiglobal.logi.security.interceptor;
 
-import com.didiglobal.logi.security.util.ThreadLocalUtil;
+import com.didiglobal.logi.security.util.HttpRequestUtil;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -13,9 +14,12 @@ public class LogiSecurityInterceptor implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
-        System.out.println(request.getRequestURL());
-        // TODO，由于没有登录
-        ThreadLocalUtil.set(1);
+        Integer operatorId = HttpRequestUtil.getOperatorId(request);
+        if(StringUtils.isEmpty(operatorId)) {
+            // 没登录
+            System.out.println("没登录...");
+            return false;
+        }
         return true;
     }
 
@@ -26,6 +30,5 @@ public class LogiSecurityInterceptor implements HandlerInterceptor {
 
     @Override
     public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) {
-        ThreadLocalUtil.clear();
     }
 }

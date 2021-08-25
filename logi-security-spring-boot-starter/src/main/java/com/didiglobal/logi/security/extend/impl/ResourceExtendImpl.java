@@ -7,9 +7,7 @@ import com.didiglobal.logi.security.common.PagingData;
 import com.didiglobal.logi.security.common.dto.resource.ResourceDTO;
 import com.didiglobal.logi.security.inside.common.po.ProjectResourcePO;
 import com.didiglobal.logi.security.extend.ResourceExtend;
-import com.didiglobal.logi.security.dao.mapper.ProjectMapper;
-import com.didiglobal.logi.security.inside.mapper.ProjectResourceMapper;
-import com.didiglobal.logi.security.dao.mapper.ResourceTypeMapper;
+import com.didiglobal.logi.security.inside.dao.mapper.ProjectResourceMapper;
 import com.didiglobal.logi.security.util.CopyBeanUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -22,12 +20,6 @@ import java.util.List;
  */
 @Component
 public class ResourceExtendImpl implements ResourceExtend {
-
-    @Autowired
-    private ProjectMapper projectMapper;
-
-    @Autowired
-    private ResourceTypeMapper resourceTypeMapper;
 
     @Autowired
     private ProjectResourceMapper projectResourceMapper;

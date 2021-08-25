@@ -19,13 +19,14 @@ import com.didiglobal.logi.security.exception.LogiSecurityException;
 import com.didiglobal.logi.security.extend.ResourceExtend;
 import com.didiglobal.logi.security.service.*;
 import com.didiglobal.logi.security.util.CopyBeanUtil;
+import com.didiglobal.logi.security.util.HttpRequestUtil;
 import com.didiglobal.logi.security.util.MathUtil;
-import com.didiglobal.logi.security.util.ThreadLocalUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -82,7 +83,7 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
-    public void createProject(ProjectSaveDTO saveVo) throws LogiSecurityException {
+    public void createProject(ProjectSaveDTO saveVo, HttpServletRequest request) throws LogiSecurityException {
         // 检查参数
         checkParam(saveVo, false);
         Project project = CopyBeanUtil.copy(saveVo, Project.class);
@@ -92,7 +93,7 @@ public class ProjectServiceImpl implements ProjectService {
         userProjectService.saveUserProject(project.getId(), saveVo.getUserIdList());
         // 保存操作日志
         OplogDTO oplogDTO = new OplogDTO("项目配置", "新增", "项目", saveVo.getProjectName());
-        oplogService.saveOplogWithUserId(ThreadLocalUtil.get(), oplogDTO);
+        oplogService.saveOplogWithUserId(HttpRequestUtil.getOperatorId(request), oplogDTO);
     }
 
     @Override
@@ -126,7 +127,7 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
-    public void deleteProjectByProjectId(Integer projectId) {
+    public void deleteProjectByProjectId(Integer projectId, HttpServletRequest request) {
         Project project = projectDao.selectByProjectId(projectId);
         if(project == null) {
             return;
@@ -138,28 +139,28 @@ public class ProjectServiceImpl implements ProjectService {
         projectDao.deleteByProjectId(projectId);
         // 保存操作日志
         OplogDTO oplogDTO = new OplogDTO("项目配置", "删除", "项目", project.getProjectName());
-        oplogService.saveOplogWithUserId(ThreadLocalUtil.get(), oplogDTO);
+        oplogService.saveOplogWithUserId(HttpRequestUtil.getOperatorId(request), oplogDTO);
     }
 
     @Override
-    public void updateProject(ProjectSaveDTO saveVo) throws LogiSecurityException {
-        if(projectDao.selectByProjectId(saveVo.getId()) == null) {
+    public void updateProject(ProjectSaveDTO saveDTO, HttpServletRequest request) throws LogiSecurityException {
+        if(projectDao.selectByProjectId(saveDTO.getId()) == null) {
             throw new LogiSecurityException(ResultCode.PROJECT_NOT_EXISTS);
         }
         // 检查参数
-        checkParam(saveVo, true);
+        checkParam(saveDTO, true);
         // 先更新项目基本信息
-        Project project = CopyBeanUtil.copy(saveVo, Project.class);
+        Project project = CopyBeanUtil.copy(saveDTO, Project.class);
         projectDao.update(project);
         // 更新项目负责人与项目联系
-        userProjectService.updateUserProject(saveVo.getId(), saveVo.getUserIdList());
+        userProjectService.updateUserProject(saveDTO.getId(), saveDTO.getUserIdList());
         // 保存操作日志
-        OplogDTO oplogDTO = new OplogDTO("项目配置", "编辑", "项目", saveVo.getProjectName());
-        oplogService.saveOplogWithUserId(ThreadLocalUtil.get(), oplogDTO);
+        OplogDTO oplogDTO = new OplogDTO("项目配置", "编辑", "项目", saveDTO.getProjectName());
+        oplogService.saveOplogWithUserId(HttpRequestUtil.getOperatorId(request), oplogDTO);
     }
 
     @Override
-    public void changeProjectStatus(Integer projectId) {
+    public void changeProjectStatus(Integer projectId, HttpServletRequest request) {
         Project project = projectDao.selectByProjectId(projectId);
         if (project == null) {
             return;
@@ -170,7 +171,7 @@ public class ProjectServiceImpl implements ProjectService {
         // 保存操作日志
         String curRunningTag = project.getRunning() ? "启用" : "停用";
         OplogDTO oplogDTO = new OplogDTO("项目配置", curRunningTag, "项目", project.getProjectName());
-        oplogService.saveOplogWithUserId(ThreadLocalUtil.get(), oplogDTO);
+        oplogService.saveOplogWithUserId(HttpRequestUtil.getOperatorId(request), oplogDTO);
     }
 
     @Override

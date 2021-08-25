@@ -2,6 +2,7 @@ package com.didiglobal.logi.security.service.impl;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.didiglobal.logi.security.common.PagingData;
+import com.didiglobal.logi.security.common.dto.account.AccountLoginDTO;
 import com.didiglobal.logi.security.common.dto.user.UserBriefQueryDTO;
 import com.didiglobal.logi.security.common.entity.dept.Dept;
 import com.didiglobal.logi.security.common.entity.user.User;
@@ -20,9 +21,14 @@ import com.didiglobal.logi.security.util.CopyBeanUtil;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import com.didiglobal.logi.security.util.HttpRequestUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.DigestUtils;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 /**
  * @author cjm
@@ -202,5 +208,29 @@ public class UserServiceImpl implements UserService {
     private void privacyProcessing(UserVO userVo) {
         String phone = userVo.getPhone();
         userVo.setPhone(phone.replaceAll("(\\d{3})\\d{4}(\\d{4})","$1****$2"));
+    }
+
+    @Override
+    public UserBriefVO verifyLogin(AccountLoginDTO loginDTO, HttpServletRequest request) throws LogiSecurityException {
+        User user = userDao.selectByUsername(loginDTO.getUsername());
+        if(user == null) {
+            throw new LogiSecurityException(ResultCode.USER_NOT_EXISTS);
+        }
+
+        // 解密密码
+        String saltPassword = user.getSalt() + loginDTO.getPassword();
+        String md5Password = DigestUtils.md5DigestAsHex(saltPassword.getBytes());
+        if(!user.getPassword().equals(md5Password)) {
+            // 密码错误
+            throw new LogiSecurityException(ResultCode.USER_CREDENTIALS_ERROR);
+        }
+
+        // 登录成功后
+        HttpSession session = request.getSession();
+        // 设置过期时间（秒）
+        session.setMaxInactiveInterval(60 * 60);
+        session.setAttribute(HttpRequestUtil.USER, loginDTO.getUsername());
+
+        return CopyBeanUtil.copy(user, UserBriefVO.class);
     }
 }

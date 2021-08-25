@@ -10,6 +10,7 @@ import com.didiglobal.logi.security.common.vo.role.RoleDeleteCheckVO;
 import com.didiglobal.logi.security.common.vo.role.RoleVO;
 import com.didiglobal.logi.security.exception.LogiSecurityException;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 /**
@@ -34,33 +35,31 @@ public interface RoleService {
 
     /**
      * 保存角色
-     * @param userId 角色创建者的用户id
      * @param saveDTO 角色信息
      * @throws LogiSecurityException 参数检查错误信息
      */
-    void createRoleWithUserId(Integer userId, RoleSaveDTO saveDTO) throws LogiSecurityException;
+    void createRole(RoleSaveDTO saveDTO, HttpServletRequest request) throws LogiSecurityException;
 
     /**
      * 删除角色
      * @param id 角色id
      * @throws LogiSecurityException 该角色已分配给用户，不能删除
      */
-    void deleteRoleByRoleId(Integer id) throws LogiSecurityException;
+    void deleteRoleByRoleId(Integer id, HttpServletRequest request) throws LogiSecurityException;
 
     /**
      * 更新角色信息
-     * @param userId 角色更新者的用户id
      * @param saveDTO 角色信息
      * @throws LogiSecurityException 参数检查错误信息
      */
-    void updateRoleWithUserId(Integer userId, RoleSaveDTO saveDTO) throws LogiSecurityException;
+    void updateRole(RoleSaveDTO saveDTO, HttpServletRequest request) throws LogiSecurityException;
 
     /**
      * 分配角色给用户
      * @param assignDTO 分配信息
      * @throws LogiSecurityException 角色分配flag不可为空
      */
-    void assignRoles(RoleAssignDTO assignDTO) throws LogiSecurityException;
+    void assignRoles(RoleAssignDTO assignDTO, HttpServletRequest request) throws LogiSecurityException;
 
     /**
      * 根据角色id，获取分配信息

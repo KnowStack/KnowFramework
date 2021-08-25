@@ -8,6 +8,7 @@ import com.didiglobal.logi.security.common.vo.resource.MByUDataVO;
 import com.didiglobal.logi.security.common.vo.resource.MByUVO;
 import com.didiglobal.logi.security.exception.LogiSecurityException;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 /**
@@ -50,19 +51,19 @@ public interface UserResourceService {
 
     /**
      * 分配资源的权限给用户（某资源权限分配N个用户）
-     * @param assignToManyUserDTO 分配信息
+     * @param assignDTO 分配信息
      * @throws LogiSecurityException 异常信息
      */
-    void assignResourcePermission(AssignToManyUserDTO assignToManyUserDTO) throws LogiSecurityException;
+    void assignResourcePermission(AssignToManyUserDTO assignDTO, HttpServletRequest request) throws LogiSecurityException;
 
     /**
      * 批量分配资源的权限给用户
      * 按资源管理下的批量分配用户：分配之前先删除N资源先前已分配的用户
      * 按用户管理下的批量分配资源：分配之前先删除N用户已拥有的资源权限
-     * @param batchAssignDTO 分配信息
+     * @param assignDTO 分配信息
      * @throws LogiSecurityException 异常信息
      */
-    void batchAssignResourcePermission(BatchAssignDTO batchAssignDTO) throws LogiSecurityException;
+    void batchAssignResourcePermission(BatchAssignDTO assignDTO, HttpServletRequest request) throws LogiSecurityException;
 
     /**
      * 资源权限管理/按用户管理/分配资源/数据列表的信息

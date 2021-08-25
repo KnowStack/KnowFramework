@@ -26,12 +26,14 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import com.didiglobal.logi.security.util.CopyBeanUtil;
+import com.didiglobal.logi.security.util.HttpRequestUtil;
 import com.didiglobal.logi.security.util.MathUtil;
-import com.didiglobal.logi.security.util.ThreadLocalUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
+
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * @author cjm
@@ -92,7 +94,8 @@ public class RoleServiceImpl implements RoleService {
     }
 
     @Override
-    public void createRoleWithUserId(Integer userId, RoleSaveDTO roleSaveDTO) throws LogiSecurityException {
+    public void createRole(RoleSaveDTO roleSaveDTO, HttpServletRequest request) throws LogiSecurityException {
+        Integer userId = HttpRequestUtil.getOperatorId(request);
         // 检查参数
         checkParam(roleSaveDTO, false);
         // 保存角色信息
@@ -113,7 +116,7 @@ public class RoleServiceImpl implements RoleService {
     }
 
     @Override
-    public void deleteRoleByRoleId(Integer roleId) throws LogiSecurityException {
+    public void deleteRoleByRoleId(Integer roleId, HttpServletRequest request) throws LogiSecurityException {
         Role role = roleDao.selectByRoleId(roleId);
         if(role == null) {
             return;
@@ -129,11 +132,12 @@ public class RoleServiceImpl implements RoleService {
         roleDao.deleteByRoleId(roleId);
         // 保存操作日志
         OplogDTO oplogDTO = new OplogDTO("角色管理", "删除", "角色", role.getRoleName());
-        oplogService.saveOplogWithUserId(ThreadLocalUtil.get(), oplogDTO);
+        oplogService.saveOplogWithUserId(HttpRequestUtil.getOperatorId(request), oplogDTO);
     }
 
     @Override
-    public void updateRoleWithUserId(Integer userId, RoleSaveDTO saveDTO) throws LogiSecurityException {
+    public void updateRole(RoleSaveDTO saveDTO, HttpServletRequest request) throws LogiSecurityException {
+        Integer userId = HttpRequestUtil.getOperatorId(request);
         if(roleDao.selectByRoleId(saveDTO.getId()) == null) {
             throw new LogiSecurityException(ResultCode.ROLE_NOT_EXISTS);
         }
@@ -150,11 +154,12 @@ public class RoleServiceImpl implements RoleService {
         rolePermissionService.updateRolePermission(role.getId(), saveDTO.getPermissionIdList());
         // 保存操作日志
         OplogDTO oplogDTO = new OplogDTO("角色管理", "编辑", "角色", saveDTO.getRoleName());
-        oplogService.saveOplogWithUserId(ThreadLocalUtil.get(), oplogDTO);
+        oplogService.saveOplogWithUserId(userId, oplogDTO);
     }
 
     @Override
-    public void assignRoles(RoleAssignDTO assignDTO) throws LogiSecurityException {
+    public void assignRoles(RoleAssignDTO assignDTO, HttpServletRequest request) throws LogiSecurityException {
+        Integer operatorId = HttpRequestUtil.getOperatorId(request);
         if(assignDTO.getFlag() == null) {
             throw new LogiSecurityException(ResultCode.ROLE_ASSIGN_FLAG_IS_NULL);
         }
@@ -168,7 +173,7 @@ public class RoleServiceImpl implements RoleService {
             // 保存操作日志
             UserBriefVO userBriefVO = userService.getUserBriefByUserId(assignDTO.getId());
             OplogDTO oplogDTO = new OplogDTO("用户管理", "分配角色", "用户", userBriefVO.getUsername());
-            Integer oplogId = oplogService.saveOplogWithUserId(ThreadLocalUtil.get(), oplogDTO);
+            Integer oplogId = oplogService.saveOplogWithUserId(operatorId, oplogDTO);
             // 打包和保存角色更新消息
             packAndSaveMessage(oplogId, oldRoleIdList, assignDTO);
         } else {
@@ -181,7 +186,7 @@ public class RoleServiceImpl implements RoleService {
             // 保存操作日志
             Role role = roleDao.selectByRoleId(assignDTO.getId());
             OplogDTO oplogDTO = new OplogDTO("角色管理", "分配用户", "角色", role.getRoleName());
-            Integer oplogId = oplogService.saveOplogWithUserId(ThreadLocalUtil.get(), oplogDTO);
+            Integer oplogId = oplogService.saveOplogWithUserId(operatorId, oplogDTO);
             // 打包和保存角色更新消息
             packAndSaveMessage(oplogId, oldUserIdList, assignDTO);
         }

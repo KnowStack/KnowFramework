@@ -1,6 +1,7 @@
 package com.didiglobal.logi.security.service;
 
 import com.didiglobal.logi.security.common.PagingData;
+import com.didiglobal.logi.security.common.dto.account.AccountLoginDTO;
 import com.didiglobal.logi.security.common.dto.user.UserBriefQueryDTO;
 import com.didiglobal.logi.security.common.vo.role.AssignInfoVO;
 import com.didiglobal.logi.security.common.dto.user.UserQueryDTO;
@@ -8,6 +9,7 @@ import com.didiglobal.logi.security.common.vo.user.UserBriefVO;
 import com.didiglobal.logi.security.common.vo.user.UserVO;
 import com.didiglobal.logi.security.exception.LogiSecurityException;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 public interface UserService {
@@ -97,4 +99,14 @@ public interface UserService {
      * @return 用户简要信息List
      */
     List<UserBriefVO> getAllUserBriefList();
+
+    /**
+     * 验证登录信息（验证前密码先用Base64解码再用RSA解密）
+     * 登录前会检查账户激活状态
+     * @param loginDTO 登陆信息
+     * @param request 请求信息
+     * @return token
+     * @throws LogiSecurityException 登录错误
+     */
+    UserBriefVO verifyLogin(AccountLoginDTO loginDTO, HttpServletRequest request) throws LogiSecurityException;
 }

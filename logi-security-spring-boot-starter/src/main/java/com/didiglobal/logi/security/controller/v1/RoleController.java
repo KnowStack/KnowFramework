@@ -12,11 +12,12 @@ import com.didiglobal.logi.security.common.vo.role.RoleDeleteCheckVO;
 import com.didiglobal.logi.security.common.vo.role.RoleVO;
 import com.didiglobal.logi.security.exception.LogiSecurityException;
 import com.didiglobal.logi.security.service.RoleService;
-import com.didiglobal.logi.security.util.ThreadLocalUtil;
+import com.didiglobal.logi.security.util.HttpRequestUtil;
 import io.swagger.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 /**
@@ -40,9 +41,9 @@ public class RoleController {
 
     @PutMapping
     @ApiOperation(value = "更新角色信息", notes = "根据角色id更新角色信息")
-    public Result<String> update(@RequestBody RoleSaveDTO saveDTO) {
+    public Result<String> update(@RequestBody RoleSaveDTO saveDTO, HttpServletRequest request) {
         try {
-            roleService.updateRoleWithUserId(ThreadLocalUtil.get(), saveDTO);
+            roleService.updateRole(saveDTO, request);
             return Result.success();
         } catch (LogiSecurityException e) {
             e.printStackTrace();
@@ -52,9 +53,9 @@ public class RoleController {
 
     @PostMapping
     @ApiOperation(value = "创建角色", notes = "创建角色")
-    public Result<String> create(@RequestBody RoleSaveDTO saveDTO) {
+    public Result<String> create(@RequestBody RoleSaveDTO saveDTO, HttpServletRequest request) {
         try {
-            roleService.createRoleWithUserId(ThreadLocalUtil.get(), saveDTO);
+            roleService.createRole(saveDTO, request);
             return Result.success();
         } catch (LogiSecurityException e) {
             e.printStackTrace();
@@ -73,9 +74,9 @@ public class RoleController {
     @DeleteMapping("/{id}")
     @ApiOperation(value = "删除角色", notes = "根据角色id删除角色")
     @ApiImplicitParam(name = "id", value = "角色id", dataType = "int", required = true)
-    public Result<String> delete(@PathVariable Integer id) {
+    public Result<String> delete(@PathVariable Integer id, HttpServletRequest request) {
         try {
-            roleService.deleteRoleByRoleId(id);
+            roleService.deleteRoleByRoleId(id, request);
         } catch (LogiSecurityException e) {
             e.printStackTrace();
             return Result.fail(e);
@@ -92,9 +93,9 @@ public class RoleController {
 
     @PostMapping("/assign")
     @ApiOperation(value = "分配角色", notes = "分配一个角色给多个用户或分配多个角色给一个用户")
-    public Result<String> assign(@RequestBody RoleAssignDTO assignDTO) {
+    public Result<String> assign(@RequestBody RoleAssignDTO assignDTO, HttpServletRequest request) {
         try {
-            roleService.assignRoles(assignDTO);
+            roleService.assignRoles(assignDTO, request);
             return Result.success();
         } catch (LogiSecurityException e) {
             e.printStackTrace();
@@ -112,7 +113,7 @@ public class RoleController {
 
     @GetMapping(value = {"/list/{roleName}", "/list"})
     @ApiOperation(value = "根据角色名模糊查询", notes = "用户管理/列表查询条件/分配角色框，这里会用到此接口")
-    @ApiImplicitParam(name = "roleName", value = "角色名（为null，查询全部）", dataType = "String", required = false)
+    @ApiImplicitParam(name = "roleName", value = "角色名（为null，查询全部）", dataType = "String")
     public Result<List<RoleBriefVO>> list(@PathVariable(required = false) String roleName) {
         List<RoleBriefVO> roleBriefVOList = roleService.getRoleBriefListByRoleName(roleName);
         return Result.success(roleBriefVOList);

@@ -9,6 +9,7 @@ import com.didiglobal.logi.security.common.vo.project.ProjectDeleteCheckVO;
 import com.didiglobal.logi.security.common.vo.project.ProjectVO;
 import com.didiglobal.logi.security.exception.LogiSecurityException;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 
@@ -22,7 +23,7 @@ public interface ProjectService {
      * @param saveDTO 项目信息
      * @throws LogiSecurityException 项目相关的错误信息
      */
-    void createProject(ProjectSaveDTO saveDTO)  throws LogiSecurityException;
+    void createProject(ProjectSaveDTO saveDTO, HttpServletRequest request)  throws LogiSecurityException;
 
     /**
      * 获取项目详情，通过项目id
@@ -50,20 +51,20 @@ public interface ProjectService {
      * 删除项目
      * @param projectId 项目id
      */
-    void deleteProjectByProjectId(Integer projectId);
+    void deleteProjectByProjectId(Integer projectId, HttpServletRequest request);
 
     /**
      * 更新项目信息
      * @param saveDTO 项目信息
      * @throws LogiSecurityException 项目相关的错误信息
      */
-    void updateProject(ProjectSaveDTO saveDTO) throws LogiSecurityException;
+    void updateProject(ProjectSaveDTO saveDTO, HttpServletRequest request) throws LogiSecurityException;
 
     /**
      * 更改项目运行状态，旧状态取反
      * @param projectId 项目id
      */
-    void changeProjectStatus(Integer projectId);
+    void changeProjectStatus(Integer projectId, HttpServletRequest request);
 
     /**
      * 获取所有项目简要信息

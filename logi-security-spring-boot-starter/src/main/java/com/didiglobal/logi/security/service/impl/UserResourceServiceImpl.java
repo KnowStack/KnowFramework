@@ -23,11 +23,12 @@ import com.didiglobal.logi.security.exception.LogiSecurityException;
 import com.didiglobal.logi.security.extend.ResourceExtend;
 import com.didiglobal.logi.security.service.*;
 import com.didiglobal.logi.security.util.CopyBeanUtil;
-import com.didiglobal.logi.security.util.ThreadLocalUtil;
+import com.didiglobal.logi.security.util.HttpRequestUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -344,7 +345,7 @@ public class UserResourceServiceImpl implements UserResourceService {
     }
 
     @Override
-    public void assignResourcePermission(AssignToManyUserDTO assignDTO) throws LogiSecurityException {
+    public void assignResourcePermission(AssignToManyUserDTO assignDTO, HttpServletRequest request) throws LogiSecurityException {
         // 检查参数
         checkParam(assignDTO);
         List<Integer> userIdList = assignDTO.getUserIdList();
@@ -370,7 +371,7 @@ public class UserResourceServiceImpl implements UserResourceService {
 
         // 保存操作日志 TODO：资源名称+用户
         OplogDTO oplogDTO = new OplogDTO("资源权限管理", "分配用户", "资源", "资源名称+用户");
-        oplogService.saveOplogWithUserId(ThreadLocalUtil.get(), oplogDTO);
+        oplogService.saveOplogWithUserId(HttpRequestUtil.getOperatorId(request), oplogDTO);
     }
 
     /**
@@ -403,7 +404,7 @@ public class UserResourceServiceImpl implements UserResourceService {
     }
 
     @Override
-    public void batchAssignResourcePermission(BatchAssignDTO assignDTO) throws LogiSecurityException {
+    public void batchAssignResourcePermission(BatchAssignDTO assignDTO, HttpServletRequest request) throws LogiSecurityException {
         // 检查参数
         checkParam(assignDTO);
         // 获取参数
@@ -416,14 +417,15 @@ public class UserResourceServiceImpl implements UserResourceService {
         // 插入新关联信息
         userResourceDao.insertBatch(getUserResourceList(assignDTO.getProjectId(), assignDTO.getResourceTypeId(), controlLevel, idList, userIdList));
 
+        Integer userId = HttpRequestUtil.getOperatorId(request);
         if(assignFlag) {
             // 保存操作日志 TODO：资源名称+用户
             OplogDTO oplogDTO = new OplogDTO("资源权限管理", "批量分配用户", "资源", "资源名称+用户");
-            oplogService.saveOplogWithUserId(ThreadLocalUtil.get(), oplogDTO);
+            oplogService.saveOplogWithUserId(userId, oplogDTO);
         } else {
             // 保存操作日志 TODO：用户+资源名称
             OplogDTO oplogDTO = new OplogDTO("资源权限管理", "批量分配资源", "用户", "用户+资源名称");
-            oplogService.saveOplogWithUserId(ThreadLocalUtil.get(), oplogDTO);
+            oplogService.saveOplogWithUserId(userId, oplogDTO);
         }
     }
 
