@@ -1,5 +1,6 @@
 package com.didiglobal.logi.security.controller.v1;
 
+import com.didiglobal.logi.security.common.Constants;
 import com.didiglobal.logi.security.common.Result;
 import com.didiglobal.logi.security.common.vo.permission.PermissionTreeVO;
 import com.didiglobal.logi.security.service.PermissionService;
@@ -15,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 @Api(value = "permission相关API接口", tags = "权限相关API接口")
-@RequestMapping("/v1/permission")
+@RequestMapping(Constants.V1 + "/logi-security/permission")
 public class PermissionController {
 
     @Autowired

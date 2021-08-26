@@ -1,5 +1,6 @@
 package com.didiglobal.logi.security.controller.v1;
 
+import com.didiglobal.logi.security.common.Constants;
 import com.didiglobal.logi.security.common.Result;
 import com.didiglobal.logi.security.common.dto.account.AccountLoginDTO;
 import com.didiglobal.logi.security.common.vo.user.UserBriefVO;
@@ -17,7 +18,7 @@ import javax.servlet.http.HttpServletRequest;
  */
 @RestController
 @Api(value = "account相关API接口", tags = "账户相关API接口")
-@RequestMapping("/v1/account")
+@RequestMapping(Constants.V1 + "/logi-security/account")
 public class AccountController {
 
     @Autowired

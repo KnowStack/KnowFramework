@@ -1,5 +1,6 @@
 package com.didiglobal.logi.security.controller.v1;
 
+import com.didiglobal.logi.security.common.Constants;
 import com.didiglobal.logi.security.common.PagingData;
 import com.didiglobal.logi.security.common.PagingResult;
 import com.didiglobal.logi.security.common.Result;
@@ -22,7 +23,7 @@ import java.util.List;
  */
 @RestController
 @Api(value = "project相关API接口", tags = "项目相关API接口")
-@RequestMapping("/v1/project")
+@RequestMapping(Constants.V1 + "/logi-security/project")
 public class ProjectController {
 
     @Autowired

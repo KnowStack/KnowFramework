@@ -1,5 +1,6 @@
 package com.didiglobal.logi.security.controller.v1;
 
+import com.didiglobal.logi.security.common.Constants;
 import com.didiglobal.logi.security.common.PagingData;
 import com.didiglobal.logi.security.common.PagingResult;
 import com.didiglobal.logi.security.common.Result;
@@ -11,7 +12,6 @@ import com.didiglobal.logi.security.exception.LogiSecurityException;
 import com.didiglobal.logi.security.service.UserService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -23,7 +23,7 @@ import java.util.List;
  */
 @RestController
 @Api(value = "user相关API接口", tags = "用户相关API接口")
-@RequestMapping("/v1/user")
+@RequestMapping(Constants.V1 + "/logi-security/user")
 public class UserController {
 
     @Autowired
@@ -79,7 +79,7 @@ public class UserController {
 
     @GetMapping(value = {"/list/{name}", "/list"})
     @ApiOperation(value = "根据账户名或用户实名查询", notes = "获取用户简要信息list，会分别以账户名和实名去模糊查询，返回两者的并集")
-    @ApiImplicitParam(name = "name", value = "账户名或用户实名（为null，则获取全部用户）", dataType = "String", required = false)
+    @ApiImplicitParam(name = "name", value = "账户名或用户实名（为null，则获取全部用户）", dataType = "String")
     public Result<List<UserBriefVO>> listByName(@PathVariable(required = false) String name) {
         List<UserBriefVO> userBriefVOList = userService.getUserBriefListByUsernameOrRealName(name);
         return Result.success(userBriefVOList);

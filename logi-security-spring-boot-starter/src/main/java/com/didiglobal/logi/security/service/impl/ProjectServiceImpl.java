@@ -17,11 +17,13 @@ import com.didiglobal.logi.security.common.vo.project.ProjectVO;
 import com.didiglobal.logi.security.dao.ProjectDao;
 import com.didiglobal.logi.security.exception.LogiSecurityException;
 import com.didiglobal.logi.security.extend.ResourceExtend;
+import com.didiglobal.logi.security.extend.ResourceExtendBeanTool;
 import com.didiglobal.logi.security.service.*;
 import com.didiglobal.logi.security.util.CopyBeanUtil;
 import com.didiglobal.logi.security.util.HttpRequestUtil;
 import com.didiglobal.logi.security.util.MathUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
@@ -55,7 +57,7 @@ public class ProjectServiceImpl implements ProjectService {
     private UserProjectService userProjectService;
 
     @Autowired
-    private ResourceExtend resourceExtend;
+    private ResourceExtendBeanTool resourceExtendBeanTool;
 
     @Override
     public ProjectVO getProjectDetailByProjectId(Integer projectId) throws LogiSecurityException {
@@ -189,6 +191,7 @@ public class ProjectServiceImpl implements ProjectService {
         // TODO 获取与该项目相关联的服务
 
         // 获取与该项目相关联的具体资源
+        ResourceExtend resourceExtend = resourceExtendBeanTool.getResourceExtendImplBean();
         List<ResourceDTO> resourceDTOList = resourceExtend.getResourceList(projectId, null);
         if(!CollectionUtils.isEmpty(resourceDTOList)) {
             List<String> list = resourceDTOList.stream().map(ResourceDTO::getResourceName).collect(Collectors.toList());

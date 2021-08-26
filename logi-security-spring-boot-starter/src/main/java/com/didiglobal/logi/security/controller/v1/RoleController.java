@@ -1,5 +1,6 @@
 package com.didiglobal.logi.security.controller.v1;
 
+import com.didiglobal.logi.security.common.Constants;
 import com.didiglobal.logi.security.common.PagingData;
 import com.didiglobal.logi.security.common.PagingResult;
 import com.didiglobal.logi.security.common.Result;
@@ -12,7 +13,6 @@ import com.didiglobal.logi.security.common.vo.role.RoleDeleteCheckVO;
 import com.didiglobal.logi.security.common.vo.role.RoleVO;
 import com.didiglobal.logi.security.exception.LogiSecurityException;
 import com.didiglobal.logi.security.service.RoleService;
-import com.didiglobal.logi.security.util.HttpRequestUtil;
 import io.swagger.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -25,7 +25,7 @@ import java.util.List;
  */
 @RestController
 @Api(value = "role相关API接口", tags = "角色相关API接口")
-@RequestMapping("/v1/role")
+@RequestMapping(Constants.V1 + "/logi-security/role")
 public class RoleController {
 
     @Autowired

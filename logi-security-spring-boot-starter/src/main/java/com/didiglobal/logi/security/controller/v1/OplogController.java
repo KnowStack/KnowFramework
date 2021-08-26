@@ -1,5 +1,6 @@
 package com.didiglobal.logi.security.controller.v1;
 
+import com.didiglobal.logi.security.common.Constants;
 import com.didiglobal.logi.security.common.PagingData;
 import com.didiglobal.logi.security.common.PagingResult;
 import com.didiglobal.logi.security.common.Result;
@@ -19,7 +20,7 @@ import java.util.List;
  */
 @RestController
 @Api(value = "oplog相关API接口", tags = "操作日志相关API接口")
-@RequestMapping("/v1/oplog")
+@RequestMapping(Constants.V1 + "/logi-security/oplog")
 public class OplogController {
 
     @Autowired

@@ -1,9 +1,11 @@
 package com.didiglobal.logi.security.controller.v1;
 
+import com.didiglobal.logi.security.common.Constants;
 import com.didiglobal.logi.security.common.PagingData;
 import com.didiglobal.logi.security.common.PagingResult;
 import com.didiglobal.logi.security.common.Result;
 import com.didiglobal.logi.security.common.dto.resource.*;
+import com.didiglobal.logi.security.common.enums.resource.ControlLevelCode;
 import com.didiglobal.logi.security.common.vo.resource.*;
 import com.didiglobal.logi.security.exception.LogiSecurityException;
 import com.didiglobal.logi.security.service.ResourceTypeService;
@@ -20,7 +22,7 @@ import java.util.List;
  */
 @RestController
 @Api(value = "resource相关API接口", tags = "资源相关API接口")
-@RequestMapping("/v1/resource")
+@RequestMapping(Constants.V1 + "/logi-security/resource")
 public class ResourceController {
 
     @Autowired
@@ -107,9 +109,9 @@ public class ResourceController {
 
     @PostMapping("/mbu/assign")
     @ApiOperation(value = "资源权限管理/按用户管理/分配资源", notes = "N个项目或N个资源类别或N个具体资源的权限分配给1个用户")
-    public Result<String> mbuAssign(@RequestBody AssignToOneUserDTO assignToOneUserDTO) {
+    public Result<String> mbuAssign(@RequestBody AssignToOneUserDTO assignDTO) {
         try {
-            userResourceService.assignResourcePermission(assignToOneUserDTO);
+            userResourceService.assignResourcePermission(assignDTO);
             return Result.success();
         } catch (LogiSecurityException e) {
             e.printStackTrace();
@@ -130,6 +132,16 @@ public class ResourceController {
             e.printStackTrace();
             return Result.fail(e);
         }
+    }
 
+    @PostMapping("/control/level")
+    @ApiOperation(value = "获取用户拥有资源的权限类别", notes = "0 无权限、1 查看权限、2 管理权限")
+    public Result<Integer> getControlLevel(ControlLevelQueryDTO queryDTO) {
+        try {
+            ControlLevelCode controlLevel = userResourceService.getControlLevel(queryDTO);
+            return Result.success(controlLevel.getType());
+        } catch (LogiSecurityException e) {
+            return Result.fail(e);
+        }
     }
 }
