@@ -7,10 +7,10 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  * @author cjm
  */
 @SpringBootApplication
-public class SecurityApplication {
+public class SecurityTestApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(SecurityApplication.class, args);
+        SpringApplication.run(SecurityTestApplication.class, args);
     }
 
 }

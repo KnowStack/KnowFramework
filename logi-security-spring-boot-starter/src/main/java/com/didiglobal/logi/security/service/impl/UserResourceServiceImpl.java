@@ -10,6 +10,7 @@ import com.didiglobal.logi.security.common.dto.user.UserBriefQueryDTO;
 import com.didiglobal.logi.security.common.dto.resource.ResourceDTO;
 import com.didiglobal.logi.security.common.entity.UserResource;
 import com.didiglobal.logi.security.common.entity.dept.Dept;
+import com.didiglobal.logi.security.common.entity.project.Project;
 import com.didiglobal.logi.security.common.enums.ResultCode;
 import com.didiglobal.logi.security.common.enums.resource.ControlLevelCode;
 import com.didiglobal.logi.security.common.enums.resource.HasLevelCode;
@@ -21,10 +22,12 @@ import com.didiglobal.logi.security.common.vo.user.UserBriefVO;
 import com.didiglobal.logi.security.dao.UserResourceDao;
 import com.didiglobal.logi.security.exception.LogiSecurityException;
 import com.didiglobal.logi.security.extend.ResourceExtend;
+import com.didiglobal.logi.security.extend.ResourceExtendBeanTool;
 import com.didiglobal.logi.security.service.*;
 import com.didiglobal.logi.security.util.CopyBeanUtil;
 import com.didiglobal.logi.security.util.HttpRequestUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
@@ -59,11 +62,11 @@ public class UserResourceServiceImpl implements UserResourceService {
     private ResourceTypeService resourceTypeService;
 
     @Autowired
-    private ResourceExtend resourceExtend;
+    private ResourceExtendBeanTool resourceExtendBeanTool;
 
     @Override
     public int getResourceCntByUserId(Integer userId, UserResourceQueryDTO queryDTO) {
-        if(userId == null) {
+        if (userId == null) {
             return 0;
         }
         return userResourceDao.selectCountByUserId(userId, queryDTO);
@@ -94,19 +97,19 @@ public class UserResourceServiceImpl implements UserResourceService {
         boolean isBatch = queryDTO.getBatch();
 
         List<MByUDataVO> resultList = new ArrayList<>();
-        if(ShowLevelCode.PROJECT.getType().equals(showLevel)) {
+        if (ShowLevelCode.PROJECT.getType().equals(showLevel)) {
             // 如果是项目展示级别
             List<ProjectBriefVO> projectBriefVOList = projectService.getProjectBriefList();
-            for(ProjectBriefVO projectBriefVO : projectBriefVOList) {
+            for (ProjectBriefVO projectBriefVO : projectBriefVOList) {
                 MByUDataVO dataVo = new MByUDataVO(projectBriefVO.getId(), projectBriefVO.getProjectName());
                 HasLevelCode hasLevel = getHasLevel(isBatch, controlLevel, userId, projectBriefVO.getId(), null, null);
                 dataVo.setHasLevel(hasLevel.getType());
                 resultList.add(dataVo);
             }
-        } else if(ShowLevelCode.RESOURCE_TYPE.getType().equals(showLevel)) {
+        } else if (ShowLevelCode.RESOURCE_TYPE.getType().equals(showLevel)) {
             // 如果是资源类别展示级别
             List<ResourceTypeVO> resourceTypeVOList = resourceTypeService.getAllResourceTypeList();
-            for(ResourceTypeVO resourceTypeVO : resourceTypeVOList) {
+            for (ResourceTypeVO resourceTypeVO : resourceTypeVOList) {
                 MByUDataVO dataVo = new MByUDataVO(resourceTypeVO.getId(), resourceTypeVO.getTypeName());
                 HasLevelCode hasLevel = getHasLevel(isBatch, controlLevel, userId, projectId, resourceTypeVO.getId(), null);
                 dataVo.setHasLevel(hasLevel.getType());
@@ -114,8 +117,9 @@ public class UserResourceServiceImpl implements UserResourceService {
             }
         } else {
             // 如果是具体资源展示级别
+            ResourceExtend resourceExtend = resourceExtendBeanTool.getResourceExtendImplBean();
             List<ResourceDTO> resourceDTOList = resourceExtend.getResourceList(projectId, resourceTypeId);
-            for(ResourceDTO resourceDto : resourceDTOList) {
+            for (ResourceDTO resourceDto : resourceDTOList) {
                 MByUDataVO dataVo = new MByUDataVO(resourceDto.getResourceId(), resourceDto.getResourceName());
                 HasLevelCode hasLevel = getHasLevel(isBatch, controlLevel, userId, projectId, resourceTypeId, resourceDto.getResourceId());
                 dataVo.setHasLevel(hasLevel.getType());
@@ -153,28 +157,30 @@ public class UserResourceServiceImpl implements UserResourceService {
     /**
      * 获取用户userId，对该数据（项目、资源类别、具体资源）的拥有级别
      * 拥有级别：全拥有、半拥有、不拥有
-     * @param controlLevel 资源控制级别
-     * @param userId 用户id
-     * @param projectId 项目id
+     *
+     * @param controlLevel   资源控制级别
+     * @param userId         用户id
+     * @param projectId      项目id
      * @param resourceTypeId 资源类别id
-     * @param resourceId 具体资源id
+     * @param resourceId     具体资源id
      * @return HasLevelCode 拥有级别枚举
      */
     private HasLevelCode getHasLevel(boolean isBatch, int controlLevel, int userId,
                                      Integer projectId, Integer resourceTypeId, Integer resourceId) {
-        if(isBatch) {
+        if (isBatch) {
             // 如果是批量操作，则默认假设都不拥有权限
             return HasLevelCode.NONE;
         }
         UserResourceQueryDTO queryDTO = new UserResourceQueryDTO(controlLevel, projectId, resourceTypeId, resourceId);
         int hasResourceCnt = getResourceCntByUserId(userId, queryDTO);
-        if(hasResourceCnt == 0) {
+        if (hasResourceCnt == 0) {
             return HasLevelCode.NONE;
         } else {
             // 获取该项目下具体资源的个数
             int resourceCnt = 1;
-            if(resourceId == null) {
+            if (resourceId == null) {
                 // 如果具体资源id为null，则获取某个项目下 || 某个项目下某个资源类别的具体资源个数
+                ResourceExtend resourceExtend = resourceExtendBeanTool.getResourceExtendImplBean();
                 resourceCnt = resourceExtend.getResourceCnt(projectId, resourceTypeId);
                 return hasResourceCnt == resourceCnt ? HasLevelCode.ALL : HasLevelCode.HALF;
             }
@@ -187,7 +193,7 @@ public class UserResourceServiceImpl implements UserResourceService {
     public void changeResourceViewControlStatus() {
         // 先获取当前 资源查看权限控制状态
         boolean isOn = getViewPermissionControlStatus();
-        if(isOn) {
+        if (isOn) {
             // 如果true，则之前已经打开了资源的查看权限控制，将要置为false，则所有人具有查看权限
             UserResourceQueryDTO queryDTO = new UserResourceQueryDTO(0, 0, 0, 0);
             userResourceDao.deleteByUserId(0, queryDTO);
@@ -201,23 +207,50 @@ public class UserResourceServiceImpl implements UserResourceService {
         }
     }
 
+    @Override
+    public ControlLevelCode getControlLevel(ControlLevelQueryDTO queryDTO) throws LogiSecurityException {
+        if (queryDTO.getUserId() == null) {
+            throw new LogiSecurityException(ResultCode.USER_ID_CANNOT_BE_NULL);
+        }
+        if (queryDTO.getProjectId() == null) {
+            throw new LogiSecurityException(ResultCode.PROJECT_ID_CANNOT_BE_NULL);
+        }
+        if (queryDTO.getResourceTypeId() == null) {
+            throw new LogiSecurityException(ResultCode.RESOURCE_TYPE_ID_CANNOT_BE_NULL);
+        }
+        if (queryDTO.getResourceId() == null) {
+            throw new LogiSecurityException(ResultCode.RESOURCE_ID_CANNOT_BE_NULL);
+        }
+        Integer controlLevel = userResourceDao.selectControlLevel(queryDTO);
+        if (controlLevel == null) {
+            // 如果找不到，判断下全局查看权限控制是否开启
+            if (!getViewPermissionControlStatus()) {
+                // 如果没开启启，则默认拥有查看权限
+                return ControlLevelCode.VIEW;
+            }
+            return ControlLevelCode.NONE;
+        }
+        return ControlLevelCode.getByType(controlLevel);
+    }
+
     /**
      * 校验参数
-     * @param controlLevel 控制级别
-     * @param projectId 项目id
+     *
+     * @param controlLevel   控制级别
+     * @param projectId      项目id
      * @param resourceTypeId 资源类别id
-     * @param resourceId 具体资源id
+     * @param resourceId     具体资源id
      */
     private void checkParam(Integer controlLevel, Integer projectId, Integer resourceTypeId, Integer resourceId) throws LogiSecurityException {
-        if(projectId == null) {
+        if (projectId == null) {
             // 项目id不可为nul
             throw new LogiSecurityException(ResultCode.PROJECT_ID_CANNOT_BE_NULL);
         }
-        if(resourceTypeId == null && resourceId != null) {
+        if (resourceTypeId == null && resourceId != null) {
             // 这种情况不允许出现（如果resourceId != null，则resourceTypeId必不为null）
             throw new LogiSecurityException(ResultCode.RESOURCE_ASSIGN_ERROR);
         }
-        if(ControlLevelCode.getByType(controlLevel) == null) {
+        if (ControlLevelCode.getByType(controlLevel) == null) {
             throw new LogiSecurityException(ResultCode.RESOURCE_INVALID_CONTROL_LEVEL);
         }
     }
@@ -230,23 +263,23 @@ public class UserResourceServiceImpl implements UserResourceService {
     }
 
     private void checkParam(MByUDataQueryDTO queryDTO) throws LogiSecurityException {
-        if(queryDTO.getUserId() == null) {
+        if (queryDTO.getUserId() == null) {
             throw new LogiSecurityException(ResultCode.USER_ID_CANNOT_BE_NULL);
         }
-        if(ControlLevelCode.getByType(queryDTO.getControlLevel()) == null) {
+        if (ControlLevelCode.getByType(queryDTO.getControlLevel()) == null) {
             throw new LogiSecurityException(ResultCode.RESOURCE_INVALID_CONTROL_LEVEL);
         }
         checkParam(queryDTO.getShowLevel(), queryDTO.getProjectId(), queryDTO.getResourceTypeId());
     }
 
     private void checkParam(AssignToOneUserDTO assignDTO) throws LogiSecurityException {
-        if(assignDTO.getUserId() == null) {
+        if (assignDTO.getUserId() == null) {
             throw new LogiSecurityException(ResultCode.USER_ID_CANNOT_BE_NULL);
         }
-        if(ControlLevelCode.getByType(assignDTO.getControlLevel()) == null) {
+        if (ControlLevelCode.getByType(assignDTO.getControlLevel()) == null) {
             throw new LogiSecurityException(ResultCode.RESOURCE_INVALID_CONTROL_LEVEL);
         }
-        if(assignDTO.getProjectId() == null && assignDTO.getResourceTypeId() != null) {
+        if (assignDTO.getProjectId() == null && assignDTO.getResourceTypeId() != null) {
             // 资源类别id不为null，则项目id不可为null
             throw new LogiSecurityException(ResultCode.RESOURCE_ASSIGN_ERROR_2);
         }
@@ -254,45 +287,56 @@ public class UserResourceServiceImpl implements UserResourceService {
 
     /**
      * 封装UserResourceList，便于批量插入数据库
-     * @param projectId 项目id
+     *
+     * @param projectId      项目id
      * @param resourceTypeId 资源类型id
-     * @param idList projectId==null，idList为项目idList、resourceTypeId==null，idList为资源类别idList
-     * @param controlLevel 资源控制权限level
-     * @param userIdList 用户idList
+     * @param idList         projectId==null，idList为项目idList、resourceTypeId==null，idList为资源类别idList
+     * @param controlLevel   资源控制权限level
+     * @param userIdList     用户idList
      * @return List<UserResource>
      */
     private List<UserResource> getUserResourceList(Integer projectId, Integer resourceTypeId, int controlLevel,
-                                                     List<Integer> idList, List<Integer> userIdList) {
+                                                   List<Integer> idList, List<Integer> userIdList) {
         List<Integer> projectIdList;
         List<Integer> resourceTypeIdList;
         List<Integer> resourceIdList = null;
         QueryWrapper<ProjectPO> projectWrapper = new QueryWrapper<>();
         projectWrapper.select("id");
 
-        if(projectId == null) {
+        if (projectId == null) {
             // 说明idList是项目的idList
             projectIdList = new ArrayList<>(idList);
             resourceTypeIdList = resourceTypeService.getAllResourceTypeIdList();
-        } else if(resourceTypeId == null) {
+        } else if (resourceTypeId == null) {
             // 说明idList是资源类别idList
-            projectIdList = new ArrayList<Integer>(){{ add(projectId); }};
+            projectIdList = new ArrayList<Integer>() {{
+                add(projectId);
+            }};
             resourceTypeIdList = new ArrayList<>(idList);
         } else {
             // 说明idList是具体资源idList
-            projectIdList = new ArrayList<Integer>(){{ add(projectId); }};
-            resourceTypeIdList = new ArrayList<Integer>(){{ add(resourceTypeId); }};
+            projectIdList = new ArrayList<Integer>() {{
+                add(projectId);
+            }};
+            resourceTypeIdList = new ArrayList<Integer>() {{
+                add(resourceTypeId);
+            }};
             resourceIdList = new ArrayList<>(idList);
         }
 
         // 封装List<ResourceDto>
         List<ResourceDTO> resourceDTOList = new ArrayList<>();
-        for(Integer pId : projectIdList) {
-            for(Integer rtId : resourceTypeIdList) {
-                if(resourceIdList == null) {
-                    resourceDTOList.addAll(resourceExtend.getResourceList(pId, rtId));
+        for (Integer pId : projectIdList) {
+            for (Integer rtId : resourceTypeIdList) {
+                if (resourceIdList == null) {
+                    ResourceExtend resourceExtend = resourceExtendBeanTool.getResourceExtendImplBean();
+                    List<ResourceDTO> list = resourceExtend.getResourceList(pId, rtId);
+                    if (list != null) {
+                        resourceDTOList.addAll(list);
+                    }
                     continue;
                 }
-                for(Integer rId : resourceIdList) {
+                for (Integer rId : resourceIdList) {
                     resourceDTOList.add(new ResourceDTO(pId, rtId, rId));
                 }
             }
@@ -301,10 +345,10 @@ public class UserResourceServiceImpl implements UserResourceService {
     }
 
     private List<UserResource> buildUserResourceList(int controlLevel, List<Integer> userIdList,
-                                                       List<ResourceDTO> resourceDTOList) {
-        List<UserResource> userResourceList =  new ArrayList<>();
-        for(Integer userId : userIdList) {
-            for(ResourceDTO resourceDTO : resourceDTOList) {
+                                                     List<ResourceDTO> resourceDTOList) {
+        List<UserResource> userResourceList = new ArrayList<>();
+        for (Integer userId : userIdList) {
+            for (ResourceDTO resourceDTO : resourceDTOList) {
                 UserResource userResource = new UserResource(resourceDTO);
                 userResource.setUserId(userId);
                 userResource.setControlLevel(controlLevel);
@@ -325,16 +369,18 @@ public class UserResourceServiceImpl implements UserResourceService {
 
         // 删除old的关联信息
         UserResourceQueryDTO queryDTO = new UserResourceQueryDTO(controlLevel, projectId, resourceTypeId, null);
-        if(CollectionUtils.isEmpty(assignDTO.getExcludeIdList())) {
+        if (CollectionUtils.isEmpty(assignDTO.getExcludeIdList())) {
             userResourceDao.deleteByUserId(userId, queryDTO);
-        } else if(projectId == null) {
+        } else if (projectId == null) {
             userResourceDao.deleteByUserIdWithoutProjectIdList(userId, queryDTO, assignDTO.getExcludeIdList());
-        } else if(resourceTypeId == null) {
+        } else if (resourceTypeId == null) {
             userResourceDao.deleteByUserIdWithoutResourceTypeIdList(userId, queryDTO, assignDTO.getExcludeIdList());
         }
 
         List<Integer> idList = assignDTO.getIdList();
-        List<Integer> userIdList = new ArrayList<Integer>(){{ add(userId); }};
+        List<Integer> userIdList = new ArrayList<Integer>() {{
+            add(userId);
+        }};
         List<UserResource> userResourceList = getUserResourceList(projectId, resourceTypeId, controlLevel, idList, userIdList);
         // 插入new关联信息
         userResourceDao.insertBatch(userResourceList);
@@ -359,9 +405,13 @@ public class UserResourceServiceImpl implements UserResourceService {
         userResourceDao.deleteWithoutUserIdList(queryDTO, assignDTO.getExcludeUserIdList());
 
         List<ResourceDTO> resourceDTOList = new ArrayList<>();
-        if(resourceId == null) {
+        if (resourceId == null) {
             // resourceId为null，说明是某个项目或者某个资源类别下的全部具体资源的权限分配给用户，获取所有的具体资源信息
-            resourceDTOList.addAll(resourceExtend.getResourceList(projectId, resourceTypeId));
+            ResourceExtend resourceExtend = resourceExtendBeanTool.getResourceExtendImplBean();
+            List<ResourceDTO> list = resourceExtend.getResourceList(projectId, resourceTypeId);
+            if (list != null) {
+                resourceDTOList.addAll(list);
+            }
         } else {
             // 说明只有一个资源的权限分配给用户
             resourceDTOList.add(new ResourceDTO(projectId, resourceTypeId, resourceId));
@@ -376,21 +426,22 @@ public class UserResourceServiceImpl implements UserResourceService {
 
     /**
      * 批量分配前删除全部old的关联信息
-     * @param projectId 项目id
+     *
+     * @param projectId      项目id
      * @param resourceTypeId 资源类别id
-     * @param flag 批量分配用户 or 批量分配资源
-     * @param controlLevel 资源权限控制级别
-     * @param idList 用户idList、项目idList、资源类别idLIst、具体资源idList
+     * @param flag           批量分配用户 or 批量分配资源
+     * @param controlLevel   资源权限控制级别
+     * @param idList         用户idList、项目idList、资源类别idLIst、具体资源idList
      */
     private void deleteOldRelationBeforeBatchAssign(Integer projectId, Integer resourceTypeId,
                                                     boolean flag, int controlLevel, List<Integer> idList) {
         UserResourceQueryDTO queryDTO = new UserResourceQueryDTO(controlLevel, projectId, resourceTypeId, null);
-        if(flag) {
+        if (flag) {
             // 按资源管理/批量分配用户，先删除N资源先前已分配的用户
-            if(projectId == null) {
+            if (projectId == null) {
                 // 项目批量分配级别
                 userResourceDao.deleteByProjectIdList(idList, queryDTO);
-            } else if(resourceTypeId == null) {
+            } else if (resourceTypeId == null) {
                 // 资源类别批量分配级别
                 userResourceDao.deleteByResourceTypeIdList(idList, queryDTO);
             } else {
@@ -418,7 +469,7 @@ public class UserResourceServiceImpl implements UserResourceService {
         userResourceDao.insertBatch(getUserResourceList(assignDTO.getProjectId(), assignDTO.getResourceTypeId(), controlLevel, idList, userIdList));
 
         Integer userId = HttpRequestUtil.getOperatorId(request);
-        if(assignFlag) {
+        if (assignFlag) {
             // 保存操作日志 TODO：资源名称+用户
             OplogDTO oplogDTO = new OplogDTO("资源权限管理", "批量分配用户", "资源", "资源名称+用户");
             oplogService.saveOplogWithUserId(userId, oplogDTO);
@@ -430,17 +481,17 @@ public class UserResourceServiceImpl implements UserResourceService {
     }
 
     private void checkParam(BatchAssignDTO assignDTO) throws LogiSecurityException {
-        if(assignDTO.getUserIdList() == null) {
+        if (assignDTO.getUserIdList() == null) {
             throw new LogiSecurityException(ResultCode.USER_ID_CANNOT_BE_NULL);
         }
-        if(assignDTO.getAssignFlag() == null) {
+        if (assignDTO.getAssignFlag() == null) {
             throw new LogiSecurityException(ResultCode.RESOURCE_ASSIGN_BATCH_FLAG_CANNOT_BE_NULL);
         }
-        if(assignDTO.getProjectId() == null && assignDTO.getResourceTypeId() != null) {
+        if (assignDTO.getProjectId() == null && assignDTO.getResourceTypeId() != null) {
             // 资源类别id不为null，则项目id不可为null
             throw new LogiSecurityException(ResultCode.RESOURCE_ASSIGN_ERROR_2);
         }
-        if(ControlLevelCode.getByType(assignDTO.getControlLevel()) == null) {
+        if (ControlLevelCode.getByType(assignDTO.getControlLevel()) == null) {
             throw new LogiSecurityException(ResultCode.RESOURCE_INVALID_CONTROL_LEVEL);
         }
     }
@@ -472,7 +523,7 @@ public class UserResourceServiceImpl implements UserResourceService {
             // 计算管理权限资源数
             dataVo.setAdminResourceCnt(userResourceDao.selectCountByUserIdAndControlLevel(userBriefVO.getId(), ControlLevelCode.ADMIN));
             // 如果 资源查看控制权限 没开启，就不计算了
-            if(isOn) {
+            if (isOn) {
                 // 计算查看权限资源数
                 dataVo.setViewResourceCnt(userResourceDao.selectCountByUserIdAndControlLevel(userBriefVO.getId(), ControlLevelCode.VIEW));
             }
@@ -494,10 +545,10 @@ public class UserResourceServiceImpl implements UserResourceService {
         // 判断 资源查看控制权限 是否开启
         boolean isOn = getViewPermissionControlStatus();
         PagingData<MByRVO> result;
-        if(queryDTO.getShowLevel().equals(ShowLevelCode.PROJECT.getType())) {
+        if (queryDTO.getShowLevel().equals(ShowLevelCode.PROJECT.getType())) {
             // 项目展示级别，表示查找所有项目
             result = dealProjectLevel(queryDTO, isOn);
-        } else if(queryDTO.getShowLevel().equals(ShowLevelCode.RESOURCE_TYPE.getType())) {
+        } else if (queryDTO.getShowLevel().equals(ShowLevelCode.RESOURCE_TYPE.getType())) {
             // 资源类别展示级别，表示查找某个项目下所有资源类别
             result = dealResourceTypeLevel(queryDTO, isOn);
         } else {
@@ -508,21 +559,30 @@ public class UserResourceServiceImpl implements UserResourceService {
     }
 
     private void checkParam(Integer showLevel, Integer projectId, Integer resourceTypeId) throws LogiSecurityException {
-        if(ShowLevelCode.getByType(showLevel) == null) {
+        if (ShowLevelCode.getByType(showLevel) == null) {
             // 请输入有效的展示级别（1 <= showLevel <= 3）
             throw new LogiSecurityException(ResultCode.RESOURCE_INVALID_SHOW_LEVEL);
         }
-        if(showLevel.equals(ShowLevelCode.RESOURCE_TYPE.getType())) {
+        if (showLevel >= ShowLevelCode.RESOURCE_TYPE.getType()) {
             // 资源类别展示级别，表示查找某个项目下所有资源类别
-            if(projectId == null) {
+            if (projectId == null) {
                 // 2级展示级别，项目id不可为null
                 throw new LogiSecurityException(ResultCode.RESOURCE_SHOW_LEVEL_ERROR);
             }
-        } else if(showLevel.equals(ShowLevelCode.RESOURCE.getType())){
+            ProjectBriefVO projectBriefVO = projectService.getProjectBriefByProjectId(projectId);
+            if (projectBriefVO == null) {
+                throw new LogiSecurityException(ResultCode.PROJECT_NOT_EXISTS);
+            }
+        }
+        if (showLevel >= ShowLevelCode.RESOURCE.getType()) {
             // 具体资源展示级别，表示查找该项目下该资源类别对应的资源
-            if(projectId == null || resourceTypeId == null) {
+            if (resourceTypeId == null) {
                 // 3级展示级别，项目id或资源类别id不可为null
                 throw new LogiSecurityException(ResultCode.RESOURCE_SHOW_LEVEL_ERROR_2);
+            }
+            ResourceTypeVO resourceTypeVO = resourceTypeService.getResourceTypeByResourceTypeId(resourceTypeId);
+            if (resourceTypeVO == null) {
+                throw new LogiSecurityException(ResultCode.RESOURCE_TYPE_NOT_EXISTS);
             }
         }
     }
@@ -533,10 +593,11 @@ public class UserResourceServiceImpl implements UserResourceService {
 
     private int getAdminOrViewUserCnt(UserResourceQueryDTO queryDTO) {
         List<Integer> userIdList = userResourceDao.selectUserIdListGroupByUserId(queryDTO);
+        ResourceExtend resourceExtend = resourceExtendBeanTool.getResourceExtendImplBean();
         int total = resourceExtend.getResourceCnt(queryDTO.getProjectId(), queryDTO.getResourceTypeId());
         int cnt = userIdList.size();
-        for(Integer userId : userIdList) {
-            if(total != userResourceDao.selectCountByUserId(userId, queryDTO)) {
+        for (Integer userId : userIdList) {
+            if (total != userResourceDao.selectCountByUserId(userId, queryDTO)) {
                 // 该用户不拥有 该项目下 或 该项目下某资源类别下 的全部具体资源
                 cnt--;
             }
@@ -546,8 +607,9 @@ public class UserResourceServiceImpl implements UserResourceService {
 
     /**
      * 资源权限管理>按资源管理的列表信息>项目级别
+     *
      * @param mByRQueryDTO 查询条件
-     * @param isOn 资源查看控制权限是否开启
+     * @param isOn         资源查看控制权限是否开启
      * @return PagingData<ManageByResourceVo>
      */
     private PagingData<MByRVO> dealProjectLevel(MByRQueryDTO mByRQueryDTO, boolean isOn) {
@@ -564,7 +626,7 @@ public class UserResourceServiceImpl implements UserResourceService {
             UserResourceQueryDTO queryDTO = new UserResourceQueryDTO(ControlLevelCode.ADMIN.getType(), projectBriefVO.getId(), null, null);
             data.setAdminUserCnt(getAdminOrViewUserCnt(queryDTO));
 
-            if(isOn) {
+            if (isOn) {
                 // 获取查看权限用户数
                 queryDTO = new UserResourceQueryDTO(ControlLevelCode.VIEW.getType(), projectBriefVO.getId(), null, null);
                 data.setViewUserCnt(getAdminOrViewUserCnt(queryDTO));
@@ -576,8 +638,9 @@ public class UserResourceServiceImpl implements UserResourceService {
 
     /**
      * 资源权限管理>按资源管理的列表信息>资源列别级别
+     *
      * @param queryDTO 查询条件
-     * @param isOn 资源查看控制权限是否开启
+     * @param isOn     资源查看控制权限是否开启
      * @return PagingData<ManageByResourceVo>
      */
     private PagingData<MByRVO> dealResourceTypeLevel(MByRQueryDTO queryDTO, boolean isOn) {
@@ -598,7 +661,7 @@ public class UserResourceServiceImpl implements UserResourceService {
             UserResourceQueryDTO queryDTO2 = new UserResourceQueryDTO(ControlLevelCode.ADMIN.getType(), queryDTO.getProjectId(), resourceTypeVO.getId(), null);
             data.setAdminUserCnt(getAdminOrViewUserCnt(queryDTO2));
 
-            if(isOn) {
+            if (isOn) {
                 // 获取查看权限用户数
                 queryDTO2 = new UserResourceQueryDTO(ControlLevelCode.VIEW.getType(), queryDTO.getProjectId(), resourceTypeVO.getId(), null);
                 data.setViewUserCnt(getAdminOrViewUserCnt(queryDTO2));
@@ -610,21 +673,27 @@ public class UserResourceServiceImpl implements UserResourceService {
 
     /**
      * 资源权限管理>按资源管理的列表信息>资源级别
+     *
      * @param queryDTO 查询条件
-     * @param isOn 资源查看控制权限是否开启
+     * @param isOn     资源查看控制权限是否开启
      * @return PagingData<ManageByResourceVo>
      */
     private PagingData<MByRVO> dealResourceLevel(MByRQueryDTO queryDTO, boolean isOn) {
         // 调用扩展接口获取具体资源信息
+        ResourceExtend resourceExtend = resourceExtendBeanTool.getResourceExtendImplBean();
         PagingData<ResourceDTO> page = resourceExtend.getResourcePage(
                 queryDTO.getProjectId(), queryDTO.getResourceTypeId(),
                 queryDTO.getName(), queryDTO.getPage(), queryDTO.getSize()
         );
+        if (page == null) {
+            return new PagingData<>();
+        }
+
         List<MByRVO> list = new ArrayList<>();
         // 获取资源类别信息
         ResourceTypeVO resourceTypeVO = resourceTypeService.getResourceTypeByResourceTypeId(queryDTO.getResourceTypeId());
 
-        for(ResourceDTO resourceDTO : page.getBizData()) {
+        for (ResourceDTO resourceDTO : page.getBizData()) {
             MByRVO data = new MByRVO();
             data.setResourceTypeId(resourceTypeVO.getId());
             data.setResourceTypeName(resourceTypeVO.getTypeName());
@@ -636,7 +705,7 @@ public class UserResourceServiceImpl implements UserResourceService {
             UserResourceQueryDTO queryDTO2 = new UserResourceQueryDTO(ControlLevelCode.ADMIN.getType(), queryDTO.getProjectId(), queryDTO.getResourceTypeId(), resourceDTO.getResourceId());
             data.setAdminUserCnt(userResourceDao.selectCountGroupByUserId(queryDTO2));
 
-            if(isOn) {
+            if (isOn) {
                 // 获取查看权限用户数
                 queryDTO2 = new UserResourceQueryDTO(ControlLevelCode.VIEW.getType(), queryDTO.getProjectId(), queryDTO.getResourceTypeId(), resourceDTO.getResourceId());
                 data.setViewUserCnt(userResourceDao.selectCountGroupByUserId(queryDTO2));

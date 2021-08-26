@@ -1,5 +1,6 @@
 package com.didiglobal.logi.security.controller.v1;
 
+import com.didiglobal.logi.security.common.Constants;
 import com.didiglobal.logi.security.common.Result;
 import com.didiglobal.logi.security.common.vo.message.MessageVO;
 import com.didiglobal.logi.security.service.MessageService;
@@ -19,7 +20,7 @@ import java.util.List;
  */
 @RestController
 @Api(value = "message相关API接口", tags = "消息相关API接口")
-@RequestMapping("/v1/message")
+@RequestMapping(Constants.V1 + "/logi-security/message")
 public class MessageController {
 
     @Autowired

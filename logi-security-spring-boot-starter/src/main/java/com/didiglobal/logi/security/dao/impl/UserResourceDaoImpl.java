@@ -1,6 +1,7 @@
 package com.didiglobal.logi.security.dao.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.didiglobal.logi.security.common.dto.resource.ControlLevelQueryDTO;
 import com.didiglobal.logi.security.common.dto.resource.UserResourceQueryDTO;
 import com.didiglobal.logi.security.common.entity.UserResource;
 import com.didiglobal.logi.security.common.enums.resource.ControlLevelCode;
@@ -160,5 +161,18 @@ public class UserResourceDaoImpl extends BaseDaoImpl<UserResourcePO> implements 
         QueryWrapper<UserResourcePO> queryWrapper = wrapQueryCriteria(null, queryDTO);
         queryWrapper.select("user_id").groupBy("user_id");
         return userResourceMapper.selectObjs(queryWrapper).stream().map(obj -> (Integer) obj).collect(Collectors.toList());
+    }
+
+    @Override
+    public Integer selectControlLevel(ControlLevelQueryDTO queryDTO) {
+        QueryWrapper<UserResourcePO> queryWrapper = new QueryWrapper<>();
+        queryWrapper
+                .select("MAX(control_level)")
+                .eq("user_id", queryDTO.getUserId())
+                .eq("project_id", queryDTO.getProjectId())
+                .eq("resource_type_id", queryDTO.getResourceTypeId())
+                .eq("resource_id", queryDTO.getResourceId());
+        List<Object> objects = userResourceMapper.selectObjs(queryWrapper);
+        return (Integer) objects.get(0);
     }
 }

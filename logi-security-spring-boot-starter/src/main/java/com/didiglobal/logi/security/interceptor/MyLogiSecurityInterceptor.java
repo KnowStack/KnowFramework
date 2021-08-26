@@ -10,7 +10,7 @@ import javax.servlet.http.HttpServletResponse;
  * @author cjm
  */
 @Component
-public class MyInterceptor implements HandlerInterceptor {
+public class MyLogiSecurityInterceptor implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {

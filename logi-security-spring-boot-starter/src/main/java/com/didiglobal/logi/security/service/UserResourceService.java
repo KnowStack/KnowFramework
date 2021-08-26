@@ -2,6 +2,7 @@ package com.didiglobal.logi.security.service;
 
 import com.didiglobal.logi.security.common.PagingData;
 import com.didiglobal.logi.security.common.dto.resource.*;
+import com.didiglobal.logi.security.common.enums.resource.ControlLevelCode;
 import com.didiglobal.logi.security.common.vo.resource.MByRDataVO;
 import com.didiglobal.logi.security.common.vo.resource.MByRVO;
 import com.didiglobal.logi.security.common.vo.resource.MByUDataVO;
@@ -44,10 +45,10 @@ public interface UserResourceService {
 
     /**
      * 分配资源的权限给用户（N资源权限分配给某用户）
-     * @param assignToOneUserDTO 分配信息
+     * @param assignDTO 分配信息
      * @throws LogiSecurityException 异常信息
      */
-    void assignResourcePermission(AssignToOneUserDTO assignToOneUserDTO) throws LogiSecurityException;
+    void assignResourcePermission(AssignToOneUserDTO assignDTO) throws LogiSecurityException;
 
     /**
      * 分配资源的权限给用户（某资源权限分配N个用户）
@@ -91,4 +92,12 @@ public interface UserResourceService {
      * 调用该接口则资源查看权限控制状态被反转
      */
     void changeResourceViewControlStatus();
+
+    /**
+     * 获取用户拥有资源管理权限类别（级别）
+     * @param queryDTO 查询条件
+     * @return 资源管理权限类别枚举
+     * @throws LogiSecurityException 用户、项目、资源类别、具体资源id 不可为空
+     */
+    ControlLevelCode getControlLevel(ControlLevelQueryDTO queryDTO) throws LogiSecurityException;
 }

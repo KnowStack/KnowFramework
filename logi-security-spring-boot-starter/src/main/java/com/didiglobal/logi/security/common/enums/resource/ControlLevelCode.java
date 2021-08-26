@@ -14,6 +14,8 @@ import lombok.Getter;
 public enum ControlLevelCode {
 
     /* 资源管理级别 */
+    NONE(0, "无权限"),
+
     VIEW(1, "查看权限"),
 
     ADMIN(2, "管理权限");

@@ -2,9 +2,7 @@ package com.didiglobal.logi.security.util;
 
 import org.springframework.util.DigestUtils;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * @author cjm
@@ -19,11 +17,12 @@ public class MathUtil {
 
     /**
      * 随机获取整数
+     *
      * @param len 长度
      * @return long
      */
     public static long getRandomNumber(int len) {
-        if(len <= 0 || len > 18) {
+        if (len <= 0 || len > 18) {
             return 0;
         }
         return (long) ((Math.random() + 1) * Math.pow(10, len));

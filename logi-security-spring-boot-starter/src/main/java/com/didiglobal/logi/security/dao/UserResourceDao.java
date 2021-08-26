@@ -1,5 +1,6 @@
 package com.didiglobal.logi.security.dao;
 
+import com.didiglobal.logi.security.common.dto.resource.ControlLevelQueryDTO;
 import com.didiglobal.logi.security.common.dto.resource.UserResourceQueryDTO;
 import com.didiglobal.logi.security.common.entity.UserResource;
 import com.didiglobal.logi.security.common.enums.resource.ControlLevelCode;
@@ -124,4 +125,6 @@ public interface UserResourceDao {
     int selectCountGroupByUserId(UserResourceQueryDTO queryDTO);
 
     List<Integer> selectUserIdListGroupByUserId(UserResourceQueryDTO queryDTO);
+
+    Integer selectControlLevel(ControlLevelQueryDTO queryDTO);
 }

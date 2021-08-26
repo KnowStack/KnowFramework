@@ -1,5 +1,6 @@
 package com.didiglobal.logi.security.controller.v1;
 
+import com.didiglobal.logi.security.common.Constants;
 import com.didiglobal.logi.security.common.Result;
 import com.didiglobal.logi.security.common.vo.dept.DeptTreeVO;
 import com.didiglobal.logi.security.service.DeptService;
@@ -15,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 @Api(value = "dept相关API接口", tags = "部门相关API接口")
-@RequestMapping("/v1/dept")
+@RequestMapping(Constants.V1 + "/logi-security/dept")
 public class DeptController {
 
     @Autowired

@@ -1,7 +1,6 @@
 package com.didiglobal.logi.security.common.po;
 
 import com.baomidou.mybatisplus.annotation.TableName;
-import com.didiglobal.logi.security.common.dto.resource.ResourceDTO;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 

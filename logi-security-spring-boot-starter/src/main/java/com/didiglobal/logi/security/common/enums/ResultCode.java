@@ -91,7 +91,10 @@ public enum ResultCode implements CodeMsg {
     RESOURCE_SHOW_LEVEL_ERROR(10004, "2级展示级别，项目id不可为空"),
     RESOURCE_SHOW_LEVEL_ERROR_2(10005, "3级展示级别，项目id或资源类别id不可为null"),
     RESOURCE_ASSIGN_BATCH_FLAG_CANNOT_BE_NULL(10006, "资源权限批量分配的标识不可为空"),
-    RESOURCE_INVALID_CONTROL_LEVEL(10007, "请输入有效的资源权限控制级别（1 <= controlLevel <= 2）")
+    RESOURCE_INVALID_CONTROL_LEVEL(10007, "请输入有效的资源权限控制级别（1 <= controlLevel <= 2）"),
+    RESOURCE_TYPE_ID_CANNOT_BE_NULL(10008, "资源类别id不可为空"),
+    RESOURCE_ID_CANNOT_BE_NULL(10009, "具体资源id不可为空"),
+    RESOURCE_TYPE_NOT_EXISTS(10010, "资源类别不存在")
     ;
 
     private final Integer code;

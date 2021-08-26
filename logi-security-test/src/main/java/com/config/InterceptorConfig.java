@@ -1,6 +1,6 @@
 package com.config;
 
-import com.interceptor.MyInterceptor;
+import com.interceptor.TestInterceptor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
@@ -11,10 +11,10 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @Configuration
 public class InterceptorConfig implements WebMvcConfigurer {
 
-    private final MyInterceptor myInterceptor;
+    private final TestInterceptor myInterceptor;
 
 
-    public InterceptorConfig(MyInterceptor myInterceptor) {
+    public InterceptorConfig(TestInterceptor myInterceptor) {
         this.myInterceptor = myInterceptor;
     }
 

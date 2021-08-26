@@ -2,6 +2,8 @@ package com.didiglobal.logi.security.service;
 
 import com.didiglobal.logi.security.BaseTest;
 import com.didiglobal.logi.security.common.po.ProjectPO;
+import com.didiglobal.logi.security.extend.ResourceExtend;
+import com.didiglobal.logi.security.extend.ResourceExtendBeanTool;
 import com.didiglobal.logi.security.inside.common.po.ProjectResourcePO;
 import com.didiglobal.logi.security.common.po.ResourceTypePO;
 import com.didiglobal.logi.security.dao.mapper.ProjectMapper;
@@ -50,5 +52,14 @@ public class ResourceTest extends BaseTest  {
     public void generateResource() {
         List<ProjectResourcePO> projectResourceList = generateData();
         projectResourceMapper.insertBatchSomeColumn(projectResourceList);
+    }
+
+    @Autowired
+    private ResourceExtendBeanTool resourceExtendBeanTool;
+
+    @Test
+    public void testGetResourceExtend() {
+        ResourceExtend resourceExtendImplBean = resourceExtendBeanTool.getResourceExtendImplBean();
+        System.out.println(resourceExtendImplBean);
     }
 }
