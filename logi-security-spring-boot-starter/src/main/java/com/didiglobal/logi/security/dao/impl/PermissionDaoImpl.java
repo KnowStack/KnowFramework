@@ -8,6 +8,7 @@ import com.didiglobal.logi.security.dao.mapper.PermissionMapper;
 import com.didiglobal.logi.security.util.CopyBeanUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.util.CollectionUtils;
 
 import java.util.List;
 
@@ -25,5 +26,13 @@ public class PermissionDaoImpl extends BaseDaoImpl<PermissionPO> implements Perm
         QueryWrapper<PermissionPO> queryWrapper = getQueryWrapper();
         queryWrapper.orderByAsc("level");
         return CopyBeanUtil.copyList(permissionMapper.selectList(queryWrapper), Permission.class);
+    }
+
+    @Override
+    public void insertBatch(List<Permission> permissionList) {
+        if(CollectionUtils.isEmpty(permissionList)) {
+            return;
+        }
+        permissionMapper.insertBatchSomeColumn(CopyBeanUtil.copyList(permissionList, PermissionPO.class));
     }
 }

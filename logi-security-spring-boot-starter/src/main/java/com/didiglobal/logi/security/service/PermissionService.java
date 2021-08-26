@@ -1,5 +1,6 @@
 package com.didiglobal.logi.security.service;
 
+import com.didiglobal.logi.security.common.dto.permission.PermissionDTO;
 import com.didiglobal.logi.security.common.vo.permission.PermissionTreeVO;
 
 import java.util.List;
@@ -29,4 +30,10 @@ public interface PermissionService {
      * @return PermissionVo 权限树
      */
     PermissionTreeVO buildPermissionTreeByRoleId(Integer roleId);
+
+    /**
+     * 保存权限
+     * @param permissionDTOList 权限信息
+     */
+    void savePermission(List<PermissionDTO> permissionDTOList);
 }

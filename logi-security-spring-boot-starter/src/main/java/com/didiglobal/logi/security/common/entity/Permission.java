@@ -2,6 +2,8 @@ package com.didiglobal.logi.security.common.entity;
 
 import lombok.Data;
 
+import java.util.List;
+
 /**
  * @author cjm
  *

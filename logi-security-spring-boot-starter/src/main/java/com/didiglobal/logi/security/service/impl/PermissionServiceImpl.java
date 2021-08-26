@@ -1,5 +1,7 @@
 package com.didiglobal.logi.security.service.impl;
 
+import com.alibaba.fastjson.JSON;
+import com.didiglobal.logi.security.common.dto.permission.PermissionDTO;
 import com.didiglobal.logi.security.common.entity.Permission;
 import com.didiglobal.logi.security.common.enums.ResultCode;
 import com.didiglobal.logi.security.common.vo.permission.PermissionTreeVO;
@@ -8,8 +10,10 @@ import com.didiglobal.logi.security.exception.LogiSecurityException;
 import com.didiglobal.logi.security.service.PermissionService;
 import com.didiglobal.logi.security.service.RolePermissionService;
 import com.didiglobal.logi.security.util.CopyBeanUtil;
+import com.didiglobal.logi.security.util.MathUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import java.util.*;
 
@@ -77,5 +81,93 @@ public class PermissionServiceImpl implements PermissionService {
         // 获取该角色拥有的全部权限id
         List<Integer> permissionIdList = rolePermissionService.getPermissionIdListByRoleId(roleId);
         return buildPermissionTreeWithHas(permissionIdList);
+    }
+
+    public static void main(String[] args) {
+        List<PermissionDTO> permissionDTOList = new ArrayList<>();
+
+        PermissionDTO permissionDTO = new PermissionDTO();
+        permissionDTO.setPermissionName("一级部门1");
+        PermissionDTO permissionDTO2 = new PermissionDTO();
+        PermissionDTO permissionDTO3 = new PermissionDTO();
+        PermissionDTO permissionDTO4 = new PermissionDTO();
+        permissionDTO2.setPermissionName("二级部门1");
+        permissionDTO3.setPermissionName("二级部门2");
+        permissionDTO4.setPermissionName("三级部门3");
+        permissionDTO.getChildPermissionList().add(permissionDTO2);
+        permissionDTO.getChildPermissionList().add(permissionDTO3);
+        permissionDTO.getChildPermissionList().add(permissionDTO4);
+        permissionDTOList.add(permissionDTO);
+
+        PermissionDTO permissionDTO11 = new PermissionDTO();
+        permissionDTO11.setPermissionName("一级部门11");
+        PermissionDTO permissionDTO22 = new PermissionDTO();
+        PermissionDTO permissionDTO33 = new PermissionDTO();
+        PermissionDTO permissionDTO44 = new PermissionDTO();
+        permissionDTO22.setPermissionName("二级部门11");
+        permissionDTO33.setPermissionName("二级部门22");
+        permissionDTO44.setPermissionName("三级部门33");
+        permissionDTO11.getChildPermissionList().add(permissionDTO22);
+        permissionDTO11.getChildPermissionList().add(permissionDTO33);
+        permissionDTO11.getChildPermissionList().add(permissionDTO44);
+        permissionDTOList.add(permissionDTO11);
+
+        PermissionDTO permissionDTO111 = new PermissionDTO();
+        permissionDTO111.setPermissionName("三级部门111");
+        permissionDTO22.getChildPermissionList().add(permissionDTO111);
+
+
+        String s = JSON.toJSONString(permissionDTO);
+        System.out.println(s);
+        PermissionServiceImpl permissionService = new PermissionServiceImpl();
+        permissionService.savePermission(permissionDTOList);
+    }
+
+    @Override
+    public void savePermission(List<PermissionDTO> permissionDTOList) {
+        if(CollectionUtils.isEmpty(permissionDTOList)) {
+            return;
+        }
+
+        List<Permission> permissionList = new ArrayList<>();
+
+        Map<PermissionDTO, Integer> permissionDTOMap = new HashMap<>();
+
+        Queue<PermissionDTO> queue = new LinkedList<>();
+        PermissionDTO permissionDTO = new PermissionDTO();
+        permissionDTO.setChildPermissionList(permissionDTOList);
+        queue.offer(permissionDTO);
+
+        int level = 0;
+        while(!queue.isEmpty()) {
+            int size = queue.size();
+            while(size-- > 0) {
+                PermissionDTO dto = queue.poll();
+                if(dto == null) {
+                    continue;
+                }
+                Permission permission = CopyBeanUtil.copy(dto, Permission.class);
+                if(level == 0) {
+                    permission.setId(0);
+                } else {
+                    permission.setLevel(level);
+                    permission.setId(Integer.parseInt(MathUtil.getRandomNumber(5) + "" + System.currentTimeMillis() % 1000));
+                    permission.setParentId(permissionDTOMap.get(dto));
+                    permissionList.add(permission);
+                }
+                permission.setLeaf(false);
+                if(CollectionUtils.isEmpty(dto.getChildPermissionList())) {
+                    permission.setLeaf(true);
+                    continue;
+                }
+
+                for(PermissionDTO temp : dto.getChildPermissionList()) {
+                    permissionDTOMap.put(temp, permission.getId());
+                    queue.offer(temp);
+                }
+            }
+            level++;
+        }
+        permissionDao.insertBatch(permissionList);
     }
 }

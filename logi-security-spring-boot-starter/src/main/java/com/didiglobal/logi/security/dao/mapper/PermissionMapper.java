@@ -8,5 +8,5 @@ import org.apache.ibatis.annotations.Mapper;
  * @author cjm
  */
 @Mapper
-public interface PermissionMapper extends BaseMapper<PermissionPO> {
+public interface PermissionMapper extends EasyBaseMapper<PermissionPO> {
 }

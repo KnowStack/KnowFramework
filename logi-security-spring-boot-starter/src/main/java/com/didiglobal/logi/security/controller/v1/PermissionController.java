@@ -2,6 +2,7 @@ package com.didiglobal.logi.security.controller.v1;
 
 import com.didiglobal.logi.security.common.Constants;
 import com.didiglobal.logi.security.common.Result;
+import com.didiglobal.logi.security.common.dto.permission.PermissionDTO;
 import com.didiglobal.logi.security.common.vo.permission.PermissionTreeVO;
 import com.didiglobal.logi.security.service.PermissionService;
 import io.swagger.annotations.Api;
@@ -10,6 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 /**
  * @author cjm
@@ -27,5 +30,12 @@ public class PermissionController {
     public Result<PermissionTreeVO> tree() {
         PermissionTreeVO permissionTreeVO = permissionService.buildPermissionTree();
         return Result.success(permissionTreeVO);
+    }
+
+    @GetMapping("/import")
+    @ApiOperation(value = "权限导入", notes = "权限导入")
+    public Result<String> imports(List<PermissionDTO> permissionDTOList) {
+        permissionService.savePermission(permissionDTOList);
+        return Result.success();
     }
 }

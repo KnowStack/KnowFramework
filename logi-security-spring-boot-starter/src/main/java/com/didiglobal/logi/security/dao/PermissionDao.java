@@ -14,4 +14,10 @@ public interface PermissionDao {
      * @return 权限List
      */
     List<Permission> selectAllAndAscOrderByLevel();
+
+    /**
+     * 批量插入
+     * @param permissionList 权限信息List
+     */
+    void insertBatch(List<Permission> permissionList);
 }
