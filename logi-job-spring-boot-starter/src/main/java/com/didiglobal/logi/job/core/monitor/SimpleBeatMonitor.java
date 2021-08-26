@@ -46,7 +46,7 @@ public class SimpleBeatMonitor implements BeatMonitor {
   }
 
   class BeatMonitorThread implements Runnable {
-    private static final long INTERVAL = 5L;
+    private static final long INTERVAL = 30L;
 
     @Override
     public void run() {

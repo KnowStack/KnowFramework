@@ -78,4 +78,9 @@ public class AuvWorker implements Serializable {
    */
   private String appName;
 
+  /**
+   * 更新时间
+   */
+  private Timestamp updateTime;
+
 }

@@ -1,10 +1,10 @@
 package com.didiglobal.logi.job.mapper;
 
+import com.didiglobal.logi.job.common.bean.AuvJob;
 import com.didiglobal.logi.job.common.bean.AuvWorker;
-import org.apache.ibatis.annotations.Delete;
-import org.apache.ibatis.annotations.Insert;
-import org.apache.ibatis.annotations.Param;
-import org.apache.ibatis.annotations.Update;
+import org.apache.ibatis.annotations.*;
+
+import java.util.List;
 
 /**
  * <p>
@@ -32,4 +32,7 @@ public interface AuvWorkerMapper {
   @Delete("delete from auv_worker where code=#{code}")
   int deleteByCode(@Param("code") String code);
 
+  @Select("select code, name, cpu, cpu_used, memory, memory_used, jvm_memory,"
+          + "jvm_memory_used, job_num, heartbeat, app_name, update_time from auv_worker where app_name=#{appName}")
+  List<AuvWorker> selectByAppName(@Param("appName") String appName);
 }

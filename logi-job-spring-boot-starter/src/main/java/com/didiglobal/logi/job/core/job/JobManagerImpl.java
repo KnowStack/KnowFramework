@@ -20,10 +20,7 @@ import com.didiglobal.logi.job.mapper.AuvTaskMapper;
 import com.didiglobal.logi.job.utils.BeanUtil;
 import com.didiglobal.logi.job.utils.ThreadUtil;
 import java.sql.Timestamp;
-import java.util.Calendar;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Future;
@@ -54,6 +51,8 @@ public class JobManagerImpl implements JobManager {
   private static final Long CHECK_BEFORE_INTERVAL = 60L;
   // 每次给锁续约的时间 秒
   private static final Long RENEW_INTERVAL = 60L;
+
+  private static final Long ONE_HOUR = 3600L;
 
   private JobFactory jobFactory;
   private AuvJobMapper auvJobMapper;
@@ -292,8 +291,20 @@ public class JobManagerImpl implements JobManager {
     AuvTask auvTask = auvTaskMapper.selectByCode(jobInfo.getTaskCode(), logIJobProperties.getAppName());
     List<TaskInfo.TaskWorker> taskWorkers = BeanUtil.convertToList(auvTask.getTaskWorkerStr(),
             TaskInfo.TaskWorker.class);
+
+    long currentTime = System.currentTimeMillis();
+
     if (!CollectionUtils.isEmpty(taskWorkers)) {
-      for (TaskInfo.TaskWorker taskWorker : taskWorkers) {
+      taskWorkers.sort((o1, o2) -> o1.getLastFireTime().after(o2.getLastFireTime()) ? 1 : -1);
+
+      Iterator<TaskInfo.TaskWorker> iter = taskWorkers.iterator();
+      while (iter.hasNext()){
+        TaskInfo.TaskWorker taskWorker = iter.next();
+        if(TaskStatusEnum.WAITING.getValue().equals(taskWorker.getStatus())
+                && taskWorker.getLastFireTime().getTime() + 12 * ONE_HOUR * 1000 < currentTime){
+          iter.remove();
+        }
+
         if (Objects.equals(taskWorker.getWorkerCode(), WorkerSingleton.getInstance()
                 .getWorkerInfo().getCode())) {
           taskWorker.setStatus(TaskStatusEnum.WAITING.getValue());
