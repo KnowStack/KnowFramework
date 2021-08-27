@@ -1,4 +1,4 @@
-package com.didiglobal.logi.security.config;
+package com.didiglobal.logi.security.handler;
 
 import com.baomidou.mybatisplus.core.injector.AbstractMethod;
 import com.baomidou.mybatisplus.core.injector.DefaultSqlInjector;

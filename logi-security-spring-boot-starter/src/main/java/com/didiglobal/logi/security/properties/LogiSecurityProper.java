@@ -27,4 +27,28 @@ public class LogiSecurityProper {
      */
     @NotEmpty(message = "配置文件配置必须要配置[logi.security.resource-extend-bean-name]属性")
     private String resourceExtendBeanName;
+
+    /**
+     * 数据库信息
+     */
+    @NotEmpty(message = "配置文件配置必须要配置[logi.security.username]属性")
+    private String username;
+
+    /**
+     * 数据库信息
+     */
+    @NotEmpty(message = "配置文件配置必须要配置[logi.security.password]属性")
+    private String password;
+
+    /**
+     * 数据库信息
+     */
+    @NotEmpty(message = "配置文件配置必须要配置[logi.security.url]属性")
+    private String url;
+
+    /**
+     * 数据库信息
+     */
+    @NotEmpty(message = "配置文件配置必须要配置[logi.security.driver-class-name]属性")
+    private String driverClassName;
 }

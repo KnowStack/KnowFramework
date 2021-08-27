@@ -12,5 +12,4 @@ public class SecurityTestApplication {
     public static void main(String[] args) {
         SpringApplication.run(SecurityTestApplication.class, args);
     }
-
 }

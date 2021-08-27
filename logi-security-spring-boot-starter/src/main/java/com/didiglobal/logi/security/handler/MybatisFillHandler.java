@@ -1,4 +1,4 @@
-package com.didiglobal.logi.security.config;
+package com.didiglobal.logi.security.handler;
 
 import com.baomidou.mybatisplus.core.handlers.MetaObjectHandler;
 import com.didiglobal.logi.security.properties.LogiSecurityProper;
