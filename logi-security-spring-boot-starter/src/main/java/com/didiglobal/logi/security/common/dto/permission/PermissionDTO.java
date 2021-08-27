@@ -1,5 +1,6 @@
 package com.didiglobal.logi.security.common.dto.permission;
 
+import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
@@ -10,6 +11,7 @@ import java.util.List;
  * @author cjm
  */
 @Data
+@ApiModel(description = "权限导入信息")
 public class PermissionDTO {
 
     @ApiModelProperty(value = "权限名", dataType = "String", required = true)
@@ -19,5 +21,5 @@ public class PermissionDTO {
     private String description;
 
     @ApiModelProperty(value = "子权限", dataType = "List<PermissionDTO>", required = false)
-    private List<PermissionDTO> childPermissionList = new ArrayList<>();
+    private List<PermissionDTO> childPermissionDTOList;
 }

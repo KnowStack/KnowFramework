@@ -54,4 +54,15 @@ public class ResourceTypeServiceImpl implements ResourceTypeService {
         ResourceType resourceType = resourceTypeDao.selectByResourceTypeId(resourceTypeId);
         return CopyBeanUtil.copy(resourceType, ResourceTypeVO.class);
     }
+
+    @Override
+    public void saveResourceType(List<String> resourceTypeNameList) {
+        List<ResourceType> resourceTypeList = new ArrayList<>();
+        for(String resourceName : resourceTypeNameList) {
+            ResourceType resourceType = new ResourceType();
+            resourceType.setTypeName(resourceName);
+            resourceTypeList.add(resourceType);
+        }
+        resourceTypeDao.insertBatch(resourceTypeList);
+    }
 }

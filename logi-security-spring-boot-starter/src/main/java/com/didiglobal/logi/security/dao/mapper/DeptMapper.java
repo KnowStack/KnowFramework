@@ -8,6 +8,6 @@ import org.apache.ibatis.annotations.Mapper;
  * @author cjm
  */
 @Mapper
-public interface DeptMapper extends BaseMapper<DeptPO> {
+public interface DeptMapper extends EasyBaseMapper<DeptPO> {
 
 }

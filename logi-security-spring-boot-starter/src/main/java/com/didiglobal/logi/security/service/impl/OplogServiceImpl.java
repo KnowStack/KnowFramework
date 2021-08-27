@@ -6,6 +6,7 @@ import com.didiglobal.logi.security.common.dto.oplog.OplogDTO;
 import com.didiglobal.logi.security.common.entity.Oplog;
 import com.didiglobal.logi.security.common.entity.OplogExtra;
 import com.didiglobal.logi.security.common.dto.oplog.OplogQueryDTO;
+import com.didiglobal.logi.security.common.enums.oplog.OplogCode;
 import com.didiglobal.logi.security.common.vo.oplog.OplogVO;
 import com.didiglobal.logi.security.common.vo.user.UserBriefVO;
 import com.didiglobal.logi.security.dao.OplogDao;
@@ -16,6 +17,7 @@ import com.didiglobal.logi.security.util.CopyBeanUtil;
 import com.didiglobal.logi.security.util.NetworkUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -56,16 +58,6 @@ public class OplogServiceImpl implements OplogService {
         OplogVO oplogVO = CopyBeanUtil.copy(oplog, OplogVO.class);
         oplogVO.setCreateTime(oplog.getCreateTime().getTime());
         return oplogVO;
-    }
-
-    @Override
-    public List<String> getOplogExtraList(Integer type) {
-        List<OplogExtra> oplogExtraList = oplogExtraService.getOplogExtraListByType(type);
-        List<String> result = new ArrayList<>();
-        for(OplogExtra oplogExtra : oplogExtraList) {
-            result.add(oplogExtra.getInfo());
-        }
-        return result;
     }
 
     @Override

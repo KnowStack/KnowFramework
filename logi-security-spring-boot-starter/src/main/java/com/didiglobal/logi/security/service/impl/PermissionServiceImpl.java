@@ -94,9 +94,9 @@ public class PermissionServiceImpl implements PermissionService {
         permissionDTO2.setPermissionName("二级部门1");
         permissionDTO3.setPermissionName("二级部门2");
         permissionDTO4.setPermissionName("三级部门3");
-        permissionDTO.getChildPermissionList().add(permissionDTO2);
-        permissionDTO.getChildPermissionList().add(permissionDTO3);
-        permissionDTO.getChildPermissionList().add(permissionDTO4);
+        permissionDTO.getChildPermissionDTOList().add(permissionDTO2);
+        permissionDTO.getChildPermissionDTOList().add(permissionDTO3);
+        permissionDTO.getChildPermissionDTOList().add(permissionDTO4);
         permissionDTOList.add(permissionDTO);
 
         PermissionDTO permissionDTO11 = new PermissionDTO();
@@ -107,20 +107,17 @@ public class PermissionServiceImpl implements PermissionService {
         permissionDTO22.setPermissionName("二级部门11");
         permissionDTO33.setPermissionName("二级部门22");
         permissionDTO44.setPermissionName("三级部门33");
-        permissionDTO11.getChildPermissionList().add(permissionDTO22);
-        permissionDTO11.getChildPermissionList().add(permissionDTO33);
-        permissionDTO11.getChildPermissionList().add(permissionDTO44);
+        permissionDTO11.getChildPermissionDTOList().add(permissionDTO22);
+        permissionDTO11.getChildPermissionDTOList().add(permissionDTO33);
+        permissionDTO11.getChildPermissionDTOList().add(permissionDTO44);
         permissionDTOList.add(permissionDTO11);
 
         PermissionDTO permissionDTO111 = new PermissionDTO();
         permissionDTO111.setPermissionName("三级部门111");
-        permissionDTO22.getChildPermissionList().add(permissionDTO111);
+        permissionDTO22.getChildPermissionDTOList().add(permissionDTO111);
 
-
-        String s = JSON.toJSONString(permissionDTO);
-        System.out.println(s);
-        PermissionServiceImpl permissionService = new PermissionServiceImpl();
-        permissionService.savePermission(permissionDTOList);
+        System.out.println(JSON.toJSONString(permissionDTOList));
+        // permissionService.savePermission(permissionDTOList);
     }
 
     @Override
@@ -135,7 +132,7 @@ public class PermissionServiceImpl implements PermissionService {
 
         Queue<PermissionDTO> queue = new LinkedList<>();
         PermissionDTO permissionDTO = new PermissionDTO();
-        permissionDTO.setChildPermissionList(permissionDTOList);
+        permissionDTO.setChildPermissionDTOList(permissionDTOList);
         queue.offer(permissionDTO);
 
         int level = 0;
@@ -155,13 +152,14 @@ public class PermissionServiceImpl implements PermissionService {
                     permission.setParentId(permissionDTOMap.get(dto));
                     permissionList.add(permission);
                 }
-                permission.setLeaf(false);
-                if(CollectionUtils.isEmpty(dto.getChildPermissionList())) {
+
+                if(CollectionUtils.isEmpty(dto.getChildPermissionDTOList())) {
                     permission.setLeaf(true);
                     continue;
                 }
+                permission.setLeaf(false);
 
-                for(PermissionDTO temp : dto.getChildPermissionList()) {
+                for(PermissionDTO temp : dto.getChildPermissionDTOList()) {
                     permissionDTOMap.put(temp, permission.getId());
                     queue.offer(temp);
                 }

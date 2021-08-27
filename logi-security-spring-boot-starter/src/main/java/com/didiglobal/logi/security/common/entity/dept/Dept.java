@@ -18,11 +18,6 @@ public class Dept {
     private String deptName;
 
     /**
-     * 描述
-     */
-    private String description;
-
-    /**
      * 父部门id（根部门parentId为0）
      */
     private Integer parentId;
@@ -36,4 +31,9 @@ public class Dept {
      * 部门的层级（parentId为0的层级为1）
      */
     private Integer level;
+
+    /**
+     * 描述
+     */
+    private String description;
 }

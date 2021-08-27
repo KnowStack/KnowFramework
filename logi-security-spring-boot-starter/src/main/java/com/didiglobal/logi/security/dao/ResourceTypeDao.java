@@ -30,4 +30,10 @@ public interface ResourceTypeDao {
      * @return 资源类别信息
      */
     ResourceType selectByResourceTypeId(Integer resourceTypeId);
+
+    /**
+     * 批量插入
+     * @param resourceTypeList 资源类别List
+     */
+    void insertBatch(List<ResourceType> resourceTypeList);
 }

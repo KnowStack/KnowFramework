@@ -9,6 +9,7 @@ import com.didiglobal.logi.security.dao.mapper.DeptMapper;
 import com.didiglobal.logi.security.util.CopyBeanUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
 import java.util.List;
@@ -67,5 +68,13 @@ public class DeptDaoImpl extends BaseDaoImpl<DeptPO> implements DeptDao {
         queryWrapper.select("id").eq("parent_id", deptId);
         List<Object> deptIdList = deptMapper.selectObjs(queryWrapper);
         return deptIdList.stream().map(dpId -> (Integer) dpId).collect(Collectors.toList());
+    }
+
+    @Override
+    public void insertBatch(List<Dept> deptList) {
+        if(CollectionUtils.isEmpty(deptList)) {
+            return;
+        }
+        deptMapper.insertBatchSomeColumn(CopyBeanUtil.copyList(deptList, DeptPO.class));
     }
 }

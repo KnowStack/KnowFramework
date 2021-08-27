@@ -38,6 +38,13 @@ public class ResourceController {
         return Result.success(resourceTypeVOList);
     }
 
+    @PostMapping("/type/import")
+    @ApiOperation(value = "导入资源类型", notes = "批量导入资源类型名")
+    public Result<String> typeImport(@RequestBody @ApiParam(name = "list", value = "资源类型名List") List<String> list) {
+        resourceTypeService.saveResourceType(list);
+        return Result.success();
+    }
+
     @GetMapping("/vpc/status")
     @ApiOperation(value = "获取资源查看权限控制状态", notes = "true开启、false关闭，vpc（ViewPermissionControl）")
     public Result<Boolean> vpcStatus() {
@@ -136,7 +143,7 @@ public class ResourceController {
 
     @PostMapping("/control/level")
     @ApiOperation(value = "获取用户拥有资源的权限类别", notes = "0 无权限、1 查看权限、2 管理权限")
-    public Result<Integer> getControlLevel(ControlLevelQueryDTO queryDTO) {
+    public Result<Integer> getControlLevel(@RequestBody ControlLevelQueryDTO queryDTO) {
         try {
             ControlLevelCode controlLevel = userResourceService.getControlLevel(queryDTO);
             return Result.success(controlLevel.getType());

@@ -3,7 +3,9 @@ package com.didiglobal.logi.security.service;
 import com.didiglobal.logi.security.common.PagingData;
 import com.didiglobal.logi.security.common.dto.oplog.OplogQueryDTO;
 import com.didiglobal.logi.security.common.dto.oplog.OplogDTO;
+import com.didiglobal.logi.security.common.enums.oplog.OplogCode;
 import com.didiglobal.logi.security.common.vo.oplog.OplogVO;
+import org.springframework.util.CollectionUtils;
 
 import java.util.List;
 
@@ -34,11 +36,5 @@ public interface OplogService {
      */
     OplogVO getOplogDetailByOplogId(Integer opLogId);
 
-    /**
-     * 获取操作日志列表的查询条件信息
-     * @param type 1 操作页面、2 操作类型、3 对象分类
-     * @return 操作页面NameList、操作类型NameList、对象分类NameList
-     */
-    List<String> getOplogExtraList(Integer type);
 
 }

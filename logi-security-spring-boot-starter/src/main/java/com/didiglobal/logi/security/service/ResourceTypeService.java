@@ -36,4 +36,10 @@ public interface ResourceTypeService {
      * @return 资源类别信息
      */
     ResourceTypeVO getResourceTypeByResourceTypeId(Integer resourceTypeId);
+
+    /**
+     * 保存资源类型
+     * @param resourceTypeNameList 资源类型名List
+     */
+    void saveResourceType(List<String> resourceTypeNameList);
 }

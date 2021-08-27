@@ -1,5 +1,6 @@
 package com.didiglobal.logi.security.service.impl;
 
+import com.didiglobal.logi.security.common.dto.dept.DeptDTO;
 import com.didiglobal.logi.security.common.entity.dept.Dept;
 import com.didiglobal.logi.security.common.entity.dept.DeptBrief;
 import com.didiglobal.logi.security.common.vo.dept.DeptBriefVO;
@@ -10,8 +11,10 @@ import com.didiglobal.logi.security.dao.DeptDao;
 import com.didiglobal.logi.security.exception.LogiSecurityException;
 import com.didiglobal.logi.security.service.DeptService;
 import com.didiglobal.logi.security.util.CopyBeanUtil;
+import com.didiglobal.logi.security.util.MathUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
 import java.util.*;
@@ -131,6 +134,55 @@ public class DeptServiceImpl implements DeptService {
         List<DeptBriefVO> deptBriefVOList = new ArrayList<>();
         getDeptBriefListFromDeptMapByChildId(deptMap, deptId, deptBriefVOList);
         return deptBriefVOList;
+    }
+
+    @Override
+    public void saveDept(List<DeptDTO> deptDTOList) {
+        if(CollectionUtils.isEmpty(deptDTOList)) {
+            return;
+        }
+
+        List<Dept> deptList = new ArrayList<>();
+
+        Map<DeptDTO, Integer> deptDTOMap = new HashMap<>();
+
+        Queue<DeptDTO> queue = new LinkedList<>();
+        DeptDTO deptDTO = new DeptDTO();
+        deptDTO.setChildDeptDTOList(deptDTOList);
+        queue.offer(deptDTO);
+
+        int level = 0;
+        while(!queue.isEmpty()) {
+            int size = queue.size();
+            while(size-- > 0) {
+                DeptDTO dto = queue.poll();
+                if(dto == null) {
+                    continue;
+                }
+                Dept dept = CopyBeanUtil.copy(dto, Dept.class);
+                if(level == 0) {
+                    dept.setId(0);
+                } else {
+                    dept.setLevel(level);
+                    dept.setId(Integer.parseInt(MathUtil.getRandomNumber(5) + "" + System.currentTimeMillis() % 1000));
+                    dept.setParentId(deptDTOMap.get(dto));
+                    deptList.add(dept);
+                }
+
+                if(CollectionUtils.isEmpty(dto.getChildDeptDTOList())) {
+                    dept.setLeaf(true);
+                    continue;
+                }
+                dept.setLeaf(false);
+
+                for(DeptDTO temp : dto.getChildDeptDTOList()) {
+                    deptDTOMap.put(temp, dept.getId());
+                    queue.offer(temp);
+                }
+            }
+            level++;
+        }
+        deptDao.insertBatch(deptList);
     }
 
     private void getParentDeptListByChildId(DeptBrief child, Integer deptId, List<DeptBriefVO> deptBriefVOList) throws LogiSecurityException {

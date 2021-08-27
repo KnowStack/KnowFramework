@@ -11,6 +11,7 @@ import com.didiglobal.logi.security.dao.mapper.ResourceTypeMapper;
 import com.didiglobal.logi.security.util.CopyBeanUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
 import java.util.List;
@@ -44,5 +45,13 @@ public class ResourceTypeDaoImpl extends BaseDaoImpl<ResourceTypePO> implements 
         QueryWrapper<ResourceTypePO> queryWrapper = getQueryWrapper();
         queryWrapper.eq("id", resourceTypeId);
         return CopyBeanUtil.copy(resourceTypeMapper.selectOne(queryWrapper), ResourceType.class);
+    }
+
+    @Override
+    public void insertBatch(List<ResourceType> resourceTypeList) {
+        if(CollectionUtils.isEmpty(resourceTypeList)) {
+            return;
+        }
+        resourceTypeMapper.insertBatchSomeColumn(CopyBeanUtil.copyList(resourceTypeList, ResourceTypePO.class));
     }
 }

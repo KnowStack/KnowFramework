@@ -8,6 +8,7 @@ import com.didiglobal.logi.security.dao.mapper.OplogExtraMapper;
 import com.didiglobal.logi.security.util.CopyBeanUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.util.CollectionUtils;
 
 import java.util.List;
 
@@ -25,5 +26,13 @@ public class OplogExtraDaoImpl extends BaseDaoImpl<OplogExtraPO> implements Oplo
         QueryWrapper<OplogExtraPO> queryWrapper = getQueryWrapper();
         queryWrapper.eq("type", type);
         return CopyBeanUtil.copyList(oplogExtraMapper.selectList(queryWrapper), OplogExtra.class);
+    }
+
+    @Override
+    public void insertBatch(List<OplogExtra> oplogExtraList) {
+        if(CollectionUtils.isEmpty(oplogExtraList)) {
+            return;
+        }
+        oplogExtraMapper.insertBatchSomeColumn(CopyBeanUtil.copyList(oplogExtraList, OplogExtraPO.class));
     }
 }

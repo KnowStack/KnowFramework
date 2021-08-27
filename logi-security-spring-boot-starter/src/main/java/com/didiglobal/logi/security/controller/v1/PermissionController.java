@@ -7,10 +7,9 @@ import com.didiglobal.logi.security.common.vo.permission.PermissionTreeVO;
 import com.didiglobal.logi.security.service.PermissionService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -32,9 +31,9 @@ public class PermissionController {
         return Result.success(permissionTreeVO);
     }
 
-    @GetMapping("/import")
-    @ApiOperation(value = "权限导入", notes = "权限导入")
-    public Result<String> imports(List<PermissionDTO> permissionDTOList) {
+    @PostMapping("/import")
+    @ApiOperation(value = "权限信息导入", notes = "权限信息导入")
+    public Result<String> imports(@RequestBody @ApiParam(name = "permissionDTOList", value = "权限信息List")  List<PermissionDTO> permissionDTOList) {
         permissionService.savePermission(permissionDTOList);
         return Result.success();
     }

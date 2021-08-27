@@ -42,4 +42,10 @@ public interface DeptDao {
      * @return child部门idList
      */
     List<Integer> selectIdListByParentId(Integer deptId);
+
+    /**
+     * 批量插入
+     * @param deptList 部门信息List
+     */
+    void insertBatch(List<Dept> deptList);
 }
