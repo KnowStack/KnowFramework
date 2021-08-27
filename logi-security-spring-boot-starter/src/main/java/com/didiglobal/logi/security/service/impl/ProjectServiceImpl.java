@@ -191,7 +191,7 @@ public class ProjectServiceImpl implements ProjectService {
         // TODO 获取与该项目相关联的服务
 
         // 获取与该项目相关联的具体资源
-        ResourceExtend resourceExtend = resourceExtendBeanTool.getResourceExtendImplBean();
+        ResourceExtend resourceExtend = resourceExtendBeanTool.getResourceExtendImpl();
         List<ResourceDTO> resourceDTOList = resourceExtend.getResourceList(projectId, null);
         if(!CollectionUtils.isEmpty(resourceDTOList)) {
             List<String> list = resourceDTOList.stream().map(ResourceDTO::getResourceName).collect(Collectors.toList());

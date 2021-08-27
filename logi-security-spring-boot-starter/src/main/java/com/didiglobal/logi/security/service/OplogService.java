@@ -3,11 +3,7 @@ package com.didiglobal.logi.security.service;
 import com.didiglobal.logi.security.common.PagingData;
 import com.didiglobal.logi.security.common.dto.oplog.OplogQueryDTO;
 import com.didiglobal.logi.security.common.dto.oplog.OplogDTO;
-import com.didiglobal.logi.security.common.enums.oplog.OplogCode;
 import com.didiglobal.logi.security.common.vo.oplog.OplogVO;
-import org.springframework.util.CollectionUtils;
-
-import java.util.List;
 
 /**
  * @author cjm
@@ -35,6 +31,4 @@ public interface OplogService {
      * @return OplogVo 详情
      */
     OplogVO getOplogDetailByOplogId(Integer opLogId);
-
-
 }

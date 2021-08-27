@@ -115,7 +115,7 @@ public class UserResourceServiceImpl implements UserResourceService {
             }
         } else {
             // 如果是具体资源展示级别
-            ResourceExtend resourceExtend = resourceExtendBeanTool.getResourceExtendImplBean();
+            ResourceExtend resourceExtend = resourceExtendBeanTool.getResourceExtendImpl();
             List<ResourceDTO> resourceDTOList = resourceExtend.getResourceList(projectId, resourceTypeId);
             for (ResourceDTO resourceDto : resourceDTOList) {
                 MByUDataVO dataVo = new MByUDataVO(resourceDto.getResourceId(), resourceDto.getResourceName());
@@ -178,7 +178,7 @@ public class UserResourceServiceImpl implements UserResourceService {
             int resourceCnt = 1;
             if (resourceId == null) {
                 // 如果具体资源id为null，则获取某个项目下 || 某个项目下某个资源类别的具体资源个数
-                ResourceExtend resourceExtend = resourceExtendBeanTool.getResourceExtendImplBean();
+                ResourceExtend resourceExtend = resourceExtendBeanTool.getResourceExtendImpl();
                 resourceCnt = resourceExtend.getResourceCnt(projectId, resourceTypeId);
                 return hasResourceCnt == resourceCnt ? HasLevelCode.ALL : HasLevelCode.HALF;
             }
@@ -327,7 +327,7 @@ public class UserResourceServiceImpl implements UserResourceService {
         for (Integer pId : projectIdList) {
             for (Integer rtId : resourceTypeIdList) {
                 if (resourceIdList == null) {
-                    ResourceExtend resourceExtend = resourceExtendBeanTool.getResourceExtendImplBean();
+                    ResourceExtend resourceExtend = resourceExtendBeanTool.getResourceExtendImpl();
                     List<ResourceDTO> list = resourceExtend.getResourceList(pId, rtId);
                     if (list != null) {
                         resourceDTOList.addAll(list);
@@ -405,7 +405,7 @@ public class UserResourceServiceImpl implements UserResourceService {
         List<ResourceDTO> resourceDTOList = new ArrayList<>();
         if (resourceId == null) {
             // resourceId为null，说明是某个项目或者某个资源类别下的全部具体资源的权限分配给用户，获取所有的具体资源信息
-            ResourceExtend resourceExtend = resourceExtendBeanTool.getResourceExtendImplBean();
+            ResourceExtend resourceExtend = resourceExtendBeanTool.getResourceExtendImpl();
             List<ResourceDTO> list = resourceExtend.getResourceList(projectId, resourceTypeId);
             if (list != null) {
                 resourceDTOList.addAll(list);
@@ -591,7 +591,7 @@ public class UserResourceServiceImpl implements UserResourceService {
 
     private int getAdminOrViewUserCnt(UserResourceQueryDTO queryDTO) {
         List<Integer> userIdList = userResourceDao.selectUserIdListGroupByUserId(queryDTO);
-        ResourceExtend resourceExtend = resourceExtendBeanTool.getResourceExtendImplBean();
+        ResourceExtend resourceExtend = resourceExtendBeanTool.getResourceExtendImpl();
         int total = resourceExtend.getResourceCnt(queryDTO.getProjectId(), queryDTO.getResourceTypeId());
         int cnt = userIdList.size();
         for (Integer userId : userIdList) {
@@ -678,7 +678,7 @@ public class UserResourceServiceImpl implements UserResourceService {
      */
     private PagingData<MByRVO> dealResourceLevel(MByRQueryDTO queryDTO, boolean isOn) {
         // 调用扩展接口获取具体资源信息
-        ResourceExtend resourceExtend = resourceExtendBeanTool.getResourceExtendImplBean();
+        ResourceExtend resourceExtend = resourceExtendBeanTool.getResourceExtendImpl();
         PagingData<ResourceDTO> page = resourceExtend.getResourcePage(
                 queryDTO.getProjectId(), queryDTO.getResourceTypeId(),
                 queryDTO.getName(), queryDTO.getPage(), queryDTO.getSize()

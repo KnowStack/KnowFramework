@@ -59,7 +59,7 @@ public class ResourceTest extends BaseTest  {
 
     @Test
     public void testGetResourceExtend() {
-        ResourceExtend resourceExtendImplBean = resourceExtendBeanTool.getResourceExtendImplBean();
+        ResourceExtend resourceExtendImplBean = resourceExtendBeanTool.getResourceExtendImpl();
         System.out.println(resourceExtendImplBean);
     }
 }

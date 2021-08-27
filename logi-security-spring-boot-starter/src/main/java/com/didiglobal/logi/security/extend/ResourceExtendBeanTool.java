@@ -20,18 +20,29 @@ public class ResourceExtendBeanTool {
 
     private static final String DEFAULT_BEAN_NAME = "defaultResourceExtendImpl";
 
-    public ResourceExtend getResourceExtendImplBean() {
+    private ResourceExtend getCustomResourceExtendImplBean() {
         String customBeanName = logiSecurityProper.getResourceExtendBeanName();
-        Object bean = null;
         try {
-            bean = applicationContext.getBean(customBeanName);
+            return (ResourceExtend) applicationContext.getBean(customBeanName);
         } catch (NoSuchBeanDefinitionException e) {
-            System.out.println("未能找到自定义的ResourceExtend实现类的bean，使用默认bean");
-            // 如果用户没有自己实现ResourceExtend接口，则用默认的
-            bean = applicationContext.getBean(DEFAULT_BEAN_NAME);
-        } catch (Exception e) {
-            e.printStackTrace();
+            throw new UnsupportedOperationException("未能找到自定义的ResourceExtend实现类的bean，使用默认bean");
         }
-        return (ResourceExtend) bean;
+    }
+
+    private ResourceExtend getDefaultResourceExtendImplBean() {
+        return (ResourceExtend) applicationContext.getBean(DEFAULT_BEAN_NAME);
+    }
+
+    public ResourceExtend getResourceExtendImpl() {
+        ResourceExtend resourceExtend;
+        try {
+            resourceExtend = getCustomResourceExtendImplBean();
+        } catch (UnsupportedOperationException e) {
+            e.printStackTrace();
+            // System.out.println("未能找到自定义的ResourceExtend实现类的bean，使用默认bean");
+            // 如果用户没有自己实现ResourceExtend接口，则用默认的
+            resourceExtend = getDefaultResourceExtendImplBean();
+        }
+        return resourceExtend;
     }
 }
