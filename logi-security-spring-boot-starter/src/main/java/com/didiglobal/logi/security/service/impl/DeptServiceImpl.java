@@ -117,13 +117,13 @@ public class DeptServiceImpl implements DeptService {
         if(deptId == null || deptId == 0 || CollectionUtils.isEmpty(deptMap)) {
             return new ArrayList<>();
         }
-        List<DeptBriefVO> deptBriefVOList = new ArrayList<>();
+        LinkedList<DeptBriefVO> deptBriefVOList = new LinkedList<>();
         while (deptId != null && deptId != 0) {
             Dept dept = deptMap.get(deptId);
             if(dept == null) {
                 break;
             }
-            deptBriefVOList.add(CopyBeanUtil.copy(dept, DeptBriefVO.class));
+            deptBriefVOList.addFirst(CopyBeanUtil.copy(dept, DeptBriefVO.class));
             deptId = dept.getParentId();
         }
         return deptBriefVOList;
