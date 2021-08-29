@@ -59,14 +59,9 @@ public class DeptServiceImpl implements DeptService {
 
     @Override
     public List<DeptBriefVO> getDeptBriefListByChildId(Integer deptId) {
-        List<DeptBriefVO> deptBriefVOList = new ArrayList<>();
-        try {
-            getParentDeptListByChildId(null, deptId, deptBriefVOList);
-        } catch (LogiSecurityException e) {
-            e.printStackTrace();
-            return new ArrayList<>();
-        }
-        return deptBriefVOList;
+        // 提前获取所有部门
+        Map<Integer, Dept> deptMap = getAllDeptMap();
+        return getDeptBriefListFromDeptMapByChildId(deptMap, deptId);
     }
 
     @Override
@@ -117,22 +112,20 @@ public class DeptServiceImpl implements DeptService {
         return map;
     }
 
-    private void getDeptBriefListFromDeptMapByChildId(Map<Integer, Dept> deptMap, Integer deptId, List<DeptBriefVO> deptBriefVOList) {
-        if(deptId == null || deptId == 0) {
-            return;
-        }
-        Dept dept = deptMap.get(deptId);
-        deptBriefVOList.add(CopyBeanUtil.copy(dept, DeptBriefVO.class));
-        getDeptBriefListFromDeptMapByChildId(deptMap, dept.getParentId(), deptBriefVOList);
-    }
-
     @Override
     public List<DeptBriefVO> getDeptBriefListFromDeptMapByChildId(Map<Integer, Dept> deptMap, Integer deptId) {
-        if(deptId == null || deptId == 0 || deptMap.isEmpty()) {
+        if(deptId == null || deptId == 0 || CollectionUtils.isEmpty(deptMap)) {
             return new ArrayList<>();
         }
         List<DeptBriefVO> deptBriefVOList = new ArrayList<>();
-        getDeptBriefListFromDeptMapByChildId(deptMap, deptId, deptBriefVOList);
+        while (deptId != null && deptId != 0) {
+            Dept dept = deptMap.get(deptId);
+            if(dept == null) {
+                break;
+            }
+            deptBriefVOList.add(CopyBeanUtil.copy(dept, DeptBriefVO.class));
+            deptId = dept.getParentId();
+        }
         return deptBriefVOList;
     }
 
@@ -183,23 +176,6 @@ public class DeptServiceImpl implements DeptService {
             level++;
         }
         deptDao.insertBatch(deptList);
-    }
-
-    private void getParentDeptListByChildId(DeptBrief child, Integer deptId, List<DeptBriefVO> deptBriefVOList) throws LogiSecurityException {
-        if(deptId == null || deptId == 0) {
-            return;
-        }
-        DeptBrief deptBrief = deptDao.selectBriefByDeptId(deptId);
-        if(child != null && deptBrief.getLevel() >= child.getLevel()) {
-            // 如果出现这种情况，则数据有误，中断递归
-            throw new LogiSecurityException(ResultCode.DEPT_DATA_ERROR);
-        }
-        try {
-            getParentDeptListByChildId(deptBrief, deptBrief.getParentId(), deptBriefVOList);
-        } catch (LogiSecurityException e) {
-            throw new LogiSecurityException(ResultCode.DEPT_DATA_ERROR);
-        }
-        deptBriefVOList.add(CopyBeanUtil.copy(deptBrief, DeptBriefVO.class));
     }
 
     private void getChildDeptIdListByParentId(Set<Integer> deptIdSet, Integer deptId) throws LogiSecurityException {
