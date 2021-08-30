@@ -65,7 +65,7 @@ public class UserController {
     }
 
     @GetMapping(value = "/assign/list/{userId}")
-    @ApiOperation(value = "用户管理/分配角色/列表", notes = "根据用户id和角色名模糊查询")
+    @ApiOperation(value = "用户管理/分配角色/列表", notes = "查询所有角色列表，并根据用户id，标记该用户拥有哪些角色")
     @ApiImplicitParam(name = "userId", value = "用户id", dataType = "int", required = true)
     public Result<List<AssignInfoVO>> assignList(@PathVariable Integer userId) {
         try {

@@ -30,6 +30,7 @@ import com.didiglobal.logi.security.util.HttpRequestUtil;
 import com.didiglobal.logi.security.util.MathUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
@@ -94,6 +95,7 @@ public class RoleServiceImpl implements RoleService {
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void createRole(RoleSaveDTO roleSaveDTO, HttpServletRequest request) throws LogiSecurityException {
         Integer userId = HttpRequestUtil.getOperatorId(request);
         // 检查参数
@@ -116,6 +118,7 @@ public class RoleServiceImpl implements RoleService {
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void deleteRoleByRoleId(Integer roleId, HttpServletRequest request) throws LogiSecurityException {
         Role role = roleDao.selectByRoleId(roleId);
         if(role == null) {
@@ -136,6 +139,7 @@ public class RoleServiceImpl implements RoleService {
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void updateRole(RoleSaveDTO saveDTO, HttpServletRequest request) throws LogiSecurityException {
         Integer userId = HttpRequestUtil.getOperatorId(request);
         if(roleDao.selectByRoleId(saveDTO.getId()) == null) {
@@ -158,6 +162,7 @@ public class RoleServiceImpl implements RoleService {
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void assignRoles(RoleAssignDTO assignDTO, HttpServletRequest request) throws LogiSecurityException {
         Integer operatorId = HttpRequestUtil.getOperatorId(request);
         if(assignDTO.getFlag() == null) {

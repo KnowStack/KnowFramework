@@ -8,6 +8,7 @@ import com.didiglobal.logi.security.service.MessageService;
 import com.didiglobal.logi.security.util.CopyBeanUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
@@ -42,6 +43,7 @@ public class MessageServiceImpl implements MessageService {
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void changeMessageStatus(List<Integer> messageIdList) {
         if(CollectionUtils.isEmpty(messageIdList)) {
             return;

@@ -25,6 +25,7 @@ import com.didiglobal.logi.security.util.MathUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
@@ -85,6 +86,7 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void createProject(ProjectSaveDTO saveVo, HttpServletRequest request) throws LogiSecurityException {
         // 检查参数
         checkParam(saveVo, false);
@@ -129,6 +131,7 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void deleteProjectByProjectId(Integer projectId, HttpServletRequest request) {
         Project project = projectDao.selectByProjectId(projectId);
         if(project == null) {
@@ -145,6 +148,7 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void updateProject(ProjectSaveDTO saveDTO, HttpServletRequest request) throws LogiSecurityException {
         if(projectDao.selectByProjectId(saveDTO.getId()) == null) {
             throw new LogiSecurityException(ResultCode.PROJECT_NOT_EXISTS);
@@ -162,6 +166,7 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void changeProjectStatus(Integer projectId, HttpServletRequest request) {
         Project project = projectDao.selectByProjectId(projectId);
         if (project == null) {

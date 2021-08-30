@@ -27,6 +27,7 @@ import com.didiglobal.logi.security.util.CopyBeanUtil;
 import com.didiglobal.logi.security.util.HttpRequestUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
 import javax.servlet.http.HttpServletRequest;
@@ -188,6 +189,7 @@ public class UserResourceServiceImpl implements UserResourceService {
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void changeResourceViewControlStatus() {
         // 先获取当前 资源查看权限控制状态
         boolean isOn = getViewPermissionControlStatus();
@@ -357,6 +359,7 @@ public class UserResourceServiceImpl implements UserResourceService {
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void assignResourcePermission(AssignToOneUserDTO assignDTO) throws LogiSecurityException {
         // 检查参数
         checkParam(assignDTO);
@@ -389,6 +392,7 @@ public class UserResourceServiceImpl implements UserResourceService {
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void assignResourcePermission(AssignToManyUserDTO assignDTO, HttpServletRequest request) throws LogiSecurityException {
         // 检查参数
         checkParam(assignDTO);
@@ -453,6 +457,7 @@ public class UserResourceServiceImpl implements UserResourceService {
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void batchAssignResourcePermission(BatchAssignDTO assignDTO, HttpServletRequest request) throws LogiSecurityException {
         // 检查参数
         checkParam(assignDTO);

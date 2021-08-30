@@ -104,7 +104,7 @@ public class RoleController {
     }
 
     @GetMapping(value = "/assign/list/{roleId}")
-    @ApiOperation(value = "角色管理/分配用户/列表", notes = "根据角色id和用户实名或账户名模糊查询")
+    @ApiOperation(value = "角色管理/分配用户/列表", notes = "查询所有用户列表，并根据角色id，标记哪些用户拥有该角色")
     @ApiImplicitParam(name = "roleId", value = "角色id", dataType = "int", required = true)
     public Result<List<AssignInfoVO>> assignList(@PathVariable Integer roleId) {
         List<AssignInfoVO> assignInfoVOList = roleService.getAssignInfoByRoleId(roleId);

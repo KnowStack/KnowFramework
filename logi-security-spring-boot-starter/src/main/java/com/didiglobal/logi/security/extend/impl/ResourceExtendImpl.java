@@ -18,7 +18,7 @@ import java.util.List;
 /**
  * @author cjm
  */
-@Component("myesourceExtendImpl")
+@Component("myResourceExtendImpl")
 public class ResourceExtendImpl implements ResourceExtend {
 
     @Autowired

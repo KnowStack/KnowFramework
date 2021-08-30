@@ -70,14 +70,16 @@ public class DeptServiceImpl implements DeptService {
             // 如果为null，则获取全部部门的id
             return deptDao.selectAllDeptIdList();
         }
-        Set<Integer> deptIdSet = new HashSet<>();
-        try {
-            getChildDeptIdListByParentId(deptIdSet, deptId);
-            return new ArrayList<>(deptIdSet);
-        } catch (LogiSecurityException e) {
-            e.printStackTrace();
-            return new ArrayList<>();
+        List<Dept> deptList = deptDao.selectAllAndAscOrderByLevel();
+        HashSet<Integer> deptIdSet = new HashSet<Integer>(){{ add(deptId); }};
+        // 遍历所有dept
+        for(Dept dept : deptList) {
+            if(deptIdSet.contains(dept.getParentId())) {
+                deptIdSet.add(dept.getId());
+            }
         }
+
+        return new ArrayList<>(deptIdSet);
     }
 
     @Override
@@ -176,25 +178,5 @@ public class DeptServiceImpl implements DeptService {
             level++;
         }
         deptDao.insertBatch(deptList);
-    }
-
-    private void getChildDeptIdListByParentId(Set<Integer> deptIdSet, Integer deptId) throws LogiSecurityException {
-        if(deptId == null) {
-            return;
-        }
-        deptIdSet.add(deptId);
-        List<Integer> childIdList = deptDao.selectIdListByParentId(deptId);
-        for(Integer childId : childIdList) {
-            if(deptIdSet.contains(childId)) {
-                // 如果出现这种情况，则数据有误，中断递归
-                // 这是为了防止，child的parentId是parent，但parent的parentId却是child
-                throw new LogiSecurityException(ResultCode.DEPT_DATA_ERROR);
-            }
-            try {
-                getChildDeptIdListByParentId(deptIdSet, childId);
-            } catch (LogiSecurityException e) {
-                throw new LogiSecurityException(ResultCode.DEPT_DATA_ERROR);
-            }
-        }
     }
 }
