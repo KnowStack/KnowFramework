@@ -8,6 +8,9 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import org.springframework.stereotype.Component;
 
+/**
+ * @author zqr
+ */
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
@@ -22,6 +25,12 @@ public @interface Task {
    * task desc.
    */
   String description() default "";
+
+  /**
+   * task owner
+   * @return
+   */
+  String owner() default "system";
 
   /**
    * task cron.

@@ -1,6 +1,6 @@
 package com.didiglobal.logi.job.core.consensual;
 
-import com.didiglobal.logi.job.common.domain.TaskInfo;
+import com.didiglobal.logi.job.common.domain.LogITask;
 import com.didiglobal.logi.job.core.task.TaskLockService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,9 +25,9 @@ public class RandomConsensual extends AbstractConsensual {
   }
 
   @Override
-  public boolean tryClaim(TaskInfo taskInfo) {
-    if (taskLockService.tryAcquire(taskInfo.getCode())) {
-      taskInfo.setTaskCallback(taskCode -> {
+  public boolean tryClaim(LogITask logITask) {
+    if (taskLockService.tryAcquire( logITask.getCode())) {
+      logITask.setTaskCallback( taskCode -> {
         logger.info("class=RandomConsensual||method=tryClaim||url=||msg=release task lock "
                 + "taskCode {}", taskCode);
         taskLockService.tryRelease(taskCode);

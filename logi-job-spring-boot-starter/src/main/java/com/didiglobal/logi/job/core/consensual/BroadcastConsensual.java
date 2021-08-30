@@ -1,6 +1,6 @@
 package com.didiglobal.logi.job.core.consensual;
 
-import com.didiglobal.logi.job.common.domain.TaskInfo;
+import com.didiglobal.logi.job.common.domain.LogITask;
 import org.springframework.stereotype.Service;
 
 /**
@@ -17,7 +17,7 @@ public class BroadcastConsensual extends AbstractConsensual {
   }
 
   @Override
-  public boolean tryClaim(TaskInfo taskInfo) {
+  public boolean tryClaim(LogITask logITask) {
     return true;
   }
 }

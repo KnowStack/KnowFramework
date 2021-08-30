@@ -1,6 +1,6 @@
 package com.didiglobal.logi.job.core.task;
 
-import com.didiglobal.logi.job.common.dto.TaskLockDto;
+import com.didiglobal.logi.job.common.dto.LogITaskLockDTO;
 import java.util.List;
 
 /**
@@ -48,7 +48,7 @@ public interface TaskLockService {
    *
    * @return tasks
    */
-  List<TaskLockDto> getAll();
+  List<LogITaskLockDTO> getAll();
 
   /**
    * 刷新当前任务的锁.

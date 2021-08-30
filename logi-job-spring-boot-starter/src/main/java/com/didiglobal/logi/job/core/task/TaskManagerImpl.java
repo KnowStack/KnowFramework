@@ -2,15 +2,16 @@ package com.didiglobal.logi.job.core.task;
 
 import com.didiglobal.logi.job.LogIJobProperties;
 import com.didiglobal.logi.job.common.Result;
-import com.didiglobal.logi.job.common.bean.AuvTask;
-import com.didiglobal.logi.job.common.domain.TaskInfo;
-import com.didiglobal.logi.job.common.dto.TaskDto;
+import com.didiglobal.logi.job.common.domain.LogITask;
 import com.didiglobal.logi.job.common.enums.TaskStatusEnum;
+import com.didiglobal.logi.job.common.po.LogITaskPO;
+import com.didiglobal.logi.job.common.dto.LogITaskDTO;
+import com.didiglobal.logi.job.common.enums.TaskWorkerStatusEnum;
 import com.didiglobal.logi.job.core.WorkerSingleton;
 import com.didiglobal.logi.job.core.consensual.Consensual;
 import com.didiglobal.logi.job.core.consensual.ConsensualFactory;
 import com.didiglobal.logi.job.core.job.JobManager;
-import com.didiglobal.logi.job.mapper.AuvTaskMapper;
+import com.didiglobal.logi.job.mapper.LogITaskMapper;
 import com.didiglobal.logi.job.utils.BeanUtil;
 import com.didiglobal.logi.job.utils.CronExpression;
 import com.didiglobal.logi.job.utils.ThreadUtil;
@@ -45,7 +46,7 @@ public class TaskManagerImpl implements TaskManager {
   private JobManager            jobManager;
   private ConsensualFactory     consensualFactory;
   private TaskLockService       taskLockService;
-  private AuvTaskMapper         auvTaskMapper;
+  private LogITaskMapper        logITaskMapper;
   private LogIJobProperties     logIJobProperties;
 
 
@@ -54,56 +55,52 @@ public class TaskManagerImpl implements TaskManager {
    *
    * @param jobManager      jobManager
    * @param taskLockService taskLockService
-   * @param auvTaskMapper   auvTaskMapper
+   * @param logITaskMapper   logITaskMapper
    */
   public TaskManagerImpl(JobManager jobManager, ConsensualFactory consensualFactory,
-                         TaskLockService taskLockService, AuvTaskMapper auvTaskMapper, LogIJobProperties logIJobProperties) {
+                         TaskLockService taskLockService, LogITaskMapper logITaskMapper, LogIJobProperties logIJobProperties) {
     this.jobManager         = jobManager;
     this.consensualFactory  = consensualFactory;
     this.taskLockService    = taskLockService;
-    this.auvTaskMapper      = auvTaskMapper;
+    this.logITaskMapper     = logITaskMapper;
     this.logIJobProperties  = logIJobProperties;
 
   }
 
   @Override
-  public boolean add(TaskDto taskDto) {
-    return false;
-  }
-
-  @Override
   public Result delete(String taskCode) {
-    AuvTask auvTask = auvTaskMapper.selectByCode(taskCode, logIJobProperties.getAppName());
-    if (auvTask == null) {
+    LogITaskPO logITaskPO = logITaskMapper.selectByCode(taskCode, logIJobProperties.getAppName());
+    if (logITaskPO == null) {
       return Result.buildFail("任务不存在！");
     }
-    return Result.buildSucc(auvTaskMapper.deleteByCode(taskCode, logIJobProperties.getAppName()) > 0);
+    return Result.buildSucc(logITaskMapper.deleteByCode(taskCode, logIJobProperties.getAppName()) > 0);
   }
 
   @Override
-  public boolean update(TaskDto taskDto) {
-    AuvTask auvTask = BeanUtil.convertTo(taskDto, AuvTask.class);
-    return auvTaskMapper.updateByCode(auvTask) > 0 ? true : false;
+  public boolean update(LogITaskDTO logITaskDTO) {
+    LogITaskPO logITaskPO = BeanUtil.convertTo(logITaskDTO, LogITaskPO.class);
+    return logITaskMapper.updateByCode(logITaskPO) > 0 ? true : false;
   }
 
   @Override
-  public List<TaskInfo> nextTriggers(Long interval) {
+  public List<LogITask> nextTriggers(Long interval) {
     return nextTriggers(System.currentTimeMillis(), interval);
   }
 
   @Override
-  public List<TaskInfo> nextTriggers(Long fromTime, Long interval) {
-    List<TaskInfo> taskInfoList = getAll();
-    taskInfoList = taskInfoList.stream().filter(taskInfo -> {
+  public List<LogITask> nextTriggers(Long fromTime, Long interval) {
+    List<LogITask> logITaskList = getAllRuning();
+
+    logITaskList = logITaskList.stream().filter( taskInfo -> {
       try {
         Timestamp lastFireTime = new Timestamp(0L);
-        List<TaskInfo.TaskWorker> taskWorkers = taskInfo.getTaskWorkers();
-        for (TaskInfo.TaskWorker taskWorker : taskWorkers) {
+        List<LogITask.TaskWorker> taskWorkers = taskInfo.getTaskWorkers();
+        for (LogITask.TaskWorker taskWorker : taskWorkers) {
           // 取到当前worker做进一步判断，如果没有找到证明没有执行过
-          if (Objects.equals(WorkerSingleton.getInstance().getWorkerInfo().getCode(),
+          if (Objects.equals(WorkerSingleton.getInstance().getLogIWorker().getCode(),
                   taskWorker.getWorkerCode())) {
             // 判断是否在当前worker可执行状态
-            if (!Objects.equals(taskWorker.getStatus(), TaskStatusEnum.WAITING.getValue())) {
+            if (!Objects.equals(taskWorker.getStatus(), TaskWorkerStatusEnum.WAITING.getValue())) {
               logger.info("class=TaskManagerImpl||method=nextTriggers||url=||msg=has task running! "
                       + "taskCode={}, workerCode={}", taskInfo.getCode(),
                       taskWorker.getWorkerCode());
@@ -124,22 +121,22 @@ public class TaskManagerImpl implements TaskManager {
     }).collect(Collectors.toList());
 
     // sort
-    taskInfoList.sort(Comparator.comparing(TaskInfo::getNextFireTime));
-    return taskInfoList;
+    logITaskList.sort(Comparator.comparing( LogITask::getNextFireTime));
+    return logITaskList;
   }
 
   @Override
-  public void submit(List<TaskInfo> taskInfoList) {
-    if (CollectionUtils.isEmpty(taskInfoList)) {
+  public void submit(List<LogITask> logITaskList) {
+    if (CollectionUtils.isEmpty( logITaskList )) {
       return;
     }
-    for (TaskInfo taskInfo : taskInfoList) {
+    for (LogITask logITask : logITaskList) {
       // 不能在本工作器执行，跳过
-      Consensual consensual = consensualFactory.getConsensual(taskInfo.getConsensual());
-      if (!consensual.canClaim(taskInfo)) {
+      Consensual consensual = consensualFactory.getConsensual( logITask.getConsensual());
+      if (!consensual.canClaim( logITask )) {
         continue;
       }
-      execute(taskInfo, false);
+      execute(logITask, false);
     }
   }
 
@@ -148,53 +145,53 @@ public class TaskManagerImpl implements TaskManager {
    */
   @Override
   public Result execute(String taskCode, Boolean executeSubs) {
-    AuvTask auvTask = auvTaskMapper.selectByCode(taskCode, logIJobProperties.getAppName());
-    if (auvTask == null) {
+    LogITaskPO logITaskPO = logITaskMapper.selectByCode(taskCode, logIJobProperties.getAppName());
+    if (logITaskPO == null) {
       return Result.buildFail("任务不存在！");
-    }
-    if (!Objects.equals(auvTask.getStatus(), TaskStatusEnum.WAITING.getValue())) {
-      return Result.buildFail("任务非等待执行状态！");
     }
     if (!taskLockService.tryAcquire(taskCode)) {
       return Result.buildFail("未能获取到执行锁！");
     }
 
-    TaskInfo taskInfo = BeanUtil.convertTo(auvTask, TaskInfo.class);
-    taskInfo.setTaskCallback(code -> taskLockService.tryRelease(code));
-    execute(taskInfo, false);
+    LogITask logITask = logITaskPO2LogITask(logITaskPO);
+    logITask.setTaskCallback(code -> taskLockService.tryRelease(code));
+    execute(logITask, false);
 
     return Result.buildSucc();
   }
 
   @Override
-  public void execute(TaskInfo taskInfo, Boolean executeSubs) {
+  public void execute(LogITask logITask, Boolean executeSubs) {
     Timestamp lastFireTime = new Timestamp(System.currentTimeMillis());
 
-    AuvTask auvTask = BeanUtil.convertTo(taskInfo, AuvTask.class);
-    List<TaskInfo.TaskWorker> taskWorkers = taskInfo.getTaskWorkers();
+    LogITaskPO logITaskPO = BeanUtil.convertTo( logITask, LogITaskPO.class);
+    List<LogITask.TaskWorker> taskWorkers = logITask.getTaskWorkers();
+
     boolean worked = false;
-    for (TaskInfo.TaskWorker taskWorker : taskWorkers) {
+    for (LogITask.TaskWorker taskWorker : taskWorkers) {
       if (Objects.equals(taskWorker.getWorkerCode(),
-              WorkerSingleton.getInstance().getWorkerInfo().getCode())) {
+              WorkerSingleton.getInstance().getLogIWorker().getCode())) {
         taskWorker.setLastFireTime(lastFireTime);
-        taskWorker.setStatus(TaskStatusEnum.RUNNING.getValue());
+        taskWorker.setStatus( TaskWorkerStatusEnum.RUNNING.getValue());
         worked = true;
         break;
       }
     }
+
     if (!worked) {
-      taskWorkers.add(new TaskInfo.TaskWorker(TaskStatusEnum.RUNNING.getValue(),
+      taskWorkers.add(new LogITask.TaskWorker( TaskWorkerStatusEnum.RUNNING.getValue(),
               new Timestamp(System.currentTimeMillis()),
-              WorkerSingleton.getInstance().getWorkerInfo().getCode()));
+              WorkerSingleton.getInstance().getLogIWorker().getCode(),
+              WorkerSingleton.getInstance().getLogIWorker().getIp()));
     }
 
-    auvTask.setTaskWorkerStr(BeanUtil.convertToJson(taskWorkers));
-    auvTask.setLastFireTime(lastFireTime);
+    logITaskPO.setTaskWorkerStr(BeanUtil.convertToJson(taskWorkers));
+    logITaskPO.setLastFireTime(lastFireTime);
     // 更新任务状态，最近更新时间
-    auvTaskMapper.updateByCode(auvTask);
+    logITaskMapper.updateByCode( logITaskPO );
 
     // 执行
-    executeInternal(taskInfo, executeSubs);
+    executeInternal( logITask, executeSubs);
   }
 
   @Override
@@ -203,28 +200,51 @@ public class TaskManagerImpl implements TaskManager {
   }
 
   @Override
-  public List<TaskInfo> getAll() {
-    List<TaskInfo> taskInfoList = new ArrayList<>();
-    List<AuvTask> auvTaskList = auvTaskMapper.selectByAppName( logIJobProperties.getAppName());
-    if (CollectionUtils.isEmpty(auvTaskList)) {
-      return taskInfoList;
+  public Result<Boolean> updateTaskStatus(String taskCode, int status) {
+    if(!TaskStatusEnum.isValid(status)){
+      return Result.buildFail("status error");
     }
 
-    // 转taskInfo
-    taskInfoList = auvTaskList.stream().map(auvTask -> {
-      TaskInfo info = BeanUtil.convertTo(auvTask, TaskInfo.class);
-      List<TaskInfo.TaskWorker> taskWorkers = Lists.newArrayList();
-      if (!StringUtils.isEmpty(auvTask.getTaskWorkerStr())) {
-        List<TaskInfo.TaskWorker> tmpTaskWorkers = BeanUtil.convertToList(
-                auvTask.getTaskWorkerStr(), TaskInfo.TaskWorker.class);
-        if (!CollectionUtils.isEmpty(tmpTaskWorkers)) {
-          taskWorkers = tmpTaskWorkers;
-        }
+    LogITaskPO logITaskPO = logITaskMapper.selectByCode(taskCode, logIJobProperties.getAppName());
+    if(null == logITaskPO){
+      return Result.buildFail("task 不存在");
+    }
+
+    if(TaskStatusEnum.STOP.getValue().intValue() == status){
+      if(!jobManager.stopByTaskCode(taskCode)){
+        return Result.buildFail("stop task error");
       }
-      info.setTaskWorkers(taskWorkers);
-      return info;
-    }).collect(Collectors.toList());
-    return taskInfoList;
+    }
+
+    logITaskPO.setStatus(status);
+
+    return Result.buildSucc(logITaskMapper.updateByCode(logITaskPO) > 0);
+  }
+
+  @Override
+  public List<LogITask> getAllRuning() {
+    List<LogITaskPO> logITaskPOList = logITaskMapper.selectRuningByAppName(logIJobProperties.getAppName());
+    if (CollectionUtils.isEmpty( logITaskPOList )) {
+      return new ArrayList<>();
+    }
+
+    return logITaskPOList.stream().map(p -> logITaskPO2LogITask(p)).collect(Collectors.toList());
+  }
+
+  @Override
+  public List<LogITask> getList(int pageNo, int pageSize){
+    List<LogITaskPO> logITaskPOList = logITaskMapper.selectByAppNameAndSize(logIJobProperties.getAppName(),
+            (pageNo - 1) * pageSize, pageSize);
+    if (CollectionUtils.isEmpty( logITaskPOList )) {
+      return new ArrayList<>();
+    }
+
+    return logITaskPOList.stream().map(p -> logITaskPO2LogITask(p)).collect(Collectors.toList());
+  }
+
+  @Override
+  public int totalTaskConut() {
+    return logITaskMapper.selectCountByAppName(logIJobProperties.getAppName());
   }
 
   @Override
@@ -243,10 +263,17 @@ public class TaskManagerImpl implements TaskManager {
     return Result.buildSucc();
   }
 
-  // ################################## private method #######################################
-  private void executeInternal(TaskInfo taskInfo, Boolean executeSubs) {
+  @Override
+  public LogITask getByCode(String taskCode) {
+     LogITaskPO logITaskPO = logITaskMapper.selectByCode(taskCode, logIJobProperties.getAppName());
+
+     return logITaskPO2LogITask(logITaskPO);
+  }
+
+  /**************************************** private method ****************************************************/
+  private void executeInternal(LogITask logITask, Boolean executeSubs) {
     // jobManager 将job管理起来，超时退出抛异常
-    final Future<Object> jobFuture = jobManager.start(taskInfo);
+    final Future<Object> jobFuture = jobManager.start( logITask );
     if (jobFuture == null || !executeSubs) {
       return;
     }
@@ -255,41 +282,56 @@ public class TaskManagerImpl implements TaskManager {
       ThreadUtil.sleep(WAIT_INTERVAL_SECONDS, TimeUnit.SECONDS);
     }
     // 递归拉起子任务
-    if (!StringUtils.isEmpty(taskInfo.getSubTaskCodes())) {
-      String[] subTaskCodeArray = taskInfo.getSubTaskCodes().split(",");
-      List<AuvTask> subTasks = auvTaskMapper.selectByCodes(Arrays.asList(subTaskCodeArray), logIJobProperties.getAppName());
-      List<TaskInfo> subTaskInfoList = subTasks.stream().map(auvTask -> BeanUtil.convertTo(auvTask,
-              TaskInfo.class)).collect(Collectors.toList());
-      for (TaskInfo subTaskInfo : subTaskInfoList) {
-        execute(subTaskInfo, executeSubs);
+    if (!StringUtils.isEmpty( logITask.getSubTaskCodes())) {
+      String[] subTaskCodeArray = logITask.getSubTaskCodes().split(",");
+      List<LogITaskPO> subTasks = logITaskMapper.selectByCodes(Arrays.asList(subTaskCodeArray), logIJobProperties.getAppName());
+      List<LogITask> subLogITaskList = subTasks.stream().map( logITaskPO -> BeanUtil.convertTo( logITaskPO,
+              LogITask.class)).collect(Collectors.toList());
+      for (LogITask subLogITask : subLogITaskList) {
+        execute( subLogITask, executeSubs);
       }
     }
   }
 
   private boolean updateTaskWorker(String taskCode, String workerCode) {
-    AuvTask auvTask = auvTaskMapper.selectByCode(taskCode, logIJobProperties.getAppName());
-    if (auvTask == null) {
+    LogITaskPO logITaskPO = logITaskMapper.selectByCode(taskCode, logIJobProperties.getAppName());
+    if (logITaskPO == null) {
       return false;
     }
-    List<TaskInfo.TaskWorker> taskWorkers = BeanUtil.convertToList(auvTask.getTaskWorkerStr(),
-            TaskInfo.TaskWorker.class);
+    List<LogITask.TaskWorker> taskWorkers = BeanUtil.convertToList( logITaskPO.getTaskWorkerStr(),
+            LogITask.TaskWorker.class);
     boolean needUpdate = false;
     if (!CollectionUtils.isEmpty(taskWorkers)) {
-      for (TaskInfo.TaskWorker taskWorker : taskWorkers) {
+      for (LogITask.TaskWorker taskWorker : taskWorkers) {
         if (Objects.equals(taskWorker.getWorkerCode(), workerCode)
-                && Objects.equals(taskWorker.getStatus(), TaskStatusEnum.RUNNING.getValue())) {
+                && Objects.equals(taskWorker.getStatus(), TaskWorkerStatusEnum.RUNNING.getValue())) {
           needUpdate = true;
-          taskWorker.setStatus(TaskStatusEnum.WAITING.getValue());
+          taskWorker.setStatus( TaskWorkerStatusEnum.WAITING.getValue());
         }
       }
     }
     if (needUpdate) {
-      auvTask.setTaskWorkerStr(BeanUtil.convertToJson(taskWorkers));
-      int updateResult = auvTaskMapper.updateByCode(auvTask);
+      logITaskPO.setTaskWorkerStr(BeanUtil.convertToJson(taskWorkers));
+      int updateResult = logITaskMapper.updateByCode( logITaskPO );
       if (updateResult <= 0) {
         return false;
       }
     }
     return true;
+  }
+
+  private LogITask logITaskPO2LogITask(LogITaskPO logITaskPO){
+    LogITask logITask = BeanUtil.convertTo(logITaskPO, LogITask.class);
+    List<LogITask.TaskWorker> taskWorkers = Lists.newArrayList();
+    if (!StringUtils.isEmpty( logITaskPO.getTaskWorkerStr())) {
+      List<LogITask.TaskWorker> tmpTaskWorkers = BeanUtil.convertToList(
+              logITaskPO.getTaskWorkerStr(), LogITask.TaskWorker.class);
+      if (!CollectionUtils.isEmpty(tmpTaskWorkers)) {
+        taskWorkers = tmpTaskWorkers;
+      }
+    }
+    logITask.setTaskWorkers(taskWorkers);
+
+    return logITask;
   }
 }

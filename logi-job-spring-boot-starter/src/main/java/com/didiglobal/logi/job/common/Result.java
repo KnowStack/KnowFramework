@@ -11,7 +11,7 @@ import org.slf4j.LoggerFactory;
  * Created by limeng on 2020-04-27.
  */
 @Data
-public class Result<T> implements Serializable {
+public class Result<T> extends BaseResult implements Serializable {
   private static final Logger logger = LoggerFactory.getLogger(Result.class);
 
   private static final ObjectMapper mapper = new ObjectMapper();
@@ -20,13 +20,7 @@ public class Result<T> implements Serializable {
 
   private T data;
 
-  private String message;
-
   private String tips;
-
-  private Integer code;
-
-  private transient Pagination pagination;
 
   public Result() {
   }
@@ -233,54 +227,5 @@ public class Result<T> implements Serializable {
     resultT.setCode(result.getCode());
     resultT.setMessage(result.getMessage());
     return resultT;
-  }
-
-  /**
-   * .
-   *
-   * @param datas datas
-   * @param total total
-   * @param pageNo pageNo
-   * @param pageSize pageSize
-   * @return Result
-   */
-  public static <T> Result<T> buildPageSucc(T datas, long total, long pageNo, long pageSize) {
-    Result<T> resultT = new Result<>();
-    resultT.setData(datas);
-    resultT.setMessage("");
-    resultT.setTips("");
-    resultT.setCode(ResultType.SUCCESS.getCode());
-    resultT.setPagination(new Pagination(total, pageNo, pageSize));
-    return resultT;
-  }
-
-  /**
-   * .
-   *
-   * @param datas datas
-   * @param pagination pagination
-   * @return Result
-   */
-  public static <T> Result<T> buildPageSucc(T datas, Pagination pagination) {
-    Result<T> resultT = new Result<>();
-    resultT.setData(datas);
-    resultT.setMessage("");
-    resultT.setTips("");
-    resultT.setCode(ResultType.SUCCESS.getCode());
-    resultT.setPagination(pagination);
-    return resultT;
-  }
-
-  @Data
-  protected static class Pagination {
-    private long total;
-    private long pageNo;
-    private long pageSize;
-
-    public Pagination(long total, long pageNo, long pageSize) {
-      this.total = total;
-      this.pageNo = pageNo;
-      this.pageSize = pageSize;
-    }
   }
 }

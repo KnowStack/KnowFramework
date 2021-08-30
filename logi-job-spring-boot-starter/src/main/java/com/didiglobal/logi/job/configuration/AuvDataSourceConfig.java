@@ -48,7 +48,7 @@ public class AuvDataSourceConfig {
     SqlSessionFactoryBean bean = new SqlSessionFactoryBean();
     bean.setDataSource(dataSource);
     bean.setMapperLocations(new PathMatchingResourcePatternResolver()
-            .getResources("classpath:mapper/auv-job/*.xml"));
+            .getResources("classpath:mapper/logi-job/*.xml"));
     org.apache.ibatis.session.Configuration configuration =
             new org.apache.ibatis.session.Configuration();
     configuration.setMapUnderscoreToCamelCase(true);

@@ -1,32 +1,26 @@
 package com.didiglobal.logi.job.common.enums;
 
-import java.util.HashMap;
-import java.util.Map;
-
 public enum TaskStatusEnum {
-  WAITING(1),
-  RUNNING(2),
-  STOPPED(3);
+    STOP(0),
+    RUNNING(1);
 
-  private static Map<Integer, TaskStatusEnum> map = new HashMap<>(8);
+    private Integer value;
 
-  static {
-    map.put(WAITING.getValue(), WAITING);
-    map.put(RUNNING.getValue(), RUNNING);
-    map.put(STOPPED.getValue(), STOPPED);
-  }
+    public Integer getValue() {
+        return value;
+    }
 
-  private Integer value;
+    TaskStatusEnum(Integer value) {
+        this.value = value;
+    }
 
-  public Integer getValue() {
-    return value;
-  }
+    public static boolean isValid(Integer status){
+        for(TaskStatusEnum taskStatusEnum : TaskStatusEnum.values()){
+            if(status.intValue() == taskStatusEnum.value.intValue()){
+                return true;
+            }
+        }
 
-  TaskStatusEnum(Integer value) {
-    this.value = value;
-  }
-
-  public static TaskStatusEnum get(Integer value) {
-    return map.get(value);
-  }
+        return false;
+    }
 }

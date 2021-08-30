@@ -1115,7 +1115,7 @@ public final class CronExpression implements Serializable, Cloneable {
           break;
         }
         case YEAR : {
-          throw new IllegalArgumentException("Start year must be less than stop year");
+          throw new IllegalArgumentException("Start year must be less than stopByJobCode year");
         }
         default : {
           throw new IllegalArgumentException("Unexpected type encountered");

@@ -1,10 +1,10 @@
 package com.didiglobal.logi.job.core.consensual;
 
-import com.didiglobal.logi.job.common.bean.AuvWorkerBlacklist;
-import com.didiglobal.logi.job.common.domain.TaskInfo;
-import com.didiglobal.logi.job.common.domain.WorkerInfo;
+import com.didiglobal.logi.job.common.domain.LogIWorker;
+import com.didiglobal.logi.job.common.po.LogIWorkerBlacklistPO;
+import com.didiglobal.logi.job.common.domain.LogITask;
 import com.didiglobal.logi.job.core.WorkerSingleton;
-import com.didiglobal.logi.job.mapper.AuvWorkerBlacklistMapper;
+import com.didiglobal.logi.job.mapper.LogIWorkerBlacklistMapper;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import java.util.HashSet;
@@ -29,7 +29,7 @@ public abstract class AbstractConsensual implements Consensual {
   private static final Logger logger = LoggerFactory.getLogger(AbstractConsensual.class);
 
   @Autowired
-  private AuvWorkerBlacklistMapper auvWorkerBlacklistMapper;
+  private LogIWorkerBlacklistMapper logIWorkerBlacklistMapper;
 
   private static final String BLACKLIST_KEY = "BlacklistKey";
 
@@ -37,29 +37,29 @@ public abstract class AbstractConsensual implements Consensual {
           .expireAfterWrite(2, TimeUnit.MINUTES).build();
 
   @Override
-  public boolean canClaim(TaskInfo taskInfo) {
+  public boolean canClaim(LogITask logITask) {
     if (inBlacklist()) {
       return false;
     }
-    return tryClaim(taskInfo);
+    return tryClaim( logITask );
   }
 
-  public abstract boolean tryClaim(TaskInfo taskInfo);
+  public abstract boolean tryClaim(LogITask logITask);
 
   //###################################### private ################################################
 
   private boolean inBlacklist() {
     Set<String> blacklist = blacklist();
-    WorkerInfo workerInfo = WorkerSingleton.getInstance().getWorkerInfo();
-    return blacklist.contains(workerInfo.getCode());
+    LogIWorker logIWorker = WorkerSingleton.getInstance().getLogIWorker();
+    return blacklist.contains( logIWorker.getCode());
   }
 
   private Set<String> blacklist() {
     Set<String> blacklist = new HashSet<>();
     try {
       blacklist = blacklistCache.get(BLACKLIST_KEY, () -> {
-        List<AuvWorkerBlacklist> auvWorkerBlacklists = auvWorkerBlacklistMapper.selectAll();
-        return auvWorkerBlacklists.stream().map(AuvWorkerBlacklist::getWorkerCode)
+        List<LogIWorkerBlacklistPO> logIWorkerBlacklistPOS = logIWorkerBlacklistMapper.selectAll();
+        return logIWorkerBlacklistPOS.stream().map( LogIWorkerBlacklistPO::getWorkerCode)
                 .collect(Collectors.toSet());
       });
     } catch (ExecutionException e) {
