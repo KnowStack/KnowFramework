@@ -28,6 +28,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.sql.Timestamp;
 import java.util.*;
 import java.util.concurrent.Callable;
@@ -36,6 +38,8 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
+
+import static com.didiglobal.logi.job.common.TaskResult.FAIL_CODE;
 
 /**
  * job manager impl.
@@ -189,26 +193,25 @@ public class JobManagerImpl implements JobManager {
 
         object = logIJob.getJob().execute(null);
 
+        logIJob.setResult(object);
+        logIJob.setEndTime(new Timestamp(System.currentTimeMillis()));
       } catch (InterruptedException e) {
         // 记录任务被打断 进程关闭/线程关闭
         logIJob.setStatus(JobStatusEnum.CANCELED.getValue());
-        String errorMessage = String.format("StackTrace[%s] || Message[%s]", e, e.getMessage());
-        logIJob.setError(errorMessage);
+        logIJob.setResult(new TaskResult(FAIL_CODE, "task job be canceld!"));
+        logIJob.setError(printStackTraceAsString(e));
         logger.error("class=JobHandler||method=call||url=||msg={}", e);
       } catch (Exception e) {
         // 记录任务异常信息
         logIJob.setStatus(JobStatusEnum.FAILED.getValue());
-        String errorMessage = String.format("StackTrace[%s] || Message[%s]", e, e.getMessage());
-        logIJob.setError(errorMessage);
-        logger.error("class=JobHandler||method=call||url=||msg={}", e);
+        logIJob.setResult(new TaskResult(FAIL_CODE, "task job has exception when running!" + e));
+        String error = printStackTraceAsString(e);
+        logIJob.setError(printStackTraceAsString(e));
+        logger.error("class=JobHandler||method=call||url=||msg={}", error);
       } finally {
         if(JobStatusEnum.RUNNING.getValue().intValue() == logIJob.getStatus().intValue()){
           logIJob.setStatus(JobStatusEnum.SUCCEED.getValue());
         }
-
-        logIJob.setEndTime(new Timestamp(System.currentTimeMillis()));
-        logIJob.setError(logIJob.getError() == null ? "" : logIJob.getError());
-        logIJob.setResult(object);
 
         LogIJobLogPO logIJobLogPO = logIJob.getAuvJobLog();
         logIJobLogMapper.updateByCode(logIJobLogPO);
@@ -444,5 +447,12 @@ public class JobManagerImpl implements JobManager {
     }
 
     return false;
+  }
+
+  private String printStackTraceAsString(Exception e) {
+    StringWriter stringWriter = new StringWriter();
+    PrintWriter printWriter = new PrintWriter(stringWriter);
+    e.printStackTrace(printWriter);
+    return stringWriter.toString();
   }
 }
