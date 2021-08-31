@@ -90,14 +90,14 @@ public class ProjectController {
     }
 
     @PostMapping("/page")
-    @ApiOperation(value = "查询项目列表", notes = "分页和条件查询")
+    @ApiOperation(value = "分页查询项目列表", notes = "分页和条件查询")
     public PagingResult<ProjectVO> page(@RequestBody ProjectQueryDTO queryDTO) {
         PagingData<ProjectVO> pageProject = projectService.getProjectPage(queryDTO);
         return PagingResult.success(pageProject);
     }
 
     @GetMapping("/list")
-    @ApiOperation(value = "获取所有项目信息", notes = "获取全部项目简要信息（只返回id、项目名）")
+    @ApiOperation(value = "获取所有项目简要信息", notes = "获取全部项目简要信息（只返回id、项目名）")
     public Result<List<ProjectBriefVO>> list() {
         List<ProjectBriefVO> projectBriefVOList = projectService.getProjectBriefList();
         return Result.success(projectBriefVOList);
