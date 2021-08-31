@@ -119,7 +119,7 @@ public class JobManagerImpl implements JobManager {
         return stopJob(logIJob, jobFuture.getValue());
       }
     }
-    return false;
+    return true;
   }
 
   @Override
@@ -130,7 +130,7 @@ public class JobManagerImpl implements JobManager {
         return stopJob(logIJob, jobFuture.getValue());
       }
     }
-    return false;
+    return true;
   }
 
   @Override

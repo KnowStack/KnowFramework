@@ -20,9 +20,9 @@ import org.apache.ibatis.annotations.Select;
  */
 public interface LogIJobLogMapper {
 
-  @Insert("INSERT INTO logi_job_log(job_code, task_code, class_name, try_times, worker_code, worker_ip"
+  @Insert("INSERT INTO logi_job_log(job_code, task_code, class_name, try_times, worker_code, worker_ip,"
           + "start_time, end_time, status, error, result, create_time, update_time, app_name) "
-          + "VALUES(#{jobCode}, #{taskCode}, #{className}, #{tryTimes}, #{workerCode}, #{startTime}"
+          + "VALUES(#{jobCode}, #{taskCode}, #{className}, #{tryTimes}, #{workerCode}, #{workerIp}, #{startTime}"
           + ", #{endTime}, #{status}, #{error}, #{result}, #{createTime}, #{updateTime}, #{appName})")
   int insert(LogIJobLogPO logIJobLogPO);
 
@@ -37,6 +37,6 @@ public interface LogIJobLogMapper {
   @Delete("delete from logi_job_log where create_time<=#{createTime} and app_name=#{appName}")
   int deleteByCreateTime(@Param("createTime") Timestamp createTime, @Param("appName") String appName);
 
-  @Select("select count(1) from logi_task where app_name=#{appName} and task_code=#{taskCode}")
+  @Select("select count(1) from logi_job_log where app_name=#{appName} and task_code=#{taskCode}")
   int selectCountByAppName(@Param("appName") String appName, @Param("taskCode") String taskCode);
 }

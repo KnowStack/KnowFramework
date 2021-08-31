@@ -22,7 +22,7 @@ public interface LogITaskMapper {
           + " last_fire_time, timeout, status, sub_task_codes, consensual, task_worker_str, app_name, owner) "
           + "VALUES(#{code}, #{name}, #{description}, #{cron}, #{className}, #{params}, "
           + "#{retryTimes}, #{lastFireTime}, #{timeout}, #{status}, #{subTaskCodes}, "
-          + "#{consensual}, #{taskWorkerStr}, #{appName}), #{owner}")
+          + "#{consensual}, #{taskWorkerStr}, #{appName}, #{owner})")
   int insert(LogITaskPO logITaskPO);
 
   @Delete("delete from logi_task where code=#{code} and app_name=#{appName}")
