@@ -25,19 +25,19 @@ public class LogITaskPO extends BasePO implements Serializable {
   private Long id;
 
   /**
-   * task code
+   * task taskCode
    */
-  private String code;
+  private String taskCode;
 
   /**
    * 名称
    */
-  private String name;
+  private String taskName;
 
   /**
    * 任务描述
    */
-  private String description;
+  private String taskDesc;
 
   /**
    * cron 表达式

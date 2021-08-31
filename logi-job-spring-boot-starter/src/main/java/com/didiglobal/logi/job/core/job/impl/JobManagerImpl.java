@@ -135,7 +135,7 @@ public class JobManagerImpl implements JobManager {
   public boolean stopByJobCode(String jobCode) {
     for (Map.Entry<LogIJob, Future> jobFuture : jobFutureMap.entrySet()) {
       LogIJob logIJob = jobFuture.getKey();
-      if (Objects.equals(jobCode, logIJob.getCode())) {
+      if (Objects.equals(jobCode, logIJob.getJobCode())) {
         return stopJob(logIJob, jobFuture.getValue());
       }
     }
@@ -182,7 +182,7 @@ public class JobManagerImpl implements JobManager {
     public Object call() {
       TaskResult object = null;
       logger.info("class=JobHandler||method=call||url=||msg=start job {} with classname {}",
-              logIJob.getCode(), logIJob.getClassName());
+              logIJob.getJobCode(), logIJob.getClassName());
       try {
         logIJob.setStartTime(new Timestamp(System.currentTimeMillis()));
         logIJob.setStatus(JobStatusEnum.RUNNING.getValue());
@@ -283,7 +283,7 @@ public class JobManagerImpl implements JobManager {
     jobFutureMap.remove(logIJob);
 
     // 删除auvJob
-    logIJobMapper.deleteByCode(logIJob.getCode());
+    logIJobMapper.deleteByCode(logIJob.getJobCode());
 
     // 更新任务状态
     LogITaskPO logITaskPO = logITaskMapper.selectByCode( logIJob.getTaskCode(), logIJobProperties.getAppName());
@@ -304,7 +304,7 @@ public class JobManagerImpl implements JobManager {
         }
 
         if (Objects.equals(taskWorker.getWorkerCode(), WorkerSingleton.getInstance()
-                .getLogIWorker().getCode())) {
+                .getLogIWorker().getWorkerCode())) {
           taskWorker.setStatus( TaskWorkerStatusEnum.WAITING.getValue());
         }
       }
@@ -331,7 +331,7 @@ public class JobManagerImpl implements JobManager {
 
           // 锁续约
           List<LogITaskLockPO> logITaskLockPOS = logITaskLockMapper.selectByWorkerCode(WorkerSingleton
-                  .getInstance().getLogIWorker().getCode(), logIJobProperties.getAppName());
+                  .getInstance().getLogIWorker().getWorkerCode(), logIJobProperties.getAppName());
 
           if (!CollectionUtils.isEmpty( logITaskLockPOS )) {
             for (LogITaskLockPO logITaskLockPO : logITaskLockPOS) {
@@ -369,7 +369,7 @@ public class JobManagerImpl implements JobManager {
                 if (!CollectionUtils.isEmpty(taskWorkers)) {
                   for (LogITask.TaskWorker taskWorker : taskWorkers) {
                     if (Objects.equals(taskWorker.getWorkerCode(), WorkerSingleton.getInstance()
-                            .getLogIWorker().getCode())) {
+                            .getLogIWorker().getWorkerCode())) {
                       taskWorker.setStatus( TaskWorkerStatusEnum.WAITING.getValue());
                     }
                   }

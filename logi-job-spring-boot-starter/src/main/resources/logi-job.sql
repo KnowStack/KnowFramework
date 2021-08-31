@@ -2,9 +2,9 @@
 drop table if exists `logi_task`;
 CREATE TABLE `logi_task` (
 	`id` BIGINT(20) auto_increment,
-	`code` VARCHAR(100) DEFAULT '' NOT NULL COMMENT 'task code',
-	`name` VARCHAR(255) DEFAULT '' NOT NULL COMMENT '名称',
-  `description` VARCHAR(1000) DEFAULT '' NOT NULL COMMENT '任务描述',
+	`task_code` VARCHAR(100) DEFAULT '' NOT NULL COMMENT 'task taskCode',
+	`task_name` VARCHAR(255) DEFAULT '' NOT NULL COMMENT '名称',
+  `task_desc` VARCHAR(1000) DEFAULT '' NOT NULL COMMENT '任务描述',
 	`cron` VARCHAR(100) DEFAULT '' NOT NULL COMMENT 'cron 表达式',
 	`class_name` VARCHAR(255) DEFAULT '' NOT NULL COMMENT '类的全限定名',
   `params` VARCHAR(1000) DEFAULT '' NOT NULL COMMENT '执行参数 map 形式{key1:value1,key2:value2}',
@@ -20,14 +20,14 @@ CREATE TABLE `logi_task` (
   `create_time` DATETIME DEFAULT NOW() COMMENT '创建时间',
   `update_time` DATETIME DEFAULT NOW() ON UPDATE NOW() COMMENT '更新时间',
 	PRIMARY KEY (`id`),
-	UNIQUE KEY `code` (`code`)
+	UNIQUE KEY `task_code` (`task_code`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='任务信息';
 
 drop table if exists `logi_task_lock`;
 CREATE TABLE `logi_task_lock`(
     `id` BIGINT(20) auto_increment,
-    `task_code` VARCHAR(100) DEFAULT '' NOT NULL COMMENT 'task code',
-    `worker_code` VARCHAR(100) DEFAULT '' NOT NULL COMMENT 'worker code',
+    `task_code` VARCHAR(100) DEFAULT '' NOT NULL COMMENT 'task taskCode',
+    `worker_code` VARCHAR(100) DEFAULT '' NOT NULL COMMENT 'worker taskCode',
     `app_name` VARCHAR(100) DEFAULT '' NOT NULL COMMENT '被调度的应用名称',
     `expire_time` bigint(20) DEFAULT 0 NOT NULL COMMENT '过期时间',
     `create_time` DATETIME DEFAULT NOW() COMMENT '创建时间',
@@ -38,7 +38,7 @@ CREATE TABLE `logi_task_lock`(
 drop table if exists `logi_job`;
 CREATE TABLE `logi_job` (
 	`id` BIGINT(20) auto_increment,
-	`code` VARCHAR(100) DEFAULT '' NOT NULL COMMENT 'task code',
+	`job_code` VARCHAR(100) DEFAULT '' NOT NULL COMMENT 'task taskCode',
 	`task_code` VARCHAR(255) DEFAULT '' NOT NULL COMMENT '任务code',
 	`class_name` VARCHAR(255) DEFAULT '' NOT NULL COMMENT '类的全限定名',
 	`try_times` INT(10) DEFAULT 0 NOT NULL COMMENT '第几次重试',
@@ -48,13 +48,13 @@ CREATE TABLE `logi_job` (
   `create_time` DATETIME DEFAULT NOW() COMMENT '创建时间',
   `update_time` DATETIME DEFAULT NOW() ON UPDATE NOW() COMMENT '更新时间',
 	PRIMARY KEY (`id`),
-	UNIQUE KEY `code` (`code`)
+	UNIQUE KEY `job_code` (`job_code`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='正在执行的job信息';
 
 drop table if exists `logi_job_log`;
 CREATE TABLE `logi_job_log` (
 	`id` BIGINT(20) auto_increment,
-	`job_code` VARCHAR(100) DEFAULT '' NOT NULL COMMENT 'job code',
+	`job_code` VARCHAR(100) DEFAULT '' NOT NULL COMMENT 'job taskCode',
 	`task_code` VARCHAR(255) DEFAULT '' NOT NULL COMMENT '任务code',
 	`class_name` VARCHAR(255) DEFAULT '' NOT NULL COMMENT '类的全限定名',
 	`try_times` INT(10) DEFAULT 0 NOT NULL COMMENT '第几次重试',
@@ -74,8 +74,8 @@ CREATE TABLE `logi_job_log` (
 drop table if exists `logi_worker`;
 CREATE TABLE `logi_worker` (
 	`id` BIGINT(20) auto_increment,
-	`code` VARCHAR(100) DEFAULT '' NOT NULL COMMENT 'worker code',
-	`name` VARCHAR(100) DEFAULT '' NOT NULL COMMENT 'worker名',
+	`worker_code` VARCHAR(100) DEFAULT '' NOT NULL COMMENT 'worker taskCode',
+	`worker_name` VARCHAR(100) DEFAULT '' NOT NULL COMMENT 'worker名',
 	`ip` VARCHAR(100) DEFAULT '' NOT NULL COMMENT 'worker的ip',
 	`cpu` int(11) DEFAULT 0 NOT NULL COMMENT 'cpu数量',
 	`cpu_used` DOUBLE DEFAULT 0 NOT NULL COMMENT 'cpu使用率',
@@ -89,15 +89,15 @@ CREATE TABLE `logi_worker` (
   `create_time` DATETIME DEFAULT NOW() COMMENT '创建时间',
   `update_time` DATETIME DEFAULT NOW() ON UPDATE NOW() COMMENT '更新时间',
     PRIMARY KEY (`id`),
-	UNIQUE KEY `code` (`code`)
+	UNIQUE KEY `worker_code` (`worker_code`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='worker信息';
 
 drop table if exists `logi_worker_blacklist`;
 CREATE TABLE `logi_worker_blacklist` (
   `id` BIGINT(20) auto_increment,
-  `worker_code` VARCHAR(100) DEFAULT '' NOT NULL COMMENT 'worker code',
+  `worker_code` VARCHAR(100) DEFAULT '' NOT NULL COMMENT 'worker taskCode',
   `create_time` DATETIME DEFAULT NOW() COMMENT '创建时间',
   `update_time` DATETIME DEFAULT NOW() ON UPDATE NOW() COMMENT '更新时间',
   PRIMARY KEY (`id`),
-  UNIQUE KEY `code` (`worker_code`)
+  UNIQUE KEY `worker_code` (`worker_code`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='worker黑名单列表';

@@ -5,8 +5,8 @@
     <!-- 通用查询映射结果 -->
     <resultMap id="BaseResultMap" type="com.didiglobal.logi.job.common.po.LogIWorkerPO">
         <id column="id" property="id" />
-        <result column="code" property="code" />
-        <result column="name" property="name" />
+        <result column="code" property="setWorkerCode" />
+        <result column="name" property="setWorkName" />
         <result column="cpu" property="cpu" />
         <result column="cpu_used" property="cpuUsed" />
         <result column="memory" property="memory" />

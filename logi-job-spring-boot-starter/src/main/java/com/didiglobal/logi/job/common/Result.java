@@ -64,7 +64,7 @@ public class Result<T> extends BaseResult implements Serializable {
   /**
    * .
    *
-   * @param code code
+   * @param code taskCode
    * @param msg msg
    * @return Result
    */
@@ -78,7 +78,7 @@ public class Result<T> extends BaseResult implements Serializable {
   /**
    * .
    *
-   * @param code code
+   * @param code taskCode
    * @param msg msg
    * @param data data
    * @return Result

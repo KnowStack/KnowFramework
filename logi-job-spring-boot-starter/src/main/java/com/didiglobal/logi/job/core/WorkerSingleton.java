@@ -60,9 +60,9 @@ public class WorkerSingleton {
         logger.error("class=SimpleWorkerFactory||method=||url=||msg=", e);
       }
 
-      logIWorker.setCode(inetAddress == null ? "INVALID_CODE"
+      logIWorker.setWorkerCode(inetAddress == null ? "INVALID_CODE"
               : inetAddress.getHostAddress() + "_" + inetAddress.getHostName());
-      logIWorker.setName(inetAddress == null ? "INVALID_NAME" : inetAddress.getHostName());
+      logIWorker.setWorkerName(inetAddress == null ? "INVALID_NAME" : inetAddress.getHostName());
       logIWorker.setIp(inetAddress.getHostAddress());
       singleton.setLogIWorker( logIWorker );
     }

@@ -26,9 +26,9 @@ public class LogIJobPO extends BasePO implements Serializable {
   private Long id;
 
   /**
-   * task code
+   * task taskCode
    */
-  private String code;
+  private String jobCode;
 
   /**
    * 任务code

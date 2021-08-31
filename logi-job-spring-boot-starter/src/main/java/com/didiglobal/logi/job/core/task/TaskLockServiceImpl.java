@@ -43,7 +43,7 @@ public class TaskLockServiceImpl implements TaskLockService {
 
   @Override
   public Boolean tryAcquire(String taskCode) {
-    return tryAcquire(taskCode, WorkerSingleton.getInstance().getLogIWorker().getCode(),
+    return tryAcquire(taskCode, WorkerSingleton.getInstance().getLogIWorker().getWorkerCode(),
             EXPIRE_TIME_SECONDS);
   }
 
@@ -84,7 +84,7 @@ public class TaskLockServiceImpl implements TaskLockService {
 
   @Override
   public Boolean tryRelease(String taskCode) {
-    return tryRelease(taskCode, WorkerSingleton.getInstance().getLogIWorker().getCode());
+    return tryRelease(taskCode, WorkerSingleton.getInstance().getLogIWorker().getWorkerCode());
   }
 
   @Override

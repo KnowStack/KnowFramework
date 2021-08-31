@@ -5,7 +5,7 @@ import com.didiglobal.logi.job.common.domain.LogITask;
 import com.didiglobal.logi.job.common.enums.JobStatusEnum;
 import com.didiglobal.logi.job.core.WorkerSingleton;
 import com.didiglobal.logi.job.utils.IdWorker;
-import java.sql.Timestamp;
+
 import java.util.HashMap;
 import java.util.Map;
 import org.springframework.stereotype.Component;
@@ -28,10 +28,10 @@ public class SimpleJobFactory implements JobFactory {
   @Override
   public LogIJob newJob(LogITask logITask) {
     LogIJob logIJob = new LogIJob();
-    logIJob.setCode(IdWorker.getIdStr());
-    logIJob.setTaskCode(logITask.getCode());
+    logIJob.setJobCode(IdWorker.getIdStr());
+    logIJob.setTaskCode(logITask.getTaskCode());
     logIJob.setClassName(logITask.getClassName());
-    logIJob.setWorkerCode(WorkerSingleton.getInstance().getLogIWorker().getCode());
+    logIJob.setWorkerCode(WorkerSingleton.getInstance().getLogIWorker().getWorkerCode());
     logIJob.setWorkerIp(WorkerSingleton.getInstance().getLogIWorker().getIp());
     logIJob.setTryTimes(logITask.getRetryTimes() == null ? 1 : logITask.getRetryTimes());
     logIJob.setStatus(JobStatusEnum.STARTED.getValue());

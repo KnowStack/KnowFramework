@@ -1,6 +1,6 @@
 package com.didiglobal.logi.job.annotation;
 
-import com.didiglobal.logi.job.core.consensual.ConsensualConstant;
+import com.didiglobal.logi.job.core.consensual.ConsensualEnum;
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -17,7 +17,7 @@ import org.springframework.stereotype.Component;
 @Component
 public @interface Task {
   /**
-   * task name.
+   * task taskName.
    */
   String name() default "";
 
@@ -55,5 +55,5 @@ public @interface Task {
   /**
    * consensual.
    */
-  ConsensualConstant consensual() default ConsensualConstant.RANDOM;
+  ConsensualEnum consensual() default ConsensualEnum.RANDOM;
 }

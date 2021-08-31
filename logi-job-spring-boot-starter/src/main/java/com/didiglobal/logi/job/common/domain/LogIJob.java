@@ -13,7 +13,7 @@ import lombok.Data;
 
 @Data
 public class LogIJob {
-  private String code;
+  private String jobCode;
   private String taskCode;
   private String className;
   private Integer retryTimes;
@@ -37,7 +37,7 @@ public class LogIJob {
    */
   public LogIJobPO getAuvJob() {
     LogIJobPO job = new LogIJobPO();
-    job.setCode(getCode());
+    job.setJobCode( getJobCode());
     job.setTaskCode(getTaskCode());
     job.setClassName(getClassName());
     job.setTryTimes(getTryTimes());
@@ -56,7 +56,7 @@ public class LogIJob {
    */
   public LogIJobLogPO getAuvJobLog() {
     LogIJobLogPO logIJobLogPO = new LogIJobLogPO();
-    logIJobLogPO.setJobCode(getCode());
+    logIJobLogPO.setJobCode( getJobCode());
     logIJobLogPO.setTaskCode(getTaskCode());
     logIJobLogPO.setClassName(getClassName());
     logIJobLogPO.setWorkerCode(getWorkerCode());
@@ -82,11 +82,11 @@ public class LogIJob {
       return false;
     }
     LogIJob logIJob = (LogIJob) o;
-    return code.equals( logIJob.code);
+    return jobCode.equals( logIJob.jobCode );
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(code);
+    return Objects.hash( jobCode );
   }
 }

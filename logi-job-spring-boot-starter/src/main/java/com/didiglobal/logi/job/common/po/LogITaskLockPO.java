@@ -23,12 +23,12 @@ public class LogITaskLockPO extends BasePO implements Serializable {
   private Long id;
 
   /**
-   * task code
+   * task taskCode
    */
   private String taskCode;
 
   /**
-   * worker code
+   * worker taskCode
    */
   private String workerCode;
 

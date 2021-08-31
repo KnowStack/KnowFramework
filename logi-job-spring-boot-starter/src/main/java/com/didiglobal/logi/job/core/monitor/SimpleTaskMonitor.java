@@ -80,7 +80,7 @@ public class SimpleTaskMonitor implements TaskMonitor {
 
           // 未到执行时间，等待
           logger.info("class=TaskMonitorExecutor||method=run||url=||msg=fetch tasks {}",
-                  logITaskList.stream().map( LogITask::getName).collect(Collectors.toList()));
+                  logITaskList.stream().map( LogITask::getTaskName ).collect(Collectors.toList()));
           Long firstFireTime = logITaskList.stream().findFirst().get().getNextFireTime().getTime();
           Long nowTime = System.currentTimeMillis();
           if (nowTime < firstFireTime) {
@@ -89,7 +89,7 @@ public class SimpleTaskMonitor implements TaskMonitor {
           }
           logger.info("class=TaskMonitorExecutor||method=run||url=||msg=start tasks={}, "
                           + "firstFireTime={}, nowTime={}",
-                  logITaskList.stream().map( LogITask::getName).collect(Collectors.toList()),
+                  logITaskList.stream().map( LogITask::getTaskName ).collect(Collectors.toList()),
                   firstFireTime, nowTime);
 
           // 提交任务

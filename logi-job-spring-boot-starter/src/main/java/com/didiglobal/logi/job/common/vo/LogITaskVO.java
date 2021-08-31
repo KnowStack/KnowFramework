@@ -17,16 +17,19 @@ import java.util.List;
 public class LogITaskVO {
 
     @ApiModelProperty(value = "taskcode")
-    private String code;
+    private Long id;
+
+    @ApiModelProperty(value = "taskcode")
+    private String taskCode;
 
     @ApiModelProperty(value = "任务名称")
-    private String name;
+    private String taskName;
 
     @ApiModelProperty(value = "任务责任人")
     private String owner;
 
     @ApiModelProperty(value = "任务描述")
-    private String description;
+    private String taskDesc;
 
     @ApiModelProperty(value = "定时任务调度时间表达式")
     private String cron;
@@ -54,4 +57,13 @@ public class LogITaskVO {
 
     @ApiModelProperty(value = "调度机器列表")
     private List<String> workerIps;
+
+    @ApiModelProperty(value = "路由策略")
+    private String routing;
+
+    @ApiModelProperty(value = "运行模式")
+    private String runningType = "BEAN模式";
+
+    @ApiModelProperty(value = "阻塞策略")
+    private String blockPolicy = "单机串行";
 }

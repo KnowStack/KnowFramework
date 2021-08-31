@@ -45,7 +45,7 @@ public class JobLogManagerImpl implements JobLogManager {
         }
         return logIJobLogPOS.stream().map(logIJobLogPO -> {
             LogIJobLogVO logIJobLogVO = BeanUtil.convertTo(logIJobLogPO, LogIJobLogVO.class);
-            logIJobLogVO.setTaskName(task.getName());
+            logIJobLogVO.setTaskName(task.getTaskName());
             logIJobLogVO.setAllWorkerIps(ips);
             return logIJobLogVO;
         }).collect(Collectors.toList());

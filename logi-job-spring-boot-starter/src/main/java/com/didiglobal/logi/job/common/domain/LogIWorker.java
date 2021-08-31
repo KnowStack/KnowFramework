@@ -7,8 +7,8 @@ import lombok.Data;
 @Data
 public class LogIWorker {
 
-  private String code;
-  private String name;
+  private String workerCode;
+  private String workerName;
 
   private String ip;
 
@@ -43,8 +43,8 @@ public class LogIWorker {
    */
   public LogIWorkerPO getWorker() {
     LogIWorkerPO logIWorkerPO = new LogIWorkerPO();
-    logIWorkerPO.setCode(this.code);
-    logIWorkerPO.setName(this.name);
+    logIWorkerPO.setWorkerCode(this.workerCode);
+    logIWorkerPO.setWorkerName(this.workerName);
     logIWorkerPO.setIp(this.getIp());
     logIWorkerPO.setCpu(this.cpu);
     logIWorkerPO.setCpuUsed(this.cpuUsed);

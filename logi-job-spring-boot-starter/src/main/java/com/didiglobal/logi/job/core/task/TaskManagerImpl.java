@@ -97,12 +97,12 @@ public class TaskManagerImpl implements TaskManager {
         List<LogITask.TaskWorker> taskWorkers = taskInfo.getTaskWorkers();
         for (LogITask.TaskWorker taskWorker : taskWorkers) {
           // 取到当前worker做进一步判断，如果没有找到证明没有执行过
-          if (Objects.equals(WorkerSingleton.getInstance().getLogIWorker().getCode(),
+          if (Objects.equals(WorkerSingleton.getInstance().getLogIWorker().getWorkerCode(),
                   taskWorker.getWorkerCode())) {
             // 判断是否在当前worker可执行状态
             if (!Objects.equals(taskWorker.getStatus(), TaskWorkerStatusEnum.WAITING.getValue())) {
               logger.info("class=TaskManagerImpl||method=nextTriggers||url=||msg=has task running! "
-                      + "taskCode={}, workerCode={}", taskInfo.getCode(),
+                      + "taskCode={}, workerCode={}", taskInfo.getTaskCode(),
                       taskWorker.getWorkerCode());
               return false;
             }
@@ -132,7 +132,7 @@ public class TaskManagerImpl implements TaskManager {
     }
     for (LogITask logITask : logITaskList) {
       // 不能在本工作器执行，跳过
-      Consensual consensual = consensualFactory.getConsensual( logITask.getConsensual());
+      Consensual consensual = consensualFactory.getConsensual(logITask.getConsensual());
       if (!consensual.canClaim( logITask )) {
         continue;
       }
@@ -170,7 +170,7 @@ public class TaskManagerImpl implements TaskManager {
     boolean worked = false;
     for (LogITask.TaskWorker taskWorker : taskWorkers) {
       if (Objects.equals(taskWorker.getWorkerCode(),
-              WorkerSingleton.getInstance().getLogIWorker().getCode())) {
+              WorkerSingleton.getInstance().getLogIWorker().getWorkerCode())) {
         taskWorker.setLastFireTime(lastFireTime);
         taskWorker.setStatus( TaskWorkerStatusEnum.RUNNING.getValue());
         worked = true;
@@ -181,7 +181,7 @@ public class TaskManagerImpl implements TaskManager {
     if (!worked) {
       taskWorkers.add(new LogITask.TaskWorker( TaskWorkerStatusEnum.RUNNING.getValue(),
               new Timestamp(System.currentTimeMillis()),
-              WorkerSingleton.getInstance().getLogIWorker().getCode(),
+              WorkerSingleton.getInstance().getLogIWorker().getWorkerCode(),
               WorkerSingleton.getInstance().getLogIWorker().getIp()));
     }
 

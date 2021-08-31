@@ -54,7 +54,7 @@ public class BeatManagerImpl implements BeatManager {
     // clean worker
     WorkerSingleton workerSingleton = WorkerSingleton.getInstance();
     LogIWorker logIWorker = workerSingleton.getLogIWorker();
-    logIWorkerMapper.deleteByCode( logIWorker.getCode());
+    logIWorkerMapper.deleteByCode( logIWorker.getWorkerCode());
     return true;
   }
 
@@ -63,7 +63,7 @@ public class BeatManagerImpl implements BeatManager {
     List<LogIWorkerPO> logIWorkerPOS = logIWorkerMapper.selectByAppName(logIJobProperties.getAppName());
     for(LogIWorkerPO logIWorkerPO : logIWorkerPOS){
       if(logIWorkerPO.getUpdateTime().getTime() + 2 * 24 * ONE_HOUR * 1000  < currentTime){
-        logIWorkerMapper.deleteByCode( logIWorkerPO.getCode());
+        logIWorkerMapper.deleteByCode( logIWorkerPO.getWorkerCode());
       }
     }
   }

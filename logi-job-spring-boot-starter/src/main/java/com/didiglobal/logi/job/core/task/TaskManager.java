@@ -15,7 +15,7 @@ public interface TaskManager {
   /**
    * 更新任务.
    *
-   * @param taskCode task code
+   * @param taskCode task taskCode
    * @return deleted auv task
    */
   Result delete(String taskCode);
@@ -51,9 +51,9 @@ public interface TaskManager {
   void submit(List<LogITask> logITaskList);
 
   /**
-   * 根据 task code 执行任务.
+   * 根据 task taskCode 执行任务.
    *
-   * @param taskCode task code
+   * @param taskCode task taskCode
    * @param executeSubs 是否执行子任务
    */
   Result execute(String taskCode, Boolean executeSubs);

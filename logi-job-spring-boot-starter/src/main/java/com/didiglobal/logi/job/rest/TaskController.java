@@ -3,9 +3,10 @@ package com.didiglobal.logi.job.rest;
 import com.didiglobal.logi.job.common.PagingResult;
 import com.didiglobal.logi.job.common.Result;
 import com.didiglobal.logi.job.common.domain.LogITask;
-import com.didiglobal.logi.job.common.dto.PageQueryDTO;
+import com.didiglobal.logi.job.common.dto.TaskPageQueryDTO;
 import com.didiglobal.logi.job.common.vo.LogIJobLogVO;
 import com.didiglobal.logi.job.common.vo.LogITaskVO;
+import com.didiglobal.logi.job.core.consensual.ConsensualEnum;
 import com.didiglobal.logi.job.core.job.JobLogManager;
 import com.didiglobal.logi.job.core.task.TaskManager;
 import com.didiglobal.logi.job.utils.BeanUtil;
@@ -40,11 +41,11 @@ public class TaskController {
   }
 
   @PostMapping("/list")
-  public PagingResult<LogITaskVO> getAll(@RequestBody PageQueryDTO pageQueryDTO) {
-    List<LogITask> logITasks =  taskManager.getList(pageQueryDTO.getPage(), pageQueryDTO.getSize());
+  public PagingResult<LogITaskVO> getAll(@RequestBody TaskPageQueryDTO taskPageQueryDTO) {
+    List<LogITask> logITasks =  taskManager.getList(taskPageQueryDTO.getPage(), taskPageQueryDTO.getSize());
     int count = taskManager.totalTaskConut();
 
-    return PagingResult.buildSucc(logITask2LogITaskVO(logITasks), count, pageQueryDTO.getPage(), pageQueryDTO.getSize());
+    return PagingResult.buildSucc(logITask2LogITaskVO(logITasks), count, taskPageQueryDTO.getPage(), taskPageQueryDTO.getSize());
   }
 
   @PostMapping("/{taskCode}/{status}")
@@ -58,11 +59,11 @@ public class TaskController {
   }
 
   @PostMapping("/{taskCode}/jobLogs")
-  public PagingResult<LogIJobLogVO> getJobLogs(@PathVariable String taskCode, @RequestBody PageQueryDTO pageQueryDTO) {
-    List<LogIJobLogVO> logIJobLogVOS = jobLogManager.getJobLogs(taskCode, pageQueryDTO.getPage(), pageQueryDTO.getSize());
+  public PagingResult<LogIJobLogVO> getJobLogs(@PathVariable String taskCode, @RequestBody TaskPageQueryDTO taskPageQueryDTO) {
+    List<LogIJobLogVO> logIJobLogVOS = jobLogManager.getJobLogs(taskCode, taskPageQueryDTO.getPage(), taskPageQueryDTO.getSize());
     int taotalCount = jobLogManager.getJobLogsCount(taskCode);
 
-    return PagingResult.buildSucc(logIJobLogVOS, taotalCount, pageQueryDTO.getPage(), pageQueryDTO.getSize());
+    return PagingResult.buildSucc(logIJobLogVOS, taotalCount, taskPageQueryDTO.getPage(), taskPageQueryDTO.getSize());
   }
 
   @PostMapping("/{taskCode}/{workerCode}/release")
@@ -87,6 +88,8 @@ public class TaskController {
 
     if(!CollectionUtils.isEmpty(logITask.getTaskWorkers())){
       List<String> ips = logITask.getTaskWorkers().stream().map(w -> w.getIp()).collect(Collectors.toList());
+
+      logITaskVO.setRouting( ConsensualEnum.getByName(logITask.getConsensual()).getDesc());
       logITaskVO.setWorkerIps(ips);
     }
 

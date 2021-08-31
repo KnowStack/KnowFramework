@@ -18,9 +18,9 @@ import org.apache.ibatis.annotations.Update;
  */
 public interface LogITaskMapper {
 
-  @Insert("INSERT INTO logi_task(code, name, description, cron, class_name, params, retry_times,"
+  @Insert("INSERT INTO logi_task(task_code, task_name, task_desc, cron, class_name, params, retry_times,"
           + " last_fire_time, timeout, status, sub_task_codes, consensual, task_worker_str, app_name, owner) "
-          + "VALUES(#{code}, #{name}, #{description}, #{cron}, #{className}, #{params}, "
+          + "VALUES(#{taskCode}, #{taskName}, #{taskDesc}, #{cron}, #{className}, #{params}, "
           + "#{retryTimes}, #{lastFireTime}, #{timeout}, #{status}, #{subTaskCodes}, "
           + "#{consensual}, #{taskWorkerStr}, #{appName}, #{owner})")
   int insert(LogITaskPO logITaskPO);
@@ -28,19 +28,19 @@ public interface LogITaskMapper {
   @Delete("delete from logi_task where code=#{code} and app_name=#{appName}")
   int deleteByCode(@Param("code") String code, @Param("appName") String appName);
 
-  @Update("update logi_task set name=#{name}, description=#{description}, cron=#{cron}, class_name="
+  @Update("update logi_task set task_name=#{taskName}, task_desc=#{taskDesc}, cron=#{cron}, class_name="
           + "#{className}, params=#{params}, retry_times=#{retryTimes}, last_fire_time="
           + "#{lastFireTime}, timeout=#{timeout}, status=#{status}, sub_task_codes=#{subTaskCodes},"
-          + " consensual=#{consensual}, task_worker_str=#{taskWorkerStr}, owner=#{owner} where code=#{code}")
+          + " consensual=#{consensual}, task_worker_str=#{taskWorkerStr}, owner=#{owner} where task_code=#{taskCode}")
   int updateByCode(LogITaskPO logITaskPO);
 
-  @Select("select id, code, name, description, cron, class_name, params, retry_times, "
-          + "last_fire_time, timeout, status, sub_task_codes, consensual, create_time, update_time "
-          + ", task_worker_str, create_time, update_time, app_name, owner from logi_task where code=#{code} and app_name=#{appName}")
-  LogITaskPO selectByCode(@Param("code") String code, @Param("appName") String appName);
+  @Select("select id, task_code, task_name, task_desc, cron, class_name, params, retry_times, "
+          + "last_fire_time, timeout, status, sub_task_codes, consensual"
+          + ", task_worker_str, create_time, update_time, app_name, owner from logi_task where task_code=#{taskCode} and app_name=#{appName}")
+  LogITaskPO selectByCode(@Param("taskCode") String code, @Param("appName") String appName);
 
   @Select("<script>"
-          + "select id, code, name, description, cron, class_name, params, retry_times, "
+          + "select id, task_code, task_name, task_desc, cron, class_name, params, retry_times, "
           + "last_fire_time, timeout, status, sub_task_codes, consensual, task_worker_str, "
           + "create_time, update_time, app_name, owner from logi_task where app_name=#{appName} and codes in "
           + "<foreach collection='codes' item='code' index='index' open='(' close=')' "
@@ -50,22 +50,22 @@ public interface LogITaskMapper {
           + "</script>")
   List<LogITaskPO> selectByCodes(@Param("codes") List<String> codes, @Param("appName") String appName);
 
-  @Select("select id, code, name, description, cron, class_name, params, retry_times, "
+  @Select("select id, task_code, task_name, task_desc, cron, class_name, params, retry_times, "
           + "last_fire_time, timeout, status, sub_task_codes, consensual, task_worker_str,"
           + " create_time, update_time, app_name, owner from logi_task")
   List<LogITaskPO> selectAll();
 
-  @Select("select id, code, name, description, cron, class_name, params, retry_times, "
+  @Select("select id, task_code, task_name, task_desc, cron, class_name, params, retry_times, "
           + "last_fire_time, timeout, status, sub_task_codes, consensual, task_worker_str,"
           + " create_time, update_time, app_name, owner from logi_task where app_name=#{appName}")
   List<LogITaskPO> selectByAppName(@Param("appName") String appName);
 
-  @Select("select id, code, name, description, cron, class_name, params, retry_times, "
+  @Select("select id, task_code, task_name, task_desc, cron, class_name, params, retry_times, "
           + "last_fire_time, timeout, status, sub_task_codes, consensual, task_worker_str,"
           + " create_time, update_time, app_name, owner from logi_task where app_name=#{appName} and status=1")
   List<LogITaskPO> selectRuningByAppName(@Param("appName") String appName);
 
-  @Select("select id, code, name, description, cron, class_name, params, retry_times, "
+  @Select("select id, task_code, task_name, task_desc, cron, class_name, params, retry_times, "
           + "last_fire_time, timeout, status, sub_task_codes, consensual, task_worker_str,"
           + " create_time, update_time, app_name, owner from logi_task where app_name=#{appName} "
           + " order by id desc limit #{start}, #{size} ")
@@ -73,4 +73,8 @@ public interface LogITaskMapper {
 
   @Select("select count(1) from logi_task where app_name=#{appName}")
   int selectCountByAppName(@Param("appName") String appName);
+
+  List<LogITaskPO> pagineListByCondition(@Param("id") Long id, @Param("taskDesc") String taskDesc,
+                                         @Param("className") String className, @Param("beginTime") Long beginTime,
+                                         @Param("endTime") Long endTime);
 }

@@ -16,12 +16,16 @@ import java.util.List;
 @ApiModel(description = "LogIJobLogVO 调度执行的任务详情")
 public class LogIJobLogVO {
 
+    @ApiModelProperty(value = "调度执行的任务id")
+    private Long id;
+
     @ApiModelProperty(value = "调度执行的任务")
     private String jobCode;
 
     @ApiModelProperty(value = "配置的任务")
     private String taskCode;
 
+    @ApiModelProperty(value = "配置的任务名称")
     private String taskName;
 
     @ApiModelProperty(value = "定时任务调度执行代码")

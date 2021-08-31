@@ -24,14 +24,14 @@ public class LogIWorkerPO extends BasePO implements Serializable {
   private Long id;
 
   /**
-   * auv task code
+   *  workerCode
    */
-  private String code;
+  private String workerCode;
 
   /**
    * worker名: host
    */
-  private String name;
+  private String workerName;
 
   /**
    * ip

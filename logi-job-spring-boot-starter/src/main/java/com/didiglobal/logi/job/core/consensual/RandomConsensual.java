@@ -21,12 +21,12 @@ public class RandomConsensual extends AbstractConsensual {
 
   @Override
   public String getName() {
-    return ConsensualConstant.RANDOM.name();
+    return ConsensualEnum.RANDOM.name();
   }
 
   @Override
   public boolean tryClaim(LogITask logITask) {
-    if (taskLockService.tryAcquire( logITask.getCode())) {
+    if (taskLockService.tryAcquire( logITask.getTaskCode())) {
       logITask.setTaskCallback( taskCode -> {
         logger.info("class=RandomConsensual||method=tryClaim||url=||msg=release task lock "
                 + "taskCode {}", taskCode);

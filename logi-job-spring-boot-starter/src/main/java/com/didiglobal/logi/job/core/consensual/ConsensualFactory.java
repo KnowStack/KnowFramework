@@ -21,7 +21,7 @@ public class ConsensualFactory implements ApplicationContextAware {
   /**
    * 根据名称获取.
    *
-   * @param name name
+   * @param name taskName
    * @return Consensual
    */
   public Consensual getConsensual(String name) {

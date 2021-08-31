@@ -2,17 +2,15 @@ package com.didiglobal.logi.job.examples.task;
 
 import com.didiglobal.logi.job.annotation.Task;
 import com.didiglobal.logi.job.common.TaskResult;
-import com.didiglobal.logi.job.core.consensual.ConsensualConstant;
+import com.didiglobal.logi.job.core.consensual.ConsensualEnum;
 import com.didiglobal.logi.job.core.job.Job;
 import com.didiglobal.logi.job.core.job.JobContext;
-import com.didiglobal.logi.job.utils.ThreadUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 @Component
-@Task(name = "dd broad", description = "dd broad", cron = "0 0/1 * * * ? *", autoRegister = true,
-        consensual = ConsensualConstant.BROADCAST, timeout = 100)
+@Task(name = "dd broad", description = "dd broad", cron = "0 0/1 * * * ? *", autoRegister = true, timeout = 100)
 public class JobBroadcastInterruptTest implements Job {
   private static final Logger logger = LoggerFactory.getLogger(JobBroadcastInterruptTest.class);
 

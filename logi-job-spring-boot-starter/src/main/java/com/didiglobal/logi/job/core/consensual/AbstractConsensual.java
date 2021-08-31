@@ -51,7 +51,7 @@ public abstract class AbstractConsensual implements Consensual {
   private boolean inBlacklist() {
     Set<String> blacklist = blacklist();
     LogIWorker logIWorker = WorkerSingleton.getInstance().getLogIWorker();
-    return blacklist.contains( logIWorker.getCode());
+    return blacklist.contains( logIWorker.getWorkerCode());
   }
 
   private Set<String> blacklist() {

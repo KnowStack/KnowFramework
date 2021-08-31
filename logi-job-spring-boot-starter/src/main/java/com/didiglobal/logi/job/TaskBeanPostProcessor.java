@@ -61,7 +61,7 @@ public class TaskBeanPostProcessor implements BeanPostProcessor {
     }
     // not exists register
     LogITaskPO task = getAuvTask(beanClass, taskAnnotation);
-    task.setCode(IdWorker.getIdStr());
+    task.setTaskCode(IdWorker.getIdStr());
     if (!contains(task)) {
       task.setStatus(TaskStatusEnum.RUNNING.getValue());
       logITaskMapper.insert(task);
@@ -76,8 +76,8 @@ public class TaskBeanPostProcessor implements BeanPostProcessor {
 
   private LogITaskPO getAuvTask(Class<?> beanClass, Task schedule) {
     LogITaskPO logITaskPO = new LogITaskPO();
-    logITaskPO.setName(schedule.name());
-    logITaskPO.setDescription(schedule.description());
+    logITaskPO.setTaskName(schedule.name());
+    logITaskPO.setTaskDesc(schedule.description());
     logITaskPO.setCron(schedule.cron());
     logITaskPO.setClassName(beanClass.getCanonicalName());
     logITaskPO.setParams("");

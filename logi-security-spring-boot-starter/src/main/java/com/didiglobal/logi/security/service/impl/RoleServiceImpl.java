@@ -66,7 +66,7 @@ public class RoleServiceImpl implements RoleService {
         roleWrapper
                 .like(queryVo.getRoleCode() != null, "role_code", queryVo.getRoleCode())
                 .like(queryVo.getRoleName() != null, "role_name", queryVo.getRoleName())
-                .like(queryVo.getDescription() != null, "description", queryVo.getDescription());
+                .like(queryVo.getDescription() != null, "taskDesc", queryVo.getDescription());
         roleMapper.selectPage(rolePage, roleWrapper);
 
         IPage<RoleVo> roleVoPage = CopyBeanUtil.copyPage(rolePage, RoleVo.class);

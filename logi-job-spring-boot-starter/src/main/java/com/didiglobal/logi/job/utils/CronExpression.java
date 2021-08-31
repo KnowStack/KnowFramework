@@ -48,53 +48,53 @@ import java.util.TreeSet;
  * <th align="left">Allowed Special Characters</th>
  * </tr>
  * <tr>
- * <td align="left"><code>Seconds</code></td>
+ * <td align="left"><taskCode>Seconds</taskCode></td>
  * <td align="left">&nbsp;</th>
- * <td align="left"><code>0-59</code></td>
+ * <td align="left"><taskCode>0-59</taskCode></td>
  * <td align="left">&nbsp;</th>
- * <td align="left"><code>, - * /</code></td>
+ * <td align="left"><taskCode>, - * /</taskCode></td>
  * </tr>
  * <tr>
- * <td align="left"><code>Minutes</code></td>
+ * <td align="left"><taskCode>Minutes</taskCode></td>
  * <td align="left">&nbsp;</th>
- * <td align="left"><code>0-59</code></td>
+ * <td align="left"><taskCode>0-59</taskCode></td>
  * <td align="left">&nbsp;</th>
- * <td align="left"><code>, - * /</code></td>
+ * <td align="left"><taskCode>, - * /</taskCode></td>
  * </tr>
  * <tr>
- * <td align="left"><code>Hours</code></td>
+ * <td align="left"><taskCode>Hours</taskCode></td>
  * <td align="left">&nbsp;</th>
- * <td align="left"><code>0-23</code></td>
+ * <td align="left"><taskCode>0-23</taskCode></td>
  * <td align="left">&nbsp;</th>
- * <td align="left"><code>, - * /</code></td>
+ * <td align="left"><taskCode>, - * /</taskCode></td>
  * </tr>
  * <tr>
- * <td align="left"><code>Day-of-month</code></td>
+ * <td align="left"><taskCode>Day-of-month</taskCode></td>
  * <td align="left">&nbsp;</th>
- * <td align="left"><code>1-31</code></td>
+ * <td align="left"><taskCode>1-31</taskCode></td>
  * <td align="left">&nbsp;</th>
- * <td align="left"><code>, - * ? / L W</code></td>
+ * <td align="left"><taskCode>, - * ? / L W</taskCode></td>
  * </tr>
  * <tr>
- * <td align="left"><code>Month</code></td>
+ * <td align="left"><taskCode>Month</taskCode></td>
  * <td align="left">&nbsp;</th>
- * <td align="left"><code>0-11 or JAN-DEC</code></td>
+ * <td align="left"><taskCode>0-11 or JAN-DEC</taskCode></td>
  * <td align="left">&nbsp;</th>
- * <td align="left"><code>, - * /</code></td>
+ * <td align="left"><taskCode>, - * /</taskCode></td>
  * </tr>
  * <tr>
- * <td align="left"><code>Day-of-Week</code></td>
+ * <td align="left"><taskCode>Day-of-Week</taskCode></td>
  * <td align="left">&nbsp;</th>
- * <td align="left"><code>1-7 or SUN-SAT</code></td>
+ * <td align="left"><taskCode>1-7 or SUN-SAT</taskCode></td>
  * <td align="left">&nbsp;</th>
- * <td align="left"><code>, - * ? / L #</code></td>
+ * <td align="left"><taskCode>, - * ? / L #</taskCode></td>
  * </tr>
  * <tr>
- * <td align="left"><code>Year (Optional)</code></td>
+ * <td align="left"><taskCode>Year (Optional)</taskCode></td>
  * <td align="left">&nbsp;</th>
- * <td align="left"><code>empty, 1970-2199</code></td>
+ * <td align="left"><taskCode>empty, 1970-2199</taskCode></td>
  * <td align="left">&nbsp;</th>
- * <td align="left"><code>, - * /</code></td>
+ * <td align="left"><taskCode>, - * /</taskCode></td>
  * </tr>
  * </table>
  *
@@ -378,7 +378,7 @@ public final class CronExpression implements Serializable, Cloneable {
   }
 
   /**
-   * Returns the time zone for which this <code>CronExpression</code>
+   * Returns the time zone for which this <taskCode>CronExpression</taskCode>
    * will be resolved.
    */
   public TimeZone getTimeZone() {
@@ -390,7 +390,7 @@ public final class CronExpression implements Serializable, Cloneable {
   }
 
   /**
-   * Sets the time zone for which  this <code>CronExpression</code>
+   * Sets the time zone for which  this <taskCode>CronExpression</taskCode>
    * will be resolved.
    */
   public void setTimeZone(TimeZone timeZone) {
@@ -1639,7 +1639,7 @@ public final class CronExpression implements Serializable, Cloneable {
 
   /**
    * NOT YET IMPLEMENTED: Returns the time before the given time
-   * that the <code>CronExpression</code> matches.
+   * that the <taskCode>CronExpression</taskCode> matches.
    */
   public Date getTimeBefore(Date endTime) {
     // FUTURE_TODO: implement QUARTZ-423
@@ -1648,7 +1648,7 @@ public final class CronExpression implements Serializable, Cloneable {
 
   /**
    * NOT YET IMPLEMENTED: Returns the final time that the
-   * <code>CronExpression</code> will match.
+   * <taskCode>CronExpression</taskCode> will match.
    */
   public Date getFinalFireTime() {
     // FUTURE_TODO: implement QUARTZ-423

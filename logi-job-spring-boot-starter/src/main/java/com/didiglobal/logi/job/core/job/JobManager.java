@@ -30,7 +30,7 @@ public interface JobManager {
   /**
    * 停止任务.
    *
-   * @param jobCode job code
+   * @param jobCode job taskCode
    * @return true/false
    */
   boolean stopByJobCode(String jobCode);

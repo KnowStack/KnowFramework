@@ -13,7 +13,7 @@ public class BroadcastConsensual extends AbstractConsensual {
 
   @Override
   public String getName() {
-    return ConsensualConstant.BROADCAST.name();
+    return ConsensualEnum.BROADCAST.name();
   }
 
   @Override
