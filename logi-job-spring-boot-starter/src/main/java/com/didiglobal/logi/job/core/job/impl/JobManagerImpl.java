@@ -1,6 +1,7 @@
 package com.didiglobal.logi.job.core.job.impl;
 
 import com.didiglobal.logi.job.LogIJobProperties;
+import com.didiglobal.logi.job.common.TaskResult;
 import com.didiglobal.logi.job.common.domain.LogIJob;
 import com.didiglobal.logi.job.common.domain.LogITask;
 import com.didiglobal.logi.job.common.enums.JobStatusEnum;
@@ -97,12 +98,16 @@ public class JobManagerImpl implements JobManager {
   @Override
   public Future<Object> start(LogITask logITask) {
     // 添加job信息
-    LogIJob logIJob = jobFactory.newJob( logITask );
+    LogIJob logIJob = jobFactory.newJob(logITask);
     LogIJobPO job = logIJob.getAuvJob();
     logIJobMapper.insert(job);
 
     Future jobFuture = jobExecutor.submit(new JobHandler( logIJob ));
-    jobFutureMap.put( logIJob, jobFuture);
+    jobFutureMap.put(logIJob, jobFuture);
+
+    // 增加auvJobLog
+    LogIJobLogPO logIJobLogPO = logIJob.getAuvJobLog();
+    logIJobLogMapper.insert(logIJobLogPO);
     return jobFuture;
   }
 
@@ -171,14 +176,19 @@ public class JobManagerImpl implements JobManager {
 
     @Override
     public Object call() {
-      Object object = null;
+      TaskResult object = null;
       logger.info("class=JobHandler||method=call||url=||msg=start job {} with classname {}",
               logIJob.getCode(), logIJob.getClassName());
       try {
         logIJob.setStartTime(new Timestamp(System.currentTimeMillis()));
-        object = logIJob.getJob().execute(null);
-        logIJob.setStatus(JobStatusEnum.SUCCEED.getValue());
+        logIJob.setStatus(JobStatusEnum.RUNNING.getValue());
         logIJob.setError("");
+
+        LogIJobLogPO logIJobLogPO = logIJob.getAuvJobLog();
+        logIJobLogMapper.updateByCode(logIJobLogPO);
+
+        object = logIJob.getJob().execute(null);
+
       } catch (InterruptedException e) {
         // 记录任务被打断 进程关闭/线程关闭
         logIJob.setStatus(JobStatusEnum.CANCELED.getValue());
@@ -192,14 +202,23 @@ public class JobManagerImpl implements JobManager {
         logIJob.setError(errorMessage);
         logger.error("class=JobHandler||method=call||url=||msg={}", e);
       } finally {
+        if(JobStatusEnum.RUNNING.getValue().intValue() == logIJob.getStatus().intValue()){
+          logIJob.setStatus(JobStatusEnum.SUCCEED.getValue());
+        }
+
+        logIJob.setEndTime(new Timestamp(System.currentTimeMillis()));
+        logIJob.setError(logIJob.getError() == null ? "" : logIJob.getError());
+        logIJob.setResult(object);
+
+        LogIJobLogPO logIJobLogPO = logIJob.getAuvJobLog();
+        logIJobLogMapper.updateByCode(logIJobLogPO);
+
         // job callback, 释放任务锁
         if (logIJob.getTaskCallback() != null) {
-          logIJob.getTaskCallback().callback( logIJob.getTaskCode());
+          logIJob.getTaskCallback().callback(logIJob.getTaskCode());
         }
       }
-      logIJob.setEndTime(new Timestamp(System.currentTimeMillis()));
-      logIJob.setError( logIJob.getError() == null ? "" : logIJob.getError());
-      logIJob.setResult(object);
+
       return object;
     }
   }
@@ -259,10 +278,6 @@ public class JobManagerImpl implements JobManager {
   public void reorganizeFinishedJob(LogIJob logIJob) {
     // 移除记录
     jobFutureMap.remove(logIJob);
-
-    // 增加auvJobLog
-    LogIJobLogPO logIJobLogPO = logIJob.getAuvJobLog();
-    logIJobLogMapper.insert(logIJobLogPO);
 
     // 删除auvJob
     logIJobMapper.deleteByCode(logIJob.getCode());

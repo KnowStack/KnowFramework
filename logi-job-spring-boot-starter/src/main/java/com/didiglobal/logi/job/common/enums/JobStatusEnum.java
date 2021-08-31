@@ -5,9 +5,10 @@ import java.util.Map;
 
 public enum JobStatusEnum {
   STARTED(0),
-  SUCCEED(1),
-  FAILED(2),
-  CANCELED(3);
+  RUNNING(1),
+  SUCCEED(2),
+  FAILED(3),
+  CANCELED(4);
 
   private static Map<Integer, JobStatusEnum> map = new HashMap<>(8);
 

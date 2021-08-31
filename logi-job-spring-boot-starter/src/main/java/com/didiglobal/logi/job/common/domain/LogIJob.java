@@ -1,11 +1,14 @@
 package com.didiglobal.logi.job.common.domain;
 
+import com.didiglobal.logi.job.common.TaskResult;
 import com.didiglobal.logi.job.common.po.LogIJobPO;
 import com.didiglobal.logi.job.common.po.LogIJobLogPO;
 import com.didiglobal.logi.job.core.job.Job;
 import com.didiglobal.logi.job.core.task.TaskCallback;
 import java.sql.Timestamp;
 import java.util.Objects;
+
+import com.didiglobal.logi.job.utils.BeanUtil;
 import lombok.Data;
 
 @Data
@@ -22,7 +25,7 @@ public class LogIJob {
   private Integer status;
   private String error;
   private Long timeout;
-  private Object result;
+  private TaskResult result;
   private Job job;
   private TaskCallback taskCallback;
   private String appName;
@@ -60,10 +63,10 @@ public class LogIJob {
     logIJobLogPO.setWorkerIp(getWorkerIp());
     logIJobLogPO.setTryTimes(getTryTimes());
     logIJobLogPO.setStartTime(getStartTime());
-    logIJobLogPO.setEndTime(new Timestamp(System.currentTimeMillis()));
+    logIJobLogPO.setEndTime(getEndTime());
     logIJobLogPO.setStatus(getStatus());
     logIJobLogPO.setError(getError() == null ? "" : getError());
-    logIJobLogPO.setResult(getResult() == null ? "" : getResult().toString());
+    logIJobLogPO.setResult(getResult() == null ? "" : BeanUtil.convertToJson(getResult()));
     logIJobLogPO.setCreateTime(new Timestamp(System.currentTimeMillis()));
     logIJobLogPO.setUpdateTime(new Timestamp(System.currentTimeMillis()));
     logIJobLogPO.setAppName(this.getAppName());

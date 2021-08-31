@@ -34,7 +34,6 @@ public class SimpleJobFactory implements JobFactory {
     logIJob.setWorkerCode(WorkerSingleton.getInstance().getLogIWorker().getCode());
     logIJob.setWorkerIp(WorkerSingleton.getInstance().getLogIWorker().getIp());
     logIJob.setTryTimes(logITask.getRetryTimes() == null ? 1 : logITask.getRetryTimes());
-    logIJob.setStartTime(new Timestamp(System.currentTimeMillis()));
     logIJob.setStatus(JobStatusEnum.STARTED.getValue());
     logIJob.setTimeout( logITask.getTimeout());
     logIJob.setJob(jobMap.get(logITask.getClassName()));

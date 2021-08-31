@@ -39,7 +39,7 @@ public class LogIJobLogVO {
     @ApiModelProperty(value = "任务被调度时间")
     private Timestamp createTime;
 
-    @ApiModelProperty(value = "任务调度结果，1：成功、2：失败、3：取消")
+    @ApiModelProperty(value = "任务调度结果，0:调度启动中、1:运行中、 2：成功、3：失败、4：取消")
     private Integer status;
 
     @ApiModelProperty(value = "任务执行错误")

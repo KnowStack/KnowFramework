@@ -4,11 +4,9 @@ import com.didiglobal.logi.job.common.po.LogIJobLogPO;
 import java.sql.Timestamp;
 import java.util.List;
 
+import com.didiglobal.logi.job.common.po.LogITaskPO;
 import io.swagger.models.auth.In;
-import org.apache.ibatis.annotations.Delete;
-import org.apache.ibatis.annotations.Insert;
-import org.apache.ibatis.annotations.Param;
-import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.*;
 
 /**
  * <p>
@@ -33,6 +31,12 @@ public interface LogIJobLogMapper {
                                       @Param("appName") String appName,
                                       @Param("start") Integer start,
                                       @Param("size") Integer size);
+
+  @Update("update logi_job_log set job_code=#{jobCode}, task_code=#{taskCode}, class_name=#{className}, try_times="
+          + "#{tryTimes}, worker_code=#{workerCode}, worker_ip=#{workerIp}, start_time="
+          + "#{startTime}, end_time=#{endTime}, status=#{status}, error=#{error}, result=#{result}, "
+          + " create_time=#{createTime}, update_time=#{updateTime}, app_name=#{appName} where job_code=#{jobCode}")
+  int updateByCode(LogIJobLogPO logIJobLogPO);
 
   @Delete("delete from logi_job_log where create_time<=#{createTime} and app_name=#{appName}")
   int deleteByCreateTime(@Param("createTime") Timestamp createTime, @Param("appName") String appName);
