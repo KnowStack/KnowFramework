@@ -40,10 +40,20 @@ public class JobLogManagerImpl implements JobLogManager {
     public List<LogIJobLogVO> pagineJobLogs(TaskLogPageQueryDTO dto) {
         Map<Long, LogITask> longLogITaskMap = new HashMap<>();
 
+        Timestamp beginTimestamp = null, endTimestamp = null;
+
+        if(null != dto.getBeginTime()){
+            beginTimestamp = new Timestamp(dto.getBeginTime());
+        }
+
+        if(null != dto.getEndTime()){
+            endTimestamp = new Timestamp(dto.getEndTime());
+        }
+
         List<LogIJobLogPO> logIJobLogPOS = logIJobLogMapper.pagineListByCondition(logIJobProperties.getAppName(),
                 dto.getTaskId(), dto.getTaskName(), dto.getTaskStatus(),
                 (dto.getPage() - 1) * dto.getSize(), dto.getSize(),
-                new Timestamp(dto.getBeginTime()), new Timestamp(dto.getEndTime()));
+                beginTimestamp, endTimestamp);
 
         if (CollectionUtils.isEmpty(logIJobLogPOS)) {
             return null;
@@ -68,8 +78,19 @@ public class JobLogManagerImpl implements JobLogManager {
 
     @Override
     public int getJobLogsCount(TaskLogPageQueryDTO dto) {
+
+        Timestamp beginTimestamp = null, endTimestamp = null;
+
+        if(null != dto.getBeginTime()){
+            beginTimestamp = new Timestamp(dto.getBeginTime());
+        }
+
+        if(null != dto.getEndTime()){
+            endTimestamp = new Timestamp(dto.getEndTime());
+        }
+
         return logIJobLogMapper.pagineCountByCondition(logIJobProperties.getAppName(),
                 dto.getTaskId(), dto.getTaskName(), dto.getTaskStatus(),
-                new Timestamp(dto.getBeginTime()), new Timestamp(dto.getEndTime()));
+                beginTimestamp, endTimestamp);
     }
 }
