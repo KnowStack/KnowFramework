@@ -3,6 +3,8 @@ package com.didiglobal.logi.job.core.task;
 import com.didiglobal.logi.job.common.Result;
 import com.didiglobal.logi.job.common.domain.LogITask;
 import com.didiglobal.logi.job.common.dto.LogITaskDTO;
+import com.didiglobal.logi.job.common.dto.TaskPageQueryDTO;
+
 import java.util.List;
 
 /**
@@ -92,15 +94,14 @@ public interface TaskManager {
    * 获取所有任务个数
    * @return
    */
-  int totalTaskConut();
+  int pagineTaskConut(TaskPageQueryDTO queryDTO);
 
   /**
    * 分页获取相关任务
-   * @param pageNo
-   * @param pageSize
+   * @param taskPageQueryDTO
    * @return
    */
-  List<LogITask> getList(int pageNo, int pageSize);
+  List<LogITask> getPagineList(TaskPageQueryDTO taskPageQueryDTO);
 
   /**
    * 恢复任务 并释放锁.

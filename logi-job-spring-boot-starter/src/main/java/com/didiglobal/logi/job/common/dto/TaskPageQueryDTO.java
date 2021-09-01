@@ -29,5 +29,5 @@ public class TaskPageQueryDTO {
     private String className;
 
     @ApiModelProperty(value = "任务状态", dataType = "Integer", required = false)
-    private Integer status;
+    private Integer taskStatus;
 }

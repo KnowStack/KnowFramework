@@ -56,6 +56,8 @@ CREATE TABLE `logi_job_log` (
 	`id` BIGINT(20) auto_increment,
 	`job_code` VARCHAR(100) DEFAULT '' NOT NULL COMMENT 'job taskCode',
 	`task_code` VARCHAR(255) DEFAULT '' NOT NULL COMMENT '任务code',
+	`task_name` VARCHAR(255) DEFAULT '' NOT NULL COMMENT '任务名称',
+	`task_id` BIGINT DEFAULT 0 NOT NULL COMMENT '任务id',
 	`class_name` VARCHAR(255) DEFAULT '' NOT NULL COMMENT '类的全限定名',
 	`try_times` INT(10) DEFAULT 0 NOT NULL COMMENT '第几次重试',
   `worker_code` varchar(200) default '' not null comment '执行机器',

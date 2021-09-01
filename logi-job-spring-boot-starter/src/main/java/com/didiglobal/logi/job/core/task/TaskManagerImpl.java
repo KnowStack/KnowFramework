@@ -3,6 +3,7 @@ package com.didiglobal.logi.job.core.task;
 import com.didiglobal.logi.job.LogIJobProperties;
 import com.didiglobal.logi.job.common.Result;
 import com.didiglobal.logi.job.common.domain.LogITask;
+import com.didiglobal.logi.job.common.dto.TaskPageQueryDTO;
 import com.didiglobal.logi.job.common.enums.TaskStatusEnum;
 import com.didiglobal.logi.job.common.po.LogITaskPO;
 import com.didiglobal.logi.job.common.dto.LogITaskDTO;
@@ -191,7 +192,7 @@ public class TaskManagerImpl implements TaskManager {
     logITaskMapper.updateByCode( logITaskPO );
 
     // 执行
-    executeInternal( logITask, executeSubs);
+    executeInternal(logITask, executeSubs);
   }
 
   @Override
@@ -232,9 +233,10 @@ public class TaskManagerImpl implements TaskManager {
   }
 
   @Override
-  public List<LogITask> getList(int pageNo, int pageSize){
-    List<LogITaskPO> logITaskPOList = logITaskMapper.selectByAppNameAndSize(logIJobProperties.getAppName(),
-            (pageNo - 1) * pageSize, pageSize);
+  public List<LogITask> getPagineList(TaskPageQueryDTO queryDTO){
+    List<LogITaskPO> logITaskPOList = logITaskMapper.pagineListByCondition(logIJobProperties.getAppName(),
+            queryDTO.getTaskId(),queryDTO.getTaskDesc(),  queryDTO.getClassName(), queryDTO.getTaskStatus(),
+            (queryDTO.getPage() - 1) * queryDTO.getSize(), queryDTO.getSize());
     if (CollectionUtils.isEmpty( logITaskPOList )) {
       return new ArrayList<>();
     }
@@ -243,8 +245,9 @@ public class TaskManagerImpl implements TaskManager {
   }
 
   @Override
-  public int totalTaskConut() {
-    return logITaskMapper.selectCountByAppName(logIJobProperties.getAppName());
+  public int pagineTaskConut(TaskPageQueryDTO queryDTO) {
+    return logITaskMapper.pagineCountByCondition(logIJobProperties.getAppName(),
+            queryDTO.getTaskId(),queryDTO.getTaskDesc(),  queryDTO.getClassName(), queryDTO.getTaskStatus());
   }
 
   @Override

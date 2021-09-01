@@ -25,6 +25,9 @@ public class LogIJobLogVO {
     @ApiModelProperty(value = "配置的任务")
     private String taskCode;
 
+    @ApiModelProperty(value = "配置的任务Id")
+    private Long taskId;
+
     @ApiModelProperty(value = "配置的任务名称")
     private String taskName;
 
@@ -42,6 +45,9 @@ public class LogIJobLogVO {
 
     @ApiModelProperty(value = "任务被调度时间")
     private Timestamp createTime;
+
+    @ApiModelProperty(value = "任务被调度时间")
+    private Timestamp updateTime;
 
     @ApiModelProperty(value = "任务调度结果，0:调度启动中、1:运行中、 2：成功、3：失败、4：取消")
     private Integer status;

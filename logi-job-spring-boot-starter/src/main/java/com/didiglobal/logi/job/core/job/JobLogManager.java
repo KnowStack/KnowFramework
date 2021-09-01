@@ -1,5 +1,6 @@
 package com.didiglobal.logi.job.core.job;
 
+import com.didiglobal.logi.job.common.dto.TaskLogPageQueryDTO;
 import com.didiglobal.logi.job.common.vo.LogIJobLogVO;
 
 import java.util.List;
@@ -8,17 +9,15 @@ public interface JobLogManager {
 
     /**
      *
-     * @param taskCode
-     * @param pageNo
-     * @param pageSize
+     * @param pageQueryDTO
      * @return
      */
-    List<LogIJobLogVO> getJobLogs(String taskCode, int pageNo, int pageSize);
+    List<LogIJobLogVO> pagineJobLogs(TaskLogPageQueryDTO pageQueryDTO);
 
     /**
      *
-     * @param taskCode
+     * @param pageQueryDTO
      * @return
      */
-    int getJobLogsCount(String taskCode);
+    int getJobLogsCount(TaskLogPageQueryDTO pageQueryDTO);
 }

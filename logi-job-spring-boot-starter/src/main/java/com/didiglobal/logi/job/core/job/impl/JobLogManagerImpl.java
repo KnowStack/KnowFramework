@@ -2,6 +2,7 @@ package com.didiglobal.logi.job.core.job.impl;
 
 import com.didiglobal.logi.job.LogIJobProperties;
 import com.didiglobal.logi.job.common.domain.LogITask;
+import com.didiglobal.logi.job.common.dto.TaskLogPageQueryDTO;
 import com.didiglobal.logi.job.common.po.LogIJobLogPO;
 import com.didiglobal.logi.job.common.vo.LogIJobLogVO;
 import com.didiglobal.logi.job.core.job.JobLogManager;
@@ -12,7 +13,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
+import java.sql.Timestamp;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -33,26 +37,39 @@ public class JobLogManagerImpl implements JobLogManager {
     }
 
     @Override
-    public List<LogIJobLogVO> getJobLogs(String taskCode, int pageNo, int pageSize) {
-        LogITask     task = taskManager.getByCode(taskCode);
-        List<String> ips  = task.getTaskWorkers().stream().map(w -> w.getIp()).collect( Collectors.toList());
+    public List<LogIJobLogVO> pagineJobLogs(TaskLogPageQueryDTO dto) {
+        Map<Long, LogITask> longLogITaskMap = new HashMap<>();
 
-        List<LogIJobLogPO> logIJobLogPOS = logIJobLogMapper.selectByTaskCode(taskCode, logIJobProperties.getAppName(),
-                (pageNo - 1) * pageSize, pageSize);
+        List<LogIJobLogPO> logIJobLogPOS = logIJobLogMapper.pagineListByCondition(logIJobProperties.getAppName(),
+                dto.getTaskId(), dto.getTaskName(), dto.getTaskStatus(),
+                (dto.getPage() - 1) * dto.getSize(), dto.getSize(),
+                new Timestamp(dto.getBeginTime()), new Timestamp(dto.getEndTime()));
 
         if (CollectionUtils.isEmpty(logIJobLogPOS)) {
             return null;
         }
+
         return logIJobLogPOS.stream().map(logIJobLogPO -> {
             LogIJobLogVO logIJobLogVO = BeanUtil.convertTo(logIJobLogPO, LogIJobLogVO.class);
-            logIJobLogVO.setTaskName(task.getTaskName());
+
+            LogITask logITask = longLogITaskMap.get(logIJobLogPO.getTaskId());
+            if(null == logITask){
+                logITask = taskManager.getByCode(logIJobLogPO.getTaskCode());
+                longLogITaskMap.put(logIJobLogPO.getTaskId(), logITask);
+            }
+
+            List<String> ips  = logITask.getTaskWorkers().stream().map(w -> w.getIp()).collect(Collectors.toList());
             logIJobLogVO.setAllWorkerIps(ips);
+
+            logIJobLogVO.setTaskName(logITask.getTaskName());
             return logIJobLogVO;
         }).collect(Collectors.toList());
     }
 
     @Override
-    public int getJobLogsCount(String taskCode) {
-        return logIJobLogMapper.selectCountByAppName(logIJobProperties.getAppName(), taskCode);
+    public int getJobLogsCount(TaskLogPageQueryDTO dto) {
+        return logIJobLogMapper.pagineCountByCondition(logIJobProperties.getAppName(),
+                dto.getTaskId(), dto.getTaskName(), dto.getTaskStatus(),
+                new Timestamp(dto.getBeginTime()), new Timestamp(dto.getEndTime()));
     }
 }

@@ -25,8 +25,8 @@ public interface LogITaskMapper {
           + "#{consensual}, #{taskWorkerStr}, #{appName}, #{owner})")
   int insert(LogITaskPO logITaskPO);
 
-  @Delete("delete from logi_task where code=#{code} and app_name=#{appName}")
-  int deleteByCode(@Param("code") String code, @Param("appName") String appName);
+  @Delete("delete from logi_task where task_code=#{taskCode} and app_name=#{appName}")
+  int deleteByCode(@Param("taskCode") String taskCode, @Param("appName") String appName);
 
   @Update("update logi_task set task_name=#{taskName}, task_desc=#{taskDesc}, cron=#{cron}, class_name="
           + "#{className}, params=#{params}, retry_times=#{retryTimes}, last_fire_time="
@@ -74,7 +74,11 @@ public interface LogITaskMapper {
   @Select("select count(1) from logi_task where app_name=#{appName}")
   int selectCountByAppName(@Param("appName") String appName);
 
-  List<LogITaskPO> pagineListByCondition(@Param("id") Long id, @Param("taskDesc") String taskDesc,
-                                         @Param("className") String className, @Param("beginTime") Long beginTime,
-                                         @Param("endTime") Long endTime);
+  List<LogITaskPO> pagineListByCondition(@Param("appName") String appName, @Param("id") Long id,
+                                         @Param("taskDesc") String taskDesc, @Param("className") String className,
+                                         @Param("jobStatus") Integer jobStatus, @Param("start") Integer start, @Param("size") Integer size);
+
+  Integer pagineCountByCondition(@Param("appName") String appName, @Param("id") Long id,
+                                         @Param("taskDesc") String taskDesc, @Param("className") String className,
+                                         @Param("jobStatus") Integer jobStatus);
 }

@@ -15,6 +15,8 @@ import lombok.Data;
 public class LogIJob {
   private String jobCode;
   private String taskCode;
+  private Long   taskId;
+  private String  taskName;
   private String className;
   private Integer retryTimes;
   private Integer tryTimes;
@@ -58,6 +60,8 @@ public class LogIJob {
     LogIJobLogPO logIJobLogPO = new LogIJobLogPO();
     logIJobLogPO.setJobCode( getJobCode());
     logIJobLogPO.setTaskCode(getTaskCode());
+    logIJobLogPO.setTaskId(getTaskId());
+    logIJobLogPO.setTaskName(getTaskName());
     logIJobLogPO.setClassName(getClassName());
     logIJobLogPO.setWorkerCode(getWorkerCode());
     logIJobLogPO.setWorkerIp(getWorkerIp());

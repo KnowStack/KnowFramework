@@ -66,4 +66,10 @@ public class LogITaskVO {
 
     @ApiModelProperty(value = "阻塞策略")
     private String blockPolicy = "单机串行";
+
+    @ApiModelProperty(value = "任务被调度时间")
+    private Timestamp createTime;
+
+    @ApiModelProperty(value = "任务被调度时间")
+    private Timestamp updateTime;
 }

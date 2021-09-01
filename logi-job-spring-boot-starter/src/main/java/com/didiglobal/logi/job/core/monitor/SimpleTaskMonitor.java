@@ -93,7 +93,7 @@ public class SimpleTaskMonitor implements TaskMonitor {
                   firstFireTime, nowTime);
 
           // 提交任务
-          taskManager.submit( logITaskList );
+          taskManager.submit(logITaskList);
         } catch (Exception e) {
           logger.error("class=TaskMonitorExecutor||method=run||url=||msg=", e);
         }
