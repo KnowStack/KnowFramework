@@ -33,6 +33,10 @@ public class PermissionDaoImpl extends BaseDaoImpl<PermissionPO> implements Perm
         if(CollectionUtils.isEmpty(permissionList)) {
             return;
         }
-        permissionMapper.insertBatchSomeColumn(CopyBeanUtil.copyList(permissionList, PermissionPO.class));
+        List<PermissionPO> permissionPOList = CopyBeanUtil.copyList(permissionList, PermissionPO.class);
+        for(PermissionPO permissionPO : permissionPOList) {
+            permissionMapper.insert(permissionPO);
+        }
+
     }
 }

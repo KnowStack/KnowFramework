@@ -48,7 +48,11 @@ public class UserProjectDaoImpl extends BaseDaoImpl<UserProjectPO> implements Us
     @Override
     public void insertBatch(List<UserProject> userProjectList) {
         if(!CollectionUtils.isEmpty(userProjectList)) {
-            userProjectMapper.insertBatchSomeColumn(CopyBeanUtil.copyList(userProjectList, UserProjectPO.class));
+            List<UserProjectPO> userProjectPOList = CopyBeanUtil.copyList(userProjectList, UserProjectPO.class);
+            for(UserProjectPO userProjectPO : userProjectPOList) {
+                userProjectMapper.insert(userProjectPO);
+            }
+
         }
     }
 

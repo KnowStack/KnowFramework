@@ -48,7 +48,10 @@ public class UserRoleDaoImpl extends BaseDaoImpl<UserRolePO> implements UserRole
     @Override
     public void insertBatch(List<UserRole> userRoleList) {
         if(!CollectionUtils.isEmpty(userRoleList)) {
-            userRoleMapper.insertBatchSomeColumn(CopyBeanUtil.copyList(userRoleList, UserRolePO.class));
+            List<UserRolePO> userRolePOList = CopyBeanUtil.copyList(userRoleList, UserRolePO.class);
+            for(UserRolePO userRolePO : userRolePOList) {
+                userRoleMapper.insert(userRolePO);
+            }
         }
     }
 

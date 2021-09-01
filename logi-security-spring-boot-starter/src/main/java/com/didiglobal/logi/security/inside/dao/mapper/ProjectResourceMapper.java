@@ -1,12 +1,12 @@
 package com.didiglobal.logi.security.inside.dao.mapper;
 
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.didiglobal.logi.security.inside.common.po.ProjectResourcePO;
-import com.didiglobal.logi.security.dao.mapper.EasyBaseMapper;
 import org.apache.ibatis.annotations.Mapper;
 
 /**
  * @author cjm
  */
 @Mapper
-public interface ProjectResourceMapper extends EasyBaseMapper<ProjectResourcePO> {
+public interface ProjectResourceMapper extends BaseMapper<ProjectResourcePO> {
 }

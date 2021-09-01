@@ -75,6 +75,10 @@ public class DeptDaoImpl extends BaseDaoImpl<DeptPO> implements DeptDao {
         if(CollectionUtils.isEmpty(deptList)) {
             return;
         }
-        deptMapper.insertBatchSomeColumn(CopyBeanUtil.copyList(deptList, DeptPO.class));
+        List<DeptPO> deptPOList = CopyBeanUtil.copyList(deptList, DeptPO.class);
+        for(DeptPO deptPO : deptPOList) {
+            deptMapper.insert(deptPO);
+        }
+
     }
 }

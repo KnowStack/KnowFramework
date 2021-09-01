@@ -2,12 +2,10 @@ package com.didiglobal.logi.security.config;
 
 import com.baomidou.mybatisplus.core.config.GlobalConfig;
 import com.baomidou.mybatisplus.extension.plugins.PaginationInterceptor;
-import com.didiglobal.logi.security.handler.EasySqlInjector;
 import com.didiglobal.logi.security.handler.MybatisFillHandler;
 import com.zaxxer.hikari.HikariDataSource;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -50,12 +48,6 @@ public class DataSourceConfig {
     public PaginationInterceptor paginationInterceptor() {
         // 配置分页拦截器（MyBatisPlus的分页功能才生效）
         return new PaginationInterceptor();
-    }
-
-    @Bean
-    public EasySqlInjector easySqlInjector() {
-        // 配置批量插入
-        return new EasySqlInjector();
     }
 
     @Bean

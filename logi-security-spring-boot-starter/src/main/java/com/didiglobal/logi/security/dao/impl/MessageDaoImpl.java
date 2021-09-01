@@ -35,9 +35,14 @@ public class MessageDaoImpl extends BaseDaoImpl<MessagePO> implements MessageDao
 
     @Override
     public void insertBatch(List<Message> messageList) {
-        if(!CollectionUtils.isEmpty(messageList)) {
-            messageMapper.insertBatchSomeColumn(CopyBeanUtil.copyList(messageList, MessagePO.class));
+        if(CollectionUtils.isEmpty(messageList)) {
+            return;
         }
+        List<MessagePO> messagePOList = CopyBeanUtil.copyList(messageList, MessagePO.class);
+        for(MessagePO messagePO : messagePOList) {
+            messageMapper.insert(messagePO);
+        }
+
     }
 
     @Override

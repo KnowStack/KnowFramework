@@ -53,6 +53,9 @@ public class ResourceTypeDaoImpl extends BaseDaoImpl<ResourceTypePO> implements 
             return;
         }
         List<ResourceTypePO> resourceTypePOList = CopyBeanUtil.copyList(resourceTypeList, ResourceTypePO.class);
-        resourceTypeMapper.insertBatchSomeColumn(resourceTypePOList);
+        for(ResourceTypePO resourceTypePO : resourceTypePOList) {
+            resourceTypeMapper.insert(resourceTypePO);
+        }
+
     }
 }

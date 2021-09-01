@@ -67,9 +67,14 @@ public class UserResourceDaoImpl extends BaseDaoImpl<UserResourcePO> implements 
 
     @Override
     public void insertBatch(List<UserResource> userResourceList) {
-        if(!CollectionUtils.isEmpty(userResourceList)) {
-            userResourceMapper.insertBatchSomeColumn(CopyBeanUtil.copyList(userResourceList, UserResourcePO.class));
+        if(CollectionUtils.isEmpty(userResourceList)) {
+            return;
         }
+        List<UserResourcePO> userResourcePOList = CopyBeanUtil.copyList(userResourceList, UserResourcePO.class);
+        for(UserResourcePO userResourcePO : userResourcePOList) {
+            userResourceMapper.insert(userResourcePO);
+        }
+
     }
 
     @Override

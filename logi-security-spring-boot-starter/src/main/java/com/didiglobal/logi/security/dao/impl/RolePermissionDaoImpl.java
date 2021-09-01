@@ -25,9 +25,14 @@ public class RolePermissionDaoImpl extends BaseDaoImpl<RolePermissionPO> impleme
 
     @Override
     public void insertBatch(List<RolePermission> rolePermissionList) {
-        if(!CollectionUtils.isEmpty(rolePermissionList)) {
-            rolePermissionMapper.insertBatchSomeColumn(CopyBeanUtil.copyList(rolePermissionList, RolePermissionPO.class));
+        if(CollectionUtils.isEmpty(rolePermissionList)) {
+            return;
         }
+        List<RolePermissionPO> rolePermissionPOList = CopyBeanUtil.copyList(rolePermissionList, RolePermissionPO.class);
+        for(RolePermissionPO rolePermissionPO : rolePermissionPOList) {
+            rolePermissionMapper.insert(rolePermissionPO);
+        }
+
     }
 
     @Override

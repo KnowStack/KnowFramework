@@ -33,6 +33,10 @@ public class OplogExtraDaoImpl extends BaseDaoImpl<OplogExtraPO> implements Oplo
         if(CollectionUtils.isEmpty(oplogExtraList)) {
             return;
         }
-        oplogExtraMapper.insertBatchSomeColumn(CopyBeanUtil.copyList(oplogExtraList, OplogExtraPO.class));
+        List<OplogExtraPO> oplogExtraPOList = CopyBeanUtil.copyList(oplogExtraList, OplogExtraPO.class);
+        for(OplogExtraPO oplogExtraPO : oplogExtraPOList) {
+            oplogExtraMapper.insert(oplogExtraPO);
+        }
+
     }
 }

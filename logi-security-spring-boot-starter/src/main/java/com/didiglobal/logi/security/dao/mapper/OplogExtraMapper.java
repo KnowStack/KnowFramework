@@ -8,5 +8,5 @@ import org.apache.ibatis.annotations.Mapper;
  * @author cjm
  */
 @Mapper
-public interface OplogExtraMapper extends EasyBaseMapper<OplogExtraPO> {
+public interface OplogExtraMapper extends BaseMapper<OplogExtraPO> {
 }

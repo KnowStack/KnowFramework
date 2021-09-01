@@ -51,7 +51,7 @@ public class ResourceTest extends BaseTest  {
     @Test
     public void generateResource() {
         List<ProjectResourcePO> projectResourceList = generateData();
-        projectResourceMapper.insertBatchSomeColumn(projectResourceList);
+        // projectResourceMapper.insertBatch(projectResourceList);
     }
 
     @Autowired
