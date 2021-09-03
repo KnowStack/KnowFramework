@@ -12,7 +12,8 @@ public class TaskResult implements Serializable {
     private int code;
     private String message;
 
-    public static final int             SUCCESS_CODE  = 0;
+    public static final int             SUCCESS_CODE  = 1;
+    public static final int             RUNNING_CODE  = 0;
     public static final int             FAIL_CODE     = -1;
 
     public static final TaskResult SUCCESS          = new TaskResult(SUCCESS_CODE, "scuucessed");

@@ -46,12 +46,6 @@ public interface LogITaskLockMapper {
   @Delete("delete from logi_task_lock where id=#{id}")
   int deleteById(@Param("id") Long id);
 
-  @Delete("<script>"
-          + "  delete from logi_task_lock where id in "
-          + "  <foreach collection='ids' open='(' item='id' separator=',' close=')'> "
-          + "    #{id}"
-          + "  </foreach> "
-          + "</script>")
-  int deleteByIds(@Param("ids") List<Long> ids);
+  int deleteByIds(List<Long> ids);
 
 }

@@ -276,7 +276,7 @@ public class TaskManagerImpl implements TaskManager {
   /**************************************** private method ****************************************************/
   private void executeInternal(LogITask logITask, Boolean executeSubs) {
     // jobManager 将job管理起来，超时退出抛异常
-    final Future<Object> jobFuture = jobManager.start( logITask );
+    final Future<Object> jobFuture = jobManager.start(logITask);
     if (jobFuture == null || !executeSubs) {
       return;
     }

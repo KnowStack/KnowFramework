@@ -24,7 +24,7 @@ public class JobController {
   @Autowired
   private JobManager jobManager;
 
-  @PutMapping("/{jobCode}/stop")
+  @PostMapping("/{jobCode}/stop")
   public Result<Boolean> stop(@PathVariable String jobCode) {
     return Result.buildSucc(jobManager.stopByJobCode(jobCode));
   }

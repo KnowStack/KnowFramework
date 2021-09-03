@@ -44,6 +44,11 @@ public class LogIJobLogPO extends BasePO implements Serializable {
   private String taskName;
 
   /**
+   * 任务描述
+   */
+  private String taskDesc;
+
+  /**
    * 类的全限定名
    */
   private String className;

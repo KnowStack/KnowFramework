@@ -40,6 +40,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 import static com.didiglobal.logi.job.common.TaskResult.FAIL_CODE;
+import static com.didiglobal.logi.job.common.TaskResult.RUNNING_CODE;
 
 /**
  * job manager impl.
@@ -181,13 +182,17 @@ public class JobManagerImpl implements JobManager {
     @Override
     public Object call() {
       TaskResult object = null;
+
       logger.info("class=JobHandler||method=call||url=||msg=start job {} with classname {}",
               logIJob.getJobCode(), logIJob.getClassName());
+
       try {
         logIJob.setStartTime(new Timestamp(System.currentTimeMillis()));
-        logIJob.setStatus(JobStatusEnum.RUNNING.getValue());
+        logIJob.setStatus(JobStatusEnum.SUCCEED.getValue());
+        logIJob.setResult(new TaskResult(RUNNING_CODE, "task job is running!"));
         logIJob.setError("");
 
+        //开始执行，记录日志
         LogIJobLogPO logIJobLogPO = logIJob.getAuvJobLog();
         logIJobLogMapper.updateByCode(logIJobLogPO);
 
@@ -209,10 +214,8 @@ public class JobManagerImpl implements JobManager {
         logIJob.setError(printStackTraceAsString(e));
         logger.error("class=JobHandler||method=call||url=||msg={}", error);
       } finally {
-        if(JobStatusEnum.RUNNING.getValue().intValue() == logIJob.getStatus().intValue()){
-          logIJob.setStatus(JobStatusEnum.SUCCEED.getValue());
-        }
 
+        //执行完成，记录日志
         LogIJobLogPO logIJobLogPO = logIJob.getAuvJobLog();
         logIJobLogMapper.updateByCode(logIJobLogPO);
 
@@ -282,6 +285,13 @@ public class JobManagerImpl implements JobManager {
     // 移除记录
     jobFutureMap.remove(logIJob);
 
+    if(JobStatusEnum.CANCELED.getValue().equals(logIJob.getStatus())){
+      logIJob.setResult(new TaskResult(FAIL_CODE, "task job be canceld!"));
+      logIJob.setError("task job be canceld!");
+      LogIJobLogPO logIJobLogPO = logIJob.getAuvJobLog();
+      logIJobLogMapper.updateByCode(logIJobLogPO);
+    }
+
     // 删除auvJob
     logIJobMapper.deleteByCode(logIJob.getJobCode());
 
@@ -305,7 +315,7 @@ public class JobManagerImpl implements JobManager {
 
         if (Objects.equals(taskWorker.getWorkerCode(), WorkerSingleton.getInstance()
                 .getLogIWorker().getWorkerCode())) {
-          taskWorker.setStatus( TaskWorkerStatusEnum.WAITING.getValue());
+          taskWorker.setStatus(TaskWorkerStatusEnum.WAITING.getValue());
         }
       }
     }
@@ -436,7 +446,7 @@ public class JobManagerImpl implements JobManager {
       if (future.isDone()) {
         logIJob.setStatus(JobStatusEnum.CANCELED.getValue());
         if (logIJob.getTaskCallback() != null) {
-          logIJob.getTaskCallback().callback( logIJob.getTaskCode());
+          logIJob.getTaskCallback().callback(logIJob.getTaskCode());
         }
         reorganizeFinishedJob(logIJob);
         return true;
@@ -453,6 +463,10 @@ public class JobManagerImpl implements JobManager {
     StringWriter stringWriter = new StringWriter();
     PrintWriter printWriter = new PrintWriter(stringWriter);
     e.printStackTrace(printWriter);
-    return stringWriter.toString();
+    String error = stringWriter.toString();
+
+    Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+
+    return timestamp.toString() + "  " + error;
   }
 }

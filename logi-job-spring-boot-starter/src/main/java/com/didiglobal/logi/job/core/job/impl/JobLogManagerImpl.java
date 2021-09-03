@@ -51,7 +51,7 @@ public class JobLogManagerImpl implements JobLogManager {
         }
 
         List<LogIJobLogPO> logIJobLogPOS = logIJobLogMapper.pagineListByCondition(logIJobProperties.getAppName(),
-                dto.getTaskId(), dto.getTaskName(), dto.getTaskStatus(),
+                dto.getTaskId(), dto.getTaskDesc(), dto.getTaskStatus(),
                 (dto.getPage() - 1) * dto.getSize(), dto.getSize(),
                 beginTimestamp, endTimestamp);
 
@@ -90,7 +90,7 @@ public class JobLogManagerImpl implements JobLogManager {
         }
 
         return logIJobLogMapper.pagineCountByCondition(logIJobProperties.getAppName(),
-                dto.getTaskId(), dto.getTaskName(), dto.getTaskStatus(),
+                dto.getTaskId(), dto.getTaskDesc(), dto.getTaskStatus(),
                 beginTimestamp, endTimestamp);
     }
 }

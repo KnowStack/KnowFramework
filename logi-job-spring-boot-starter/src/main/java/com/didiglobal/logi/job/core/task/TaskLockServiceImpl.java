@@ -101,6 +101,9 @@ public class TaskLockServiceImpl implements TaskLockService {
             logITaskLockPO.getCreateTime().getTime() / 1000 + logITaskLockPO.getExpireTime() < current)
             .map( LogITaskLockPO::getId)
             .collect(Collectors.toList());
+
+    if(CollectionUtils.isEmpty(taskLockIdList)){return true;}
+
     int result = logITaskLockMapper.deleteByIds(taskLockIdList);
     return result > 0 ? true : false;
   }

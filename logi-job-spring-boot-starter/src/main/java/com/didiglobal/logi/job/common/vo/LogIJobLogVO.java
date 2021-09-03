@@ -31,6 +31,9 @@ public class LogIJobLogVO {
     @ApiModelProperty(value = "配置的任务名称")
     private String taskName;
 
+    @ApiModelProperty(value = "配置的任务描述")
+    private String taskDesc;
+
     @ApiModelProperty(value = "定时任务调度执行代码")
     private String className;
 

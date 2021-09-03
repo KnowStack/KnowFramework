@@ -32,6 +32,7 @@ public class SimpleJobFactory implements JobFactory {
     logIJob.setTaskCode(logITask.getTaskCode());
     logIJob.setTaskId(logITask.getId());
     logIJob.setTaskName(logITask.getTaskName());
+    logIJob.setTaskDesc(logITask.getTaskDesc());
     logIJob.setClassName(logITask.getClassName());
     logIJob.setWorkerCode(WorkerSingleton.getInstance().getLogIWorker().getWorkerCode());
     logIJob.setWorkerIp(WorkerSingleton.getInstance().getLogIWorker().getIp());

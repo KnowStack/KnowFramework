@@ -9,6 +9,7 @@
         <result column="task_code" property="taskCode" />
         <result column="task_id" property="taskId" />
         <result column="task_name" property="taskName" />
+        <result column="task_desc" property="taskDesc" />
         <result column="class_name" property="className" />
         <result column="retry_times" property="tryTimes" />
         <result column="worker_code" property="workerCode" />
@@ -25,7 +26,7 @@
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, job_code, task_code, task_id, task_name, class_name, try_times, worker_code, worker_ip,
+        id, job_code, task_code, task_id, task_name, task_desc, class_name, try_times, worker_code, worker_ip,
         start_time, end_time, status, error, result, create_time, update_time, app_name
     </sql>
 
@@ -36,7 +37,7 @@
         WHERE
         app_name = #{appName}
         <if test="taskId != null">and task_id = #{taskId}</if>
-        <if test="taskName != null">and task_name like concat('%,', #{taskName},',%')</if>
+        <if test="taskDesc != null">and task_desc like concat('%,', #{taskDesc},',%')</if>
         <if test="jobStatus != null">and status = #{jobStatus}</if>
         <if test="beginTime != null">and create_time &gt; #{beginTime}</if>
         <if test="endTime != null">and create_time &lt; #{endTime}</if>
@@ -51,7 +52,7 @@
         WHERE
         app_name = #{appName}
         <if test="taskId != null">and task_id = #{taskId}</if>
-        <if test="taskName != null">and task_name like concat('%,', #{taskName},',%')</if>
+        <if test="taskDesc != null">and task_desc like concat('%,', #{taskDesc},',%')</if>
         <if test="jobStatus != null">and status = #{jobStatus}</if>
         <if test="beginTime != null">and create_time &gt; #{beginTime}</if>
         <if test="endTime != null">and create_time &lt; #{endTime}</if>

@@ -17,6 +17,7 @@ public class LogIJob {
   private String taskCode;
   private Long   taskId;
   private String  taskName;
+  private String  taskDesc;
   private String className;
   private Integer retryTimes;
   private Integer tryTimes;
@@ -62,6 +63,7 @@ public class LogIJob {
     logIJobLogPO.setTaskCode(getTaskCode());
     logIJobLogPO.setTaskId(getTaskId());
     logIJobLogPO.setTaskName(getTaskName());
+    logIJobLogPO.setTaskDesc(getTaskDesc());
     logIJobLogPO.setClassName(getClassName());
     logIJobLogPO.setWorkerCode(getWorkerCode());
     logIJobLogPO.setWorkerIp(getWorkerIp());
