@@ -1,7 +1,6 @@
 package com.didiglobal.logi.security.dao;
 
 import com.didiglobal.logi.security.common.entity.RolePermission;
-import com.didiglobal.logi.security.common.po.RolePermissionPO;
 
 import java.util.List;
 

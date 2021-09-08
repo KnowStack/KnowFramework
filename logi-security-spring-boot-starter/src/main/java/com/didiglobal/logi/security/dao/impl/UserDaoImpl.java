@@ -32,18 +32,18 @@ public class UserDaoImpl extends BaseDaoImpl<UserPO> implements UserDao {
     @Override
     public IPage<User> selectPageByDeptIdListAndUserIdList(UserQueryDTO queryDTO, List<Integer> deptIdList, List<Integer> userIdList) {
         IPage<UserPO> iPage = new Page<>(queryDTO.getPage(), queryDTO.getSize());
-        if(deptIdList != null && deptIdList.size() == 0) {
+        if(deptIdList != null && deptIdList.isEmpty()) {
             return CopyBeanUtil.copyPage(iPage, User.class);
         }
-        if(userIdList != null && userIdList.size() == 0) {
+        if(userIdList != null && userIdList.isEmpty()) {
             return CopyBeanUtil.copyPage(iPage, User.class);
         }
         QueryWrapper<UserPO> queryWrapper = getQueryWrapper();
         queryWrapper
-                .like(queryDTO.getUsername() != null, "username", queryDTO.getUsername())
-                .like(queryDTO.getRealName() != null, "real_name", queryDTO.getRealName())
-                .in(deptIdList != null, "dept_id", deptIdList)
-                .in(userIdList != null, "id", userIdList);
+                .like(queryDTO.getUsername() != null, FieldConstant.USERNAME, queryDTO.getUsername())
+                .like(queryDTO.getRealName() != null, FieldConstant.REAL_NAME, queryDTO.getRealName())
+                .in(deptIdList != null, FieldConstant.DEPT_ID, deptIdList)
+                .in(userIdList != null, FieldConstant.ID, userIdList);
         userMapper.selectPage(iPage, queryWrapper);
         return CopyBeanUtil.copyPage(iPage, User.class);
     }
@@ -56,9 +56,9 @@ public class UserDaoImpl extends BaseDaoImpl<UserPO> implements UserDao {
         }
         QueryWrapper<UserPO> queryWrapper = wrapBriefQuery();
         queryWrapper
-                .like(!StringUtils.isEmpty(queryDTO.getUsername()), "username", queryDTO.getUsername())
-                .like(!StringUtils.isEmpty(queryDTO.getRealName()), "real_name", queryDTO.getRealName())
-                .in(deptIdList != null, "dept_id", deptIdList);
+                .like(!StringUtils.isEmpty(queryDTO.getUsername()), FieldConstant.USERNAME, queryDTO.getUsername())
+                .like(!StringUtils.isEmpty(queryDTO.getRealName()), FieldConstant.REAL_NAME, queryDTO.getRealName())
+                .in(deptIdList != null, FieldConstant.DEPT_ID, deptIdList);
         userMapper.selectPage(iPage, queryWrapper);
         return CopyBeanUtil.copyPage(iPage, UserBrief.class);
     }
@@ -87,20 +87,20 @@ public class UserDaoImpl extends BaseDaoImpl<UserPO> implements UserDao {
     public List<UserBrief> selectBriefListByNameAndDescOrderByCreateTime(String name) {
         QueryWrapper<UserPO> queryWrapper = wrapBriefQuery();
         queryWrapper
-                .like(!StringUtils.isEmpty(name), "username", name)
+                .like(!StringUtils.isEmpty(name), FieldConstant.USERNAME, name)
                 .or()
-                .like(!StringUtils.isEmpty(name), "real_name", name)
-                .orderByDesc("create_time");
+                .like(!StringUtils.isEmpty(name), FieldConstant.REAL_NAME, name)
+                .orderByDesc(FieldConstant.CREATE_TIME);
         return CopyBeanUtil.copyList(userMapper.selectList(queryWrapper), UserBrief.class);
     }
 
     @Override
     public List<UserBrief> selectBriefListByDeptIdList(List<Integer> deptIdList) {
-        if(deptIdList != null && deptIdList.size() == 0) {
+        if(deptIdList != null && deptIdList.isEmpty()) {
             return new ArrayList<>();
         }
         QueryWrapper<UserPO> queryWrapper = wrapBriefQuery();
-        queryWrapper.in(deptIdList != null, "dept_id", deptIdList);
+        queryWrapper.in(deptIdList != null, FieldConstant.DEPT_ID, deptIdList);
         return CopyBeanUtil.copyList(userMapper.selectList(queryWrapper), UserBrief.class);
     }
 
@@ -108,9 +108,9 @@ public class UserDaoImpl extends BaseDaoImpl<UserPO> implements UserDao {
     public List<UserBrief> selectBriefListOrderByCreateTime(boolean isAsc) {
         QueryWrapper<UserPO> queryWrapper = wrapBriefQuery();
         if(isAsc) {
-            queryWrapper.orderByAsc("create_time");
+            queryWrapper.orderByAsc(FieldConstant.CREATE_TIME);
         } else {
-            queryWrapper.orderByDesc("create_time");
+            queryWrapper.orderByDesc(FieldConstant.CREATE_TIME);
         }
         userMapper.selectList(queryWrapper);
         return CopyBeanUtil.copyList(userMapper.selectList(queryWrapper), UserBrief.class);
@@ -125,12 +125,12 @@ public class UserDaoImpl extends BaseDaoImpl<UserPO> implements UserDao {
     @Override
     public List<Integer> selectUserIdListByUsernameOrRealName(String name) {
         QueryWrapper<UserPO> queryWrapper = getQueryWrapper();
-        queryWrapper.select("id")
-                .like(!StringUtils.isEmpty(name), "username", name)
+        queryWrapper.select(FieldConstant.ID)
+                .like(!StringUtils.isEmpty(name), FieldConstant.USERNAME, name)
                 .or()
-                .like(!StringUtils.isEmpty(name), "real_name", name);
+                .like(!StringUtils.isEmpty(name), FieldConstant.REAL_NAME, name);
         List<Object> userIdList = userMapper.selectObjs(queryWrapper);
-        return userIdList.stream().map(userId -> (Integer) userId).collect(Collectors.toList());
+        return userIdList.stream().map(Integer.class::cast).collect(Collectors.toList());
     }
 
     @Override
@@ -139,14 +139,14 @@ public class UserDaoImpl extends BaseDaoImpl<UserPO> implements UserDao {
             return null;
         }
         QueryWrapper<UserPO> queryWrapper = getQueryWrapper();
-        queryWrapper.eq("username", username);
+        queryWrapper.eq(FieldConstant.USERNAME, username);
         UserPO userPO = userMapper.selectOne(queryWrapper);
         return CopyBeanUtil.copy(userPO, User.class);
     }
 
     private QueryWrapper<UserPO> wrapBriefQuery() {
         QueryWrapper<UserPO> queryWrapper = getQueryWrapper();
-        queryWrapper.select("id", "username", "real_name", "dept_id");
+        queryWrapper.select(FieldConstant.ID, FieldConstant.USERNAME, FieldConstant.REAL_NAME, FieldConstant.DEPT_ID);
         return queryWrapper;
     }
 }

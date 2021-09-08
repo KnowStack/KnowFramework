@@ -8,6 +8,7 @@ import com.didiglobal.logi.security.common.vo.role.RoleBriefVO;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  * @author cjm
@@ -42,4 +43,6 @@ public class UserVO {
 
     @ApiModelProperty(value = "权限信息（树）", dataType = "PermissionTreeVO", required = false)
     private PermissionTreeVO permissionTreeVO;
+
+    private MultipartFile multipartFile;
 }

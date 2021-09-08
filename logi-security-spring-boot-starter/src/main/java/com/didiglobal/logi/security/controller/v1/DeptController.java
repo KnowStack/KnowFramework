@@ -3,7 +3,6 @@ package com.didiglobal.logi.security.controller.v1;
 import com.didiglobal.logi.security.common.Constants;
 import com.didiglobal.logi.security.common.Result;
 import com.didiglobal.logi.security.common.dto.dept.DeptDTO;
-import com.didiglobal.logi.security.common.dto.permission.PermissionDTO;
 import com.didiglobal.logi.security.common.vo.dept.DeptTreeVO;
 import com.didiglobal.logi.security.service.DeptService;
 import io.swagger.annotations.Api;

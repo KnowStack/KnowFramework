@@ -24,7 +24,7 @@ public class OplogExtraDaoImpl extends BaseDaoImpl<OplogExtraPO> implements Oplo
     @Override
     public List<OplogExtra> selectListByType(Integer type) {
         QueryWrapper<OplogExtraPO> queryWrapper = getQueryWrapper();
-        queryWrapper.eq("type", type);
+        queryWrapper.eq(FieldConstant.TYPE, type);
         return CopyBeanUtil.copyList(oplogExtraMapper.selectList(queryWrapper), OplogExtra.class);
     }
 

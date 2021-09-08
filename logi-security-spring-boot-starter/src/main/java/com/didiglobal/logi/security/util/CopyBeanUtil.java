@@ -14,6 +14,10 @@ import java.util.stream.Collectors;
  */
 public class CopyBeanUtil {
 
+    private CopyBeanUtil() {
+        throw new IllegalStateException("Utility class");
+    }
+
     /**
      * 复制对象
      */
@@ -26,7 +30,8 @@ public class CopyBeanUtil {
             BeanUtils.copyProperties(source, newInstance);
             return newInstance;
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            e.printStackTrace();
+            return null;
         }
     }
 
@@ -48,7 +53,9 @@ public class CopyBeanUtil {
             return null;
         }
         IPage<K> newInstance = copy(source, Page.class);
-        newInstance.setRecords(copyList(source.getRecords(), target));
+        if(newInstance != null) {
+            newInstance.setRecords(copyList(source.getRecords(), target));
+        }
         return newInstance;
     }
 

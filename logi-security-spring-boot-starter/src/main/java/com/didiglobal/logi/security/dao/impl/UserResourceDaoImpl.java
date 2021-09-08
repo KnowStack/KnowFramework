@@ -13,7 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -35,11 +34,11 @@ public class UserResourceDaoImpl extends BaseDaoImpl<UserResourcePO> implements 
     private QueryWrapper<UserResourcePO> wrapQueryCriteria(Integer userId, UserResourceQueryDTO queryDTO) {
         QueryWrapper<UserResourcePO> queryWrapper = getQueryWrapper();
         queryWrapper
-                .eq("control_level", queryDTO.getControlLevel())
-                .eq(userId != null, "user_id", userId)
-                .eq(queryDTO.getProjectId() != null, "project_id", queryDTO.getProjectId())
-                .eq(queryDTO.getResourceTypeId() != null, "resource_type_id", queryDTO.getResourceTypeId())
-                .eq(queryDTO.getResourceId() != null, "resource_id", queryDTO.getResourceId());
+                .eq(FieldConstant.CONTROL_LEVEL, queryDTO.getControlLevel())
+                .eq(userId != null, FieldConstant.USER_ID, userId)
+                .eq(queryDTO.getProjectId() != null, FieldConstant.PROJECT_ID, queryDTO.getProjectId())
+                .eq(queryDTO.getResourceTypeId() != null, FieldConstant.RESOURCE_TYPE_ID, queryDTO.getResourceTypeId())
+                .eq(queryDTO.getResourceId() != null, FieldConstant.RESOURCE_ID, queryDTO.getResourceId());
         return queryWrapper;
     }
 
@@ -56,7 +55,7 @@ public class UserResourceDaoImpl extends BaseDaoImpl<UserResourcePO> implements 
     @Override
     public void deleteByControlLevel(ControlLevelCode controlLevel) {
         QueryWrapper<UserResourcePO> queryWrapper = getQueryWrapper();
-        queryWrapper.eq("control_level", controlLevel.getType());
+        queryWrapper.eq(FieldConstant.CONTROL_LEVEL, controlLevel.getType());
         userResourceMapper.delete(queryWrapper);
     }
 
@@ -80,28 +79,28 @@ public class UserResourceDaoImpl extends BaseDaoImpl<UserResourcePO> implements 
     @Override
     public void deleteByUserIdList(List<Integer> userIdList, UserResourceQueryDTO queryDTO) {
         QueryWrapper<UserResourcePO> queryWrapper = wrapQueryCriteria(null, queryDTO);
-        queryWrapper.in("user_id", userIdList);
+        queryWrapper.in(FieldConstant.USER_ID, userIdList);
         userResourceMapper.delete(queryWrapper);
     }
 
     @Override
     public void deleteByProjectIdList(List<Integer> projectIdList, UserResourceQueryDTO queryDTO) {
         QueryWrapper<UserResourcePO> queryWrapper = wrapQueryCriteria(null, queryDTO);
-        queryWrapper.in("project_id", projectIdList);
+        queryWrapper.in(FieldConstant.PROJECT_ID, projectIdList);
         userResourceMapper.delete(queryWrapper);
     }
 
     @Override
     public void deleteByResourceTypeIdList(List<Integer> resourceTypeIdList, UserResourceQueryDTO queryDTO) {
         QueryWrapper<UserResourcePO> queryWrapper = wrapQueryCriteria(null, queryDTO);
-        queryWrapper.in("resource_type_id", resourceTypeIdList);
+        queryWrapper.in(FieldConstant.RESOURCE_TYPE_ID, resourceTypeIdList);
         userResourceMapper.delete(queryWrapper);
     }
 
     @Override
     public void deleteByResourceIdList(List<Integer> resourceIdList, UserResourceQueryDTO queryDTO) {
         QueryWrapper<UserResourcePO> queryWrapper = wrapQueryCriteria(null, queryDTO);
-        queryWrapper.in("resource_id", resourceIdList);
+        queryWrapper.in(FieldConstant.RESOURCE_ID, resourceIdList);
         userResourceMapper.delete(queryWrapper);
     }
 
@@ -109,8 +108,8 @@ public class UserResourceDaoImpl extends BaseDaoImpl<UserResourcePO> implements 
     public int selectCountByUserIdAndControlLevel(Integer userId, ControlLevelCode controlLevel) {
         QueryWrapper<UserResourcePO> queryWrapper = getQueryWrapper();
         queryWrapper
-                .eq(userId != null, "user_id", userId)
-                .eq("control_level", controlLevel.getType());
+                .eq(userId != null, FieldConstant.USER_ID, userId)
+                .eq(FieldConstant.CONTROL_LEVEL, controlLevel.getType());
         return userResourceMapper.selectCount(queryWrapper);
     }
 
@@ -122,16 +121,16 @@ public class UserResourceDaoImpl extends BaseDaoImpl<UserResourcePO> implements 
     @Override
     public List<Integer> selectResourceIdListByUserId(Integer userId, UserResourceQueryDTO queryDTO) {
         QueryWrapper<UserResourcePO> queryWrapper = wrapQueryCriteria(userId, queryDTO);
-        queryWrapper.select("resource_id");
+        queryWrapper.select(FieldConstant.RESOURCE_ID);
         List<Object> resourceIdList = userResourceMapper.selectObjs(queryWrapper);
-        return resourceIdList.stream().map(obj -> (Integer) obj).collect(Collectors.toList());
+        return resourceIdList.stream().map(Integer.class::cast).collect(Collectors.toList());
     }
 
     @Override
     public void deleteWithoutUserIdList(UserResourceQueryDTO queryDTO, List<Integer> excludeUserIdList) {
         QueryWrapper<UserResourcePO> queryWrapper = wrapQueryCriteria(null, queryDTO);
         if(!CollectionUtils.isEmpty(excludeUserIdList)) {
-            queryWrapper.notIn("user_id", excludeUserIdList);
+            queryWrapper.notIn(FieldConstant.USER_ID, excludeUserIdList);
         }
         userResourceMapper.delete(queryWrapper);
     }
@@ -140,7 +139,7 @@ public class UserResourceDaoImpl extends BaseDaoImpl<UserResourcePO> implements 
     public void deleteByUserIdWithoutProjectIdList(Integer userId, UserResourceQueryDTO queryDTO, List<Integer> excludeIdList) {
         QueryWrapper<UserResourcePO> queryWrapper = wrapQueryCriteria(userId, queryDTO);
         if(!CollectionUtils.isEmpty(excludeIdList)) {
-            queryWrapper.notIn("project_id", excludeIdList);
+            queryWrapper.notIn(FieldConstant.PROJECT_ID, excludeIdList);
         }
         userResourceMapper.delete(queryWrapper);
     }
@@ -149,7 +148,7 @@ public class UserResourceDaoImpl extends BaseDaoImpl<UserResourcePO> implements 
     public void deleteByUserIdWithoutResourceTypeIdList(Integer userId, UserResourceQueryDTO queryDTO, List<Integer> excludeIdList) {
         QueryWrapper<UserResourcePO> queryWrapper = wrapQueryCriteria(userId, queryDTO);
         if(!CollectionUtils.isEmpty(excludeIdList)) {
-            queryWrapper.notIn("resource_type_id", excludeIdList);
+            queryWrapper.notIn(FieldConstant.RESOURCE_TYPE_ID, excludeIdList);
         }
         userResourceMapper.delete(queryWrapper);
     }
@@ -157,26 +156,26 @@ public class UserResourceDaoImpl extends BaseDaoImpl<UserResourcePO> implements 
     @Override
     public int selectCountGroupByUserId(UserResourceQueryDTO queryDTO) {
         QueryWrapper<UserResourcePO> queryWrapper = wrapQueryCriteria(null, queryDTO);
-        queryWrapper.select("COUNT(*)").groupBy("user_id");
+        queryWrapper.select("COUNT(*)").groupBy(FieldConstant.USER_ID);
         return userResourceMapper.selectObjs(queryWrapper).size();
     }
 
     @Override
     public List<Integer> selectUserIdListGroupByUserId(UserResourceQueryDTO queryDTO) {
         QueryWrapper<UserResourcePO> queryWrapper = wrapQueryCriteria(null, queryDTO);
-        queryWrapper.select("user_id").groupBy("user_id");
-        return userResourceMapper.selectObjs(queryWrapper).stream().map(obj -> (Integer) obj).collect(Collectors.toList());
+        queryWrapper.select(FieldConstant.USER_ID).groupBy(FieldConstant.USER_ID);
+        return userResourceMapper.selectObjs(queryWrapper).stream().map(Integer.class::cast).collect(Collectors.toList());
     }
 
     @Override
     public Integer selectControlLevel(ControlLevelQueryDTO queryDTO) {
         QueryWrapper<UserResourcePO> queryWrapper = new QueryWrapper<>();
         queryWrapper
-                .select("MAX(control_level)")
-                .eq("user_id", queryDTO.getUserId())
-                .eq("project_id", queryDTO.getProjectId())
-                .eq("resource_type_id", queryDTO.getResourceTypeId())
-                .eq("resource_id", queryDTO.getResourceId());
+                .select("MAX(" + FieldConstant.CONTROL_LEVEL + ")")
+                .eq(FieldConstant.USER_ID, queryDTO.getUserId())
+                .eq(FieldConstant.PROJECT_ID, queryDTO.getProjectId())
+                .eq(FieldConstant.RESOURCE_TYPE_ID, queryDTO.getResourceTypeId())
+                .eq(FieldConstant.RESOURCE_ID, queryDTO.getResourceId());
         List<Object> objects = userResourceMapper.selectObjs(queryWrapper);
         return (Integer) objects.get(0);
     }

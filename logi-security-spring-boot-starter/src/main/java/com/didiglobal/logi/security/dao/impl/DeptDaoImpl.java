@@ -26,14 +26,14 @@ public class DeptDaoImpl extends BaseDaoImpl<DeptPO> implements DeptDao {
 
     private QueryWrapper<DeptPO> wrapBriefQuery() {
         QueryWrapper<DeptPO> queryWrapper = getQueryWrapper();
-        queryWrapper.select("id", "dept_name", "leaf", "level", "parent_id");
+        queryWrapper.select(FieldConstant.ID, FieldConstant.DEPT_NAME, FieldConstant.LEAF, FieldConstant.LEVEL, FieldConstant.PARENT_ID);
         return queryWrapper;
     }
 
     @Override
     public List<Dept> selectAllAndAscOrderByLevel() {
         QueryWrapper<DeptPO> queryWrapper = getQueryWrapper();
-        queryWrapper.orderByAsc("level");
+        queryWrapper.orderByAsc(FieldConstant.LEVEL);
         return CopyBeanUtil.copyList(deptMapper.selectList(queryWrapper), Dept.class);
     }
 
@@ -41,33 +41,33 @@ public class DeptDaoImpl extends BaseDaoImpl<DeptPO> implements DeptDao {
     public List<Integer> selectIdListByLikeDeptName(String deptName) {
         QueryWrapper<DeptPO> queryWrapper = getQueryWrapper();
         queryWrapper
-                .select("id")
-                .like(!StringUtils.isEmpty(deptName), "dept_name", deptName);
+                .select(FieldConstant.ID)
+                .like(!StringUtils.isEmpty(deptName), FieldConstant.DEPT_NAME, deptName);
         List<Object> deptIdList = deptMapper.selectObjs(queryWrapper);
-        return deptIdList.stream().map(obj -> (Integer) obj).collect(Collectors.toList());
+        return deptIdList.stream().map(Integer.class::cast).collect(Collectors.toList());
     }
 
     @Override
     public DeptBrief selectBriefByDeptId(Integer deptId) {
         QueryWrapper<DeptPO> queryWrapper = wrapBriefQuery();
-        queryWrapper.eq("id", deptId);
+        queryWrapper.eq(FieldConstant.ID, deptId);
         return CopyBeanUtil.copy(deptMapper.selectOne(queryWrapper), DeptBrief.class);
     }
 
     @Override
     public List<Integer> selectAllDeptIdList() {
         QueryWrapper<DeptPO> queryWrapper = getQueryWrapper();
-        queryWrapper.select("id");
+        queryWrapper.select(FieldConstant.ID);
         List<Object> deptIdList = deptMapper.selectObjs(queryWrapper);
-        return deptIdList.stream().map(deptId -> (Integer) deptId).collect(Collectors.toList());
+        return deptIdList.stream().map(Integer.class::cast).collect(Collectors.toList());
     }
 
     @Override
     public List<Integer> selectIdListByParentId(Integer deptId) {
         QueryWrapper<DeptPO> queryWrapper = getQueryWrapper();
-        queryWrapper.select("id").eq("parent_id", deptId);
+        queryWrapper.select(FieldConstant.ID).eq(FieldConstant.PARENT_ID, deptId);
         List<Object> deptIdList = deptMapper.selectObjs(queryWrapper);
-        return deptIdList.stream().map(dpId -> (Integer) dpId).collect(Collectors.toList());
+        return deptIdList.stream().map(Integer.class::cast).collect(Collectors.toList());
     }
 
     @Override

@@ -1,7 +1,6 @@
 package com.didiglobal.logi.security.config;
 
 import com.baomidou.mybatisplus.core.config.GlobalConfig;
-import com.baomidou.mybatisplus.extension.plugins.PaginationInterceptor;
 import com.didiglobal.logi.security.handler.MybatisFillHandler;
 import com.zaxxer.hikari.HikariDataSource;
 import org.mybatis.spring.annotation.MapperScan;
@@ -43,12 +42,6 @@ public class DataSourceConfig {
     }
 
     // ------------------以下是mybatis-plus的配置------------------------
-
-    @Bean
-    public PaginationInterceptor paginationInterceptor() {
-        // 配置分页拦截器（MyBatisPlus的分页功能才生效）
-        return new PaginationInterceptor();
-    }
 
     @Bean
     public GlobalConfig globalConfig() {

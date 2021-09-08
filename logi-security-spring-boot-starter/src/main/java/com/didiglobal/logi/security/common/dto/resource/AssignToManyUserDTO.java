@@ -1,6 +1,5 @@
 package com.didiglobal.logi.security.common.dto.resource;
 
-import com.didiglobal.logi.security.common.enums.resource.ControlLevelCode;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;

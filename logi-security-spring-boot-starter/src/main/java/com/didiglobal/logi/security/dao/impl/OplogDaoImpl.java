@@ -29,18 +29,18 @@ public class OplogDaoImpl extends BaseDaoImpl<OplogPO> implements OplogDao {
         // 分页查询
         IPage<OplogPO> iPage = new Page<>(queryDTO.getPage(), queryDTO.getSize());
         // 不查找detail字段
-        queryWrapper.select(OplogPO.class, oplog -> !"detail".equals(oplog.getColumn()));
+        queryWrapper.select(OplogPO.class, oplog -> !FieldConstant.DETAIL.equals(oplog.getColumn()));
         queryWrapper
-                .eq(queryDTO.getOperateType() != null, "operate_type", queryDTO.getOperateType())
-                .eq(queryDTO.getTargetType() != null, "target_type", queryDTO.getTargetType())
-                .like(queryDTO.getTarget() != null, "target", queryDTO.getTarget())
-                .like(queryDTO.getOperatorIp() != null, "operator_ip", queryDTO.getOperatorIp())
-                .like(queryDTO.getOperatorUsername() != null, "operator_username", queryDTO.getOperatorUsername());
+                .eq(queryDTO.getOperateType() != null, FieldConstant.OPERATE_TYPE, queryDTO.getOperateType())
+                .eq(queryDTO.getTargetType() != null, FieldConstant.TARGET_TYPE, queryDTO.getTargetType())
+                .like(queryDTO.getTarget() != null, FieldConstant.TARGET, queryDTO.getTarget())
+                .like(queryDTO.getOperatorIp() != null, FieldConstant.OPERATOR_IP, queryDTO.getOperatorIp())
+                .like(queryDTO.getOperatorUsername() != null, FieldConstant.OPERATOR_USERNAME, queryDTO.getOperatorUsername());
         if(queryDTO.getStartTime() != null) {
-            queryWrapper.ge("create_time", new Timestamp(queryDTO.getStartTime()));
+            queryWrapper.ge(FieldConstant.CREATE_TIME, new Timestamp(queryDTO.getStartTime()));
         }
         if(queryDTO.getEndTime() != null) {
-            queryWrapper.le("create_time", new Timestamp(queryDTO.getEndTime()));
+            queryWrapper.le(FieldConstant.CREATE_TIME, new Timestamp(queryDTO.getEndTime()));
         }
         return CopyBeanUtil.copyPage(oplogMapper.selectPage(iPage, queryWrapper), Oplog.class);
     }
@@ -51,7 +51,7 @@ public class OplogDaoImpl extends BaseDaoImpl<OplogPO> implements OplogDao {
             return null;
         }
         QueryWrapper<OplogPO> queryWrapper = getQueryWrapper();
-        queryWrapper.eq("id", oplogId);
+        queryWrapper.eq(FieldConstant.ID, oplogId);
         return CopyBeanUtil.copy(oplogMapper.selectOne(queryWrapper), Oplog.class);
     }
 

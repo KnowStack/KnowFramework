@@ -5,6 +5,7 @@ import com.didiglobal.logi.security.common.dto.resource.ResourceDTO;
 import com.didiglobal.logi.security.extend.ResourceExtend;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -19,7 +20,7 @@ public class DefaultResourceExtendImpl implements ResourceExtend {
 
     @Override
     public List<ResourceDTO> getResourceList(Integer projectId, Integer resourceTypeId) {
-        return null;
+        return new ArrayList<>();
     }
 
     @Override

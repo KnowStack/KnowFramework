@@ -2,8 +2,6 @@ package com.didiglobal.logi.security.common.entity;
 
 import lombok.Data;
 
-import java.sql.Timestamp;
-
 /**
  * @author cjm
  *

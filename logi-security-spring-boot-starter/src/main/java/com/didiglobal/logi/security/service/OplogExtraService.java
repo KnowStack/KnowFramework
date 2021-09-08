@@ -1,8 +1,6 @@
 package com.didiglobal.logi.security.service;
 
-import com.didiglobal.logi.security.common.entity.OplogExtra;
 import com.didiglobal.logi.security.common.enums.oplog.OplogCode;
-import org.springframework.util.CollectionUtils;
 
 import java.util.List;
 

@@ -30,7 +30,7 @@ public class RoleDaoImpl extends BaseDaoImpl<RolePO> implements RoleDao {
     @Override
     public Role selectByRoleId(Integer roleId) {
         QueryWrapper<RolePO> queryWrapper = getQueryWrapper();
-        queryWrapper.eq("id", roleId);
+        queryWrapper.eq(FieldConstant.ID, roleId);
         return CopyBeanUtil.copy(roleMapper.selectOne(queryWrapper), Role.class);
     }
 
@@ -39,11 +39,11 @@ public class RoleDaoImpl extends BaseDaoImpl<RolePO> implements RoleDao {
         IPage<RolePO> iPage = new Page<>(queryDTO.getPage(), queryDTO.getSize());
         QueryWrapper<RolePO> roleWrapper = getQueryWrapper();
         if(!StringUtils.isEmpty(queryDTO.getRoleCode())) {
-            roleWrapper.eq("role_code", queryDTO.getRoleCode());
+            roleWrapper.eq(FieldConstant.ROLE_CODE, queryDTO.getRoleCode());
         } else {
             roleWrapper
-                    .like(!StringUtils.isEmpty(queryDTO.getRoleName()), "role_name", queryDTO.getRoleName())
-                    .like(!StringUtils.isEmpty(queryDTO.getDescription()), "description", queryDTO.getDescription());
+                    .like(!StringUtils.isEmpty(queryDTO.getRoleName()), FieldConstant.ROLE_NAME, queryDTO.getRoleName())
+                    .like(!StringUtils.isEmpty(queryDTO.getDescription()), FieldConstant.DESCRIPTION, queryDTO.getDescription());
         }
         roleMapper.selectPage(iPage, roleWrapper);
         return CopyBeanUtil.copyPage(iPage, Role.class);
@@ -70,9 +70,9 @@ public class RoleDaoImpl extends BaseDaoImpl<RolePO> implements RoleDao {
     public List<RoleBrief> selectBriefListByRoleNameAndDescOrderByCreateTime(String roleName) {
         QueryWrapper<RolePO> queryWrapper = wrapBriefQuery();
         queryWrapper
-                .like(!StringUtils.isEmpty(roleName), "role_name", roleName)
+                .like(!StringUtils.isEmpty(roleName), FieldConstant.ROLE_NAME, roleName)
                 // 据角色添加时间排序（倒序）
-                .orderByDesc("create_time");
+                .orderByDesc(FieldConstant.CREATE_TIME);
         return CopyBeanUtil.copyList(roleMapper.selectList(queryWrapper), RoleBrief.class);
     }
 
@@ -87,7 +87,7 @@ public class RoleDaoImpl extends BaseDaoImpl<RolePO> implements RoleDao {
             return new ArrayList<>();
         }
         QueryWrapper<RolePO> queryWrapper = wrapBriefQuery();
-        queryWrapper.in("id", roleIdList);
+        queryWrapper.in(FieldConstant.ID, roleIdList);
         return CopyBeanUtil.copyList(roleMapper.selectList(queryWrapper), RoleBrief.class);
     }
 
@@ -95,14 +95,14 @@ public class RoleDaoImpl extends BaseDaoImpl<RolePO> implements RoleDao {
     public int selectCountByRoleNameAndNotRoleId(String roleName, Integer roleId) {
         QueryWrapper<RolePO> queryWrapper = getQueryWrapper();
         queryWrapper
-                .eq("role_name", roleName)
-                .ne(roleId != null, "id", roleId);
+                .eq(FieldConstant.ROLE_NAME, roleName)
+                .ne(roleId != null, FieldConstant.ID, roleId);
         return roleMapper.selectCount(queryWrapper);
     }
 
     private QueryWrapper<RolePO> wrapBriefQuery() {
         QueryWrapper<RolePO> queryWrapper = getQueryWrapper();
-        queryWrapper.select("id", "role_name");
+        queryWrapper.select(FieldConstant.ID, FieldConstant.ROLE_NAME);
         return queryWrapper;
     }
 }

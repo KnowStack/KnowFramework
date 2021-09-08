@@ -6,6 +6,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 /**
+ * @author didi
+ *
  * http请求操作类
  */
 public class HttpRequestUtil {
@@ -13,6 +15,10 @@ public class HttpRequestUtil {
     public static final String USER = "X-SSO-USER";
 
     public static final String APPID = "X-LOGI-SECURITY-APP-ID";
+
+    private HttpRequestUtil() {
+        throw new IllegalStateException("Utility class");
+    }
 
     public static String getFromHeader(HttpServletRequest request, String key, String defaultValue) {
         String value = request.getHeader(key);

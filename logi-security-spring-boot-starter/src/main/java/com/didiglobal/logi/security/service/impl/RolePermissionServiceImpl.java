@@ -1,7 +1,6 @@
 package com.didiglobal.logi.security.service.impl;
 
 import com.didiglobal.logi.security.common.entity.RolePermission;
-import com.didiglobal.logi.security.common.vo.role.RoleBriefVO;
 import com.didiglobal.logi.security.dao.RolePermissionDao;
 import com.didiglobal.logi.security.service.RolePermissionService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,9 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 /**
  * @author cjm

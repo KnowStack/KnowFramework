@@ -51,5 +51,7 @@ public class PermissionTreeVO {
     private List<PermissionTreeVO> childList;
 
     @Tolerate
-    public PermissionTreeVO() {}
+    public PermissionTreeVO() {
+        // Do nothing
+    }
 }

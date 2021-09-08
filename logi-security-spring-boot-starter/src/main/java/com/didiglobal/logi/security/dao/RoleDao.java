@@ -4,7 +4,6 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.didiglobal.logi.security.common.dto.role.RoleQueryDTO;
 import com.didiglobal.logi.security.common.entity.role.Role;
 import com.didiglobal.logi.security.common.entity.role.RoleBrief;
-import com.didiglobal.logi.security.common.po.RolePO;
 
 import java.util.List;
 

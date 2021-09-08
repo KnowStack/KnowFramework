@@ -5,8 +5,6 @@ import com.didiglobal.logi.security.common.dto.resource.MByUQueryDTO;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
-import java.util.List;
-
 /**
  * @author cjm
  */

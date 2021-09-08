@@ -1,6 +1,5 @@
 package com.didiglobal.logi.security.service.impl;
 
-import com.alibaba.fastjson.JSON;
 import com.didiglobal.logi.security.common.dto.permission.PermissionDTO;
 import com.didiglobal.logi.security.common.entity.Permission;
 import com.didiglobal.logi.security.common.enums.ResultCode;
@@ -42,7 +41,7 @@ public class PermissionServiceImpl implements PermissionService {
         parentMap.put(0, root);
         for(Permission permission : permissionList) {
             PermissionTreeVO permissionTreeVO = CopyBeanUtil.copy(permission, PermissionTreeVO.class);
-            if(!permission.getLeaf()) {
+            if(permission.getLeaf() != null && !permission.getLeaf()) {
                 permissionTreeVO.setChildList(new ArrayList<>());
             }
             PermissionTreeVO parent = parentMap.get(permission.getParentId());
@@ -115,16 +114,13 @@ public class PermissionServiceImpl implements PermissionService {
                     permission.setParentId(permissionDTOMap.get(dto));
                     permissionList.add(permission);
                 }
-
-                if(CollectionUtils.isEmpty(dto.getChildPermissionDTOList())) {
-                    permission.setLeaf(true);
-                    continue;
-                }
-                permission.setLeaf(false);
-
-                for(PermissionDTO temp : dto.getChildPermissionDTOList()) {
-                    permissionDTOMap.put(temp, permission.getId());
-                    queue.offer(temp);
+                // 没有子节点就是叶子节点
+                permission.setLeaf(CollectionUtils.isEmpty(dto.getChildPermissionDTOList()));
+                if(dto.getChildPermissionDTOList() != null) {
+                    for(PermissionDTO temp : dto.getChildPermissionDTOList()) {
+                        permissionDTOMap.put(temp, permission.getId());
+                        queue.offer(temp);
+                    }
                 }
             }
             level++;

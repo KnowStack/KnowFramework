@@ -1,7 +1,6 @@
 package com.didiglobal.logi.security.dao;
 
 import com.didiglobal.logi.security.common.entity.UserRole;
-import com.didiglobal.logi.security.common.po.UserRolePO;
 
 import java.util.List;
 

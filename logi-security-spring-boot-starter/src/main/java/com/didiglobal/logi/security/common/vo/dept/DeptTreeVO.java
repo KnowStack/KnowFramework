@@ -50,5 +50,7 @@ public class DeptTreeVO {
     private List<DeptTreeVO> childList;
 
     @Tolerate
-    public DeptTreeVO() {}
+    public DeptTreeVO() {
+        // 空构造函数需要加上@Tolerate注解，这样就不会和@Builder冲突了
+    }
 }

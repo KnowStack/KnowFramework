@@ -15,20 +15,17 @@ public class LogiSecurityInterceptor implements HandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
         Integer operatorId = HttpRequestUtil.getOperatorId(request);
-        if(StringUtils.isEmpty(operatorId)) {
-            // 没登录
-            System.out.println("没登录...");
-            return false;
-        }
-        return true;
+        // 没登录
+        return !StringUtils.isEmpty(operatorId);
     }
 
     @Override
     public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView modelAndView) {
-        // System.out.println("--postHandle--");
+        // Do nothing
     }
 
     @Override
     public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) {
+        // Do nothing
     }
 }

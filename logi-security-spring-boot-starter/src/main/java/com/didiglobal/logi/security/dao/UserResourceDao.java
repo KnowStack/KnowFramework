@@ -4,7 +4,6 @@ import com.didiglobal.logi.security.common.dto.resource.ControlLevelQueryDTO;
 import com.didiglobal.logi.security.common.dto.resource.UserResourceQueryDTO;
 import com.didiglobal.logi.security.common.entity.UserResource;
 import com.didiglobal.logi.security.common.enums.resource.ControlLevelCode;
-import com.didiglobal.logi.security.common.po.UserResourcePO;
 
 import java.util.List;
 

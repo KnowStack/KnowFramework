@@ -1,7 +1,7 @@
 package com.didiglobal.logi.security.service.impl;
 
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.didiglobal.logi.security.common.PagingData;
+import com.didiglobal.logi.security.common.constant.OplogConstant;
 import com.didiglobal.logi.security.common.dto.oplog.OplogDTO;
 import com.didiglobal.logi.security.common.dto.project.ProjectBriefQueryDTO;
 import com.didiglobal.logi.security.common.dto.resource.*;
@@ -14,7 +14,6 @@ import com.didiglobal.logi.security.common.enums.ResultCode;
 import com.didiglobal.logi.security.common.enums.resource.ControlLevelCode;
 import com.didiglobal.logi.security.common.enums.resource.HasLevelCode;
 import com.didiglobal.logi.security.common.enums.resource.ShowLevelCode;
-import com.didiglobal.logi.security.common.po.ProjectPO;
 import com.didiglobal.logi.security.common.vo.project.ProjectBriefVO;
 import com.didiglobal.logi.security.common.vo.resource.*;
 import com.didiglobal.logi.security.common.vo.user.UserBriefVO;
@@ -138,10 +137,10 @@ public class UserResourceServiceImpl implements UserResourceService {
         int controlLevel = queryDTO.getControlLevel();
         boolean isBatch = queryDTO.getBatch();
 
-        List<UserBriefVO> UserBriefVOList = userService.getAllUserBriefListOrderByCreateTime(false);
+        List<UserBriefVO> userBriefVOList = userService.getAllUserBriefListOrderByCreateTime(false);
 
         List<MByRDataVO> result = Collections.synchronizedList(new ArrayList<>());
-        UserBriefVOList.parallelStream().forEach(userBriefVO -> {
+        userBriefVOList.parallelStream().forEach(userBriefVO -> {
             MByRDataVO dataVo = new MByRDataVO();
             dataVo.setUserId(userBriefVO.getId());
             dataVo.setUsername(userBriefVO.getUsername());
@@ -202,8 +201,8 @@ public class UserResourceServiceImpl implements UserResourceService {
             // 则等于查看权限level的记录都要被删除（因为查看权限控制将被置为false，所有人默认具有查看权限）
             userResourceDao.deleteByControlLevel(ControlLevelCode.VIEW);
             // 构造全0的数据，表示 资源查看权限控制 被开启了
-            UserResource UserResource = new UserResource(0, 0, 0, 0, 0);
-            userResourceDao.insert(UserResource);
+            UserResource userResource = new UserResource(0, 0, 0, 0, 0);
+            userResourceDao.insert(userResource);
         }
     }
 
@@ -300,8 +299,6 @@ public class UserResourceServiceImpl implements UserResourceService {
         List<Integer> projectIdList;
         List<Integer> resourceTypeIdList;
         List<Integer> resourceIdList = null;
-        QueryWrapper<ProjectPO> projectWrapper = new QueryWrapper<>();
-        projectWrapper.select("id");
 
         if (projectId == null) {
             // 说明idList是项目的idList
@@ -309,18 +306,15 @@ public class UserResourceServiceImpl implements UserResourceService {
             resourceTypeIdList = resourceTypeService.getAllResourceTypeIdList();
         } else if (resourceTypeId == null) {
             // 说明idList是资源类别idList
-            projectIdList = new ArrayList<Integer>() {{
-                add(projectId);
-            }};
+            projectIdList = new ArrayList<>();
+            projectIdList.add(projectId);
             resourceTypeIdList = new ArrayList<>(idList);
         } else {
             // 说明idList是具体资源idList
-            projectIdList = new ArrayList<Integer>() {{
-                add(projectId);
-            }};
-            resourceTypeIdList = new ArrayList<Integer>() {{
-                add(resourceTypeId);
-            }};
+            projectIdList = new ArrayList<>();
+            projectIdList.add(projectId);
+            resourceTypeIdList = new ArrayList<>();
+            resourceTypeIdList.add(resourceTypeId);
             resourceIdList = new ArrayList<>(idList);
         }
 
@@ -379,15 +373,14 @@ public class UserResourceServiceImpl implements UserResourceService {
         }
 
         List<Integer> idList = assignDTO.getIdList();
-        List<Integer> userIdList = new ArrayList<Integer>() {{
-            add(userId);
-        }};
+        List<Integer> userIdList = new ArrayList<>();
+        userIdList.add(userId);
         List<UserResource> userResourceList = getUserResourceList(projectId, resourceTypeId, controlLevel, idList, userIdList);
         // 插入new关联信息
         userResourceDao.insertBatch(userResourceList);
 
         // 保存操作日志 TODO：用户+资源名称
-        OplogDTO oplogDTO = new OplogDTO("资源权限管理", "分配资源", "用户", "用户+资源名称");
+        OplogDTO oplogDTO = new OplogDTO(OplogConstant.RPM, OplogConstant.RPM_AR, OplogConstant.RPM_U, "用户+资源名称");
         oplogService.saveOplogWithUserId(userId, oplogDTO);
     }
 
@@ -422,7 +415,7 @@ public class UserResourceServiceImpl implements UserResourceService {
         userResourceDao.insertBatch(buildUserResourceList(controlLevel, userIdList, resourceDTOList));
 
         // 保存操作日志 TODO：资源名称+用户
-        OplogDTO oplogDTO = new OplogDTO("资源权限管理", "分配用户", "资源", "资源名称+用户");
+        OplogDTO oplogDTO = new OplogDTO(OplogConstant.RPM, OplogConstant.RPM_AU, OplogConstant.RPM_R, "资源名称+用户");
         oplogService.saveOplogWithUserId(HttpRequestUtil.getOperatorId(request), oplogDTO);
     }
 
@@ -474,11 +467,11 @@ public class UserResourceServiceImpl implements UserResourceService {
         Integer userId = HttpRequestUtil.getOperatorId(request);
         if (assignFlag) {
             // 保存操作日志 TODO：资源名称+用户
-            OplogDTO oplogDTO = new OplogDTO("资源权限管理", "批量分配用户", "资源", "资源名称+用户");
+            OplogDTO oplogDTO = new OplogDTO(OplogConstant.RPM, OplogConstant.RPM_BAU, OplogConstant.RPM_R, "资源名称+用户");
             oplogService.saveOplogWithUserId(userId, oplogDTO);
         } else {
             // 保存操作日志 TODO：用户+资源名称
-            OplogDTO oplogDTO = new OplogDTO("资源权限管理", "批量分配资源", "用户", "用户+资源名称");
+            OplogDTO oplogDTO = new OplogDTO(OplogConstant.RPM, OplogConstant.RPM_BAR, OplogConstant.RPM_U, "用户+资源名称");
             oplogService.saveOplogWithUserId(userId, oplogDTO);
         }
     }

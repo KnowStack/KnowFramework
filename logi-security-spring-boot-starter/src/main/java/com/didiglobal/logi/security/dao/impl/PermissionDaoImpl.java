@@ -24,7 +24,7 @@ public class PermissionDaoImpl extends BaseDaoImpl<PermissionPO> implements Perm
     @Override
     public List<Permission> selectAllAndAscOrderByLevel() {
         QueryWrapper<PermissionPO> queryWrapper = getQueryWrapper();
-        queryWrapper.orderByAsc("level");
+        queryWrapper.orderByAsc(FieldConstant.LEVEL);
         return CopyBeanUtil.copyList(permissionMapper.selectList(queryWrapper), Permission.class);
     }
 

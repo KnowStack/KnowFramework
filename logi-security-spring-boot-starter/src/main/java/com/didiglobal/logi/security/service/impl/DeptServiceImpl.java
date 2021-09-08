@@ -2,7 +2,6 @@ package com.didiglobal.logi.security.service.impl;
 
 import com.didiglobal.logi.security.common.dto.dept.DeptDTO;
 import com.didiglobal.logi.security.common.entity.dept.Dept;
-import com.didiglobal.logi.security.common.entity.dept.DeptBrief;
 import com.didiglobal.logi.security.common.vo.dept.DeptBriefVO;
 
 import com.didiglobal.logi.security.common.enums.ResultCode;
@@ -41,7 +40,7 @@ public class DeptServiceImpl implements DeptService {
         parentMap.put(0, root);
         for(Dept dept : deptList) {
             DeptTreeVO deptTreeVO = CopyBeanUtil.copy(dept, DeptTreeVO.class);
-            if(!deptTreeVO.getLeaf()) {
+            if(deptTreeVO.getLeaf() != null && !deptTreeVO.getLeaf()) {
                 deptTreeVO.setChildList(new ArrayList<>());
             }
             DeptTreeVO parent = parentMap.get(dept.getParentId());
@@ -71,7 +70,8 @@ public class DeptServiceImpl implements DeptService {
             return deptDao.selectAllDeptIdList();
         }
         List<Dept> deptList = deptDao.selectAllAndAscOrderByLevel();
-        HashSet<Integer> deptIdSet = new HashSet<Integer>(){{ add(deptId); }};
+        HashSet<Integer> deptIdSet = new HashSet<>();
+        deptIdSet.add(deptId);
         // 遍历所有dept
         for(Dept dept : deptList) {
             if(deptIdSet.contains(dept.getParentId())) {
@@ -163,20 +163,25 @@ public class DeptServiceImpl implements DeptService {
                     dept.setParentId(deptDTOMap.get(dto));
                     deptList.add(dept);
                 }
+                // 没有子节点就是叶子节点
+                dept.setLeaf(CollectionUtils.isEmpty(dto.getChildDeptDTOList()));
 
-                if(CollectionUtils.isEmpty(dto.getChildDeptDTOList())) {
-                    dept.setLeaf(true);
-                    continue;
-                }
-                dept.setLeaf(false);
-
-                for(DeptDTO temp : dto.getChildDeptDTOList()) {
-                    deptDTOMap.put(temp, dept.getId());
-                    queue.offer(temp);
+                if(dto.getChildDeptDTOList() != null) {
+                    for(DeptDTO temp : dto.getChildDeptDTOList()) {
+                        deptDTOMap.put(temp, dept.getId());
+                        queue.offer(temp);
+                    }
                 }
             }
             level++;
         }
         deptDao.insertBatch(deptList);
+    }
+
+    public static void main(String[] args) {
+        List<Integer> list = null;
+        for(Integer id : list) {
+            System.out.println(id);
+        }
     }
 }

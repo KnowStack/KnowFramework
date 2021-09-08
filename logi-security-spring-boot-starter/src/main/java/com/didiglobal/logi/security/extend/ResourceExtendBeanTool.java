@@ -39,7 +39,6 @@ public class ResourceExtendBeanTool {
             resourceExtend = getCustomResourceExtendImplBean();
         } catch (UnsupportedOperationException e) {
             e.printStackTrace();
-            // System.out.println("未能找到自定义的ResourceExtend实现类的bean，使用默认bean");
             // 如果用户没有自己实现ResourceExtend接口，则用默认的
             resourceExtend = getDefaultResourceExtendImplBean();
         }

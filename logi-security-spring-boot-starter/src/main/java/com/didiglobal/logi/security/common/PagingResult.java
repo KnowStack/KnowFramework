@@ -30,7 +30,7 @@ public class PagingResult<T> extends BaseResult {
     }
 
     public static <T> PagingResult<T> success(PagingData<T> data) {
-        PagingResult<T> ret = new PagingResult<T>(ResultCode.SUCCESS.getCode());
+        PagingResult<T> ret = new PagingResult<>(ResultCode.SUCCESS.getCode());
         ret.setMessage(ResultCode.SUCCESS.getMessage());
         ret.setData(data);
         return ret;
@@ -41,19 +41,19 @@ public class PagingResult<T> extends BaseResult {
     }
 
     public static <T> PagingResult<T> fail(ResultCode resultCode) {
-        PagingResult<T> ret = new PagingResult<T>(resultCode.getCode());
+        PagingResult<T> ret = new PagingResult<>(resultCode.getCode());
         ret.setMessage(resultCode.getMessage());
         return ret;
     }
 
     public static <T> PagingResult<T> fail(Integer code, String msg) {
-        PagingResult<T> ret = new PagingResult<T>(code);
+        PagingResult<T> ret = new PagingResult<>(code);
         ret.setMessage(msg);
         return ret;
     }
 
     public static <T> PagingResult<T> fail(String msg) {
-        PagingResult<T> ret = new PagingResult<T>(ResultCode.COMMON_FAIL.getCode());
+        PagingResult<T> ret = new PagingResult<>(ResultCode.COMMON_FAIL.getCode());
         ret.setMessage(msg);
         return ret;
     }

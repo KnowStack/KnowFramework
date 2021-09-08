@@ -2,6 +2,7 @@ package com.didiglobal.logi.security.service.impl;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.didiglobal.logi.security.common.PagingData;
+import com.didiglobal.logi.security.common.constant.OplogConstant;
 import com.didiglobal.logi.security.common.entity.role.Role;
 import com.didiglobal.logi.security.common.entity.role.RoleBrief;
 import com.didiglobal.logi.security.common.vo.role.AssignInfoVO;
@@ -113,7 +114,7 @@ public class RoleServiceImpl implements RoleService {
         // 保持角色与权限的关联信息
         rolePermissionService.saveRolePermission(role.getId(), roleSaveDTO.getPermissionIdList());
         // 保存操作日志
-        OplogDTO oplogDTO = new OplogDTO("角色管理", "新增", "角色", roleSaveDTO.getRoleName());
+        OplogDTO oplogDTO = new OplogDTO(OplogConstant.RM, OplogConstant.RM_A, OplogConstant.RM_R, roleSaveDTO.getRoleName());
         oplogService.saveOplogWithUserId(userId, oplogDTO);
     }
 
@@ -126,7 +127,7 @@ public class RoleServiceImpl implements RoleService {
         }
         // 检查该角色是否和用户绑定
         List<Integer> userIdList = userRoleService.getUserIdListByRoleId(roleId);
-        if(userIdList.size() > 0) {
+        if(!userIdList.isEmpty()) {
             throw new LogiSecurityException(ResultCode.ROLE_USER_AUTHED);
         }
         // 删除角色与权限的关联
@@ -134,7 +135,7 @@ public class RoleServiceImpl implements RoleService {
         // 逻辑删除（自动）
         roleDao.deleteByRoleId(roleId);
         // 保存操作日志
-        OplogDTO oplogDTO = new OplogDTO("角色管理", "删除", "角色", role.getRoleName());
+        OplogDTO oplogDTO = new OplogDTO(OplogConstant.RM, OplogConstant.RM_D, OplogConstant.RM_R, role.getRoleName());
         oplogService.saveOplogWithUserId(HttpRequestUtil.getOperatorId(request), oplogDTO);
     }
 
@@ -157,7 +158,7 @@ public class RoleServiceImpl implements RoleService {
         // 更新角色与权限关联信息
         rolePermissionService.updateRolePermission(role.getId(), saveDTO.getPermissionIdList());
         // 保存操作日志
-        OplogDTO oplogDTO = new OplogDTO("角色管理", "编辑", "角色", saveDTO.getRoleName());
+        OplogDTO oplogDTO = new OplogDTO(OplogConstant.RM, OplogConstant.RM_E, OplogConstant.RM_R, saveDTO.getRoleName());
         oplogService.saveOplogWithUserId(userId, oplogDTO);
     }
 
@@ -168,7 +169,7 @@ public class RoleServiceImpl implements RoleService {
         if(assignDTO.getFlag() == null) {
             throw new LogiSecurityException(ResultCode.ROLE_ASSIGN_FLAG_IS_NULL);
         }
-        if(assignDTO.getFlag()) {
+        if(Boolean.TRUE.equals(assignDTO.getFlag())) {
             // N个角色分配给1个用户
             Integer userId = assignDTO.getId();
             // 获取old的用户与角色的关系
@@ -177,7 +178,7 @@ public class RoleServiceImpl implements RoleService {
             userRoleService.updateUserRoleByUserId(userId, assignDTO.getIdList());
             // 保存操作日志
             UserBriefVO userBriefVO = userService.getUserBriefByUserId(assignDTO.getId());
-            OplogDTO oplogDTO = new OplogDTO("用户管理", "分配角色", "用户", userBriefVO.getUsername());
+            OplogDTO oplogDTO = new OplogDTO(OplogConstant.UM, OplogConstant.UM_AR, OplogConstant.UM_U, userBriefVO.getUsername());
             Integer oplogId = oplogService.saveOplogWithUserId(operatorId, oplogDTO);
             // 打包和保存角色更新消息
             packAndSaveMessage(oplogId, oldRoleIdList, assignDTO);
@@ -190,7 +191,7 @@ public class RoleServiceImpl implements RoleService {
             userRoleService.updateUserRoleByRoleId(roleId, assignDTO.getIdList());
             // 保存操作日志
             Role role = roleDao.selectByRoleId(assignDTO.getId());
-            OplogDTO oplogDTO = new OplogDTO("角色管理", "分配用户", "角色", role.getRoleName());
+            OplogDTO oplogDTO = new OplogDTO(OplogConstant.RM, OplogConstant.RM_AU, OplogConstant.RM_R, role.getRoleName());
             Integer oplogId = oplogService.saveOplogWithUserId(operatorId, oplogDTO);
             // 打包和保存角色更新消息
             packAndSaveMessage(oplogId, oldUserIdList, assignDTO);
@@ -241,7 +242,7 @@ public class RoleServiceImpl implements RoleService {
     @Override
     public List<AssignInfoVO> getAssignInfoByRoleId(Integer roleId) {
         if(roleId == null) {
-            return null;
+            return new ArrayList<>();
         }
         // 获取用户List
         List<UserBriefVO> userBriefVOList = userService.getAllUserBriefList();
@@ -281,7 +282,7 @@ public class RoleServiceImpl implements RoleService {
             }
         }
 
-        if (roleAssignDTO.getFlag()) {
+        if (Boolean.TRUE.equals(roleAssignDTO.getFlag())) {
             // 如果是N个角色分配给1个用户，oldIdList和newIdList都为角色idList
             List<Integer> userIdList = new ArrayList<>();
             userIdList.add(roleAssignDTO.getId());

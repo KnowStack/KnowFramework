@@ -23,7 +23,6 @@ import com.didiglobal.logi.security.util.CopyBeanUtil;
 import com.didiglobal.logi.security.util.HttpRequestUtil;
 import com.didiglobal.logi.security.util.MathUtil;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
@@ -122,7 +121,6 @@ public class ProjectServiceImpl implements ProjectService {
             List<Integer> userIdList = userProjectService.getUserIdListByProjectId(project.getId());
             projectVO.setUserList(userService.getUserBriefListByUserIdList(userIdList));
             // 获取部门信息
-            // projectVO.setDeptList(deptService.getDeptBriefListByChildId(project.getDeptId()));
             projectVO.setDeptList(deptService.getDeptBriefListFromDeptMapByChildId(deptMap, project.getDeptId()));
             projectVO.setCreateTime(project.getCreateTime().getTime());
             projectVOList.add(projectVO);
@@ -176,7 +174,7 @@ public class ProjectServiceImpl implements ProjectService {
         project.setRunning(!project.getRunning());
         projectDao.update(project);
         // 保存操作日志
-        String curRunningTag = project.getRunning() ? "启用" : "停用";
+        String curRunningTag = Boolean.TRUE.equals(project.getRunning()) ? "启用" : "停用";
         OplogDTO oplogDTO = new OplogDTO("项目配置", curRunningTag, "项目", project.getProjectName());
         oplogService.saveOplogWithUserId(HttpRequestUtil.getOperatorId(request), oplogDTO);
     }

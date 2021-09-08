@@ -29,9 +29,9 @@ public class UserProjectDaoImpl extends BaseDaoImpl<UserProjectPO> implements Us
             return new ArrayList<>();
         }
         QueryWrapper<UserProjectPO> queryWrapper = getQueryWrapper();
-        queryWrapper.select("user_id").eq("project_id", projectId);
+        queryWrapper.select(FieldConstant.USER_ID).eq(FieldConstant.PROJECT_ID, projectId);
         List<Object> userIdList = userProjectMapper.selectObjs(queryWrapper);
-        return userIdList.stream().map(obj -> (Integer) obj).collect(Collectors.toList());
+        return userIdList.stream().map(Integer.class::cast).collect(Collectors.toList());
     }
 
     @Override
@@ -40,9 +40,9 @@ public class UserProjectDaoImpl extends BaseDaoImpl<UserProjectPO> implements Us
             return new ArrayList<>();
         }
         QueryWrapper<UserProjectPO> queryWrapper = getQueryWrapper();
-        queryWrapper.select("project_id").in("user_id", userIdList);
+        queryWrapper.select(FieldConstant.PROJECT_ID).in(FieldConstant.USER_ID, userIdList);
         List<Object> projectIdList = userProjectMapper.selectObjs(queryWrapper);
-        return projectIdList.stream().map(obj -> (Integer) obj).collect(Collectors.toList());
+        return projectIdList.stream().map(Integer.class::cast).collect(Collectors.toList());
     }
 
     @Override
@@ -59,7 +59,7 @@ public class UserProjectDaoImpl extends BaseDaoImpl<UserProjectPO> implements Us
     @Override
     public void deleteByProjectId(Integer projectId) {
         QueryWrapper<UserProjectPO> queryWrapper = getQueryWrapper();
-        queryWrapper.eq("project_id", projectId);
+        queryWrapper.eq(FieldConstant.PROJECT_ID, projectId);
         userProjectMapper.delete(queryWrapper);
     }
 }

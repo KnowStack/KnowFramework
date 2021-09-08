@@ -3,9 +3,6 @@ package com.didiglobal.logi.security.common.enums;
 import com.didiglobal.logi.security.exception.CodeMsg;
 import io.swagger.annotations.ApiModel;
 
-import java.util.HashMap;
-import java.util.Map;
-
 /**
  * 规定: #1表示成功
  * #1001～1999 区间表示参数错误
@@ -83,9 +80,7 @@ public enum ResultCode implements CodeMsg {
     DEPT_DATA_ERROR(9001, "获取部门数据异常，请检查部门表数据"),
 
     /* 资源权限管理错误 */
-    // 按资源管理/分配用户
     RESOURCE_ASSIGN_ERROR(10001, "资源权限分配异常，具体资源id不为null，则资源类别id不可为null"),
-    // 按用户管理/分配资源 || 按用户管理/批量分配 || 按资源管理/批量分配
     RESOURCE_ASSIGN_ERROR_2(10002, "资源权限分配异常，资源类别id不为null，则项目id不可为null"),
     RESOURCE_INVALID_SHOW_LEVEL(10003, "请输入有效的展示级别（1 <= showLevel <= 3）"),
     RESOURCE_SHOW_LEVEL_ERROR(10004, "2级展示级别，项目id不可为空"),

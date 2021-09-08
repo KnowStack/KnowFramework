@@ -49,15 +49,15 @@ public class MessageDaoImpl extends BaseDaoImpl<MessagePO> implements MessageDao
     public List<Message> selectListByUserIdAndReadTag(Integer userId, Boolean readTag) {
         QueryWrapper<MessagePO> queryWrapper = getQueryWrapper();
         queryWrapper
-                .eq( userId != null, "user_id", userId)
-                .eq(readTag != null, "read_tag", readTag);
+                .eq( userId != null, FieldConstant.USER_ID, userId)
+                .eq(readTag != null, FieldConstant.READ_TAG, readTag);
         return CopyBeanUtil.copyList(messageMapper.selectList(queryWrapper), Message.class);
     }
 
     @Override
     public List<Message> selectListByMessageIdList(List<Integer> messageIdList) {
         QueryWrapper<MessagePO> queryWrapper = getQueryWrapper();
-        queryWrapper.in("id", messageIdList);
+        queryWrapper.in(FieldConstant.ID, messageIdList);
         return CopyBeanUtil.copyList(messageMapper.selectList(queryWrapper), Message.class);
     }
 }

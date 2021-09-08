@@ -3,8 +3,6 @@ package com.didiglobal.logi.security.common;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
-import java.io.Serializable;
-
 /**
  * @author cjm
  */
