@@ -67,4 +67,6 @@ public class FieldConstant {
 
     protected static final String PERMISSION_ID = "permission_id";
 
+    private FieldConstant() {}
+
 }

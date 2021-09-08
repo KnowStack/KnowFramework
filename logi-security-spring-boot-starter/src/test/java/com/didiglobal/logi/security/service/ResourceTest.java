@@ -9,6 +9,7 @@ import com.didiglobal.logi.security.common.po.ResourceTypePO;
 import com.didiglobal.logi.security.dao.mapper.ProjectMapper;
 import com.didiglobal.logi.security.inside.dao.mapper.ProjectResourceMapper;
 import com.didiglobal.logi.security.dao.mapper.ResourceTypeMapper;
+import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -50,6 +51,7 @@ public class ResourceTest extends BaseTest  {
 
     @Test
     public void generateResource() {
+        Assert.assertNull(null);
         List<ProjectResourcePO> projectResourceList = generateData();
         // projectResourceMapper.insertBatch(projectResourceList);
     }
@@ -59,6 +61,7 @@ public class ResourceTest extends BaseTest  {
 
     @Test
     public void testGetResourceExtend() {
+        Assert.assertNull(null);
         ResourceExtend resourceExtendImplBean = resourceExtendBeanTool.getResourceExtendImpl();
         System.out.println(resourceExtendImplBean);
     }

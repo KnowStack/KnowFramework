@@ -24,15 +24,19 @@ public class ResourceExtendImpl implements ResourceExtend {
     @Autowired
     private ProjectResourceMapper projectResourceMapper;
 
+    private static final String PROJECT_ID = "project_id";
+    private static final String RESOURCE_TYPE_ID = "resource_type_id";
+    private static final String RESOURCE_NAME = "resource_name";
+
     @Override
     public PagingData<ResourceDTO> getResourcePage(Integer projectId, Integer resourceTypeId, String resourceName, int page, int size) {
 
         IPage<ProjectResourcePO> iPage = new Page<>(page, size);
         QueryWrapper<ProjectResourcePO> queryWrapper = new QueryWrapper<>();
         queryWrapper
-                .eq(projectId != null, "project_id", projectId)
-                .eq(resourceTypeId != null, "resource_type_id", resourceTypeId)
-                .like(!StringUtils.isEmpty(resourceName), "resource_name", resourceName);
+                .eq(projectId != null, PROJECT_ID, projectId)
+                .eq(resourceTypeId != null, RESOURCE_TYPE_ID, resourceTypeId)
+                .like(!StringUtils.isEmpty(resourceName), RESOURCE_NAME, resourceName);
         projectResourceMapper.selectPage(iPage, queryWrapper);
         List<ResourceDTO> resourceDTOList = CopyBeanUtil.copyList(iPage.getRecords(), ResourceDTO.class);
         return new PagingData<>(resourceDTOList, iPage);
@@ -42,8 +46,8 @@ public class ResourceExtendImpl implements ResourceExtend {
     public List<ResourceDTO> getResourceList(Integer projectId, Integer resourceTypeId) {
         QueryWrapper<ProjectResourcePO> queryWrapper = new QueryWrapper<>();
         queryWrapper
-                .eq(projectId != null, "project_id", projectId)
-                .eq(resourceTypeId != null, "resource_type_id", resourceTypeId);
+                .eq(projectId != null, PROJECT_ID, projectId)
+                .eq(resourceTypeId != null, RESOURCE_TYPE_ID, resourceTypeId);
         List<ProjectResourcePO> projectResourcePOList = projectResourceMapper.selectList(queryWrapper);
         return CopyBeanUtil.copyList(projectResourcePOList, ResourceDTO.class);
     }
@@ -52,8 +56,8 @@ public class ResourceExtendImpl implements ResourceExtend {
     public int getResourceCnt(Integer projectId, Integer resourceTypeId) {
         QueryWrapper<ProjectResourcePO> queryWrapper = new QueryWrapper<>();
         queryWrapper
-                .eq(projectId != null, "project_id", projectId)
-                .eq(resourceTypeId != null, "resource_type_id", resourceTypeId);
+                .eq(projectId != null, PROJECT_ID, projectId)
+                .eq(resourceTypeId != null, RESOURCE_TYPE_ID, resourceTypeId);
         return projectResourceMapper.selectCount(queryWrapper);
     }
 }

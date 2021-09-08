@@ -1,7 +1,7 @@
 package com.didiglobal.logi.security.controller.v1;
 
-import com.didiglobal.logi.security.common.Constants;
 import com.didiglobal.logi.security.common.Result;
+import com.didiglobal.logi.security.common.constant.Constants;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.web.bind.annotation.*;

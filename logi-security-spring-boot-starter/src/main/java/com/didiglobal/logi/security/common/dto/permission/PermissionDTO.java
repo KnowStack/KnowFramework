@@ -4,6 +4,7 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -21,4 +22,11 @@ public class PermissionDTO {
 
     @ApiModelProperty(value = "子权限", dataType = "List<PermissionDTO>", required = false)
     private List<PermissionDTO> childPermissionDTOList;
+
+    public List<PermissionDTO> getChildPermissionDTOList() {
+        if(childPermissionDTOList == null) {
+            childPermissionDTOList = new ArrayList<>();
+        }
+        return childPermissionDTOList;
+    }
 }

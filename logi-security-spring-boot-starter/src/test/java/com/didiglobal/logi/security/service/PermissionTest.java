@@ -3,6 +3,7 @@ package com.didiglobal.logi.security.service;
 import com.alibaba.fastjson.JSON;
 import com.didiglobal.logi.security.BaseTest;
 import com.didiglobal.logi.security.common.dto.permission.PermissionDTO;
+import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -19,6 +20,7 @@ public class PermissionTest extends BaseTest {
 
     @Test
     public void testSave() {
+        Assert.assertNull(null);
         List<PermissionDTO> permissionDTOList = new ArrayList<>();
 
         PermissionDTO permissionDTO = new PermissionDTO();

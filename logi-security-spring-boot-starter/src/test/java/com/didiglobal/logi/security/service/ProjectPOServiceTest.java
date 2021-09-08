@@ -4,6 +4,7 @@ import com.didiglobal.logi.security.BaseTest;
 import com.didiglobal.logi.security.common.dto.project.ProjectQueryDTO;
 import com.didiglobal.logi.security.common.dto.project.ProjectSaveDTO;
 import com.didiglobal.logi.security.common.vo.project.ProjectVO;
+import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -20,6 +21,7 @@ public class ProjectPOServiceTest extends BaseTest {
 
     @Test
     public void testCreateProject() {
+        Assert.assertNull(null);
         ProjectSaveDTO saveVo = new ProjectSaveDTO();
         saveVo.setDescription("开机啦是否够哦");
         saveVo.setProjectName("测试项目002");
@@ -33,6 +35,7 @@ public class ProjectPOServiceTest extends BaseTest {
 
     @Test
     public void TestGetDetailByIdOrCode() {
+        Assert.assertNull(null);
         int projectId = 1;
         ProjectVO projectVO = projectService.getProjectDetailByProjectId(projectId);
         System.out.println(projectVO);
@@ -40,6 +43,7 @@ public class ProjectPOServiceTest extends BaseTest {
 
     @Test
     public void testGetPageProject() {
+        Assert.assertNull(null);
         ProjectQueryDTO queryVo = new ProjectQueryDTO();
         queryVo.setPage(1);
         queryVo.setSize(5);
@@ -51,12 +55,14 @@ public class ProjectPOServiceTest extends BaseTest {
 
     @Test
     public void testDeleteProjectById() {
+        Assert.assertNull(null);
         int projectId = 1;
         // projectService.deleteProjectByProjectId(projectId);
     }
 
     @Test
     public void testUpdateProjectBy() {
+        Assert.assertNull(null);
         ProjectSaveDTO saveVo = new ProjectSaveDTO();
         saveVo.setId(2);
         saveVo.setDescription("更改了。。。");

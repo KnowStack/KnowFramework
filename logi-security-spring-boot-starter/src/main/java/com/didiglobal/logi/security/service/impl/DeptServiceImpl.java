@@ -142,6 +142,7 @@ public class DeptServiceImpl implements DeptService {
         Map<DeptDTO, Integer> deptDTOMap = new HashMap<>();
 
         Queue<DeptDTO> queue = new LinkedList<>();
+        // 创建虚拟根节点
         DeptDTO deptDTO = new DeptDTO();
         deptDTO.setChildDeptDTOList(deptDTOList);
         queue.offer(deptDTO);
@@ -155,22 +156,24 @@ public class DeptServiceImpl implements DeptService {
                     continue;
                 }
                 Dept dept = CopyBeanUtil.copy(dto, Dept.class);
-                if(level == 0) {
-                    dept.setId(0);
-                } else {
-                    dept.setLevel(level);
-                    dept.setId(Integer.parseInt(MathUtil.getRandomNumber(5) + "" + System.currentTimeMillis() % 1000));
-                    dept.setParentId(deptDTOMap.get(dto));
-                    deptList.add(dept);
-                }
+
+                // 设置层级
+                dept.setLevel(level);
+                // 设置父节点id
+                dept.setParentId(deptDTOMap.get(dto));
                 // 没有子节点就是叶子节点
                 dept.setLeaf(CollectionUtils.isEmpty(dto.getChildDeptDTOList()));
 
-                if(dto.getChildDeptDTOList() != null) {
-                    for(DeptDTO temp : dto.getChildDeptDTOList()) {
-                        deptDTOMap.put(temp, dept.getId());
-                        queue.offer(temp);
-                    }
+                dept.setId(0);
+                if(level > 0) {
+                    // 设置id
+                    dept.setId((int) getDeptId());
+                    deptList.add(dept);
+                }
+
+                for(DeptDTO child : dto.getChildDeptDTOList()) {
+                    deptDTOMap.put(child, dept.getId());
+                    queue.offer(child);
                 }
             }
             level++;
@@ -178,10 +181,7 @@ public class DeptServiceImpl implements DeptService {
         deptDao.insertBatch(deptList);
     }
 
-    public static void main(String[] args) {
-        List<Integer> list = null;
-        for(Integer id : list) {
-            System.out.println(id);
-        }
+    private long getDeptId() {
+        return System.currentTimeMillis() % 1000 * (long) Math.pow(10, 5) + MathUtil.getRandomNumber(5);
     }
 }

@@ -4,6 +4,7 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -21,4 +22,11 @@ public class DeptDTO {
 
     @ApiModelProperty(value = "子部门", dataType = "List<DeptDTO>", required = false)
     private List<DeptDTO> childDeptDTOList;
+
+    public List<DeptDTO> getChildDeptDTOList() {
+        if(childDeptDTOList == null) {
+            childDeptDTOList = new ArrayList<>();
+        }
+        return childDeptDTOList;
+    }
 }

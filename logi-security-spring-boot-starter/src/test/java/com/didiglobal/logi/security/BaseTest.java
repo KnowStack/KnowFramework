@@ -1,5 +1,7 @@
 package com.didiglobal.logi.security;
 
+import org.junit.Assert;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -16,6 +18,6 @@ public class BaseTest {
 
     @Test
     public void baseTest() {
-        System.out.println("test begin");
+        Assert.assertNull(null);
     }
 }

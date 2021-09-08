@@ -93,6 +93,7 @@ public class PermissionServiceImpl implements PermissionService {
         Map<PermissionDTO, Integer> permissionDTOMap = new HashMap<>();
 
         Queue<PermissionDTO> queue = new LinkedList<>();
+        // 创建虚拟根节点
         PermissionDTO permissionDTO = new PermissionDTO();
         permissionDTO.setChildPermissionDTOList(permissionDTOList);
         queue.offer(permissionDTO);
@@ -106,25 +107,32 @@ public class PermissionServiceImpl implements PermissionService {
                     continue;
                 }
                 Permission permission = CopyBeanUtil.copy(dto, Permission.class);
-                if(level == 0) {
-                    permission.setId(0);
-                } else {
-                    permission.setLevel(level);
-                    permission.setId(Integer.parseInt(MathUtil.getRandomNumber(5) + "" + System.currentTimeMillis() % 1000));
-                    permission.setParentId(permissionDTOMap.get(dto));
-                    permissionList.add(permission);
-                }
+
+                // 设置层级
+                permission.setLevel(level);
+                // 设置父节点id
+                permission.setParentId(permissionDTOMap.get(dto));
                 // 没有子节点就是叶子节点
                 permission.setLeaf(CollectionUtils.isEmpty(dto.getChildPermissionDTOList()));
-                if(dto.getChildPermissionDTOList() != null) {
-                    for(PermissionDTO temp : dto.getChildPermissionDTOList()) {
-                        permissionDTOMap.put(temp, permission.getId());
-                        queue.offer(temp);
-                    }
+
+                permission.setId(0);
+                if(level > 0) {
+                    // 设置id
+                    permission.setId((int) getPermissionId());
+                    permissionList.add(permission);
+                }
+
+                for(PermissionDTO temp : dto.getChildPermissionDTOList()) {
+                    permissionDTOMap.put(temp, permission.getId());
+                    queue.offer(temp);
                 }
             }
             level++;
         }
         permissionDao.insertBatch(permissionList);
+    }
+
+    private long getPermissionId() {
+        return System.currentTimeMillis() % 1000 * (long) Math.pow(10, 5) + MathUtil.getRandomNumber(5);
     }
 }

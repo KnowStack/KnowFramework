@@ -41,4 +41,6 @@ public class OplogConstant {
 
     public static final String UM_AR = "分配角色";
 
+    private OplogConstant() {}
+
 }

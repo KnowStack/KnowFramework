@@ -319,6 +319,14 @@ public class UserResourceServiceImpl implements UserResourceService {
         }
 
         // 封装List<ResourceDto>
+        List<ResourceDTO> resourceDTOList = getResourceDTOList(projectIdList, resourceTypeIdList, resourceIdList);
+
+        return buildUserResourceList(controlLevel, userIdList, resourceDTOList);
+    }
+
+    private List<ResourceDTO> getResourceDTOList(List<Integer> projectIdList,
+                                                 List<Integer> resourceTypeIdList,
+                                                 List<Integer> resourceIdList) {
         List<ResourceDTO> resourceDTOList = new ArrayList<>();
         for (Integer pId : projectIdList) {
             for (Integer rtId : resourceTypeIdList) {
@@ -335,7 +343,7 @@ public class UserResourceServiceImpl implements UserResourceService {
                 }
             }
         }
-        return buildUserResourceList(controlLevel, userIdList, resourceDTOList);
+        return resourceDTOList;
     }
 
     private List<UserResource> buildUserResourceList(int controlLevel, List<Integer> userIdList,

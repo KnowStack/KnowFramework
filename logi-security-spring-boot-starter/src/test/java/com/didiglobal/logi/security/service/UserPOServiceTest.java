@@ -3,6 +3,7 @@ package com.didiglobal.logi.security.service;
 import com.didiglobal.logi.security.BaseTest;
 import com.didiglobal.logi.security.common.dto.user.UserQueryDTO;
 import com.didiglobal.logi.security.common.vo.user.UserBriefVO;
+import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -15,6 +16,7 @@ public class UserPOServiceTest extends BaseTest {
 
     @Test
     public void testGetPageUser() {
+        Assert.assertNull(null);
         UserQueryDTO queryVo = new UserQueryDTO();
         queryVo.setPage(1);
         queryVo.setSize(5);
@@ -27,6 +29,7 @@ public class UserPOServiceTest extends BaseTest {
 
     @Test
     public void testGetDetailById() {
+        Assert.assertNull(null);
         List<UserBriefVO> listByRoleId = userService.getUserBriefListByRoleId(null);
         System.out.println(listByRoleId);
     }

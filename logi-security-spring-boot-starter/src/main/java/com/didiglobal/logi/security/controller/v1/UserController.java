@@ -1,6 +1,6 @@
 package com.didiglobal.logi.security.controller.v1;
 
-import com.didiglobal.logi.security.common.Constants;
+import com.didiglobal.logi.security.common.constant.Constants;
 import com.didiglobal.logi.security.common.PagingData;
 import com.didiglobal.logi.security.common.PagingResult;
 import com.didiglobal.logi.security.common.Result;

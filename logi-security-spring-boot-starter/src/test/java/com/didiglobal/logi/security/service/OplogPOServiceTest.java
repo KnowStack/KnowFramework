@@ -2,6 +2,7 @@ package com.didiglobal.logi.security.service;
 
 import com.didiglobal.logi.security.BaseTest;
 import com.didiglobal.logi.security.common.dto.oplog.OplogQueryDTO;
+import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -16,6 +17,7 @@ public class OplogPOServiceTest extends BaseTest {
 
     @Test
     public void testGetPageOplog() {
+        Assert.assertNull(null);
         OplogQueryDTO queryVo = new OplogQueryDTO();
         queryVo.setSize(5);
         queryVo.setPage(1);

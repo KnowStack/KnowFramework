@@ -66,4 +66,6 @@ public class NetworkUtil {
         }
         return ipAddress;
     }
+
+    private NetworkUtil() {}
 }
