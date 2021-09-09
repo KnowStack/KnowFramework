@@ -1,4 +1,4 @@
-package com.inside.service;
+package com.service;
 
 /**
  * @author cjm

@@ -21,7 +21,7 @@ import java.util.*;
 /**
  * @author cjm
  */
-@Service
+@Service("logiSecurityDeptServiceImpl")
 public class DeptServiceImpl implements DeptService {
 
     @Autowired

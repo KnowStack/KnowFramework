@@ -33,7 +33,7 @@ import javax.servlet.http.HttpSession;
 /**
  * @author cjm
  */
-@Service
+@Service("logiSecurityUserServiceImpl")
 public class UserServiceImpl implements UserService {
 
     @Autowired

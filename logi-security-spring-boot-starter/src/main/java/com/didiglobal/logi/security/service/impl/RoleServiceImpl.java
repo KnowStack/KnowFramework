@@ -40,7 +40,7 @@ import javax.servlet.http.HttpServletRequest;
 /**
  * @author cjm
  */
-@Service
+@Service("logiSecurityRoleServiceImpl")
 public class RoleServiceImpl implements RoleService {
 
     @Autowired

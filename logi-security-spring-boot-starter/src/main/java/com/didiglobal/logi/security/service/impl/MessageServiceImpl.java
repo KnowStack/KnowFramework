@@ -17,7 +17,7 @@ import java.util.List;
 /**
  * @author cjm
  */
-@Service
+@Service("logiSecurityMessageServiceImpl")
 public class MessageServiceImpl implements MessageService {
 
     @Autowired

@@ -1,5 +1,6 @@
 package com.didiglobal.logi.security;
 
+import com.SecurityTestApplication;
 import org.junit.Assert;
 
 import org.junit.Test;
@@ -12,7 +13,7 @@ import org.springframework.test.context.junit4.SpringRunner;
  * @author cjm
  */
 @RunWith(SpringRunner.class)
-@ContextConfiguration(classes = SecurityApplication.class)
+@ContextConfiguration(classes = SecurityTestApplication.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class BaseTest {
 

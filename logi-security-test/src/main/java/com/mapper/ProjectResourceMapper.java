@@ -1,7 +1,7 @@
-package com.inside.dao.mapper;
+package com.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.inside.common.po.ProjectResourcePO;
+import com.common.po.ProjectResourcePO;
 import org.apache.ibatis.annotations.Mapper;
 
 /**

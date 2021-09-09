@@ -19,7 +19,7 @@ import java.util.*;
 /**
  * @author cjm
  */
-@Service
+@Service("logiSecurityPermissionServiceImpl")
 public class PermissionServiceImpl implements PermissionService {
 
     @Autowired

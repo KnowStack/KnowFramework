@@ -14,7 +14,7 @@ import java.util.List;
 /**
  * @author cjm
  */
-@Service
+@Service("logiSecurityOplogExtraServiceImpl")
 public class OplogExtraServiceImpl implements OplogExtraService {
 
     @Autowired

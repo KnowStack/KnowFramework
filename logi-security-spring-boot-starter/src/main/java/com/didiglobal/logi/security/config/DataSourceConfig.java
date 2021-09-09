@@ -18,8 +18,8 @@ import javax.sql.DataSource;
  * @version 1.0
  * @date 2021/1/20 13:10
  */
-@Configuration
-@MapperScan({"com.didiglobal.logi.security.dao.mapper", "com.didiglobal.logi.security.inside.dao.mapper"})
+@Configuration("logiSecurityDataSourceConfig")
+@MapperScan("com.didiglobal.logi.security.dao.mapper")
 public class DataSourceConfig {
 
     @Value("${logi.security.username}")
@@ -46,14 +46,14 @@ public class DataSourceConfig {
 
     // ------------------以下是mybatis-plus的配置------------------------
 
-    @Bean
+    @Bean("logiSecurityMybatisPlusInterceptor")
     public MybatisPlusInterceptor mybatisPlusInterceptor() {
         MybatisPlusInterceptor interceptor = new MybatisPlusInterceptor();
         interceptor.addInnerInterceptor(new PaginationInnerInterceptor(DbType.MYSQL));
         return interceptor;
     }
 
-    @Bean
+    @Bean("logiSecurityGlobalConfig")
     public GlobalConfig globalConfig() {
         GlobalConfig globalConfig = new GlobalConfig();
         globalConfig.setMetaObjectHandler(new MybatisFillHandler());

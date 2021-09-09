@@ -22,7 +22,7 @@ import java.util.List;
 /**
  * @author cjm
  */
-@Service
+@Service("logiSecurityOplogServiceImpl")
 public class OplogServiceImpl implements OplogService {
 
     @Autowired

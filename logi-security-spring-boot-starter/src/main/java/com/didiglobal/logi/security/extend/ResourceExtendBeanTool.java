@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 /**
  * @author cjm
  */
-@Component
+@Component("logiSecurityResourceExtendBeanTool")
 public class ResourceExtendBeanTool {
 
     @Autowired
@@ -18,7 +18,7 @@ public class ResourceExtendBeanTool {
     @Autowired
     private LogiSecurityProper logiSecurityProper;
 
-    private static final String DEFAULT_BEAN_NAME = "defaultResourceExtendImpl";
+    private static final String DEFAULT_BEAN_NAME = "logiSecurityDefaultResourceExtendImpl";
 
     private ResourceExtend getCustomResourceExtendImplBean() {
         String customBeanName = logiSecurityProper.getResourceExtendBeanName();

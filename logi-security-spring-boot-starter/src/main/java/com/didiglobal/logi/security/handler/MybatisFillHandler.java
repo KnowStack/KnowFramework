@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
  *
  * 这个是mybatis-plus，在插入或更新数据的时候会自动填充默认字段值
  */
-@Component
+@Component("logiSecurityMybatisFillHandler")
 public class MybatisFillHandler implements MetaObjectHandler {
 
     @Autowired

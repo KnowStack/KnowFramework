@@ -7,7 +7,7 @@ import org.springframework.context.annotation.Configuration;
 /**
  * @author cjm
  */
-@Configuration
+@Configuration("logiSecurityAutoConfiguration")
 @EnableConfigurationProperties(LogiSecurityProper.class)
 public class AutoConfiguration {
 

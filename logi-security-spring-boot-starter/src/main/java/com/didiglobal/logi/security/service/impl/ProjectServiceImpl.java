@@ -38,7 +38,7 @@ import java.util.stream.Collectors;
 /**
  * @author cjm
  */
-@Service
+@Service("logiSecurityProjectServiceImpl")
 public class ProjectServiceImpl implements ProjectService {
 
     @Autowired

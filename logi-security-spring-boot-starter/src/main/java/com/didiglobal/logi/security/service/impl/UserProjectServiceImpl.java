@@ -13,7 +13,7 @@ import java.util.List;
 /**
  * @author cjm
  */
-@Service
+@Service("logiSecurityUserProjectServiceImpl")
 public class UserProjectServiceImpl implements UserProjectService {
 
     @Autowired

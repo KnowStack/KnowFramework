@@ -38,7 +38,7 @@ import java.util.Map;
 /**
  * @author cjm
  */
-@Service
+@Service("logiSecurityUserResourceServiceImpl")
 public class UserResourceServiceImpl implements UserResourceService {
 
     @Autowired

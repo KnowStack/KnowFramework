@@ -1,7 +1,6 @@
 package com.didiglobal.logi.security.config;
 
 import com.didiglobal.logi.security.interceptor.LogiSecurityInterceptor;
-import com.didiglobal.logi.security.interceptor.MyLogiSecurityInterceptor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
@@ -9,23 +8,19 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 /**
  * @author jmcai
  */
-@Configuration
-public class LogiInterceptorConfig implements WebMvcConfigurer {
+@Configuration("logiSecurityInterceptorConfig")
+public class InterceptorConfig implements WebMvcConfigurer {
 
     private final LogiSecurityInterceptor logiSecurityInterceptor;
 
-    private final MyLogiSecurityInterceptor myLogiSecurityInterceptor;
-
-    public LogiInterceptorConfig(LogiSecurityInterceptor logiSecurityInterceptor, MyLogiSecurityInterceptor myLogiSecurityInterceptor) {
+    public InterceptorConfig(LogiSecurityInterceptor logiSecurityInterceptor) {
         this.logiSecurityInterceptor = logiSecurityInterceptor;
-        this.myLogiSecurityInterceptor = myLogiSecurityInterceptor;
     }
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         // 拦截顺序
-        registry.addInterceptor(myLogiSecurityInterceptor).addPathPatterns("/**");
-        registry.addInterceptor(logiSecurityInterceptor).excludePathPatterns("/**");
+        registry.addInterceptor(logiSecurityInterceptor).addPathPatterns("/**");
 
         /*
         registry.addInterceptor(logiSecurityInterceptor)
