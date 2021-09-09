@@ -102,7 +102,7 @@ public class ResourceController {
         return PagingResult.success(pagingData);
     }
 
-    @PostMapping("/mbr/assign")
+    @PostMapping("/permission/assign/resource/{}/mbr/assign")
     @ApiOperation(value = "资源权限管理/按资源管理/分配用户", notes = "1个项目或1个资源类别或1个具体资源的权限分配给N个用户")
     public Result<String> mbrAssign(@RequestBody AssignToManyUserDTO assignDTO, HttpServletRequest request) {
         try {
@@ -114,9 +114,9 @@ public class ResourceController {
         return Result.success();
     }
 
-    @PostMapping("/mbu/assign")
+    @PostMapping("/permission/assign/resources/user/{userId}")
     @ApiOperation(value = "资源权限管理/按用户管理/分配资源", notes = "N个项目或N个资源类别或N个具体资源的权限分配给1个用户")
-    public Result<String> mbuAssign(@RequestBody AssignToOneUserDTO assignDTO) {
+    public Result<String> mbuAssign(@PathVariable("userId") Integer userId, @RequestBody AssignToOneUserDTO assignDTO) {
         try {
             userResourceService.assignResourcePermission(assignDTO);
             return Result.success();
@@ -126,7 +126,7 @@ public class ResourceController {
         }
     }
 
-    @PostMapping("/assign/batch")
+    @PostMapping("/permission/assign/batch")
     @ApiOperation(
             value = "资源权限管理/批量分配用户和批量分配资源",
             notes = "批量分配用户：分配之前先删除N资源先前已分配的用户、批量分配资源：分配之前先删除N用户已拥有的资源权限"
