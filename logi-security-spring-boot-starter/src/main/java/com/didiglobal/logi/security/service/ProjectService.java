@@ -4,6 +4,7 @@ import com.didiglobal.logi.security.common.PagingData;
 import com.didiglobal.logi.security.common.dto.project.ProjectBriefQueryDTO;
 import com.didiglobal.logi.security.common.dto.project.ProjectQueryDTO;
 import com.didiglobal.logi.security.common.dto.project.ProjectSaveDTO;
+import com.didiglobal.logi.security.common.entity.project.Project;
 import com.didiglobal.logi.security.common.vo.project.ProjectBriefVO;
 import com.didiglobal.logi.security.common.vo.project.ProjectDeleteCheckVO;
 import com.didiglobal.logi.security.common.vo.project.ProjectVO;
@@ -23,7 +24,7 @@ public interface ProjectService {
      * @param saveDTO 项目信息
      * @throws LogiSecurityException 项目相关的错误信息
      */
-    void createProject(ProjectSaveDTO saveDTO, HttpServletRequest request)  throws LogiSecurityException;
+    Project createProject(ProjectSaveDTO saveDTO, HttpServletRequest request)  throws LogiSecurityException;
 
     /**
      * 获取项目详情，通过项目id

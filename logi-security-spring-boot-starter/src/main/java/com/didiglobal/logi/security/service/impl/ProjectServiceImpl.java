@@ -86,7 +86,7 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void createProject(ProjectSaveDTO saveVo, HttpServletRequest request) throws LogiSecurityException {
+    public Project createProject(ProjectSaveDTO saveVo, HttpServletRequest request) throws LogiSecurityException {
         // 检查参数
         checkParam(saveVo, false);
         Project project = CopyBeanUtil.copy(saveVo, Project.class);
@@ -97,6 +97,7 @@ public class ProjectServiceImpl implements ProjectService {
         // 保存操作日志
         OplogDTO oplogDTO = new OplogDTO("项目配置", "新增", "项目", saveVo.getProjectName());
         oplogService.saveOplogWithUserId(HttpRequestUtil.getOperatorId(request), oplogDTO);
+        return project;
     }
 
     @Override

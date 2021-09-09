@@ -373,6 +373,7 @@ public class UserResourceServiceImpl implements UserResourceService {
         // 删除old的关联信息
         UserResourceQueryDTO queryDTO = new UserResourceQueryDTO(controlLevel, projectId, resourceTypeId, null);
         if (CollectionUtils.isEmpty(assignDTO.getExcludeIdList())) {
+            // 如果不存在排除的idList，则
             userResourceDao.deleteByUserId(userId, queryDTO);
         } else if (projectId == null) {
             userResourceDao.deleteByUserIdWithoutProjectIdList(userId, queryDTO, assignDTO.getExcludeIdList());

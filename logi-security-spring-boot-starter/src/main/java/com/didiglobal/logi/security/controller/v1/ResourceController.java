@@ -102,11 +102,24 @@ public class ResourceController {
         return PagingResult.success(pagingData);
     }
 
-    @PostMapping("/permission/assign/resource/{}/mbr/assign")
+    @PostMapping(value = {
+            "/permission/assign/users/{controlLevel}/resource/{projectId}",
+            "/permission/assign/users/{controlLevel}/resource/{projectId}/{resourceTypeId}",
+            "/permission/assign/users/{controlLevel}/resource/{projectId}/{resourceTypeId}/{resourceId}"
+    })
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "controlLevel", value = "资源管理级别：1（查看权限）、2（管理权限）", dataType = "Integer", required = true),
+            @ApiImplicitParam(name = "projectId", value = "项目id", dataType = "Integer", required = true),
+            @ApiImplicitParam(name = "resourceTypeId", value = "资源类别id（如果为null，则表示该项目下的所有具体资源权限都分配给用户list）", dataType = "Integer", required = false),
+            @ApiImplicitParam(name = "resourceId", value = "具体资源id（如果为null，则表示该资源类别下的所有具体资源权限都分配给用户list）", dataType = "Integer", required = false),
+    })
     @ApiOperation(value = "资源权限管理/按资源管理/分配用户", notes = "1个项目或1个资源类别或1个具体资源的权限分配给N个用户")
-    public Result<String> mbrAssign(@RequestBody AssignToManyUserDTO assignDTO, HttpServletRequest request) {
+    public Result<String> mbrAssign(@PathVariable(value = "projectId", required = true) Integer projectId,
+                                    @PathVariable(value = "resourceTypeId", required = false) Integer resourceTypeId,
+                                    @PathVariable(value = "resourceId", required = false) Integer resourceId,
+                                    @RequestBody AssignToManyUserDTO assignDTO, HttpServletRequest request) {
         try {
-            userResourceService.assignResourcePermission(assignDTO, request);
+            userResourceService.assignResourcePermission(projectId, resourceTypeId, resourceId, assignDTO, request);
         } catch (LogiSecurityException e) {
             e.printStackTrace();
             return Result.fail(e);
