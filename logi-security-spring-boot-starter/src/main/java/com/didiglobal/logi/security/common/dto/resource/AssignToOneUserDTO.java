@@ -17,6 +17,9 @@ import java.util.List;
 @ApiModel(description = "资源权限分配信息，分配资源（N项目、某项目下N资源类别、某项目下某资源类别下N具体资源权限->分配给某用户）")
 public class AssignToOneUserDTO {
 
+    @ApiModelProperty(value = "用户id", dataType = "Integer", required = true)
+    private Integer userId;
+
     @ApiModelProperty(value = "项目id", dataType = "Integer", required = false)
     private Integer projectId;
 
