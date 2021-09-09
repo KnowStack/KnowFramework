@@ -102,24 +102,11 @@ public class ResourceController {
         return PagingResult.success(pagingData);
     }
 
-    @PostMapping(value = {
-            "/permission/assign/users/{controlLevel}/resource/{projectId}",
-            "/permission/assign/users/{controlLevel}/resource/{projectId}/{resourceTypeId}",
-            "/permission/assign/users/{controlLevel}/resource/{projectId}/{resourceTypeId}/{resourceId}"
-    })
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "controlLevel", value = "资源管理级别：1（查看权限）、2（管理权限）", dataType = "Integer", required = true),
-            @ApiImplicitParam(name = "projectId", value = "项目id", dataType = "Integer", required = true),
-            @ApiImplicitParam(name = "resourceTypeId", value = "资源类别id（如果为null，则表示该项目下的所有具体资源权限都分配给用户list）", dataType = "Integer", required = false),
-            @ApiImplicitParam(name = "resourceId", value = "具体资源id（如果为null，则表示该资源类别下的所有具体资源权限都分配给用户list）", dataType = "Integer", required = false),
-    })
+    @PostMapping("/mbr/assign")
     @ApiOperation(value = "资源权限管理/按资源管理/分配用户", notes = "1个项目或1个资源类别或1个具体资源的权限分配给N个用户")
-    public Result<String> mbrAssign(@PathVariable(value = "projectId", required = true) Integer projectId,
-                                    @PathVariable(value = "resourceTypeId", required = false) Integer resourceTypeId,
-                                    @PathVariable(value = "resourceId", required = false) Integer resourceId,
-                                    @RequestBody AssignToManyUserDTO assignDTO, HttpServletRequest request) {
+    public Result<String> mbrAssign(@RequestBody AssignToManyUserDTO assignDTO, HttpServletRequest request) {
         try {
-            userResourceService.assignResourcePermission(projectId, resourceTypeId, resourceId, assignDTO, request);
+            userResourceService.assignResourcePermission(assignDTO, request);
         } catch (LogiSecurityException e) {
             e.printStackTrace();
             return Result.fail(e);
@@ -127,9 +114,9 @@ public class ResourceController {
         return Result.success();
     }
 
-    @PostMapping("/permission/assign/resources/user/{userId}")
+    @PostMapping("/mbu/assign")
     @ApiOperation(value = "资源权限管理/按用户管理/分配资源", notes = "N个项目或N个资源类别或N个具体资源的权限分配给1个用户")
-    public Result<String> mbuAssign(@PathVariable("userId") Integer userId, @RequestBody AssignToOneUserDTO assignDTO) {
+    public Result<String> mbuAssign(@RequestBody AssignToOneUserDTO assignDTO) {
         try {
             userResourceService.assignResourcePermission(assignDTO);
             return Result.success();
@@ -139,7 +126,7 @@ public class ResourceController {
         }
     }
 
-    @PostMapping("/permission/assign/batch")
+    @PostMapping("/assign/batch")
     @ApiOperation(
             value = "资源权限管理/批量分配用户和批量分配资源",
             notes = "批量分配用户：分配之前先删除N资源先前已分配的用户、批量分配资源：分配之前先删除N用户已拥有的资源权限"
