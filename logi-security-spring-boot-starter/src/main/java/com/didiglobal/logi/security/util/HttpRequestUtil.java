@@ -29,7 +29,6 @@ public class HttpRequestUtil {
         HttpSession session = request.getSession();
         Integer id = (Integer) session.getAttribute(HttpRequestUtil.USER);
         if(id == null) {
-            // TODO
             return 1;
         }
         return id;

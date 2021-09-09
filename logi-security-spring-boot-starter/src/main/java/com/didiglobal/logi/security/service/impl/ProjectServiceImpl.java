@@ -135,7 +135,7 @@ public class ProjectServiceImpl implements ProjectService {
         if(project == null) {
             return;
         }
-        // TODO 删除前要判断一下有没有服务引用了这个项目，有没有具体资源引用了这个项目
+        // 删除前要判断一下有没有服务引用了这个项目，有没有具体资源引用了这个项目
         // 删除项目与负责人的联系
         userProjectService.deleteUserProjectByProjectId(projectId);
         // 逻辑删除项目（自动）
@@ -191,8 +191,7 @@ public class ProjectServiceImpl implements ProjectService {
         if(projectDao.selectByProjectId(projectId) == null) {
             return projectDeleteCheckVO;
         }
-        // TODO 获取与该项目相关联的服务
-
+        // 获取与该项目相关联的服务
         // 获取与该项目相关联的具体资源
         ResourceExtend resourceExtend = resourceExtendBeanTool.getResourceExtendImpl();
         List<ResourceDTO> resourceDTOList = resourceExtend.getResourceList(projectId, null);
