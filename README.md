@@ -5,8 +5,14 @@ LogI-common 即公共模块，主要是给其他项目提供通用的服务。�
 ## 1.logi-security
 ### 1.1 介绍
 LogI-security 考虑到大多数的 Manager 类项目的场景，结合滴滴云商业数据的开源项目的立项和开发，例如 ESManager、KafkaManager、AgentManager 等等，发现这类项目大多都需要基础的一些功能（用户、角色、权限、登录、注册、操作记录），这些功能开发简单但是开发起来又比较繁琐和有一定的工作量（开发、测试、联调、编写接口文档等等），所以打算把这类的功能抽取出来，整合进 LogI-security，让这些项目开发人员更加专注于核心功能，避免时间花费在繁琐的基础功能的开发。
-### 1.2 使用方式
-#### 1.2.1 添加Maven
+### 1.2 功能支持
+用户、项目、角色、部门、界面权限、资源权限、操作日志、消息通知
+用户模块：提供了注册、登录、认证功能，以及用户信息的展示等基础功能；
+项目模块：提供了创建、删除、展示、更改运行状态等功能；
+部门模块：提供了部门信息导入、部门树形结构展示等功能；
+界面权限模块：提供界面权限信息的导入、界面功能展示控制等功能。
+### 1.3 使用方式
+#### 1.3.1 添加Maven
 ```xml
 <dependency>
     <groupId>com.didiglobal.logi</groupId>
@@ -14,7 +20,7 @@ LogI-security 考虑到大多数的 Manager 类项目的场景，结合滴滴云
     <version>1.0-SNAPSHOT</version>
 </dependency>
 ```
-#### 1.2.2 配置文件
+#### 1.3.2 配置文件
 logi-security基于springBoot框架开发，需添加以下配置信息：
 ```properties
 logi.security.app-name: ES
@@ -28,7 +34,7 @@ logi.security.driver-class-name=com.mysql.jdbc.Driver
 ```
 - app-name：表示应用的名称，涉及到 logi-security 的数据库操作都会带上这个条件（查询、保存等操作）；
 - resource-extend-bean-name：resourceExtend的实现类在spring容器bean的名称，logi-security 中资源权限管理模块，需要获取具体资源的信息，所以用户需实现 ResourceExtend 接口并指定实现类在spring容器中bean的名称；
-#### 1.2.3 需要实现接口
+#### 1.3.3 需要实现接口
 用户可选的实现 ResourceExtend 接口，如果不实现，则资源权限管理模块的功能不能完整使用。接口详情见代码
 ```java
 package com.didiglobal.logi.security.extend;
@@ -71,7 +77,7 @@ public interface ResourceExtend {
     int getResourceCnt(Integer projectId, Integer resourceTypeId);
 }
 ```
-#### 1.2.4 导入数据
+#### 1.3.4 导入数据
 logi-security相关界面并没提供【角色权限元数据、资源类别数据、部门信息数据、操作日志相关（操作页面、操作对象、对象分类）】的创建功能，logi-security提供了数据导入的接口。
 
 建议全部都导入，简单的数据也行。
