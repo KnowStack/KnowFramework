@@ -1,11 +1,11 @@
 package com.didiglobal.logi.job.core.job;
 
-import com.didiglobal.logi.job.common.domain.JobInfo;
-import com.didiglobal.logi.job.common.domain.TaskInfo;
+import com.didiglobal.logi.job.common.domain.LogIJob;
+import com.didiglobal.logi.job.common.domain.LogITask;
 import com.didiglobal.logi.job.common.enums.JobStatusEnum;
 import com.didiglobal.logi.job.core.WorkerSingleton;
 import com.didiglobal.logi.job.utils.IdWorker;
-import java.sql.Timestamp;
+
 import java.util.HashMap;
 import java.util.Map;
 import org.springframework.stereotype.Component;
@@ -26,18 +26,22 @@ public class SimpleJobFactory implements JobFactory {
   }
 
   @Override
-  public JobInfo newJob(TaskInfo taskInfo) {
-    JobInfo jobInfo = new JobInfo();
-    jobInfo.setCode(IdWorker.getIdStr());
-    jobInfo.setTaskCode(taskInfo.getCode());
-    jobInfo.setClassName(taskInfo.getClassName());
-    jobInfo.setWorkerCode(WorkerSingleton.getInstance().getWorkerInfo().getCode());
-    jobInfo.setTryTimes(taskInfo.getRetryTimes() == null ? 1 : taskInfo.getRetryTimes());
-    jobInfo.setStartTime(new Timestamp(System.currentTimeMillis()));
-    jobInfo.setStatus(JobStatusEnum.STARTED.getValue());
-    jobInfo.setTimeout(taskInfo.getTimeout());
-    jobInfo.setJob(jobMap.get(taskInfo.getClassName()));
-    jobInfo.setTaskCallback(taskInfo.getTaskCallback());
-    return jobInfo;
+  public LogIJob newJob(LogITask logITask) {
+    LogIJob logIJob = new LogIJob();
+    logIJob.setJobCode(IdWorker.getIdStr());
+    logIJob.setTaskCode(logITask.getTaskCode());
+    logIJob.setTaskId(logITask.getId());
+    logIJob.setTaskName(logITask.getTaskName());
+    logIJob.setTaskDesc(logITask.getTaskDesc());
+    logIJob.setClassName(logITask.getClassName());
+    logIJob.setWorkerCode(WorkerSingleton.getInstance().getLogIWorker().getWorkerCode());
+    logIJob.setWorkerIp(WorkerSingleton.getInstance().getLogIWorker().getIp());
+    logIJob.setTryTimes(logITask.getRetryTimes() == null ? 1 : logITask.getRetryTimes());
+    logIJob.setStatus(JobStatusEnum.STARTED.getValue());
+    logIJob.setTimeout( logITask.getTimeout());
+    logIJob.setJob(jobMap.get(logITask.getClassName()));
+    logIJob.setTaskCallback(logITask.getTaskCallback());
+    logIJob.setAppName(logITask.getAppName());
+    return logIJob;
   }
 }

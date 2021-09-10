@@ -7,7 +7,7 @@ public interface CodeMsg {
 
     /**
      * 返回code
-     * @return code
+     * @return taskCode
      */
     Integer getCode();
 

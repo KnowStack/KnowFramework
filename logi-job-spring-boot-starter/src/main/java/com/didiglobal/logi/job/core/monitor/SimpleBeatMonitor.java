@@ -34,19 +34,19 @@ public class SimpleBeatMonitor implements BeatMonitor {
 
   @Override
   public void stop() {
-    logger.info("class=SimpleBeatMonitor||method=stop||url=||msg=beat monitor stop!!!");
+    logger.info("class=SimpleBeatMonitor||method=stopByJobCode||url=||msg=beat monitor stopByJobCode!!!");
     try {
       beatManager.stop();
       if (monitorThread != null && monitorThread.isAlive()) {
         monitorThread.interrupt();
       }
     } catch (Exception e) {
-      logger.error("class=SimpleBeatMonitor||method=stop||url=||msg=", e);
+      logger.error("class=SimpleBeatMonitor||method=stopByJobCode||url=||msg=", e);
     }
   }
 
   class BeatMonitorThread implements Runnable {
-    private static final long INTERVAL = 5L;
+    private static final long INTERVAL = 30L;
 
     @Override
     public void run() {

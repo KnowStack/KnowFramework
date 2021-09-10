@@ -1,7 +1,7 @@
 package com.didiglobal.logi.job.core.job;
 
-import com.didiglobal.logi.job.common.domain.JobInfo;
-import com.didiglobal.logi.job.common.domain.TaskInfo;
+import com.didiglobal.logi.job.common.domain.LogIJob;
+import com.didiglobal.logi.job.common.domain.LogITask;
 
 /**
  * job factory.
@@ -11,5 +11,5 @@ import com.didiglobal.logi.job.common.domain.TaskInfo;
 public interface JobFactory {
   void addJob(String className, Job job);
 
-  JobInfo newJob(TaskInfo taskInfo);
+  LogIJob newJob(LogITask logITask);
 }

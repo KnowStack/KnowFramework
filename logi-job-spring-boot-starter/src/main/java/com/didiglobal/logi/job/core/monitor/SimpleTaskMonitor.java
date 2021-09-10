@@ -1,6 +1,6 @@
 package com.didiglobal.logi.job.core.monitor;
 
-import com.didiglobal.logi.job.common.domain.TaskInfo;
+import com.didiglobal.logi.job.common.domain.LogITask;
 import com.didiglobal.logi.job.core.task.TaskManager;
 import com.didiglobal.logi.job.utils.ThreadUtil;
 import java.util.List;
@@ -46,14 +46,14 @@ public class SimpleTaskMonitor implements TaskMonitor {
 
   @Override
   public void stop() {
-    logger.info("class=SimpleTaskMonitor||method=stop||url=||msg=task monitor stop!!!");
+    logger.info("class=SimpleTaskMonitor||method=stopByJobCode||url=||msg=task monitor stopByJobCode!!!");
     try {
       taskManager.stopAll();
       if (monitorThread != null && monitorThread.isAlive()) {
         monitorThread.interrupt();
       }
     } catch (Exception e) {
-      logger.error("class=SimpleTaskMonitor||method=stop||url=||msg=", e);
+      logger.error("class=SimpleTaskMonitor||method=stopByJobCode||url=||msg=", e);
     }
   }
 
@@ -70,9 +70,9 @@ public class SimpleTaskMonitor implements TaskMonitor {
           // 每次扫描，间隔1s。为了线程终端创造条件
           ThreadUtil.sleep(SCAN_INTERVAL_SLEEP_SECONDS, TimeUnit.SECONDS);
 
-          List<TaskInfo> taskInfoList = taskManager.nextTriggers(INTERVAL_SECONDS);
+          List<LogITask> logITaskList = taskManager.nextTriggers(INTERVAL_SECONDS);
 
-          if (taskInfoList == null || taskInfoList.size() == 0) {
+          if (logITaskList == null || logITaskList.size() == 0) {
             logger.info("class=TaskMonitorExecutor||method=run||url=||msg=no tasks need run!");
             ThreadUtil.sleep(INTERVAL_SECONDS, TimeUnit.SECONDS);
             continue;
@@ -80,8 +80,8 @@ public class SimpleTaskMonitor implements TaskMonitor {
 
           // 未到执行时间，等待
           logger.info("class=TaskMonitorExecutor||method=run||url=||msg=fetch tasks {}",
-                  taskInfoList.stream().map(TaskInfo::getName).collect(Collectors.toList()));
-          Long firstFireTime = taskInfoList.stream().findFirst().get().getNextFireTime().getTime();
+                  logITaskList.stream().map( LogITask::getTaskName ).collect(Collectors.toList()));
+          Long firstFireTime = logITaskList.stream().findFirst().get().getNextFireTime().getTime();
           Long nowTime = System.currentTimeMillis();
           if (nowTime < firstFireTime) {
             Long between = firstFireTime - nowTime;
@@ -89,11 +89,11 @@ public class SimpleTaskMonitor implements TaskMonitor {
           }
           logger.info("class=TaskMonitorExecutor||method=run||url=||msg=start tasks={}, "
                           + "firstFireTime={}, nowTime={}",
-                  taskInfoList.stream().map(TaskInfo::getName).collect(Collectors.toList()),
+                  logITaskList.stream().map( LogITask::getTaskName ).collect(Collectors.toList()),
                   firstFireTime, nowTime);
 
           // 提交任务
-          taskManager.submit(taskInfoList);
+          taskManager.submit(logITaskList);
         } catch (Exception e) {
           logger.error("class=TaskMonitorExecutor||method=run||url=||msg=", e);
         }

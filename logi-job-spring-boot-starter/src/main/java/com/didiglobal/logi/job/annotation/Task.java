@@ -1,6 +1,6 @@
 package com.didiglobal.logi.job.annotation;
 
-import com.didiglobal.logi.job.core.consensual.ConsensualConstant;
+import com.didiglobal.logi.job.core.consensual.ConsensualEnum;
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -8,13 +8,16 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import org.springframework.stereotype.Component;
 
+/**
+ * @author zqr
+ */
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 @Component
 public @interface Task {
   /**
-   * task name.
+   * task taskName.
    */
   String name() default "";
 
@@ -22,6 +25,12 @@ public @interface Task {
    * task desc.
    */
   String description() default "";
+
+  /**
+   * task owner
+   * @return
+   */
+  String owner() default "system";
 
   /**
    * task cron.
@@ -46,5 +55,5 @@ public @interface Task {
   /**
    * consensual.
    */
-  ConsensualConstant consensual() default ConsensualConstant.RANDOM;
+  ConsensualEnum consensual() default ConsensualEnum.RANDOM;
 }

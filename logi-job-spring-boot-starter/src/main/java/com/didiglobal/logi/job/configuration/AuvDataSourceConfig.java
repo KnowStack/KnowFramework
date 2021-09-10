@@ -1,6 +1,6 @@
 package com.didiglobal.logi.job.configuration;
 
-import com.didiglobal.logi.job.AuvJobProperties;
+import com.didiglobal.logi.job.LogIJobProperties;
 import com.zaxxer.hikari.HikariDataSource;
 import javax.sql.DataSource;
 import org.apache.ibatis.session.SqlSessionFactory;
@@ -15,7 +15,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 @EnableTransactionManagement
 @Configuration
-@MapperScan(value = "com.didiglobal.logi.auvjob.mapper",
+@MapperScan(value = "com.didiglobal.logi.job.mapper",
         sqlSessionFactoryRef = "auvSqlSessionFactory")
 public class AuvDataSourceConfig {
 
@@ -25,13 +25,13 @@ public class AuvDataSourceConfig {
    * @return 数据源
    */
   @Bean("auvDataSource")
-  public DataSource dataSource(AuvJobProperties auvJobProperties) {
+  public DataSource dataSource(LogIJobProperties logIJobProperties) {
     HikariDataSource dataSource = new HikariDataSource();
-    dataSource.setUsername(auvJobProperties.getUsername());
-    dataSource.setPassword(auvJobProperties.getPassword());
-    dataSource.setJdbcUrl(auvJobProperties.getJdbcUrl());
-    dataSource.setDriverClassName(auvJobProperties.getDriverClassName());
-    dataSource.setMaxLifetime(auvJobProperties.getMaxLifetime());
+    dataSource.setUsername( logIJobProperties.getUsername());
+    dataSource.setPassword( logIJobProperties.getPassword());
+    dataSource.setJdbcUrl( logIJobProperties.getJdbcUrl());
+    dataSource.setDriverClassName( logIJobProperties.getDriverClassName());
+    dataSource.setMaxLifetime( logIJobProperties.getMaxLifetime());
     return dataSource;
   }
 
@@ -48,7 +48,7 @@ public class AuvDataSourceConfig {
     SqlSessionFactoryBean bean = new SqlSessionFactoryBean();
     bean.setDataSource(dataSource);
     bean.setMapperLocations(new PathMatchingResourcePatternResolver()
-            .getResources("classpath:mapper/auv-job/*.xml"));
+            .getResources("classpath:mapper/logi-job/*.xml"));
     org.apache.ibatis.session.Configuration configuration =
             new org.apache.ibatis.session.Configuration();
     configuration.setMapUnderscoreToCamelCase(true);

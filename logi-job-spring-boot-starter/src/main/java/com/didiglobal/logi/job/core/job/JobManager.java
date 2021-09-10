@@ -1,8 +1,8 @@
 package com.didiglobal.logi.job.core.job;
 
-import com.didiglobal.logi.job.common.domain.TaskInfo;
-import com.didiglobal.logi.job.common.dto.JobDto;
-import com.didiglobal.logi.job.common.dto.JobLogDto;
+import com.didiglobal.logi.job.common.domain.LogIJob;
+import com.didiglobal.logi.job.common.domain.LogITask;
+
 import java.util.List;
 import java.util.concurrent.Future;
 
@@ -16,25 +16,41 @@ public interface JobManager {
   /**
    * 启动任务.
    *
-   * @param taskInfo 任务
+   * @param logITask 任务
    * @return future
    */
-  Future<Object> start(TaskInfo taskInfo);
+  Future<Object> start(LogITask logITask);
 
+  /**
+   *
+   * @return
+   */
   Integer runningJobSize();
 
   /**
    * 停止任务.
    *
-   * @param jobCode job code
+   * @param jobCode job taskCode
    * @return true/false
    */
-  boolean stop(String jobCode);
+  boolean stopByJobCode(String jobCode);
 
+  /**
+   *
+   * @param taskCode
+   * @return
+   */
+  boolean stopByTaskCode(String taskCode);
+
+  /**
+   *
+   * @return
+   */
   int stopAll();
 
-  List<JobDto> getJobs();
-
-  List<JobLogDto> getJobLogs(String taskCode, Integer limit);
-
+  /**
+   *
+   * @return
+   */
+  List<LogIJob> getJobs();
 }

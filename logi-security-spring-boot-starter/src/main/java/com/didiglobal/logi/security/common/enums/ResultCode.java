@@ -114,7 +114,7 @@ public enum ResultCode implements CodeMsg {
     /**
      * 根据code获取message.
      *
-     * @param code code
+     * @param code taskCode
      * @return str
      */
     public static String getMessageByCode(Integer code) {

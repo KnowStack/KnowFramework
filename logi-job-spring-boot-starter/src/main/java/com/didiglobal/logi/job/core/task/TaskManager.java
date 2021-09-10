@@ -1,8 +1,10 @@
 package com.didiglobal.logi.job.core.task;
 
 import com.didiglobal.logi.job.common.Result;
-import com.didiglobal.logi.job.common.domain.TaskInfo;
-import com.didiglobal.logi.job.common.dto.TaskDto;
+import com.didiglobal.logi.job.common.domain.LogITask;
+import com.didiglobal.logi.job.common.dto.LogITaskDTO;
+import com.didiglobal.logi.job.common.dto.TaskPageQueryDTO;
+
 import java.util.List;
 
 /**
@@ -13,15 +15,9 @@ import java.util.List;
 public interface TaskManager {
 
   /**
-   * 新增任务.
-   *
-   */
-  boolean add(TaskDto taskDto);
-
-  /**
    * 更新任务.
    *
-   * @param taskCode task code
+   * @param taskCode task taskCode
    * @return deleted auv task
    */
   Result delete(String taskCode);
@@ -30,7 +26,7 @@ public interface TaskManager {
    * 更新任务.
    *
    */
-  boolean update(TaskDto taskDto);
+  boolean update(LogITaskDTO logITaskDTO);
 
   /**
    * 接下来需要执行的任务,按时间先后顺序排序.
@@ -38,7 +34,7 @@ public interface TaskManager {
    * @param interval 从现在开始下次执行时间间隔 毫秒
    * @return task info list
    */
-  List<TaskInfo> nextTriggers(Long interval);
+  List<LogITask> nextTriggers(Long interval);
 
   /**
    * 接下来需要执行的任务,按时间先后顺序排序.
@@ -47,19 +43,19 @@ public interface TaskManager {
    * @param interval interval
    * @return task info list
    */
-  List<TaskInfo> nextTriggers(Long fromTime, Long interval);
+  List<LogITask> nextTriggers(Long fromTime, Long interval);
 
   /**
    * 提交任务，执行器会根据一致性协同算法判断是否执行.
    *
-   * @param taskInfoList task info list
+   * @param logITaskList task info list
    */
-  void submit(List<TaskInfo> taskInfoList);
+  void submit(List<LogITask> logITaskList);
 
   /**
-   * 根据 task code 执行任务.
+   * 根据 task taskCode 执行任务.
    *
-   * @param taskCode task code
+   * @param taskCode task taskCode
    * @param executeSubs 是否执行子任务
    */
   Result execute(String taskCode, Boolean executeSubs);
@@ -67,24 +63,45 @@ public interface TaskManager {
   /**
    * 执行任务, 默认会执行子任务如果有配置.
    *
-   * @param taskInfo 任务信息
+   * @param logITask 任务信息
    * @param executeSubs 是否执行子任务
    */
-  void execute(TaskInfo taskInfo, Boolean executeSubs);
+  void execute(LogITask logITask, Boolean executeSubs);
 
   /**
    * 停止所有正在运行的job.
    *
-   * @return stop job size
+   * @return stopByJobCode job size
    */
   int stopAll();
+
+  /**
+   * 更改某个任务的状态
+   * @param taskCode
+   * @param status
+   * @return
+   */
+  Result<Boolean> updateTaskStatus(String taskCode, int status);
 
   /**
    * 获取所有任务.
    *
    * @return all tasks
    */
-  List<TaskInfo> getAll();
+  List<LogITask> getAllRuning();
+
+  /**
+   * 获取所有任务个数
+   * @return
+   */
+  int pagineTaskConut(TaskPageQueryDTO queryDTO);
+
+  /**
+   * 分页获取相关任务
+   * @param taskPageQueryDTO
+   * @return
+   */
+  List<LogITask> getPagineList(TaskPageQueryDTO taskPageQueryDTO);
 
   /**
    * 恢复任务 并释放锁.
@@ -93,5 +110,12 @@ public interface TaskManager {
    * @return true/false
    */
   Result<Boolean> release(String taskCode, String workerCode);
+
+  /**
+   * 获取某个具体的任务
+   * @param taskCode
+   * @return
+   */
+  LogITask getByCode(String taskCode);
 
 }

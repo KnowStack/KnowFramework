@@ -10,9 +10,9 @@
     </appender>
 
     <!-- level为 DEBUG 日志，时间滚动输出  -->
-    <appender name="AUV_JOB_LOG" class="ch.qos.logback.core.rolling.RollingFileAppender">
+    <appender name="LOGI_JOB_LOG" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <!-- 正在记录的日志文档的路径及文档名 -->
-        <file>${log.path}/auv-job.log</file>
+        <file>${log.path}/logi-job.log</file>
         <!--日志文档输出格式-->
         <encoder>
             <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{50} - %msg%n</pattern>
@@ -21,7 +21,7 @@
         <!-- 日志记录器的滚动策略，按日期，按大小记录 -->
         <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
             <!-- 日志归档 -->
-            <fileNamePattern>${log.path}/auv-job-%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+            <fileNamePattern>${log.path}/logi-job-%d{yyyy-MM-dd}.%i.log</fileNamePattern>
             <!--日志文档保留天数-->
             <maxHistory>15</maxHistory>
             <maxFileSize>100MB</maxFileSize>
@@ -48,10 +48,10 @@
     </appender>
 
     // auv job log
-    // auv job包打到 AUV_JOB_LOG
+    // auv job包打到 LOGI_JOB_LOG
     <logger name="com.didiglobal.logi.job" level="INFO" additivity="false">
         <appender-ref ref="STDOUT" />
-        <appender-ref ref="AUV_JOB_LOG" />
+        <appender-ref ref="LOGI_JOB_LOG" />
     </logger>
 
     // buz log

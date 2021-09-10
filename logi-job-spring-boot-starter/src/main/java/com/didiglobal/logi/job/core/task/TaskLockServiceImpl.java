@@ -1,10 +1,13 @@
 package com.didiglobal.logi.job.core.task;
 
-import com.didiglobal.logi.job.common.bean.AuvTaskLock;
-import com.didiglobal.logi.job.common.dto.TaskLockDto;
+import com.didiglobal.logi.job.LogIJobProperties;
+import com.didiglobal.logi.job.common.po.LogITaskLockPO;
+import com.didiglobal.logi.job.common.dto.LogITaskLockDTO;
 import com.didiglobal.logi.job.core.WorkerSingleton;
-import com.didiglobal.logi.job.mapper.AuvTaskLockMapper;
+import com.didiglobal.logi.job.mapper.LogITaskLockMapper;
 import com.didiglobal.logi.job.utils.BeanUtil;
+
+import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -23,50 +26,57 @@ import org.springframework.util.CollectionUtils;
 public class TaskLockServiceImpl implements TaskLockService {
   private static final Logger logger = LoggerFactory.getLogger(TaskLockServiceImpl.class);
   // 每次申请锁的默认过期时间
-  private static final Long EXPIRE_TIME_SECONDS = 300L;
+  private static final Long EXPIRE_TIME_SECONDS = 120L;
 
-  private AuvTaskLockMapper auvTaskLockMapper;
+  private LogITaskLockMapper logITaskLockMapper;
+  private LogIJobProperties logIJobProperties;
 
   /**
    * constructor.
    *
    */
   @Autowired
-  public TaskLockServiceImpl(AuvTaskLockMapper auvTaskLockMapper) {
-    this.auvTaskLockMapper = auvTaskLockMapper;
+  public TaskLockServiceImpl(LogITaskLockMapper logITaskLockMapper, LogIJobProperties logIJobProperties) {
+    this.logITaskLockMapper = logITaskLockMapper;
+    this.logIJobProperties = logIJobProperties;
   }
 
   @Override
   public Boolean tryAcquire(String taskCode) {
-    return tryAcquire(taskCode, WorkerSingleton.getInstance().getWorkerInfo().getCode(),
+    return tryAcquire(taskCode, WorkerSingleton.getInstance().getLogIWorker().getWorkerCode(),
             EXPIRE_TIME_SECONDS);
   }
 
   @Override
   public Boolean tryAcquire(String taskCode, String workerCode, Long expireTime) {
-    List<AuvTaskLock> auvTaskLockList = auvTaskLockMapper.selectByTaskCode(taskCode);
+    List<LogITaskLockPO> logITaskLockPOList = logITaskLockMapper.selectByTaskCode(taskCode, logIJobProperties.getAppName());
 
     boolean hasLock;
-    if (CollectionUtils.isEmpty(auvTaskLockList)) {
+    if (CollectionUtils.isEmpty( logITaskLockPOList )) {
       hasLock = false;
     } else {
       long current = System.currentTimeMillis() / 1000;
-      Long inLockSize = auvTaskLockList.stream().filter(auvTaskLock -> auvTaskLock.getCreateTime()
-              .getTime() / 1000 + expireTime < current).collect(Collectors.counting());
+      Long inLockSize = logITaskLockPOList.stream().filter( logITaskLockPO -> logITaskLockPO.getCreateTime()
+              .getTime() / 1000 + expireTime > current).collect(Collectors.counting());
       hasLock = inLockSize > 0 ? true : false;
     }
 
     if (!hasLock) {
-      AuvTaskLock taskLock = new AuvTaskLock();
+      LogITaskLockPO taskLock = new LogITaskLockPO();
       taskLock.setTaskCode(taskCode);
       taskLock.setWorkerCode(workerCode);
       taskLock.setExpireTime(expireTime);
       taskLock.setCreateTime(new Timestamp(System.currentTimeMillis()));
       taskLock.setUpdateTime(new Timestamp(System.currentTimeMillis()));
+      taskLock.setAppName( logIJobProperties.getAppName());
       try {
-        return auvTaskLockMapper.insert(taskLock) > 0 ? true : false;
+        return logITaskLockMapper.insert(taskLock) > 0 ? true : false;
       } catch (Exception e) {
-        logger.error("class=TaskLockServiceImpl||method=tryAcquire||url=||msg=", e);
+        if(e instanceof SQLException && e.getMessage().contains("Duplicate entry")){
+          logger.info("class=TaskLockServiceImpl||method=tryAcquire||taskCode=||msg=duplicate key", taskCode);
+        }else {
+          logger.error("class=TaskLockServiceImpl||method=tryAcquire||taskCode=||msg=", taskCode, e.getMessage());
+        }
       }
     }
     return false;
@@ -74,35 +84,38 @@ public class TaskLockServiceImpl implements TaskLockService {
 
   @Override
   public Boolean tryRelease(String taskCode) {
-    return tryRelease(taskCode, WorkerSingleton.getInstance().getWorkerInfo().getCode());
+    return tryRelease(taskCode, WorkerSingleton.getInstance().getLogIWorker().getWorkerCode());
   }
 
   @Override
   public Boolean tryRelease(String taskCode, String workerCode) {
-    List<AuvTaskLock> auvTaskLockList = auvTaskLockMapper.selectByTaskCodeAndWorkerCode(taskCode,
-            workerCode);
-    if (CollectionUtils.isEmpty(auvTaskLockList)) {
+    List<LogITaskLockPO> logITaskLockPOList = logITaskLockMapper.selectByTaskCodeAndWorkerCode(taskCode,
+            workerCode, logIJobProperties.getAppName());
+    if (CollectionUtils.isEmpty( logITaskLockPOList )) {
       logger.error("class=TaskLockServiceImpl||method=tryRelease||url=||msg=taskCode={}, "
               + "workerCode={}", taskCode, workerCode);
       return false;
     }
     long current = System.currentTimeMillis() / 1000;
-    List<Long> taskLockIdList = auvTaskLockList.stream().filter(auvTaskLock ->
-            auvTaskLock.getCreateTime().getTime() / 1000 + auvTaskLock.getExpireTime() < current)
-            .map(AuvTaskLock::getId)
+    List<Long> taskLockIdList = logITaskLockPOList.stream().filter( logITaskLockPO ->
+            logITaskLockPO.getCreateTime().getTime() / 1000 + logITaskLockPO.getExpireTime() < current)
+            .map( LogITaskLockPO::getId)
             .collect(Collectors.toList());
-    int result = auvTaskLockMapper.deleteByIds(taskLockIdList);
+
+    if(CollectionUtils.isEmpty(taskLockIdList)){return true;}
+
+    int result = logITaskLockMapper.deleteByIds(taskLockIdList);
     return result > 0 ? true : false;
   }
 
   @Override
-  public List<TaskLockDto> getAll() {
-    List<AuvTaskLock> auvTaskLocks = auvTaskLockMapper.selectAll();
-    if (CollectionUtils.isEmpty(auvTaskLocks)) {
+  public List<LogITaskLockDTO> getAll() {
+    List<LogITaskLockPO> logITaskLockPOS = logITaskLockMapper.selectByAppName( logIJobProperties.getAppName());
+    if (CollectionUtils.isEmpty( logITaskLockPOS )) {
       return null;
     }
-    return auvTaskLocks.stream().map(auvTaskLock -> BeanUtil.convertTo(auvTaskLock,
-            TaskLockDto.class)).collect(Collectors.toList());
+    return logITaskLockPOS.stream().map( logITaskLockPO -> BeanUtil.convertTo( logITaskLockPO,
+            LogITaskLockDTO.class)).collect(Collectors.toList());
   }
 
   @Override

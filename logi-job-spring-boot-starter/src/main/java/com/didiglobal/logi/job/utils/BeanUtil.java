@@ -3,12 +3,11 @@ package com.didiglobal.logi.job.utils;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import java.lang.reflect.Field;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
+
+import java.util.List;
 
 public class BeanUtil {
   private static final Logger logger = LoggerFactory.getLogger(BeanUtil.class);
@@ -23,14 +22,19 @@ public class BeanUtil {
    * @return 转换到的对象
    */
   public static <T> T convertTo(Object source, Class<T> targetClass) {
-    T instance = null;
-    try {
-      instance = targetClass.newInstance();
-    } catch (InstantiationException | IllegalAccessException e) {
-      logger.error("class=BeanUtil||method=convertTo||url=||msg={}", e);
+    if (source == null) {
+      return null;
     }
-    copyProperties(source, instance);
-    return instance;
+
+    T tgt = null;
+    try {
+      tgt = targetClass.newInstance();
+      BeanUtils.copyProperties(source, tgt);
+    } catch (Exception e) {
+      logger.warn("convert obj2Obj error||msg={}", e.getMessage(), e);
+    }
+
+    return tgt;
   }
 
   /**
@@ -64,42 +68,6 @@ public class BeanUtil {
     } catch (JsonProcessingException e) {
       logger.error("source to json error, e->", e);
       return null;
-    }
-  }
-
-  /**
-   * copy属性.
-   *
-   * @param source 源
-   * @param target 目标
-   */
-  private static void copyProperties(Object source, Object target) {
-    Assert.notNull(source, "Source must not be null");
-    Assert.notNull(target, "Target must not be null");
-
-    Class<?> sourceClass = source.getClass();
-    Field[] sourceFields = sourceClass.getDeclaredFields();
-    Map<String, Object> sourceFieldMap = new HashMap<>();
-    try {
-      for (Field sourceField : sourceFields) {
-        sourceField.setAccessible(true);
-        sourceFieldMap.put(sourceField.getName(), sourceField.get(source));
-      }
-    } catch (IllegalAccessException e) {
-      logger.error("class=BeanUtil||method=copyProperties||url=||msg={}", e);
-    }
-
-    Field[] targetFields = target.getClass().getDeclaredFields();
-    try {
-      for (Field targetField : targetFields) {
-        String targetFieldName = targetField.getName();
-        if (sourceFieldMap.containsKey(targetFieldName)) {
-          targetField.setAccessible(true);
-          targetField.set(target, sourceFieldMap.get(targetFieldName));
-        }
-      }
-    } catch (Exception e) {
-      logger.error("class=BeanUtil||method=copyProperties||url=||msg={}", e);
     }
   }
 }

@@ -1,6 +1,6 @@
 package com.didiglobal.logi.job.core;
 
-import com.didiglobal.logi.job.common.domain.WorkerInfo;
+import com.didiglobal.logi.job.common.domain.LogIWorker;
 import com.didiglobal.logi.job.utils.ThreadUtil;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
@@ -16,7 +16,7 @@ import oshi.hardware.GlobalMemory;
 public class WorkerSingleton {
   private static final int CPU_INTERVAL = 1;
   private static final Logger logger = LoggerFactory.getLogger(WorkerSingleton.class);
-  private volatile WorkerInfo workerInfo;
+  private volatile LogIWorker logIWorker;
 
   private WorkerSingleton() {
   }
@@ -40,19 +40,19 @@ public class WorkerSingleton {
     return Singleton.singleton;
   }
 
-  public WorkerInfo getWorkerInfo() {
-    return workerInfo;
+  public LogIWorker getLogIWorker() {
+    return logIWorker;
   }
 
-  public void setWorkerInfo(WorkerInfo workerInfo) {
-    this.workerInfo = workerInfo;
+  public void setLogIWorker(LogIWorker logIWorker) {
+    this.logIWorker = logIWorker;
   }
 
   private static class Singleton {
     static WorkerSingleton singleton = new WorkerSingleton();
 
     static {
-      WorkerInfo workerInfo = new WorkerInfo();
+      LogIWorker logIWorker = new LogIWorker();
       InetAddress inetAddress = null;
       try {
         inetAddress = InetAddress.getLocalHost();
@@ -60,14 +60,15 @@ public class WorkerSingleton {
         logger.error("class=SimpleWorkerFactory||method=||url=||msg=", e);
       }
 
-      workerInfo.setCode(inetAddress == null ? "INVALID_CODE"
+      logIWorker.setWorkerCode(inetAddress == null ? "INVALID_CODE"
               : inetAddress.getHostAddress() + "_" + inetAddress.getHostName());
-      workerInfo.setName(inetAddress == null ? "INVALID_NAME" : inetAddress.getHostName());
-      singleton.setWorkerInfo(workerInfo);
+      logIWorker.setWorkerName(inetAddress == null ? "INVALID_NAME" : inetAddress.getHostName());
+      logIWorker.setIp(inetAddress.getHostAddress());
+      singleton.setLogIWorker( logIWorker );
     }
 
     public static WorkerSingleton updateWorkerMetrics() {
-      WorkerInfo workerInfo = singleton.getWorkerInfo();
+      LogIWorker logIWorker = singleton.getLogIWorker();
 
       SystemInfo systemInfo = new SystemInfo();
       // cpu
@@ -95,28 +96,28 @@ public class WorkerSingleton {
       long idle = ticks[CentralProcessor.TickType.IDLE.getIndex()]
               - prevTicks[CentralProcessor.TickType.IDLE.getIndex()];
       long totalCpu = user + nice + csys + idle + ioWait + irq + softIrq + steal;
-      workerInfo.setCpu(processor.getLogicalProcessorCount());
-      workerInfo.setCpuUsed(totalCpu == 0 ? null : 1.0 - (idle * 1.0 / totalCpu));
+      logIWorker.setCpu(processor.getLogicalProcessorCount());
+      logIWorker.setCpuUsed(totalCpu == 0 ? null : 1.0 - (idle * 1.0 / totalCpu));
 
       // memory
       GlobalMemory memory = systemInfo.getHardware().getMemory();
       Double totalMemory = memory.getTotal() * 1.0 / 1024 / 1024;
       DecimalFormat df = new DecimalFormat("#.000");
-      workerInfo.setMemory(Double.valueOf(df.format(totalMemory)));
+      logIWorker.setMemory(Double.valueOf(df.format(totalMemory)));
       Double memoryUsed = (memory.getTotal() - memory.getAvailable()) * 1.0 / memory.getTotal();
-      workerInfo.setMemoryUsed(Double.valueOf(df.format(memoryUsed)));
+      logIWorker.setMemoryUsed(Double.valueOf(df.format(memoryUsed)));
 
       Runtime runtime = Runtime.getRuntime();
       Double jvmMemory = runtime.totalMemory() * 1.0 / 1024 / 1024;
-      workerInfo.setJvmMemory(Double.valueOf(df.format(jvmMemory)));
+      logIWorker.setJvmMemory(Double.valueOf(df.format(jvmMemory)));
       Double jvmMemoryUsed = (runtime.totalMemory() - runtime.freeMemory()) * 1.0
               / runtime.totalMemory();
-      workerInfo.setJvmMemoryUsed(Double.valueOf(df.format(jvmMemoryUsed)));
+      logIWorker.setJvmMemoryUsed(Double.valueOf(df.format(jvmMemoryUsed)));
 
-      // workerInfo.setJobNum();
+      // logIWorker.setJobNum();
 
-      workerInfo.setHeartbeat(new Timestamp(System.currentTimeMillis()));
-      singleton.setWorkerInfo(workerInfo);
+      logIWorker.setHeartbeat(new Timestamp(System.currentTimeMillis()));
+      singleton.setLogIWorker( logIWorker );
       return singleton;
     }
   }
