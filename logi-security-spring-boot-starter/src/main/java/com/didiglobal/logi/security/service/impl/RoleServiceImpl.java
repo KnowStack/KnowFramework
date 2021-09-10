@@ -1,228 +1,383 @@
 package com.didiglobal.logi.security.service.impl;
 
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.didiglobal.logi.security.common.entity.*;
-import com.didiglobal.logi.security.common.vo.permission.PermissionVo;
-import com.didiglobal.logi.security.common.vo.role.RoleAssignVo;
-import com.didiglobal.logi.security.common.vo.role.RoleQueryVo;
-import com.didiglobal.logi.security.common.vo.role.RoleSaveVo;
-import com.didiglobal.logi.security.common.vo.role.RoleVo;
+import com.didiglobal.logi.security.common.PagingData;
+import com.didiglobal.logi.security.common.constant.OplogConstant;
+import com.didiglobal.logi.security.common.entity.role.Role;
+import com.didiglobal.logi.security.common.entity.role.RoleBrief;
+import com.didiglobal.logi.security.common.vo.role.AssignInfoVO;
+import com.didiglobal.logi.security.common.dto.role.RoleAssignDTO;
+import com.didiglobal.logi.security.common.dto.role.RoleQueryDTO;
+import com.didiglobal.logi.security.common.dto.role.RoleSaveDTO;
+import com.didiglobal.logi.security.common.vo.role.RoleBriefVO;
+import com.didiglobal.logi.security.common.vo.role.RoleDeleteCheckVO;
+import com.didiglobal.logi.security.common.vo.role.RoleVO;
+import com.didiglobal.logi.security.common.dto.message.MessageDTO;
+import com.didiglobal.logi.security.common.dto.oplog.OplogDTO;
+import com.didiglobal.logi.security.common.enums.message.MessageCode;
+import com.didiglobal.logi.security.common.vo.permission.PermissionTreeVO;
 import com.didiglobal.logi.security.common.enums.ResultCode;
-import com.didiglobal.logi.security.exception.SecurityException;
-import com.didiglobal.logi.security.mapper.*;
-import com.didiglobal.logi.security.service.PermissionService;
-import com.didiglobal.logi.security.service.RoleService;
+import com.didiglobal.logi.security.common.vo.user.UserBriefVO;
+import com.didiglobal.logi.security.dao.RoleDao;
+import com.didiglobal.logi.security.exception.LogiSecurityException;
+import com.didiglobal.logi.security.service.*;
 
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
 
 import com.didiglobal.logi.security.util.CopyBeanUtil;
+import com.didiglobal.logi.security.util.HttpRequestUtil;
+import com.didiglobal.logi.security.util.MathUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.StringUtils;
 
-@Service
+import javax.servlet.http.HttpServletRequest;
+
+/**
+ * @author cjm
+ */
+@Service("logiSecurityRoleServiceImpl")
 public class RoleServiceImpl implements RoleService {
 
     @Autowired
-    private RoleMapper roleMapper;
-
-    @Autowired
-    private UserMapper userMapper;
-
-    @Autowired
-    private RolePermissionMapper rolePermissionMapper;
-
-    @Autowired
-    private UserRoleMapper userRoleMapper;
+    private RoleDao roleDao;
 
     @Autowired
     private PermissionService permissionService;
 
+    @Autowired
+    private MessageService messageService;
+
+    @Autowired
+    private OplogService oplogService;
+
+    @Autowired
+    private UserService userService;
+
+    @Autowired
+    private RolePermissionService rolePermissionService;
+
+    @Autowired
+    private UserRoleService userRoleService;
+
     @Override
-    public RoleVo getDetailById(Integer id) {
-        if(id == null) {
-            throw new SecurityException(ResultCode.PARAM_NOT_VALID);
-        }
-        Role role = roleMapper.selectById(id);
+    public RoleVO getRoleDetailByRoleId(Integer roleId) {
+        Role role = roleDao.selectByRoleId(roleId);
         if(role == null) {
-            throw new SecurityException(ResultCode.ROLE_NOT_EXISTS);
+            return null;
         }
         // 根据角色id去查权限树
-        PermissionVo permissionVo = buildPermissionTree(role.getId());
-        RoleVo roleVo = CopyBeanUtil.copy(role, RoleVo.class);
-        roleVo.setPermissionVo(permissionVo);
+        PermissionTreeVO permissionTreeVO = permissionService.buildPermissionTreeByRoleId(role.getId());
+        RoleVO roleVo = CopyBeanUtil.copy(role, RoleVO.class);
+        roleVo.setPermissionTreeVO(permissionTreeVO);
         roleVo.setCreateTime(role.getCreateTime().getTime());
+        // 获取授予用户数
+        List<Integer> userIdList = userRoleService.getUserIdListByRoleId(roleId);
+        roleVo.setAuthedUserCnt(userIdList.size());
         return roleVo;
     }
 
     @Override
-    public IPage<RoleVo> getPageRole(RoleQueryVo queryVo) {
-        // 分页查询
-        IPage<Role> rolePage = new Page<>(queryVo.getPage(), queryVo.getSize());
-        QueryWrapper<Role> roleWrapper = new QueryWrapper<>();
-        roleWrapper
-                .like(queryVo.getRoleCode() != null, "role_code", queryVo.getRoleCode())
-                .like(queryVo.getRoleName() != null, "role_name", queryVo.getRoleName())
-                .like(queryVo.getDescription() != null, "taskDesc", queryVo.getDescription());
-        roleMapper.selectPage(rolePage, roleWrapper);
-
-        IPage<RoleVo> roleVoPage = CopyBeanUtil.copyPage(rolePage, RoleVo.class);
-        // 统计角色关联用户数
-        QueryWrapper<UserRole> userRoleWrapper = new QueryWrapper<>();
-        for(int i = 0; i < roleVoPage.getRecords().size(); i++) {
-            RoleVo roleVo = roleVoPage.getRecords().get(i);
-            userRoleWrapper.eq("role_id", roleVo.getId());
-            roleVo.setAuthedUserCnt(userRoleMapper.selectCount(userRoleWrapper));
-            roleVo.setCreateTime(rolePage.getRecords().get(i).getCreateTime().getTime());
-            userRoleWrapper.clear();
+    public PagingData<RoleVO> getRolePage(RoleQueryDTO queryDTO) {
+        IPage<Role> iPage = roleDao.selectPage(queryDTO);
+        List<RoleVO> roleVOList = new ArrayList<>();
+        for(Role role : iPage.getRecords()) {
+            RoleVO roleVO = CopyBeanUtil.copy(role, RoleVO.class);
+            // 获取该角色已分配给的用户数
+            roleVO.setAuthedUserCnt(userRoleService.getUserRoleCountByRoleId(role.getId()));
+            roleVO.setCreateTime(role.getCreateTime().getTime());
+            roleVOList.add(roleVO);
         }
-        return roleVoPage;
+        return new PagingData<>(roleVOList, iPage);
     }
 
     @Override
-    public void createRole(RoleSaveVo roleSaveVo) {
+    @Transactional(rollbackFor = Exception.class)
+    public void createRole(RoleSaveDTO roleSaveDTO, HttpServletRequest request) throws LogiSecurityException {
+        Integer userId = HttpRequestUtil.getOperatorId(request);
         // 检查参数
-        checkParam(roleSaveVo);
+        checkParam(roleSaveDTO, false);
         // 保存角色信息
-        Role role = CopyBeanUtil.copy(roleSaveVo, Role.class);
-        // TODO；这里要添加修改人信息（Token中获取）
-        // role.setLastReviser("xxx");
-        // 设置角色编号
-        role.setRoleCode("role" + ((int)((Math.random() + 1) * 10000)));
-        roleMapper.insert(role);
-        List<Integer> permissionIdList = roleSaveVo.getPermissionIdList();
-        if(!CollectionUtils.isEmpty(permissionIdList)) {
-            List<RolePermission> rolePermissionList = getRolePermissionList(role.getId(), permissionIdList);
-            // 保存角色与权限信息（批量插入）
-            rolePermissionMapper.insertBatchSomeColumn(rolePermissionList);
+        Role role = CopyBeanUtil.copy(roleSaveDTO, Role.class);
+        // 设置修改人信息
+        UserBriefVO userBriefVO = userService.getUserBriefByUserId(userId);
+        if(userBriefVO != null) {
+            role.setLastReviser(userBriefVO.getUsername());
         }
+        // 设置角色编号
+        role.setRoleCode("r" + MathUtil.getRandomNumber(7));
+        roleDao.insert(role);
+        // 保持角色与权限的关联信息
+        rolePermissionService.saveRolePermission(role.getId(), roleSaveDTO.getPermissionIdList());
+        // 保存操作日志
+        OplogDTO oplogDTO = new OplogDTO(OplogConstant.RM, OplogConstant.RM_A, OplogConstant.RM_R, roleSaveDTO.getRoleName());
+        oplogService.saveOplogWithUserId(userId, oplogDTO);
     }
 
     @Override
-    public void deleteRoleById(Integer id) {
-        Role role = roleMapper.selectById(id);
+    @Transactional(rollbackFor = Exception.class)
+    public void deleteRoleByRoleId(Integer roleId, HttpServletRequest request) throws LogiSecurityException {
+        Role role = roleDao.selectByRoleId(roleId);
         if(role == null) {
-            throw new SecurityException(ResultCode.ROLE_NOT_EXISTS);
+            return;
         }
         // 检查该角色是否和用户绑定
-        QueryWrapper<UserRole> userRoleMapperWrapper = new QueryWrapper<>();
-        userRoleMapperWrapper.eq("role_id", id);
-        if(userRoleMapper.selectCount(userRoleMapperWrapper) > 0) {
-            throw new SecurityException(ResultCode.ROLE_USER_AUTHED);
+        List<Integer> userIdList = userRoleService.getUserIdListByRoleId(roleId);
+        if(!userIdList.isEmpty()) {
+            throw new LogiSecurityException(ResultCode.ROLE_USER_AUTHED);
         }
         // 删除角色与权限的关联
-        QueryWrapper<RolePermission> rolePermissionWrapper = new QueryWrapper<>();
-        rolePermissionWrapper.eq("role_id", id);
-        rolePermissionMapper.delete(rolePermissionWrapper);
+        rolePermissionService.deleteRolePermissionByRoleId(roleId);
         // 逻辑删除（自动）
-        roleMapper.deleteById(role.getId());
+        roleDao.deleteByRoleId(roleId);
+        // 保存操作日志
+        OplogDTO oplogDTO = new OplogDTO(OplogConstant.RM, OplogConstant.RM_D, OplogConstant.RM_R, role.getRoleName());
+        oplogService.saveOplogWithUserId(HttpRequestUtil.getOperatorId(request), oplogDTO);
     }
 
     @Override
-    public void updateRoleById(RoleSaveVo roleSaveVo) {
-        if(roleSaveVo == null || roleMapper.selectById(roleSaveVo.getId()) == null) {
-            throw new SecurityException(ResultCode.ROLE_NOT_EXISTS);
+    @Transactional(rollbackFor = Exception.class)
+    public void updateRole(RoleSaveDTO saveDTO, HttpServletRequest request) throws LogiSecurityException {
+        Integer userId = HttpRequestUtil.getOperatorId(request);
+        if(roleDao.selectByRoleId(saveDTO.getId()) == null) {
+            throw new LogiSecurityException(ResultCode.ROLE_NOT_EXISTS);
         }
-        checkParam(roleSaveVo);
+        checkParam(saveDTO, true);
         // 更新角色基本信息
-        Role role = CopyBeanUtil.copy(roleSaveVo, Role.class);
-        roleMapper.updateById(role);
-        // 先删除旧的角色与权限关联信息
-        QueryWrapper<RolePermission> rolePermissionWrapper = new QueryWrapper<>();
-        rolePermissionWrapper.eq("role_id", role.getId());
-        rolePermissionMapper.delete(rolePermissionWrapper);
-        // 更新角色与权限关联信息
-        if(!CollectionUtils.isEmpty(roleSaveVo.getPermissionIdList())) {
-            List<RolePermission> rpList = getRolePermissionList(role.getId(), roleSaveVo.getPermissionIdList());
-            rolePermissionMapper.insertBatchSomeColumn(rpList);
+        Role role = CopyBeanUtil.copy(saveDTO, Role.class);
+        // 设置修改人信息
+        UserBriefVO userBriefVO = userService.getUserBriefByUserId(userId);
+        if(userBriefVO != null) {
+            role.setLastReviser(userBriefVO.getUsername());
         }
+        roleDao.update(role);
+        // 更新角色与权限关联信息
+        rolePermissionService.updateRolePermission(role.getId(), saveDTO.getPermissionIdList());
+        // 保存操作日志
+        OplogDTO oplogDTO = new OplogDTO(OplogConstant.RM, OplogConstant.RM_E, OplogConstant.RM_R, saveDTO.getRoleName());
+        oplogService.saveOplogWithUserId(userId, oplogDTO);
     }
 
     @Override
-    public void assignRoles(RoleAssignVo roleAssignVo) {
-        if(roleAssignVo.getFlag() == null) {
-            throw new SecurityException(ResultCode.PARAM_NOT_VALID);
+    @Transactional(rollbackFor = Exception.class)
+    public void assignRoles(RoleAssignDTO assignDTO, HttpServletRequest request) throws LogiSecurityException {
+        Integer operatorId = HttpRequestUtil.getOperatorId(request);
+        if(assignDTO.getFlag() == null) {
+            throw new LogiSecurityException(ResultCode.ROLE_ASSIGN_FLAG_IS_NULL);
         }
-        QueryWrapper<UserRole> userRoleWrapper = new QueryWrapper<>();
-        Integer id = roleAssignVo.getId();
-        List<UserRole> userRoleList = new ArrayList<>();
-        if(roleAssignVo.getFlag()) {
+        if(Boolean.TRUE.equals(assignDTO.getFlag())) {
             // N个角色分配给1个用户
-            if(id == null || userMapper.selectById(id) == null) {
-                throw new SecurityException(ResultCode.USER_ACCOUNT_NOT_EXIST);
-            }
-            userRoleWrapper.eq("user_id", id);
-            // 添加new角色用户关联信息
-            for(Integer roleId : roleAssignVo.getIdList()) {
-                userRoleList.add(new UserRole(id, roleId));
-            }
+            Integer userId = assignDTO.getId();
+            // 获取old的用户与角色的关系
+            List<Integer> oldRoleIdList = userRoleService.getRoleIdListByUserId(userId);
+            // 更新关联信息
+            userRoleService.updateUserRoleByUserId(userId, assignDTO.getIdList());
+            // 保存操作日志
+            UserBriefVO userBriefVO = userService.getUserBriefByUserId(assignDTO.getId());
+            OplogDTO oplogDTO = new OplogDTO(OplogConstant.UM, OplogConstant.UM_AR, OplogConstant.UM_U, userBriefVO.getUsername());
+            Integer oplogId = oplogService.saveOplogWithUserId(operatorId, oplogDTO);
+            // 打包和保存角色更新消息
+            packAndSaveMessage(oplogId, oldRoleIdList, assignDTO);
         } else {
             // 1个角色分配给N个用户
-            if(id == null || roleMapper.selectById(id) == null) {
-                throw new SecurityException(ResultCode.ROLE_NOT_EXISTS);
-            }
-            userRoleWrapper.eq("role_id", id);
-            for(Integer userIs : roleAssignVo.getIdList()) {
-                userRoleList.add(new UserRole(userIs, id));
+            Integer roleId = assignDTO.getId();
+            // 获取old的用户与角色的关系
+            List<Integer> oldUserIdList = userRoleService.getUserIdListByRoleId(roleId);
+            // 更新关联信息
+            userRoleService.updateUserRoleByRoleId(roleId, assignDTO.getIdList());
+            // 保存操作日志
+            Role role = roleDao.selectByRoleId(assignDTO.getId());
+            OplogDTO oplogDTO = new OplogDTO(OplogConstant.RM, OplogConstant.RM_AU, OplogConstant.RM_R, role.getRoleName());
+            Integer oplogId = oplogService.saveOplogWithUserId(operatorId, oplogDTO);
+            // 打包和保存角色更新消息
+            packAndSaveMessage(oplogId, oldUserIdList, assignDTO);
+        }
+    }
+
+    @Override
+    public List<RoleBriefVO> getRoleBriefListByRoleName(String roleName) {
+        List<RoleBrief> roleBriefList = roleDao.selectBriefListByRoleNameAndDescOrderByCreateTime(roleName);
+        return CopyBeanUtil.copyList(roleBriefList, RoleBriefVO.class);
+    }
+
+    @Override
+    public RoleDeleteCheckVO checkBeforeDelete(Integer roleId) {
+        if(roleId == null) {
+            return null;
+        }
+        RoleDeleteCheckVO roleDeleteCheckVO = new RoleDeleteCheckVO();
+        roleDeleteCheckVO.setRoleId(roleId);
+        // 获取用户idList
+        List<Integer> userIdList = userRoleService.getUserIdListByRoleId(roleId);
+        if(!CollectionUtils.isEmpty(userIdList)) {
+            // 获取用户简要信息List
+            List<UserBriefVO> list = userService.getUserBriefListByUserIdList(userIdList);
+            List<String> usernameList = list.stream().map(UserBriefVO::getUsername).collect(Collectors.toList());
+            roleDeleteCheckVO.setUsernameList(usernameList);
+        }
+        return roleDeleteCheckVO;
+    }
+
+    @Override
+    public List<RoleBriefVO> getAllRoleBriefList() {
+        List<RoleBrief> roleBriefList = roleDao.selectAllBrief();
+        return CopyBeanUtil.copyList(roleBriefList, RoleBriefVO.class);
+    }
+
+    @Override
+    public List<RoleBriefVO> getRoleBriefListByUserId(Integer userId) {
+        // 查询用户关联的角色
+        List<Integer> roleIdList = userRoleService.getRoleIdListByUserId(userId);
+        if(CollectionUtils.isEmpty(roleIdList)) {
+            return new ArrayList<>();
+        }
+        List<RoleBrief> roleBriefList =  roleDao.selectBriefListByRoleIdList(roleIdList);
+        return CopyBeanUtil.copyList(roleBriefList, RoleBriefVO.class);
+    }
+
+    @Override
+    public List<AssignInfoVO> getAssignInfoByRoleId(Integer roleId) {
+        if(roleId == null) {
+            return new ArrayList<>();
+        }
+        // 获取用户List
+        List<UserBriefVO> userBriefVOList = userService.getAllUserBriefList();
+
+        // 先获取该角色已分配的用户，并转为set
+        List<Integer> userIdList = userRoleService.getUserIdListByRoleId(roleId);
+        Set<Integer> hasRoleUserIdSet = new HashSet<>(userIdList);
+
+        // 封装List<AssignDataVo>
+        List<AssignInfoVO> result = new ArrayList<>();
+        for(UserBriefVO userBriefVO : userBriefVOList) {
+            AssignInfoVO assignInfoVO = new AssignInfoVO();
+            // 判断用户是否拥有该角色
+            assignInfoVO.setHas(hasRoleUserIdSet.contains(userBriefVO.getId()));
+            assignInfoVO.setName(userBriefVO.getUsername() + "/" + userBriefVO.getRealName());
+            assignInfoVO.setId(userBriefVO.getId());
+            result.add(assignInfoVO);
+        }
+        return result;
+    }
+
+    private void packAndSaveMessage(Integer oplogId, List<Integer> oldIdList, RoleAssignDTO roleAssignDTO) {
+        List<Integer> newIdList = roleAssignDTO.getIdList();
+
+        List<Integer> removeIdList = new ArrayList<>();
+        List<Integer> addIdList = new ArrayList<>();
+        // 取交集
+        Set<Integer> set = MathUtil.getIntersection(oldIdList, newIdList);
+        for(Integer oldId : oldIdList) {
+            if(!set.contains(oldId)) {
+                removeIdList.add(oldId);
             }
         }
-        // 删除old的全部角色用户关联信息
-        userRoleMapper.delete(userRoleWrapper);
-        // 插入new的角色与用户关联关系
-        userRoleMapper.insertBatchSomeColumn(userRoleList);
+        for(Integer newId : newIdList) {
+            if(!set.contains(newId)) {
+                addIdList.add(newId);
+            }
+        }
+
+        if (Boolean.TRUE.equals(roleAssignDTO.getFlag())) {
+            // 如果是N个角色分配给1个用户，oldIdList和newIdList都为角色idList
+            List<Integer> userIdList = new ArrayList<>();
+            userIdList.add(roleAssignDTO.getId());
+            // 保存移除角色消息 和 新增角色消息
+            saveRoleAssignMessage(oplogId, userIdList, removeIdList, userIdList, addIdList);
+        } else {
+            // 1个角色分配给N个用户，oldIdList和newIdList都为用户idList
+            List<Integer> roleIdList = new ArrayList<>();
+            roleIdList.add(roleAssignDTO.getId());
+            // 保存移除角色消息 和 新增角色消息
+            saveRoleAssignMessage(oplogId, removeIdList, roleIdList, addIdList, roleIdList);
+        }
     }
 
     /**
-     * 根据角色id，查找所有权限
-     * @param roleId 角色id
-     * @return 权限树
+     * 保存用户角色变更消息
+     * @param oplogId 操作日志id
+     * @param removeUserIdList 被移除角色的用户idList
+     * @param removeRoleIdList 移除的角色idList
+     * @param addUserIdList 新增角色的用户idList
+     * @param addRoleIdList 新增的角色idList
      */
-    private PermissionVo buildPermissionTree(Integer roleId) {
-        QueryWrapper<RolePermission> wrapper = new QueryWrapper<>();
-        // 获取该角色拥有的全部权限id
-        wrapper.select("permission_id").eq("role_id", roleId);
-        List<Object> permissionIdList = rolePermissionMapper.selectObjs(wrapper);
+    private void saveRoleAssignMessage(Integer oplogId,
+                                       List<Integer> removeUserIdList, List<Integer> removeRoleIdList,
+                                       List<Integer> addUserIdList, List<Integer> addRoleIdList) {
+        // 获取当前时间
+        SimpleDateFormat formatter= new SimpleDateFormat("MM-dd HH:mm");
+        Date date = new Date(System.currentTimeMillis());
+        String time = formatter.format(date);
 
-        Set<Integer> permissionHasSet = new HashSet<>();
-        for(Object permissionId : permissionIdList) {
-            permissionHasSet.add((Integer) permissionId);
+        // 拼接变更的角色信息
+        String addRoleInfo = spliceRoleNameByRoleIdList(addRoleIdList);
+        String removeRoleInfo = spliceRoleNameByRoleIdList(removeRoleIdList);
+
+        List<MessageDTO> messageDTOList = new ArrayList<>();
+        if(!StringUtils.isEmpty(addRoleInfo)) {
+            for(Integer userId : addUserIdList) {
+                MessageDTO messageDTO = new MessageDTO(userId, oplogId);
+                // 赋值占位符
+                String content = String.format(MessageCode.ROLE_ADD_MESSAGE.getContent(), time, addRoleInfo);
+                messageDTO.setContent(content);
+                messageDTO.setTitle(MessageCode.ROLE_ADD_MESSAGE.getTitle());
+                messageDTOList.add(messageDTO);
+            }
+        }
+        if(!StringUtils.isEmpty(removeRoleInfo)) {
+            for(Integer userId : removeUserIdList) {
+                MessageDTO messageDTO = new MessageDTO(userId, oplogId);
+                // 赋值占位符
+                String content = String.format(MessageCode.ROLE_REMOVE_MESSAGE.getContent(), time, removeRoleInfo);
+                messageDTO.setContent(content);
+                messageDTO.setTitle(MessageCode.ROLE_REMOVE_MESSAGE.getTitle());
+                messageDTOList.add(messageDTO);
+            }
         }
 
-        return permissionService.buildPermissionTree(permissionHasSet);
+        messageService.saveMessages(messageDTOList);
+    }
+
+    private String spliceRoleNameByRoleIdList(List<Integer> roleIdList) {
+        List<RoleBrief> roleBriefList = roleDao.selectBriefListByRoleIdList(roleIdList);
+        if(roleBriefList.isEmpty()) {
+            return null;
+        }
+        // 拼接角色信息
+        StringBuilder sb = new StringBuilder();
+        for(int i = 0; i < roleBriefList.size() - 1; i++) {
+            sb.append(roleBriefList.get(i).getRoleName()).append(",");
+        }
+        sb.append(roleBriefList.get(roleBriefList.size() - 1).getRoleName());
+        return sb.toString();
     }
 
     /**
      * 添加或者修改时候检查参数
-     * @param roleSaveVo 角色信息
+     * @param saveDTO 角色信息
+     * @param isUpdate 是创建还是更新
+     * @throws LogiSecurityException 校验错误
      */
-    private void checkParam(RoleSaveVo roleSaveVo) {
-        QueryWrapper<Role> roleWrapper = new QueryWrapper<>();
-        roleWrapper
-                .eq("role_name", roleSaveVo.getRoleName())
-                // 如果有id信息，说明是更新，则判断角色名重复的时候要排除old信息
-                .ne(roleSaveVo.getId() != null, "id", roleSaveVo.getId());
-        if(roleMapper.selectOne(roleWrapper) != null) {
-            throw new SecurityException(ResultCode.ROLE_ALREADY_EXIST);
+    private void checkParam(RoleSaveDTO saveDTO, boolean isUpdate) throws LogiSecurityException {
+        if(StringUtils.isEmpty(saveDTO.getRoleName())) {
+            throw new LogiSecurityException(ResultCode.ROLE_NAME_CANNOT_BE_BLANK);
         }
-    }
-
-    /**
-     * 用于构建可以直接插入角色与权限中间表的数据
-     * @param roleId 角色Id
-     * @param permissionIdList 权限idList
-     * @return List<RolePermission>
-     */
-    private List<RolePermission> getRolePermissionList(Integer roleId, List<Integer> permissionIdList) {
-        List<RolePermission> rolePermissionList = new ArrayList<>();
-        for(Integer permissionId : permissionIdList) {
-            RolePermission rolePermission = new RolePermission();
-            rolePermission.setRoleId(roleId);
-            rolePermission.setPermissionId(permissionId);
-            rolePermissionList.add(rolePermission);
+        if(StringUtils.isEmpty(saveDTO.getDescription())) {
+            throw new LogiSecurityException(ResultCode.ROLE_DEPT_CANNOT_BE_BLANK);
         }
-        return rolePermissionList;
+        if(CollectionUtils.isEmpty(saveDTO.getPermissionIdList())) {
+            throw new LogiSecurityException(ResultCode.ROLE_PERMISSION_CANNOT_BE_NULL);
+        }
+        // 如果是更新操作，则判断项目名重复的时候要排除old信息
+        Integer roleId = isUpdate ? saveDTO.getId() : null;
+        int count = roleDao.selectCountByRoleNameAndNotRoleId(saveDTO.getRoleName(), roleId);
+        if(count > 0) {
+            // 角色名不可重复
+            throw new LogiSecurityException(ResultCode.ROLE_NAME_ALREADY_EXISTS);
+        }
     }
 }

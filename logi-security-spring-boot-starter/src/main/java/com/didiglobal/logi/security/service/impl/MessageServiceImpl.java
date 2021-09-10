@@ -1,53 +1,67 @@
 package com.didiglobal.logi.security.service.impl;
 
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.didiglobal.logi.security.common.dto.message.MessageDTO;
 import com.didiglobal.logi.security.common.entity.Message;
-import com.didiglobal.logi.security.common.enums.ResultCode;
-import com.didiglobal.logi.security.common.vo.message.MessageVo;
-import com.didiglobal.logi.security.exception.SecurityException;
-import com.didiglobal.logi.security.mapper.MessageMapper;
+import com.didiglobal.logi.security.common.vo.message.MessageVO;
+import com.didiglobal.logi.security.dao.MessageDao;
 import com.didiglobal.logi.security.service.MessageService;
 import com.didiglobal.logi.security.util.CopyBeanUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
  * @author cjm
  */
-@Service
+@Service("logiSecurityMessageServiceImpl")
 public class MessageServiceImpl implements MessageService {
 
     @Autowired
-    private MessageMapper messageMapper;
+    private MessageDao messageDao;
 
     @Override
-    public List<MessageVo> getMessageList(Boolean isRead) {
-        QueryWrapper<Message> messageWrapper = new QueryWrapper<>();
-        messageWrapper.eq(isRead != null, "is_read", isRead);
-        List<Message> messageList = messageMapper.selectList(messageWrapper);
-        List<MessageVo> messageVoList = CopyBeanUtil.copyList(messageList, MessageVo.class);
-        for(int i = 0; i < messageList.size(); i++) {
-            MessageVo messageVo = messageVoList.get(i);
-            messageVo.setCreateTime(messageList.get(i).getCreateTime().getTime());
-        }
-        return messageVoList;
+    public void saveMessage(MessageDTO messageDTO) {
+        Message message = CopyBeanUtil.copy(messageDTO, Message.class);
+        messageDao.insert(message);
     }
 
     @Override
-    public void changeMessageStatus(List<Integer> idList) {
-        if(CollectionUtils.isEmpty(idList)) {
+    public List<MessageVO> getMessageListByUserIdAndReadTag(Integer userId, Boolean readTag) {
+        List<Message> messageList = messageDao.selectListByUserIdAndReadTag(userId, readTag);
+
+        List<MessageVO> result = new ArrayList<>();
+        for(Message message : messageList) {
+            MessageVO messageVO = CopyBeanUtil.copy(message, MessageVO.class);
+            messageVO.setCreateTime(message.getCreateTime().getTime());
+            result.add(messageVO);
+        }
+        return result;
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void changeMessageStatus(List<Integer> messageIdList) {
+        if(CollectionUtils.isEmpty(messageIdList)) {
             return;
         }
-        QueryWrapper<Message> messageWrapper = new QueryWrapper<>();
-        messageWrapper.in("id", idList);
-        List<Message> messageList = messageMapper.selectList(messageWrapper);
+        List<Message> messageList = messageDao.selectListByMessageIdList(messageIdList);
         for(Message message : messageList) {
             // 反转已读状态
-            message.setIsRead(!message.getIsRead());
-            messageMapper.updateById(message);
+            message.setReadTag(!message.getReadTag());
+            messageDao.update(message);
         }
+    }
+
+    @Override
+    public void saveMessages(List<MessageDTO> messageDTOList) {
+        if(CollectionUtils.isEmpty(messageDTOList)) {
+            return;
+        }
+        List<Message> messageList = CopyBeanUtil.copyList(messageDTOList, Message.class);
+        messageDao.insertBatch(messageList);
     }
 }

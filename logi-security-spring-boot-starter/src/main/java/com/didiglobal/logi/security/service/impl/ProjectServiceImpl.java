@@ -1,202 +1,239 @@
 package com.didiglobal.logi.security.service.impl;
 
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.didiglobal.logi.security.common.entity.*;
+import com.didiglobal.logi.security.common.PagingData;
+import com.didiglobal.logi.security.common.dto.oplog.OplogDTO;
+import com.didiglobal.logi.security.common.dto.project.ProjectBriefQueryDTO;
+import com.didiglobal.logi.security.common.dto.resource.ResourceDTO;
+import com.didiglobal.logi.security.common.entity.dept.Dept;
+import com.didiglobal.logi.security.common.entity.project.Project;
+import com.didiglobal.logi.security.common.entity.project.ProjectBrief;
 import com.didiglobal.logi.security.common.enums.ResultCode;
-import com.didiglobal.logi.security.common.vo.dept.DeptVo;
-import com.didiglobal.logi.security.common.vo.project.ProjectQueryVo;
-import com.didiglobal.logi.security.common.vo.project.ProjectSaveVo;
-import com.didiglobal.logi.security.common.vo.project.ProjectVo;
-import com.didiglobal.logi.security.common.vo.user.UserVo;
-import com.didiglobal.logi.security.exception.SecurityException;
-import com.didiglobal.logi.security.mapper.DeptMapper;
-import com.didiglobal.logi.security.mapper.ProjectMapper;
-import com.didiglobal.logi.security.mapper.UserMapper;
-import com.didiglobal.logi.security.mapper.UserProjectMapper;
-import com.didiglobal.logi.security.service.ProjectService;
+import com.didiglobal.logi.security.common.dto.project.ProjectQueryDTO;
+import com.didiglobal.logi.security.common.dto.project.ProjectSaveDTO;
+import com.didiglobal.logi.security.common.vo.project.ProjectBriefVO;
+import com.didiglobal.logi.security.common.vo.project.ProjectDeleteCheckVO;
+import com.didiglobal.logi.security.common.vo.project.ProjectVO;
+import com.didiglobal.logi.security.dao.ProjectDao;
+import com.didiglobal.logi.security.exception.LogiSecurityException;
+import com.didiglobal.logi.security.extend.ResourceExtend;
+import com.didiglobal.logi.security.extend.ResourceExtendBeanTool;
+import com.didiglobal.logi.security.service.*;
 import com.didiglobal.logi.security.util.CopyBeanUtil;
+import com.didiglobal.logi.security.util.HttpRequestUtil;
+import com.didiglobal.logi.security.util.MathUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 
 /**
  * @author cjm
  */
-@Service
+@Service("logiSecurityProjectServiceImpl")
 public class ProjectServiceImpl implements ProjectService {
 
     @Autowired
-    private ProjectMapper projectMapper;
+    private ProjectDao projectDao;
 
     @Autowired
-    private UserMapper userMapper;
+    private DeptService deptService;
 
     @Autowired
-    private UserProjectMapper userProjectMapper;
+    private OplogService oplogService;
 
     @Autowired
-    private DeptMapper deptMapper;
+    private UserService userService;
+
+    @Autowired
+    private UserProjectService userProjectService;
+
+    @Autowired
+    private ResourceExtendBeanTool resourceExtendBeanTool;
 
     @Override
-    public ProjectVo getDetailById(Integer projectId) {
+    public ProjectVO getProjectDetailByProjectId(Integer projectId) throws LogiSecurityException {
+        Project project = projectDao.selectByProjectId(projectId);
+        if(project == null) {
+            throw new LogiSecurityException(ResultCode.PROJECT_NOT_EXISTS);
+        }
+        ProjectVO projectVO = CopyBeanUtil.copy(project, ProjectVO.class);
+        // 获取负责人信息
+        List<Integer> userIdList = userProjectService.getUserIdListByProjectId(projectId);
+        projectVO.setUserList(userService.getUserBriefListByUserIdList(userIdList));
+        // 获取部门信息
+        projectVO.setDeptList(deptService.getDeptBriefListByChildId(projectVO.getDeptId()));
+        projectVO.setCreateTime(project.getCreateTime().getTime());
+        return projectVO;
+    }
+
+    @Override
+    public ProjectBriefVO getProjectBriefByProjectId(Integer projectId) {
         if(projectId == null) {
-            throw new SecurityException(ResultCode.PARAM_IS_BLANK);
+            return null;
         }
-        Project project = projectMapper.selectById(projectId);
-        if(project == null) {
-            throw new SecurityException(ResultCode.PROJECT_NOT_EXISTS);
-        }
-        ProjectVo projectVo = CopyBeanUtil.copy(project, ProjectVo.class);
-        // 根据项目id去查负责人
-        projectVo.setChargeUserIdList(getUserVoListByProjectId(project.getId()));
-        projectVo.setCreateTime(project.getCreateTime().getTime());
-        return projectVo;
+        Project project = projectDao.selectByProjectId(projectId);
+        return CopyBeanUtil.copy(project, ProjectBriefVO.class);
     }
 
     @Override
-    public void createProject(ProjectSaveVo saveVo) {
-        checkParam(saveVo);
+    @Transactional(rollbackFor = Exception.class)
+    public ProjectVO createProject(ProjectSaveDTO saveVo, HttpServletRequest request) throws LogiSecurityException {
+        // 检查参数
+        checkParam(saveVo, false);
         Project project = CopyBeanUtil.copy(saveVo, Project.class);
-        project.setProjectCode("project" + ((int)((Math.random() + 1) * 10000)));
-        projectMapper.insert(project);
+        project.setProjectCode("p" + MathUtil.getRandomNumber(7));
+        projectDao.insert(project);
         // 插入用户项目关联信息（项目负责人）
-        List<UserProject> list = getUserProjectList(project.getId(), saveVo.getChargeUserIdList());
-        userProjectMapper.insertBatchSomeColumn(list);
+        userProjectService.saveUserProject(project.getId(), saveVo.getUserIdList());
+        // 保存操作日志
+        OplogDTO oplogDTO = new OplogDTO("项目配置", "新增", "项目", saveVo.getProjectName());
+        oplogService.saveOplogWithUserId(HttpRequestUtil.getOperatorId(request), oplogDTO);
+        return CopyBeanUtil.copy(project, ProjectVO.class);
     }
 
     @Override
-    public IPage<ProjectVo> getPageProject(ProjectQueryVo queryVo) {
-        QueryWrapper<Project> projectWrapper = new QueryWrapper<>();
-        // 分页查询
-        IPage<Project> projectPage = new Page<>(queryVo.getPage(), queryVo.getSize());
-        // 是否有项目负责人条件
-        if(!StringUtils.isEmpty(queryVo.getChargeUsername())) {
-            // 根据用户名，模糊查询用户idList
-            QueryWrapper<User> userWrapper = new QueryWrapper<>();
-            userWrapper.select("id").like("username", queryVo.getChargeUsername());
-            List<Object> userIdList = userMapper.selectObjs(userWrapper);
-            if(CollectionUtils.isEmpty(userIdList)) {
-                // 数据库没类似该条件的用户名
-                return CopyBeanUtil.copyPage(projectPage, ProjectVo.class);
-            }
-            // 根据用户idList查找项目idList
-            QueryWrapper<UserProject> userProjectWrapper = new QueryWrapper<>();
-            userProjectWrapper.select("project_id").in("user_id", userIdList);
-            List<Object> projectIdList = userProjectMapper.selectObjs(userProjectWrapper);
-            projectWrapper.in("id", projectIdList);
+    public PagingData<ProjectVO> getProjectPage(ProjectQueryDTO queryDTO) {
+        List<Integer> projectIdList = null;
+        // 是否有负责人条件
+        if(!StringUtils.isEmpty(queryDTO.getChargeUsername())) {
+            List<Integer> userIdList = userService.getUserIdListByUsernameOrRealName(queryDTO.getChargeUsername());
+            projectIdList = userProjectService.getProjectIdListByUserIdList(userIdList);
         }
+        // 获取当前部门的子部门idList
+        List<Integer> deptIdList = deptService.getDeptIdListByParentId(queryDTO.getDeptId());
+        // 分页获取
+        IPage<Project> iPage = projectDao.selectPageByDeptIdListAndProjectIdList(queryDTO, deptIdList, projectIdList);
+        List<ProjectVO> projectVOList = new ArrayList<>();
 
-        projectWrapper
-                .eq(queryVo.getProjectCode() != null, "project_code", queryVo.getProjectCode())
-                .eq(queryVo.getIsRunning() != null, "is_running", queryVo.getIsRunning())
-                .like(queryVo.getProjectName() != null, "project_name", queryVo.getProjectName());
-        projectMapper.selectPage(projectPage, projectWrapper);
-
-        // 转成vo
-        IPage<ProjectVo> projectVoPage = CopyBeanUtil.copyPage(projectPage, ProjectVo.class);
-
-        for(int i = 0; i < projectVoPage.getRecords().size(); i++) {
-            // 查找项目列表每个项目的负责人
-            ProjectVo projectVo = projectVoPage.getRecords().get(i);
-            projectVo.setChargeUserIdList(getUserVoListByProjectId(projectVo.getId()));
-
-            // 查找项目列表每个项目的使用部门信息
-            Dept dept = deptMapper.selectById(projectPage.getRecords().get(i).getDeptId());
-            projectVo.setDeptVo(CopyBeanUtil.copy(dept, DeptVo.class));
-            projectVo.setCreateTime(projectPage.getRecords().get(i).getCreateTime().getTime());
+        // 提前获取所有部门
+        Map<Integer, Dept> deptMap = deptService.getAllDeptMap();
+        for(Project project : iPage.getRecords()) {
+            ProjectVO projectVO = CopyBeanUtil.copy(project, ProjectVO.class);
+            // 获取负责人信息
+            List<Integer> userIdList = userProjectService.getUserIdListByProjectId(project.getId());
+            projectVO.setUserList(userService.getUserBriefListByUserIdList(userIdList));
+            // 获取部门信息
+            projectVO.setDeptList(deptService.getDeptBriefListFromDeptMapByChildId(deptMap, project.getDeptId()));
+            projectVO.setCreateTime(project.getCreateTime().getTime());
+            projectVOList.add(projectVO);
         }
-        return projectVoPage;
+        return new PagingData<>(projectVOList, iPage);
     }
 
     @Override
-    public void deleteProjectById(Integer projectId) {
-        Project project = projectMapper.selectById(projectId);
+    @Transactional(rollbackFor = Exception.class)
+    public void deleteProjectByProjectId(Integer projectId, HttpServletRequest request) {
+        Project project = projectDao.selectByProjectId(projectId);
         if(project == null) {
-            throw new SecurityException(ResultCode.PROJECT_NOT_EXISTS);
+            return;
         }
-        // TODO 删除前要判断一下有没有服务引用了这个项目
+        // 删除前要判断一下有没有服务引用了这个项目，有没有具体资源引用了这个项目
         // 删除项目与负责人的联系
-        QueryWrapper<UserProject> wrapper = new QueryWrapper<>();
-        wrapper.eq("project_id", projectId);
-        userProjectMapper.delete(wrapper);
+        userProjectService.deleteUserProjectByProjectId(projectId);
         // 逻辑删除项目（自动）
-        projectMapper.deleteById(projectId);
+        projectDao.deleteByProjectId(projectId);
+        // 保存操作日志
+        OplogDTO oplogDTO = new OplogDTO("项目配置", "删除", "项目", project.getProjectName());
+        oplogService.saveOplogWithUserId(HttpRequestUtil.getOperatorId(request), oplogDTO);
     }
 
     @Override
-    public void updateProjectBy(ProjectSaveVo saveVo) {
-        if(saveVo == null || projectMapper.selectById(saveVo.getId()) == null) {
-            throw new SecurityException(ResultCode.PROJECT_NOT_EXISTS);
+    @Transactional(rollbackFor = Exception.class)
+    public void updateProject(ProjectSaveDTO saveDTO, HttpServletRequest request) throws LogiSecurityException {
+        if(projectDao.selectByProjectId(saveDTO.getId()) == null) {
+            throw new LogiSecurityException(ResultCode.PROJECT_NOT_EXISTS);
         }
-        checkParam(saveVo);
+        // 检查参数
+        checkParam(saveDTO, true);
         // 先更新项目基本信息
-        Project project = CopyBeanUtil.copy(saveVo, Project.class);
-        projectMapper.updateById(project);
-        // 删除old项目负责人与项目联系
-        QueryWrapper<UserProject> wrapper = new QueryWrapper<>();
-        userProjectMapper.delete(wrapper.eq("project_id", project.getId()));
-        // 插入new项目负责人与项目联系
-        List<UserProject> list = getUserProjectList(project.getId(), saveVo.getChargeUserIdList());
-        userProjectMapper.insertBatchSomeColumn(list);
+        Project project = CopyBeanUtil.copy(saveDTO, Project.class);
+        projectDao.update(project);
+        // 更新项目负责人与项目联系
+        userProjectService.updateUserProject(saveDTO.getId(), saveDTO.getUserIdList());
+        // 保存操作日志
+        OplogDTO oplogDTO = new OplogDTO("项目配置", "编辑", "项目", saveDTO.getProjectName());
+        oplogService.saveOplogWithUserId(HttpRequestUtil.getOperatorId(request), oplogDTO);
     }
 
     @Override
-    public void changeProjectStatus(Integer id) {
-        Project project = projectMapper.selectById(id);
+    @Transactional(rollbackFor = Exception.class)
+    public void changeProjectStatus(Integer projectId, HttpServletRequest request) {
+        Project project = projectDao.selectByProjectId(projectId);
         if (project == null) {
-            throw new SecurityException(ResultCode.PROJECT_NOT_EXISTS);
+            return;
         }
         // 状态取反
-        project.setIsRunning(!project.getIsRunning());
-        projectMapper.updateById(project);
+        project.setRunning(!project.getRunning());
+        projectDao.update(project);
+        // 保存操作日志
+        String curRunningTag = Boolean.TRUE.equals(project.getRunning()) ? "启用" : "停用";
+        OplogDTO oplogDTO = new OplogDTO("项目配置", curRunningTag, "项目", project.getProjectName());
+        oplogService.saveOplogWithUserId(HttpRequestUtil.getOperatorId(request), oplogDTO);
     }
 
-    /**
-     * 根据项目id获取项目负责人信息
-     * @param projectId 项目id
-     * @return List<UserVo>
-     */
-    private List<UserVo> getUserVoListByProjectId(Integer projectId) {
-        // 根据项目id查负责人用户idList
-        QueryWrapper<UserProject> wrapper = new QueryWrapper<>();
-        wrapper.select("user_id").eq("project_id", projectId);
-        List<Object> userIdList = userProjectMapper.selectObjs(wrapper);
-        // 根据用户id查找用户信息
-        QueryWrapper<User> userWrapper = new QueryWrapper<>();
-        userWrapper.select("id", "username", "real_name").in("id", userIdList);
-        List<User> userList = userMapper.selectList(userWrapper);
-        return CopyBeanUtil.copyList(userList, UserVo.class);
+    @Override
+    public List<ProjectBriefVO> getProjectBriefList() {
+        List<ProjectBrief> projectBriefList = projectDao.selectAllBriefList();
+        return CopyBeanUtil.copyList(projectBriefList, ProjectBriefVO.class);
+    }
+
+    @Override
+    public ProjectDeleteCheckVO checkBeforeDelete(Integer projectId) {
+        ProjectDeleteCheckVO projectDeleteCheckVO = new ProjectDeleteCheckVO(projectId);
+        if(projectDao.selectByProjectId(projectId) == null) {
+            return projectDeleteCheckVO;
+        }
+        // 获取与该项目相关联的服务
+        // 获取与该项目相关联的具体资源
+        ResourceExtend resourceExtend = resourceExtendBeanTool.getResourceExtendImpl();
+        List<ResourceDTO> resourceDTOList = resourceExtend.getResourceList(projectId, null);
+        if(!CollectionUtils.isEmpty(resourceDTOList)) {
+            List<String> list = resourceDTOList.stream().map(ResourceDTO::getResourceName).collect(Collectors.toList());
+            projectDeleteCheckVO.setResourceNameList(list);
+        }
+        return projectDeleteCheckVO;
+    }
+
+    @Override
+    public PagingData<ProjectBriefVO> getProjectBriefPage(ProjectBriefQueryDTO queryDTO) {
+        IPage<ProjectBrief> iPage = projectDao.selectBriefPage(queryDTO);
+        List<ProjectBriefVO> list = CopyBeanUtil.copyList(iPage.getRecords(), ProjectBriefVO.class);
+        return new PagingData<>(list, iPage);
     }
 
     /**
      * 校验参数
      * @param saveVo 项目参数
+     * @param isUpdate 创建 or 更新
      */
-    private void checkParam(ProjectSaveVo saveVo) {
-
-    }
-
-    /**
-     * 用于构建可以直接插入用户和项目中间表的数据实体
-     * @param projectId 项目id
-     * @param userIdList 用户idList
-     * @return List<UserProject>
-     */
-    private List<UserProject> getUserProjectList(Integer projectId, List<Integer> userIdList) {
-        List<UserProject> userProjectList = new ArrayList<>();
-        for(Integer userId : userIdList) {
-            UserProject userProject = new UserProject();
-            userProject.setProjectId(projectId);
-            userProject.setUserId(userId);
-            userProjectList.add(userProject);
+    private void checkParam(ProjectSaveDTO saveVo, boolean isUpdate) throws LogiSecurityException {
+        if(StringUtils.isEmpty(saveVo.getProjectName())) {
+            throw new LogiSecurityException(ResultCode.PROJECT_NAME_CANNOT_BE_BLANK);
         }
-        return userProjectList;
+        if(saveVo.getDeptId() == null) {
+            throw new LogiSecurityException(ResultCode.PROJECT_DEPT_CANNOT_BE_NULL);
+        }
+        if(StringUtils.isEmpty(saveVo.getDescription())) {
+            throw new LogiSecurityException(ResultCode.PROJECT_DES_CANNOT_BE_BLANK);
+        }
+        if(CollectionUtils.isEmpty(saveVo.getUserIdList())) {
+            throw new LogiSecurityException(ResultCode.PROJECT_CHARGE_USER_CANNOT_BE_NULL);
+        }
+        // 如果是更新操作，则判断项目名重复的时候要排除old信息
+        Integer projectId = isUpdate ? saveVo.getId() : null;
+        int count = projectDao.selectCountByProjectNameAndNotProjectId(saveVo.getProjectName(), projectId);
+        if(count > 0) {
+            // 项目名不可重复
+            throw new LogiSecurityException(ResultCode.PROJECT_NAME_ALREADY_EXISTS);
+        }
     }
 }

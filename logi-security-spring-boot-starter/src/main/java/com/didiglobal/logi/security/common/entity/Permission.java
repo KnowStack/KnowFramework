@@ -1,13 +1,13 @@
 package com.didiglobal.logi.security.common.entity;
 
-import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 
 /**
  * @author cjm
+ *
+ * 权限信息
  */
 @Data
-@TableName(value = "logi_permission")
 public class Permission {
 
     private Integer id;
@@ -23,12 +23,17 @@ public class Permission {
     private Integer parentId;
 
     /**
+     * 是否是叶子权限
+     */
+    private Boolean leaf;
+
+    /**
+     * 权限点的层级（parentId为0的层级为1）
+     */
+    private Integer level;
+
+    /**
      * 描述
      */
     private String description;
-
-    /**
-     * 是否是叶子权限
-     */
-    private Boolean isLeaf;
 }

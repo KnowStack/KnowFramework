@@ -1,26 +1,24 @@
 package com.didiglobal.logi.security.config;
 
-import com.didiglobal.logi.security.properties.Proper;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
-import org.springframework.boot.context.properties.ConfigurationProperties;
+import com.didiglobal.logi.security.properties.LogiSecurityProper;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 /**
  * @author cjm
  */
-@Configuration
-@EnableConfigurationProperties(Proper.class)
+@Configuration("logiSecurityAutoConfiguration")
+@EnableConfigurationProperties(LogiSecurityProper.class)
 public class AutoConfiguration {
 
-    private final Proper proper;
+    private final LogiSecurityProper proper;
 
-    public AutoConfiguration(Proper proper) {
+    public AutoConfiguration(LogiSecurityProper proper) {
         this.proper = proper;
     }
 
-    public Proper getProper() {
+    public LogiSecurityProper getProper() {
         return proper;
     }
 }
+

@@ -2,8 +2,6 @@ package com.didiglobal.logi.security.util;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.didiglobal.logi.security.common.entity.User;
-import com.didiglobal.logi.security.common.vo.user.UserVo;
 import org.springframework.beans.BeanUtils;
 
 import java.util.Collections;
@@ -15,6 +13,10 @@ import java.util.stream.Collectors;
  * entity<->vo
  */
 public class CopyBeanUtil {
+
+    private CopyBeanUtil() {
+        throw new IllegalStateException("Utility class");
+    }
 
     /**
      * 复制对象
@@ -28,7 +30,8 @@ public class CopyBeanUtil {
             BeanUtils.copyProperties(source, newInstance);
             return newInstance;
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            e.printStackTrace();
+            return null;
         }
     }
 
@@ -50,7 +53,9 @@ public class CopyBeanUtil {
             return null;
         }
         IPage<K> newInstance = copy(source, Page.class);
-        newInstance.setRecords(copyList(source.getRecords(), target));
+        if(newInstance != null) {
+            newInstance.setRecords(copyList(source.getRecords(), target));
+        }
         return newInstance;
     }
 
