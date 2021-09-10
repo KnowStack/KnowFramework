@@ -82,15 +82,17 @@ public interface ResourceExtend {
 ```
 #### 1.3.4 导入数据
 logi-security相关界面并没提供【角色权限元数据、资源类别数据、部门信息数据、操作日志相关（操作页面、操作对象、对象分类）】的创建功能，logi-security提供了数据导入的接口。
-
 建议全部都导入，简单的数据也行。
-
-接口详情见API文档。
 ## 2.logi-job
 ### 2.1 介绍
 是分布式的定时调度服务，主要用于ESManager项目。
-### 2.2 使用方式
-#### 2.2.1 添加Maven
+### 2.2 功能支持
+主要提供：分布式定时调度服务、任务管理、分布式锁等功能
+- 分布式定时调度服务：添加指定注解，并实现规定的接口，编写待调度的方法；
+- 任务管理模块：提供查看任务列表、任务详情、手动执行任务、变更任务状态、任务日志等功能；
+- 分布式锁机制：确保多系统下，对于临界资源的保护，和调节调度秩序，防饿死。
+### 2.3 使用方式
+#### 2.3.1 添加Maven
 ```xml
 <dependency>
     <groupId>com.didiglobal.logi</groupId>
@@ -98,7 +100,7 @@ logi-security相关界面并没提供【角色权限元数据、资源类别数�
     <version>1.6-SNAPSHOT</version>
 </dependency>
 ```
-#### 2.2.2 配置信息
+#### 2.3.2 配置信息
 logi-job基于springBoot框架开发，在使用的时候需要在配置文件中增加几项配置信息，如下：
 ```yaml
 spring:
@@ -115,7 +117,7 @@ logi-job:
   app_name: arius_test02 #应用名，用户隔离机器和环境
   claim-strategy: com.didiglobal.logi.job.core.consensual.RandomConsensual #调度策略，有两种随机和广播，默认是随机
 ```
-#### 2.2.3 使用样例
+#### 2.3.3 使用样例
 ```java
 package com.didichuxing.datachannel.arius.admin.task.metadata;
  
