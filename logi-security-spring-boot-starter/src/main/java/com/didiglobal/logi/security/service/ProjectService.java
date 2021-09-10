@@ -24,7 +24,7 @@ public interface ProjectService {
      * @param saveDTO 项目信息
      * @throws LogiSecurityException 项目相关的错误信息
      */
-    Project createProject(ProjectSaveDTO saveDTO, HttpServletRequest request)  throws LogiSecurityException;
+    ProjectVO createProject(ProjectSaveDTO saveDTO, HttpServletRequest request)  throws LogiSecurityException;
 
     /**
      * 获取项目详情，通过项目id

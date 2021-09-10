@@ -63,14 +63,14 @@ public class ProjectController {
 
     @PostMapping
     @ApiOperation(value = "创建项目", notes = "创建项目")
-    public Result<String> create(@RequestBody ProjectSaveDTO saveDTO, HttpServletRequest request) {
+    public Result<ProjectVO> create(@RequestBody ProjectSaveDTO saveDTO, HttpServletRequest request) {
         try {
-            projectService.createProject(saveDTO, request);
+            ProjectVO projectVO = projectService.createProject(saveDTO, request);
+            return Result.success(projectVO);
         } catch (LogiSecurityException e) {
             e.printStackTrace();
             return Result.fail(e);
         }
-        return Result.success();
     }
 
     @GetMapping("/delete/check/{id}")
