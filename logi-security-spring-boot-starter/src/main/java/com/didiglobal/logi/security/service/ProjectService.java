@@ -4,7 +4,6 @@ import com.didiglobal.logi.security.common.PagingData;
 import com.didiglobal.logi.security.common.dto.project.ProjectBriefQueryDTO;
 import com.didiglobal.logi.security.common.dto.project.ProjectQueryDTO;
 import com.didiglobal.logi.security.common.dto.project.ProjectSaveDTO;
-import com.didiglobal.logi.security.common.entity.project.Project;
 import com.didiglobal.logi.security.common.vo.project.ProjectBriefVO;
 import com.didiglobal.logi.security.common.vo.project.ProjectDeleteCheckVO;
 import com.didiglobal.logi.security.common.vo.project.ProjectVO;
