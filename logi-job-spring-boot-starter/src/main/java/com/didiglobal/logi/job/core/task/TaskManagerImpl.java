@@ -60,7 +60,8 @@ public class TaskManagerImpl implements TaskManager {
      * @param logITaskMapper  logITaskMapper
      */
     public TaskManagerImpl(JobManager jobManager, ConsensualFactory consensualFactory,
-                           TaskLockService taskLockService, LogITaskMapper logITaskMapper, LogIJobProperties logIJobProperties) {
+                           TaskLockService taskLockService, LogITaskMapper logITaskMapper,
+                           LogIJobProperties logIJobProperties) {
         this.jobManager = jobManager;
         this.consensualFactory = consensualFactory;
         this.taskLockService = taskLockService;
@@ -288,7 +289,8 @@ public class TaskManagerImpl implements TaskManager {
         // 递归拉起子任务
         if (!StringUtils.isEmpty(logITask.getSubTaskCodes())) {
             String[] subTaskCodeArray = logITask.getSubTaskCodes().split(",");
-            List<LogITaskPO> subTasks = logITaskMapper.selectByCodes(Arrays.asList(subTaskCodeArray), logIJobProperties.getAppName());
+            List<LogITaskPO> subTasks = logITaskMapper
+                    .selectByCodes(Arrays.asList(subTaskCodeArray), logIJobProperties.getAppName());
             List<LogITask> subLogITaskList = subTasks.stream().map(logITaskPO -> BeanUtil.convertTo(logITaskPO,
                     LogITask.class)).collect(Collectors.toList());
             for (LogITask subLogITask : subLogITaskList) {
