@@ -15,7 +15,8 @@ import java.util.List;
 public class ResourceImpl implements ResourceExtend {
 
     @Override
-    public PagingData<ResourceDTO> getResourcePage(Integer projectId, Integer resourceTypeId, String resourceName, int page, int size) {
+    public PagingData<ResourceDTO> getResourcePage(Integer projectId, Integer resourceTypeId,
+                                                   String resourceName, int page, int size) {
         return null;
     }
 
