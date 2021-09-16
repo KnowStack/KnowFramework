@@ -28,17 +28,17 @@ import org.springframework.transaction.PlatformTransactionManager;
 @ComponentScan(basePackages = "com.didiglobal.logi.job")
 public class LogIJobAutoConfiguration {
 
-  /**
-   * start scheduler.
-   */
-  @Bean
-  @ConditionalOnMissingBean
-  public Scheduler quartzScheduler(ApplicationContext applicationContext) {
-    BeatMonitor beatMonitor = applicationContext.getBean(BeatMonitor.class);
-    TaskMonitor taskMonitor = applicationContext.getBean(TaskMonitor.class);
-    MisfireMonitor misfireMonitor = applicationContext.getBean(MisfireMonitor.class);
-    SimpleScheduler simpleScheduler = new SimpleScheduler(beatMonitor, taskMonitor, misfireMonitor);
-    simpleScheduler.startup();
-    return simpleScheduler;
-  }
+    /**
+     * start scheduler.
+     */
+    @Bean
+    @ConditionalOnMissingBean
+    public Scheduler quartzScheduler(ApplicationContext applicationContext) {
+        BeatMonitor beatMonitor = applicationContext.getBean(BeatMonitor.class);
+        TaskMonitor taskMonitor = applicationContext.getBean(TaskMonitor.class);
+        MisfireMonitor misfireMonitor = applicationContext.getBean(MisfireMonitor.class);
+        SimpleScheduler simpleScheduler = new SimpleScheduler(beatMonitor, taskMonitor, misfireMonitor);
+        simpleScheduler.startup();
+        return simpleScheduler;
+    }
 }

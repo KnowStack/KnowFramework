@@ -4,29 +4,30 @@
 
     <!-- 通用查询映射结果 -->
     <resultMap id="BaseResultMap" type="com.didiglobal.logi.job.common.po.LogITaskPO">
-        <id column="id" property="id" />
-        <result column="task_code"       property="taskCode" />
-        <result column="task_name"       property="taskName" />
-        <result column="task_desc"       property="taskDesc" />
-        <result column="cron"           property="cron" />
-        <result column="class_name"     property="className" />
-        <result column="params"         property="params" />
-        <result column="retry_times"    property="retryTimes" />
-        <result column="last_fire_time" property="lastFireTime" />
-        <result column="timeout"        property="timeout" />
-        <result column="status"         property="status" />
-        <result column="sub_task_codes" property="subTaskCodes" />
-        <result column="consensual"     property="consensual" />
-        <result column="app_name"       property="appName" />
-        <result column="owner"          property="owner" />
-        <result column="task_worker_str" property="taskWorkerStr" />
-        <result column="create_time"    property="createTime"/>
-        <result column="update_time"    property="updateTime"/>
+        <id column="id" property="id"/>
+        <result column="task_code" property="taskCode"/>
+        <result column="task_name" property="taskName"/>
+        <result column="task_desc" property="taskDesc"/>
+        <result column="cron" property="cron"/>
+        <result column="class_name" property="className"/>
+        <result column="params" property="params"/>
+        <result column="retry_times" property="retryTimes"/>
+        <result column="last_fire_time" property="lastFireTime"/>
+        <result column="timeout" property="timeout"/>
+        <result column="status" property="status"/>
+        <result column="sub_task_codes" property="subTaskCodes"/>
+        <result column="consensual" property="consensual"/>
+        <result column="app_name" property="appName"/>
+        <result column="owner" property="owner"/>
+        <result column="task_worker_str" property="taskWorkerStr"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_time" property="updateTime"/>
     </resultMap>
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-    id, task_code, task_name, task_desc, cron, class_name, params, retry_times, last_fire_time, timeout, status, sub_task_codes,
+        id
+        , task_code, task_name, task_desc, cron, class_name, params, retry_times, last_fire_time, timeout, status, sub_task_codes,
     consensual,task_worker_str, create_time, update_time, app_name, owner
     </sql>
 

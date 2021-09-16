@@ -4,13 +4,14 @@
 
     <!-- 通用查询映射结果 -->
     <resultMap id="BaseResultMap" type="com.didiglobal.logi.job.common.po.LogIWorkerBlacklistPO">
-        <id column="id" property="id" />
-        <result column="worker_code" property="workerCode" />
+        <id column="id" property="id"/>
+        <result column="worker_code" property="workerCode"/>
     </resultMap>
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, worker_code
+        id
+        , worker_code
     </sql>
 
 </mapper>

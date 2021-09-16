@@ -9,7 +9,7 @@ import com.didiglobal.logi.job.common.domain.LogITask;
  * @author dengshan
  */
 public interface JobFactory {
-  void addJob(String className, Job job);
+    void addJob(String className, Job job);
 
-  LogIJob newJob(LogITask logITask);
+    LogIJob newJob(LogITask logITask);
 }

@@ -12,18 +12,18 @@ import org.springframework.context.annotation.Configuration;
 @ComponentScan(basePackages = "com.didiglobal.logi.job")
 public class LogIJobApplication {
 
-  /**
-   * 入口函数.
-   *
-   * @param args 参数
-   */
-  public static void main(String[] args) {
-    AnnotationConfigApplicationContext applicationContext =
-            new AnnotationConfigApplicationContext( LogIJobApplication.class);
-    BeatMonitor beatMonitor = applicationContext.getBean(BeatMonitor.class);
-    TaskMonitor taskMonitor = applicationContext.getBean(TaskMonitor.class);
-    MisfireMonitor misfireMonitor = applicationContext.getBean(MisfireMonitor.class);
-    SimpleScheduler simpleScheduler = new SimpleScheduler(beatMonitor, taskMonitor, misfireMonitor);
-    simpleScheduler.startup();
-  }
+    /**
+     * 入口函数.
+     *
+     * @param args 参数
+     */
+    public static void main(String[] args) {
+        AnnotationConfigApplicationContext applicationContext =
+                new AnnotationConfigApplicationContext(LogIJobApplication.class);
+        BeatMonitor beatMonitor = applicationContext.getBean(BeatMonitor.class);
+        TaskMonitor taskMonitor = applicationContext.getBean(TaskMonitor.class);
+        MisfireMonitor misfireMonitor = applicationContext.getBean(MisfireMonitor.class);
+        SimpleScheduler simpleScheduler = new SimpleScheduler(beatMonitor, taskMonitor, misfireMonitor);
+        simpleScheduler.startup();
+    }
 }

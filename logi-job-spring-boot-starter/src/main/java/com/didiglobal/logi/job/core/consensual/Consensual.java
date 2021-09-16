@@ -9,13 +9,13 @@ import com.didiglobal.logi.job.common.domain.LogITask;
  */
 public interface Consensual {
 
-  String getName();
+    String getName();
 
-  /**
-   * 节点能否执行任务.
-   *
-   * @Param logITask 任务
-   * @return 是否能认领
-   */
-  boolean canClaim(LogITask logITask);
+    /**
+     * 节点能否执行任务.
+     *
+     * @return 是否能认领
+     * @Param logITask 任务
+     */
+    boolean canClaim(LogITask logITask);
 }

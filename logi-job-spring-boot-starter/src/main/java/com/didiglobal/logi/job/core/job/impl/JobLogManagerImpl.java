@@ -30,10 +30,10 @@ public class JobLogManagerImpl implements JobLogManager {
     @Autowired
     public void JobLogManagerImpl(TaskManager taskManager,
                                   LogIJobLogMapper logIJobLogMapper,
-                                  LogIJobProperties logIJobProperties){
-        this.taskManager        = taskManager;
-        this.logIJobLogMapper   = logIJobLogMapper;
-        this.logIJobProperties  = logIJobProperties;
+                                  LogIJobProperties logIJobProperties) {
+        this.taskManager = taskManager;
+        this.logIJobLogMapper = logIJobLogMapper;
+        this.logIJobProperties = logIJobProperties;
     }
 
     @Override
@@ -42,11 +42,11 @@ public class JobLogManagerImpl implements JobLogManager {
 
         Timestamp beginTimestamp = null, endTimestamp = null;
 
-        if(null != dto.getBeginTime()){
+        if (null != dto.getBeginTime()) {
             beginTimestamp = new Timestamp(dto.getBeginTime());
         }
 
-        if(null != dto.getEndTime()){
+        if (null != dto.getEndTime()) {
             endTimestamp = new Timestamp(dto.getEndTime());
         }
 
@@ -63,12 +63,12 @@ public class JobLogManagerImpl implements JobLogManager {
             LogIJobLogVO logIJobLogVO = BeanUtil.convertTo(logIJobLogPO, LogIJobLogVO.class);
 
             LogITask logITask = longLogITaskMap.get(logIJobLogPO.getTaskId());
-            if(null == logITask){
+            if (null == logITask) {
                 logITask = taskManager.getByCode(logIJobLogPO.getTaskCode());
                 longLogITaskMap.put(logIJobLogPO.getTaskId(), logITask);
             }
 
-            List<String> ips  = logITask.getTaskWorkers().stream().map(w -> w.getIp()).collect(Collectors.toList());
+            List<String> ips = logITask.getTaskWorkers().stream().map(w -> w.getIp()).collect(Collectors.toList());
             logIJobLogVO.setAllWorkerIps(ips);
 
             logIJobLogVO.setTaskName(logITask.getTaskName());
@@ -81,11 +81,11 @@ public class JobLogManagerImpl implements JobLogManager {
 
         Timestamp beginTimestamp = null, endTimestamp = null;
 
-        if(null != dto.getBeginTime()){
+        if (null != dto.getBeginTime()) {
             beginTimestamp = new Timestamp(dto.getBeginTime());
         }
 
-        if(null != dto.getEndTime()){
+        if (null != dto.getEndTime()) {
             endTimestamp = new Timestamp(dto.getEndTime());
         }
 

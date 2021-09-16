@@ -1,7 +1,7 @@
 package com.didiglobal.logi.job.core.beat;
 
 public interface BeatManager {
-  boolean beat();
+    boolean beat();
 
-  boolean stop();
+    boolean stop();
 }

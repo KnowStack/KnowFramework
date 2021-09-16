@@ -13,44 +13,40 @@ import java.util.concurrent.Future;
  */
 public interface JobManager {
 
-  /**
-   * 启动任务.
-   *
-   * @param logITask 任务
-   * @return future
-   */
-  Future<Object> start(LogITask logITask);
+    /**
+     * 启动任务.
+     *
+     * @param logITask 任务
+     * @return future
+     */
+    Future<Object> start(LogITask logITask);
 
-  /**
-   *
-   * @return
-   */
-  Integer runningJobSize();
+    /**
+     * @return
+     */
+    Integer runningJobSize();
 
-  /**
-   * 停止任务.
-   *
-   * @param jobCode job taskCode
-   * @return true/false
-   */
-  boolean stopByJobCode(String jobCode);
+    /**
+     * 停止任务.
+     *
+     * @param jobCode job taskCode
+     * @return true/false
+     */
+    boolean stopByJobCode(String jobCode);
 
-  /**
-   *
-   * @param taskCode
-   * @return
-   */
-  boolean stopByTaskCode(String taskCode);
+    /**
+     * @param taskCode
+     * @return
+     */
+    boolean stopByTaskCode(String taskCode);
 
-  /**
-   *
-   * @return
-   */
-  int stopAll();
+    /**
+     * @return
+     */
+    int stopAll();
 
-  /**
-   *
-   * @return
-   */
-  List<LogIJob> getJobs();
+    /**
+     * @return
+     */
+    List<LogIJob> getJobs();
 }

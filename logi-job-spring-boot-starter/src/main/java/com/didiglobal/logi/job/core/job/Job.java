@@ -7,5 +7,5 @@ import com.didiglobal.logi.job.common.TaskResult;
  */
 public interface Job {
 
-  TaskResult execute(JobContext jobContext) throws Exception;
+    TaskResult execute(JobContext jobContext) throws Exception;
 }

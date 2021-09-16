@@ -19,18 +19,18 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping(Constants.V1 + "/logi-job/job")
 @Api(tags = "logi-job 执行生成的 job 相关接口")
 public class JobController {
-  private static final Logger logger = LoggerFactory.getLogger(JobController.class);
+    private static final Logger logger = LoggerFactory.getLogger(JobController.class);
 
-  @Autowired
-  private JobManager jobManager;
+    @Autowired
+    private JobManager jobManager;
 
-  @PostMapping("/{jobCode}/stop")
-  public Result<Boolean> stop(@PathVariable String jobCode) {
-    return Result.buildSucc(jobManager.stopByJobCode(jobCode));
-  }
+    @PostMapping("/{jobCode}/stop")
+    public Result<Boolean> stop(@PathVariable String jobCode) {
+        return Result.buildSucc(jobManager.stopByJobCode(jobCode));
+    }
 
-  @GetMapping("/runningJobs")
-  public Result getRunningJobs() {
-    return Result.buildSucc(jobManager.getJobs());
-  }
+    @GetMapping("/runningJobs")
+    public Result getRunningJobs() {
+        return Result.buildSucc(jobManager.getJobs());
+    }
 }

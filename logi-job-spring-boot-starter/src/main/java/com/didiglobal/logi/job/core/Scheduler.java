@@ -7,19 +7,19 @@ package com.didiglobal.logi.job.core;
  */
 public interface Scheduler {
 
-  /*
-   * worker初始化
-   */
-  void initialize();
+    /*
+     * worker初始化
+     */
+    void initialize();
 
-  /*
-   * 启动工作执行器
-   */
-  void startup();
+    /*
+     * 启动工作执行器
+     */
+    void startup();
 
-  /*
-   * 关闭工作执行器
-   * @return
-   */
-  void shutdown();
+    /*
+     * 关闭工作执行器
+     * @return
+     */
+    void shutdown();
 }

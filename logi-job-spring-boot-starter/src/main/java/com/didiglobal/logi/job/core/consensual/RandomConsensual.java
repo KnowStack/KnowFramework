@@ -14,26 +14,26 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class RandomConsensual extends AbstractConsensual {
-  private static final Logger logger = LoggerFactory.getLogger(RandomConsensual.class);
+    private static final Logger logger = LoggerFactory.getLogger(RandomConsensual.class);
 
-  @Autowired
-  private TaskLockService taskLockService;
+    @Autowired
+    private TaskLockService taskLockService;
 
-  @Override
-  public String getName() {
-    return ConsensualEnum.RANDOM.name();
-  }
-
-  @Override
-  public boolean tryClaim(LogITask logITask) {
-    if (taskLockService.tryAcquire( logITask.getTaskCode())) {
-      logITask.setTaskCallback( taskCode -> {
-        logger.info("class=RandomConsensual||method=tryClaim||url=||msg=release task lock "
-                + "taskCode {}", taskCode);
-        taskLockService.tryRelease(taskCode);
-      });
-      return true;
+    @Override
+    public String getName() {
+        return ConsensualEnum.RANDOM.name();
     }
-    return false;
-  }
+
+    @Override
+    public boolean tryClaim(LogITask logITask) {
+        if (taskLockService.tryAcquire(logITask.getTaskCode())) {
+            logITask.setTaskCallback(taskCode -> {
+                logger.info("class=RandomConsensual||method=tryClaim||url=||msg=release task lock "
+                        + "taskCode {}", taskCode);
+                taskLockService.tryRelease(taskCode);
+            });
+            return true;
+        }
+        return false;
+    }
 }

@@ -22,7 +22,7 @@ public class PagingData<T> {
     @ApiModelProperty(value = "分页信息")
     private Pagination pagination;
 
-    public PagingData (List<T> bizData, long total, long pageNo, long pageSize) {
+    public PagingData(List<T> bizData, long total, long pageNo, long pageSize) {
         this.bizData = bizData;
         this.pagination = new Pagination(total, pageNo, pageSize);
     }
