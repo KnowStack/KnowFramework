@@ -28,9 +28,9 @@ public class JobLogManagerImpl implements JobLogManager {
 
 
     @Autowired
-    public void JobLogManagerImpl(TaskManager taskManager,
-                                  LogIJobLogMapper logIJobLogMapper,
-                                  LogIJobProperties logIJobProperties) {
+    public JobLogManagerImpl(TaskManager taskManager,
+                             LogIJobLogMapper logIJobLogMapper,
+                             LogIJobProperties logIJobProperties) {
         this.taskManager = taskManager;
         this.logIJobLogMapper = logIJobLogMapper;
         this.logIJobProperties = logIJobProperties;
@@ -40,7 +40,8 @@ public class JobLogManagerImpl implements JobLogManager {
     public List<LogIJobLogVO> pagineJobLogs(TaskLogPageQueryDTO dto) {
         Map<Long, LogITask> longLogITaskMap = new HashMap<>();
 
-        Timestamp beginTimestamp = null, endTimestamp = null;
+        Timestamp beginTimestamp = null;
+        Timestamp endTimestamp = null;
 
         if (null != dto.getBeginTime()) {
             beginTimestamp = new Timestamp(dto.getBeginTime());
@@ -79,7 +80,8 @@ public class JobLogManagerImpl implements JobLogManager {
     @Override
     public int getJobLogsCount(TaskLogPageQueryDTO dto) {
 
-        Timestamp beginTimestamp = null, endTimestamp = null;
+        Timestamp beginTimestamp = null;
+        Timestamp endTimestamp = null;
 
         if (null != dto.getBeginTime()) {
             beginTimestamp = new Timestamp(dto.getBeginTime());
