@@ -19,7 +19,7 @@ public class JobBroadcastTest implements Job {
 
     @Override
     public TaskResult execute(JobContext jobContext) {
-        logger.info("**************************************************** hihi broad broad start" + System.currentTimeMillis());
+        logger.info("**************************************** hihi broad broad start" + System.currentTimeMillis());
 
 
         for (long i = 0; i < 30000000L; i++) {
@@ -27,7 +27,7 @@ public class JobBroadcastTest implements Job {
 //      System.out.println("hello world broad broad" + i);
         }
 
-        logger.info("**************************************************** hihi broad broad end" + System.currentTimeMillis());
+        logger.info("**************************************** hihi broad broad end" + System.currentTimeMillis());
 
         return TaskResult.SUCCESS;
     }

@@ -30,7 +30,8 @@ public class BeatManagerImpl implements BeatManager {
      * @param logIWorkerMapper worker mapper
      */
     @Autowired
-    public BeatManagerImpl(JobManager jobManager, LogIWorkerMapper logIWorkerMapper, LogIJobProperties logIJobProperties) {
+    public BeatManagerImpl(JobManager jobManager, LogIWorkerMapper logIWorkerMapper,
+                           LogIJobProperties logIJobProperties) {
         this.jobManager = jobManager;
         this.logIWorkerMapper = logIWorkerMapper;
         this.logIJobProperties = logIJobProperties;
