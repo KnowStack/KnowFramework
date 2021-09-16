@@ -36,7 +36,7 @@ public class RoleDaoImpl extends BaseDaoImpl<RolePO> implements RoleDao {
 
     @Override
     public IPage<Role> selectPage(RoleQueryDTO queryDTO) {
-        IPage<RolePO> iPage = new Page<>(queryDTO.getPage(), queryDTO.getSize());
+        IPage<RolePO> pageInfo = new Page<>(queryDTO.getPage(), queryDTO.getSize());
         QueryWrapper<RolePO> roleWrapper = getQueryWrapper();
         String roleName = queryDTO.getRoleName();
         String description = queryDTO.getDescription();
@@ -47,8 +47,8 @@ public class RoleDaoImpl extends BaseDaoImpl<RolePO> implements RoleDao {
                     .like(!StringUtils.isEmpty(roleName), FieldConstant.ROLE_NAME, roleName)
                     .like(!StringUtils.isEmpty(description), FieldConstant.DESCRIPTION, description);
         }
-        roleMapper.selectPage(iPage, roleWrapper);
-        return CopyBeanUtil.copyPage(iPage, Role.class);
+        roleMapper.selectPage(pageInfo, roleWrapper);
+        return CopyBeanUtil.copyPage(pageInfo, Role.class);
     }
 
     @Override

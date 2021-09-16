@@ -337,18 +337,18 @@ public class UserResourceServiceImpl implements UserResourceService {
                                                  List<Integer> resourceTypeIdList,
                                                  List<Integer> resourceIdList) {
         List<ResourceDTO> resourceDTOList = new ArrayList<>();
-        for (Integer pId : projectIdList) {
-            for (Integer rtId : resourceTypeIdList) {
+        for (Integer projectId : projectIdList) {
+            for (Integer resourceTypeId : resourceTypeIdList) {
                 if (resourceIdList == null) {
                     ResourceExtend resourceExtend = resourceExtendBeanTool.getResourceExtendImpl();
-                    List<ResourceDTO> list = resourceExtend.getResourceList(pId, rtId);
+                    List<ResourceDTO> list = resourceExtend.getResourceList(projectId, resourceTypeId);
                     if (list != null) {
                         resourceDTOList.addAll(list);
                     }
                     continue;
                 }
-                for (Integer rId : resourceIdList) {
-                    resourceDTOList.add(new ResourceDTO(pId, rtId, rId));
+                for (Integer resourceId : resourceIdList) {
+                    resourceDTOList.add(new ResourceDTO(projectId, resourceTypeId, resourceId));
                 }
             }
         }
@@ -633,12 +633,12 @@ public class UserResourceServiceImpl implements UserResourceService {
     /**
      * 资源权限管理>按资源管理的列表信息>项目级别
      *
-     * @param mByRQueryDTO 查询条件
+     * @param queryDTO 查询条件
      * @param isOn         资源查看控制权限是否开启
      * @return PagingData<ManageByResourceVo>
      */
-    private PagingData<MByRVO> dealProjectLevel(MByRQueryDTO mByRQueryDTO, boolean isOn) {
-        ProjectBriefQueryDTO projectBriefQueryDTO = new ProjectBriefQueryDTO(mByRQueryDTO);
+    private PagingData<MByRVO> dealProjectLevel(MByRQueryDTO queryDTO, boolean isOn) {
+        ProjectBriefQueryDTO projectBriefQueryDTO = new ProjectBriefQueryDTO(queryDTO);
         PagingData<ProjectBriefVO> projectPage = projectService.getProjectBriefPage(projectBriefQueryDTO);
 
         List<MByRVO> result = Collections.synchronizedList(new ArrayList<>());
@@ -650,13 +650,13 @@ public class UserResourceServiceImpl implements UserResourceService {
 
             Integer projectId = projectBriefVO.getId();
             // 获取管理权限用户数
-            UserResourceQueryDTO queryDTO = new UserResourceQueryDTO(ControlLevelCode.ADMIN.getType(), projectId);
-            data.setAdminUserCnt(getAdminOrViewUserCnt(queryDTO));
+            UserResourceQueryDTO queryDTO2 = new UserResourceQueryDTO(ControlLevelCode.ADMIN.getType(), projectId);
+            data.setAdminUserCnt(getAdminOrViewUserCnt(queryDTO2));
 
             if (isOn) {
                 // 获取查看权限用户数
-                queryDTO = new UserResourceQueryDTO(ControlLevelCode.VIEW.getType(), projectId);
-                data.setViewUserCnt(getAdminOrViewUserCnt(queryDTO));
+                queryDTO2 = new UserResourceQueryDTO(ControlLevelCode.VIEW.getType(), projectId);
+                data.setViewUserCnt(getAdminOrViewUserCnt(queryDTO2));
             }
             result.add(data);
         });

@@ -12,15 +12,15 @@ import org.springframework.stereotype.Component;
 @Component
 @Task(name = "dd broad", description = "dd broad", cron = "0 0/1 * * * ? *", autoRegister = true, timeout = 100)
 public class JobBroadcastInterruptTest implements Job {
-  private static final Logger logger = LoggerFactory.getLogger(JobBroadcastInterruptTest.class);
+    private static final Logger logger = LoggerFactory.getLogger(JobBroadcastInterruptTest.class);
 
-  @Override
-  public TaskResult execute(JobContext jobContext) throws Exception {
-    for (int i = 0; i < 500; i++) {
+    @Override
+    public TaskResult execute(JobContext jobContext) throws Exception {
+        for (int i = 0; i < 500; i++) {
 //      Thread.sleep(1000);
-      logger.info("hihi broad broad");
-      System.out.println("hello world broad broad");
+            logger.info("hihi broad broad");
+            System.out.println("hello world broad broad");
+        }
+        return TaskResult.SUCCESS;
     }
-    return TaskResult.SUCCESS;
-  }
 }

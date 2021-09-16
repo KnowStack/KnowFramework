@@ -91,9 +91,9 @@ public class UserServiceImpl implements UserService {
         List<Integer> deptIdList = deptService.
                 getDeptIdListByParentIdAndDeptName(queryDTO.getDeptId(), queryDTO.getDeptName());
         // 分页获取
-        IPage<UserBrief> iPage = userDao.selectBriefPageByDeptIdList(queryDTO, deptIdList);
-        List<UserBriefVO> userBriefVOList = CopyBeanUtil.copyList(iPage.getRecords(), UserBriefVO.class);
-        return new PagingData<>(userBriefVOList, iPage);
+        IPage<UserBrief> pageInfo = userDao.selectBriefPageByDeptIdList(queryDTO, deptIdList);
+        List<UserBriefVO> userBriefVOList = CopyBeanUtil.copyList(pageInfo.getRecords(), UserBriefVO.class);
+        return new PagingData<>(userBriefVOList, pageInfo);
     }
 
     @Override
