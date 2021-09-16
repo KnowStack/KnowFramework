@@ -11,13 +11,13 @@ import org.springframework.stereotype.Service;
 @Service
 public class BroadcastConsensual extends AbstractConsensual {
 
-  @Override
-  public String getName() {
-    return ConsensualEnum.BROADCAST.name();
-  }
+    @Override
+    public String getName() {
+        return ConsensualEnum.BROADCAST.name();
+    }
 
-  @Override
-  public boolean tryClaim(LogITask logITask) {
-    return true;
-  }
+    @Override
+    public boolean tryClaim(LogITask logITask) {
+        return true;
+    }
 }

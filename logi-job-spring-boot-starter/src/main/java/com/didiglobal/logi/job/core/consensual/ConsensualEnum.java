@@ -9,27 +9,27 @@ import java.util.Map;
  * @author dengshan
  */
 public enum ConsensualEnum {
-  RANDOM("随机抢占"),
-  BROADCAST("广播");
+    RANDOM("随机抢占"),
+    BROADCAST("广播");
 
-  private static Map<String, ConsensualEnum> map = new HashMap<>(8);
+    private static Map<String, ConsensualEnum> map = new HashMap<>(8);
 
-  static {
-    map.put(RANDOM.name(), RANDOM);
-    map.put(BROADCAST.name(), BROADCAST);
-  }
+    static {
+        map.put(RANDOM.name(), RANDOM);
+        map.put(BROADCAST.name(), BROADCAST);
+    }
 
-  private String desc;
+    private String desc;
 
-  ConsensualEnum(String desc){
-    this.desc = desc;
-  }
+    ConsensualEnum(String desc) {
+        this.desc = desc;
+    }
 
-  public String getDesc(){
-    return this.desc;
-  }
+    public String getDesc() {
+        return this.desc;
+    }
 
-  public static ConsensualEnum getByName(String name){
-    return map.get(name);
-  }
+    public static ConsensualEnum getByName(String name) {
+        return map.get(name);
+    }
 }

@@ -33,7 +33,8 @@ public class DeptController {
 
     @PostMapping("/import")
     @ApiOperation(value = "部门信息导入", notes = "部门信息导入")
-    public Result<String> imports(@RequestBody @ApiParam(name = "deptDTOList", value = "部门信息List") List<DeptDTO> deptDTOList) {
+    public Result<String> imports(
+            @RequestBody @ApiParam(name = "deptDTOList", value = "部门信息List") List<DeptDTO> deptDTOList) {
         deptService.saveDept(deptDTOList);
         return Result.success();
     }

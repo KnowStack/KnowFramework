@@ -2,6 +2,7 @@ package com.didiglobal.logi.security.service.impl;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.didiglobal.logi.security.common.PagingData;
+import com.didiglobal.logi.security.common.constant.OplogConstant;
 import com.didiglobal.logi.security.common.dto.oplog.OplogDTO;
 import com.didiglobal.logi.security.common.dto.project.ProjectBriefQueryDTO;
 import com.didiglobal.logi.security.common.dto.resource.ResourceDTO;
@@ -95,8 +96,8 @@ public class ProjectServiceImpl implements ProjectService {
         // 插入用户项目关联信息（项目负责人）
         userProjectService.saveUserProject(project.getId(), saveVo.getUserIdList());
         // 保存操作日志
-        OplogDTO oplogDTO = new OplogDTO("项目配置", "新增", "项目", saveVo.getProjectName());
-        oplogService.saveOplogWithUserId(HttpRequestUtil.getOperatorId(request), oplogDTO);
+        oplogService.saveOplogWithUserId(HttpRequestUtil.getOperatorId(request),
+                new OplogDTO(OplogConstant.PM, OplogConstant.PM_A, OplogConstant.PM_P, saveVo.getProjectName()));
         return CopyBeanUtil.copy(project, ProjectVO.class);
     }
 
@@ -142,8 +143,8 @@ public class ProjectServiceImpl implements ProjectService {
         // 逻辑删除项目（自动）
         projectDao.deleteByProjectId(projectId);
         // 保存操作日志
-        OplogDTO oplogDTO = new OplogDTO("项目配置", "删除", "项目", project.getProjectName());
-        oplogService.saveOplogWithUserId(HttpRequestUtil.getOperatorId(request), oplogDTO);
+        oplogService.saveOplogWithUserId(HttpRequestUtil.getOperatorId(request),
+                new OplogDTO(OplogConstant.PM, OplogConstant.PM_D, OplogConstant.PM_P, project.getProjectName()));
     }
 
     @Override
@@ -160,8 +161,8 @@ public class ProjectServiceImpl implements ProjectService {
         // 更新项目负责人与项目联系
         userProjectService.updateUserProject(saveDTO.getId(), saveDTO.getUserIdList());
         // 保存操作日志
-        OplogDTO oplogDTO = new OplogDTO("项目配置", "编辑", "项目", saveDTO.getProjectName());
-        oplogService.saveOplogWithUserId(HttpRequestUtil.getOperatorId(request), oplogDTO);
+        oplogService.saveOplogWithUserId(HttpRequestUtil.getOperatorId(request),
+                new OplogDTO(OplogConstant.PM, OplogConstant.PM_E, OplogConstant.PM_P, saveDTO.getProjectName()));
     }
 
     @Override
@@ -175,9 +176,9 @@ public class ProjectServiceImpl implements ProjectService {
         project.setRunning(!project.getRunning());
         projectDao.update(project);
         // 保存操作日志
-        String curRunningTag = Boolean.TRUE.equals(project.getRunning()) ? "启用" : "停用";
-        OplogDTO oplogDTO = new OplogDTO("项目配置", curRunningTag, "项目", project.getProjectName());
-        oplogService.saveOplogWithUserId(HttpRequestUtil.getOperatorId(request), oplogDTO);
+        String curRunningTag = Boolean.TRUE.equals(project.getRunning()) ? OplogConstant.PM_U : OplogConstant.PM_S;
+        oplogService.saveOplogWithUserId(HttpRequestUtil.getOperatorId(request),
+                new OplogDTO(OplogConstant.PM, curRunningTag, OplogConstant.PM_P, project.getProjectName()));
     }
 
     @Override
@@ -197,7 +198,8 @@ public class ProjectServiceImpl implements ProjectService {
         ResourceExtend resourceExtend = resourceExtendBeanTool.getResourceExtendImpl();
         List<ResourceDTO> resourceDTOList = resourceExtend.getResourceList(projectId, null);
         if(!CollectionUtils.isEmpty(resourceDTOList)) {
-            List<String> list = resourceDTOList.stream().map(ResourceDTO::getResourceName).collect(Collectors.toList());
+            List<String> list = resourceDTOList
+                    .stream().map(ResourceDTO::getResourceName).collect(Collectors.toList());
             projectDeleteCheckVO.setResourceNameList(list);
         }
         return projectDeleteCheckVO;

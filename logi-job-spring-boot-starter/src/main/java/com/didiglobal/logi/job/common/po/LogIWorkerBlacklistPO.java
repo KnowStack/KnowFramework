@@ -19,13 +19,13 @@ import lombok.experimental.Accessors;
 @Accessors(chain = true)
 public class LogIWorkerBlacklistPO extends BasePO implements Serializable {
 
-  private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-  private Long id;
+    private Long id;
 
-  /*
-   * workerCode
-   */
-  private String workerCode;
+    /*
+     * workerCode
+     */
+    private String workerCode;
 
 }

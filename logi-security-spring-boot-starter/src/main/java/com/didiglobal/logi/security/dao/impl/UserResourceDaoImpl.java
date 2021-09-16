@@ -33,11 +33,12 @@ public class UserResourceDaoImpl extends BaseDaoImpl<UserResourcePO> implements 
      */
     private QueryWrapper<UserResourcePO> wrapQueryCriteria(Integer userId, UserResourceQueryDTO queryDTO) {
         QueryWrapper<UserResourcePO> queryWrapper = getQueryWrapper();
+        Integer resourceTypeId = queryDTO.getResourceTypeId();
         queryWrapper
                 .eq(FieldConstant.CONTROL_LEVEL, queryDTO.getControlLevel())
                 .eq(userId != null, FieldConstant.USER_ID, userId)
                 .eq(queryDTO.getProjectId() != null, FieldConstant.PROJECT_ID, queryDTO.getProjectId())
-                .eq(queryDTO.getResourceTypeId() != null, FieldConstant.RESOURCE_TYPE_ID, queryDTO.getResourceTypeId())
+                .eq(resourceTypeId != null, FieldConstant.RESOURCE_TYPE_ID, resourceTypeId)
                 .eq(queryDTO.getResourceId() != null, FieldConstant.RESOURCE_ID, queryDTO.getResourceId());
         return queryWrapper;
     }
@@ -136,7 +137,8 @@ public class UserResourceDaoImpl extends BaseDaoImpl<UserResourcePO> implements 
     }
 
     @Override
-    public void deleteByUserIdWithoutProjectIdList(Integer userId, UserResourceQueryDTO queryDTO, List<Integer> excludeIdList) {
+    public void deleteByUserIdWithoutProjectIdList(Integer userId, UserResourceQueryDTO queryDTO,
+                                                   List<Integer> excludeIdList) {
         QueryWrapper<UserResourcePO> queryWrapper = wrapQueryCriteria(userId, queryDTO);
         if(!CollectionUtils.isEmpty(excludeIdList)) {
             queryWrapper.notIn(FieldConstant.PROJECT_ID, excludeIdList);
@@ -145,7 +147,8 @@ public class UserResourceDaoImpl extends BaseDaoImpl<UserResourcePO> implements 
     }
 
     @Override
-    public void deleteByUserIdWithoutResourceTypeIdList(Integer userId, UserResourceQueryDTO queryDTO, List<Integer> excludeIdList) {
+    public void deleteByUserIdWithoutResourceTypeIdList(Integer userId, UserResourceQueryDTO queryDTO,
+                                                        List<Integer> excludeIdList) {
         QueryWrapper<UserResourcePO> queryWrapper = wrapQueryCriteria(userId, queryDTO);
         if(!CollectionUtils.isEmpty(excludeIdList)) {
             queryWrapper.notIn(FieldConstant.RESOURCE_TYPE_ID, excludeIdList);
@@ -164,7 +167,9 @@ public class UserResourceDaoImpl extends BaseDaoImpl<UserResourcePO> implements 
     public List<Integer> selectUserIdListGroupByUserId(UserResourceQueryDTO queryDTO) {
         QueryWrapper<UserResourcePO> queryWrapper = wrapQueryCriteria(null, queryDTO);
         queryWrapper.select(FieldConstant.USER_ID).groupBy(FieldConstant.USER_ID);
-        return userResourceMapper.selectObjs(queryWrapper).stream().map(Integer.class::cast).collect(Collectors.toList());
+        // 查询后，List<Object> -> List<Integer>
+        return userResourceMapper.selectObjs(queryWrapper)
+                .stream().map(Integer.class::cast).collect(Collectors.toList());
     }
 
     @Override

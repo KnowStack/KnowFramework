@@ -5,12 +5,12 @@ import lombok.Data;
 @Data
 public class LogITaskDTO {
 
-  private String name;
-  private String description;
-  private String cron;
-  private String className;
-  private String params;
-  private Integer retryTimes;
-  private String consensual;
+    private String name;
+    private String description;
+    private String cron;
+    private String className;
+    private String params;
+    private Integer retryTimes;
+    private String consensual;
 
 }

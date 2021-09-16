@@ -11,6 +11,7 @@ import com.didiglobal.logi.security.dao.mapper.OplogMapper;
 import com.didiglobal.logi.security.util.CopyBeanUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 
 import java.sql.Timestamp;
 
@@ -30,12 +31,14 @@ public class OplogDaoImpl extends BaseDaoImpl<OplogPO> implements OplogDao {
         IPage<OplogPO> iPage = new Page<>(queryDTO.getPage(), queryDTO.getSize());
         // 不查找detail字段
         queryWrapper.select(OplogPO.class, oplog -> !FieldConstant.DETAIL.equals(oplog.getColumn()));
+        String operatorIp = queryDTO.getOperatorIp();
+        String operatorUsername = queryDTO.getOperatorUsername();
         queryWrapper
                 .eq(queryDTO.getOperateType() != null, FieldConstant.OPERATE_TYPE, queryDTO.getOperateType())
                 .eq(queryDTO.getTargetType() != null, FieldConstant.TARGET_TYPE, queryDTO.getTargetType())
-                .like(queryDTO.getTarget() != null, FieldConstant.TARGET, queryDTO.getTarget())
-                .like(queryDTO.getOperatorIp() != null, FieldConstant.OPERATOR_IP, queryDTO.getOperatorIp())
-                .like(queryDTO.getOperatorUsername() != null, FieldConstant.OPERATOR_USERNAME, queryDTO.getOperatorUsername());
+                .like(!StringUtils.isEmpty(queryDTO.getTarget()), FieldConstant.TARGET, queryDTO.getTarget())
+                .like(!StringUtils.isEmpty(operatorIp), FieldConstant.OPERATOR_IP, operatorIp)
+                .like(!StringUtils.isEmpty(operatorUsername), FieldConstant.OPERATOR_USERNAME, operatorUsername);
         if(queryDTO.getStartTime() != null) {
             queryWrapper.ge(FieldConstant.CREATE_TIME, new Timestamp(queryDTO.getStartTime()));
         }

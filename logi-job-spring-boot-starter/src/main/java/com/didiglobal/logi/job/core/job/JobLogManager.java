@@ -8,14 +8,12 @@ import java.util.List;
 public interface JobLogManager {
 
     /**
-     *
      * @param pageQueryDTO
      * @return
      */
     List<LogIJobLogVO> pagineJobLogs(TaskLogPageQueryDTO pageQueryDTO);
 
     /**
-     *
      * @param pageQueryDTO
      * @return
      */

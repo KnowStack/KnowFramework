@@ -7,13 +7,13 @@ package com.didiglobal.logi.job.core.monitor;
  */
 public interface Monitor {
 
-  /*
-   * 保持执行
-   */
-  void maintain();
+    /*
+     * 保持执行
+     */
+    void maintain();
 
-  /*
-   * 停止
-   */
-  void stop();
+    /*
+     * 停止
+     */
+    void stop();
 }

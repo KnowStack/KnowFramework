@@ -22,4 +22,23 @@ public class UserResourceQueryDTO {
         this.resourceTypeId = resourceTypeId;
         this.resourceId = resourceId;
     }
+
+    public UserResourceQueryDTO(int controlLevel, Integer projectId, Integer resourceTypeId) {
+        this.controlLevel = controlLevel;
+        this.projectId = projectId;
+        this.resourceTypeId = resourceTypeId;
+        this.resourceId = null;
+    }
+
+    public UserResourceQueryDTO(int controlLevel, Integer projectId) {
+        this.controlLevel = controlLevel;
+        this.projectId = projectId;
+        this.resourceTypeId = null;
+        this.resourceId = null;
+    }
+
+    public static UserResourceQueryDTO getOpenViewPermissionControlQueryEntity() {
+        // 构造查看控制权限的条件实体（全为0）
+        return new UserResourceQueryDTO(0, 0, 0, 0);
+    }
 }

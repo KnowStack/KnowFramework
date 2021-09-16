@@ -29,8 +29,8 @@ public class TaskLogPageQueryDTO {
     private Integer taskStatus;
 
     @ApiModelProperty(value = "任务id", dataType = "Long", required = false)
-    private Long    taskId;
+    private Long taskId;
 
     @ApiModelProperty(value = "任务描述", dataType = "String", required = false)
-    private String  taskDesc;
+    private String taskDesc;
 }

@@ -12,20 +12,20 @@ import org.springframework.stereotype.Service;
 @Service
 public class ApplicationCloseListener implements ApplicationListener<ContextClosedEvent> {
 
-  private static final Logger logger = LoggerFactory.getLogger(ApplicationCloseListener.class);
+    private static final Logger logger = LoggerFactory.getLogger(ApplicationCloseListener.class);
 
-  private ApplicationContext applicationContext;
+    private ApplicationContext applicationContext;
 
-  @Autowired
-  public ApplicationCloseListener(ApplicationContext applicationContext) {
-    this.applicationContext = applicationContext;
-  }
+    @Autowired
+    public ApplicationCloseListener(ApplicationContext applicationContext) {
+        this.applicationContext = applicationContext;
+    }
 
-  @Override
-  public void onApplicationEvent(ContextClosedEvent event) {
-    logger.error("class=ApplicationCloseListener||method=onApplicationEvent||url=||"
-            + "msg=shutdown auv job!!!");
-    Scheduler scheduler = applicationContext.getBean(Scheduler.class);
-    scheduler.shutdown();
-  }
+    @Override
+    public void onApplicationEvent(ContextClosedEvent event) {
+        logger.error("class=ApplicationCloseListener||method=onApplicationEvent||url=||"
+                + "msg=shutdown auv job!!!");
+        Scheduler scheduler = applicationContext.getBean(Scheduler.class);
+        scheduler.shutdown();
+    }
 }

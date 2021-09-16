@@ -26,7 +26,10 @@ public class DeptDaoImpl extends BaseDaoImpl<DeptPO> implements DeptDao {
 
     private QueryWrapper<DeptPO> wrapBriefQuery() {
         QueryWrapper<DeptPO> queryWrapper = getQueryWrapper();
-        queryWrapper.select(FieldConstant.ID, FieldConstant.DEPT_NAME, FieldConstant.LEAF, FieldConstant.LEVEL, FieldConstant.PARENT_ID);
+        queryWrapper.select(
+                FieldConstant.ID, FieldConstant.DEPT_NAME,
+                FieldConstant.LEAF, FieldConstant.LEVEL, FieldConstant.PARENT_ID
+        );
         return queryWrapper;
     }
 

@@ -14,9 +14,9 @@ public enum TaskStatusEnum {
         this.value = value;
     }
 
-    public static boolean isValid(Integer status){
-        for(TaskStatusEnum taskStatusEnum : TaskStatusEnum.values()){
-            if(status.intValue() == taskStatusEnum.value.intValue()){
+    public static boolean isValid(Integer status) {
+        for (TaskStatusEnum taskStatusEnum : TaskStatusEnum.values()) {
+            if (status.intValue() == taskStatusEnum.value.intValue()) {
                 return true;
             }
         }

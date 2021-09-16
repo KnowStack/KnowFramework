@@ -22,14 +22,14 @@ import java.util.List;
 @RequestMapping(Constants.V1 + "/logi-job/logs")
 @Api(tags = "logi-job 执行生成的任务日志相关接口")
 public class JobLogsController {
-  @Autowired
-  private JobLogManager jobLogManager;
+    @Autowired
+    private JobLogManager jobLogManager;
 
-  @PostMapping("/list")
-  public PagingResult<LogIJobLogVO> getJobLogs(@RequestBody TaskLogPageQueryDTO pageQueryDTO) {
-    List<LogIJobLogVO> logIJobLogVOS = jobLogManager.pagineJobLogs(pageQueryDTO);
-    int taotalCount = jobLogManager.getJobLogsCount(pageQueryDTO);
+    @PostMapping("/list")
+    public PagingResult<LogIJobLogVO> getJobLogs(@RequestBody TaskLogPageQueryDTO pageQueryDTO) {
+        List<LogIJobLogVO> logIJobLogVOS = jobLogManager.pagineJobLogs(pageQueryDTO);
+        int taotalCount = jobLogManager.getJobLogsCount(pageQueryDTO);
 
-    return PagingResult.buildSucc(logIJobLogVOS, taotalCount, pageQueryDTO.getPage(), pageQueryDTO.getSize());
-  }
+        return PagingResult.buildSucc(logIJobLogVOS, taotalCount, pageQueryDTO.getPage(), pageQueryDTO.getSize());
+    }
 }

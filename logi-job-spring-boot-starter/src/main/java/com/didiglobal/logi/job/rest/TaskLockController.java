@@ -14,17 +14,17 @@ import org.springframework.web.bind.annotation.RestController;
 @Api(tags = "logi-job 的任务锁相关接口")
 public class TaskLockController {
 
-  @Autowired
-  private TaskLockService taskLockService;
+    @Autowired
+    private TaskLockService taskLockService;
 
-  @PostMapping("/release")
-  public Object release(@RequestParam String taskCode, @RequestParam String workerCode) {
-    return taskLockService.tryRelease(taskCode, workerCode);
-  }
+    @PostMapping("/release")
+    public Object release(@RequestParam String taskCode, @RequestParam String workerCode) {
+        return taskLockService.tryRelease(taskCode, workerCode);
+    }
 
-  @GetMapping("/getAll")
-  public Object getAll() {
-    return taskLockService.getAll();
-  }
+    @GetMapping("/getAll")
+    public Object getAll() {
+        return taskLockService.getAll();
+    }
 
 }
