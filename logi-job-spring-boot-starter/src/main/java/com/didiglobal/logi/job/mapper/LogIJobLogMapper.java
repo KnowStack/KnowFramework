@@ -19,13 +19,16 @@ import org.apache.ibatis.annotations.*;
  */
 public interface LogIJobLogMapper {
 
-    @Insert("INSERT INTO logi_job_log(job_code, task_code, task_id, task_name, task_desc, class_name, try_times, worker_code, worker_ip,"
+    @Insert("INSERT INTO logi_job_log(job_code, task_code, task_id, task_name, "
+            + "task_desc, class_name, try_times, worker_code, worker_ip,"
             + "start_time, end_time, status, error, result, create_time, update_time, app_name) "
-            + "VALUES(#{jobCode}, #{taskCode}, #{taskId}, #{taskName}, #{taskDesc},#{className}, #{tryTimes}, #{workerCode}, #{workerIp}, #{startTime}"
+            + "VALUES(#{jobCode}, #{taskCode}, #{taskId}, #{taskName}, #{taskDesc},#{className}, "
+            + "#{tryTimes}, #{workerCode}, #{workerIp}, #{startTime}"
             + ", #{endTime}, #{status}, #{error}, #{result}, #{createTime}, #{updateTime}, #{appName})")
     int insert(LogIJobLogPO logIJobLogPO);
 
-    @Select("select id, job_code, task_code, task_id, task_name, task_desc, class_name, try_times, worker_code, worker_ip, start_time, "
+    @Select("select id, job_code, task_code, task_id, task_name, task_desc, "
+            + "class_name, try_times, worker_code, worker_ip, start_time, "
             + "end_time, status, error, result, create_time, update_time, app_name from logi_job_log where "
             + "task_code=#{taskCode} and app_name=#{appName} order by id desc limit #{start}, #{size}")
     List<LogIJobLogPO> selectByTaskCode(@Param("taskCode") String taskCode,
@@ -33,7 +36,8 @@ public interface LogIJobLogMapper {
                                         @Param("start") Integer start,
                                         @Param("size") Integer size);
 
-    @Update("update logi_job_log set job_code=#{jobCode}, task_code=#{taskCode}, task_id=#{taskId}, task_name=#{taskName}, task_desc=#{taskDesc}, class_name=#{className}, try_times="
+    @Update("update logi_job_log set job_code=#{jobCode}, task_code=#{taskCode}, task_id=#{taskId}, "
+            + "task_name=#{taskName}, task_desc=#{taskDesc}, class_name=#{className}, try_times="
             + "#{tryTimes}, worker_code=#{workerCode}, worker_ip=#{workerIp}, start_time="
             + "#{startTime}, end_time=#{endTime}, status=#{status}, error=#{error}, result=#{result}, "
             + " create_time=#{createTime}, update_time=#{updateTime}, app_name=#{appName} where job_code=#{jobCode}")
@@ -50,7 +54,8 @@ public interface LogIJobLogMapper {
                                              @Param("taskDesc") String taskDesc,
                                              @Param("jobStatus") Integer jobStatus,
                                              @Param("start") Integer start, @Param("size") Integer size,
-                                             @Param("beginTime") Timestamp beginTime, @Param("endTime") Timestamp endTime);
+                                             @Param("beginTime") Timestamp beginTime,
+                                             @Param("endTime") Timestamp endTime);
 
     Integer pagineCountByCondition(@Param("appName") String appName, @Param("taskId") Long taskId,
                                    @Param("taskDesc") String taskDesc, @Param("jobStatus") Integer jobStatus,

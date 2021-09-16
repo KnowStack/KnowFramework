@@ -16,12 +16,14 @@ import java.util.List;
 public interface LogIWorkerMapper {
 
     @Insert("INSERT INTO logi_worker(worker_code, worker_name, ip, cpu, cpu_used, memory, memory_used, jvm_memory, "
-            + "jvm_memory_used, job_num, heartbeat, app_name) VALUES(#{workerCode}, #{workerName}, #{ip}, #{cpu}, #{cpuUsed}, "
+            + "jvm_memory_used, job_num, heartbeat, app_name) "
+            + "VALUES(#{workerCode}, #{workerName}, #{ip}, #{cpu}, #{cpuUsed}, "
             + "#{memory}, #{memoryUsed}, #{jvmMemory}, #{jvmMemoryUsed}, #{job_num}, #{heartbeat}, #{appName})")
     int insert(LogIWorkerPO logIWorkerPO);
 
     @Update("INSERT INTO logi_worker(worker_code, worker_name, ip, cpu, cpu_used, memory, memory_used, jvm_memory, "
-            + "jvm_memory_used, job_num, heartbeat, app_name) VALUES(#{workerCode}, #{workerName}, #{ip}, #{cpu}, #{cpuUsed}, "
+            + "jvm_memory_used, job_num, heartbeat, app_name) "
+            + "VALUES(#{workerCode}, #{workerName}, #{ip}, #{cpu}, #{cpuUsed}, "
             + "#{memory}, #{memoryUsed}, #{jvmMemory}, #{jvmMemoryUsed}, #{jobNum}, #{heartbeat}, #{appName}) "
             + "ON DUPLICATE KEY UPDATE cpu=#{cpu}, worker_name=#{workerName}, ip=#{ip}, cpu_used=#{cpuUsed}, "
             + "memory=#{memory}, memory_used=#{memoryUsed}, jvm_memory=#{jvmMemory}, "
