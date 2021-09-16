@@ -112,12 +112,12 @@ public class ProjectServiceImpl implements ProjectService {
         // 获取当前部门的子部门idList
         List<Integer> deptIdList = deptService.getDeptIdListByParentId(queryDTO.getDeptId());
         // 分页获取
-        IPage<Project> iPage = projectDao.selectPageByDeptIdListAndProjectIdList(queryDTO, deptIdList, projectIdList);
+        IPage<Project> page = projectDao.selectPageByDeptIdListAndProjectIdList(queryDTO, deptIdList, projectIdList);
         List<ProjectVO> projectVOList = new ArrayList<>();
 
         // 提前获取所有部门
         Map<Integer, Dept> deptMap = deptService.getAllDeptMap();
-        for(Project project : iPage.getRecords()) {
+        for(Project project : page.getRecords()) {
             ProjectVO projectVO = CopyBeanUtil.copy(project, ProjectVO.class);
             // 获取负责人信息
             List<Integer> userIdList = userProjectService.getUserIdListByProjectId(project.getId());
@@ -127,7 +127,7 @@ public class ProjectServiceImpl implements ProjectService {
             projectVO.setCreateTime(project.getCreateTime().getTime());
             projectVOList.add(projectVO);
         }
-        return new PagingData<>(projectVOList, iPage);
+        return new PagingData<>(projectVOList, page);
     }
 
     @Override
@@ -207,9 +207,9 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Override
     public PagingData<ProjectBriefVO> getProjectBriefPage(ProjectBriefQueryDTO queryDTO) {
-        IPage<ProjectBrief> iPage = projectDao.selectBriefPage(queryDTO);
-        List<ProjectBriefVO> list = CopyBeanUtil.copyList(iPage.getRecords(), ProjectBriefVO.class);
-        return new PagingData<>(list, iPage);
+        IPage<ProjectBrief> pageInfo = projectDao.selectBriefPage(queryDTO);
+        List<ProjectBriefVO> list = CopyBeanUtil.copyList(pageInfo.getRecords(), ProjectBriefVO.class);
+        return new PagingData<>(list, pageInfo);
     }
 
     /**

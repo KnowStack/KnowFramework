@@ -41,9 +41,9 @@ public class ResourceTypeServiceImpl implements ResourceTypeService {
 
     @Override
     public PagingData<ResourceTypeVO> getResourceTypePage(ResourceTypeQueryDTO queryDTO) {
-        IPage<ResourceType> iPage = resourceTypeDao.selectPage(queryDTO);
-        List<ResourceTypeVO> list = CopyBeanUtil.copyList(iPage.getRecords(), ResourceTypeVO.class);
-        return new PagingData<>(list, iPage);
+        IPage<ResourceType> pageInfo = resourceTypeDao.selectPage(queryDTO);
+        List<ResourceTypeVO> list = CopyBeanUtil.copyList(pageInfo.getRecords(), ResourceTypeVO.class);
+        return new PagingData<>(list, pageInfo);
     }
 
     @Override

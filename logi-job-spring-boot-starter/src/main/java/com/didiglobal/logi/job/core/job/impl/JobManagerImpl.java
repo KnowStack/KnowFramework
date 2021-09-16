@@ -357,8 +357,9 @@ public class JobManagerImpl implements JobManager {
                                         logger.info("class=TaskLockServiceImpl||method=run||url=||msg=update lock "
                                                         + "expireTime id={}, expireTime={}", logITaskLockPO.getId(),
                                                 logITaskLockPO.getExpireTime());
-                                        logITaskLockMapper.update(logITaskLockPO.getId(), logITaskLockPO.getExpireTime()
-                                                + RENEW_INTERVAL);
+                                        logITaskLockMapper.update(
+                                                logITaskLockPO.getId(),
+                                                logITaskLockPO.getExpireTime() + RENEW_INTERVAL);
                                     }
                                     continue;
                                 }
@@ -370,7 +371,8 @@ public class JobManagerImpl implements JobManager {
                             logITaskLockMapper.deleteById(logITaskLockPO.getId());
 
                             // 更新当前worker任务状态
-                            LogITaskPO logITaskPO = logITaskMapper.selectByCode(logITaskLockPO.getTaskCode(), logIJobProperties.getAppName());
+                            LogITaskPO logITaskPO = logITaskMapper
+                                    .selectByCode(logITaskLockPO.getTaskCode(), logIJobProperties.getAppName());
                             if (logITaskPO != null) {
                                 List<LogITask.TaskWorker> taskWorkers = BeanUtil.convertToList(
                                         logITaskPO.getTaskWorkerStr(), LogITask.TaskWorker.class);
@@ -427,7 +429,9 @@ public class JobManagerImpl implements JobManager {
                     // 删除日志
                     Calendar calendar = Calendar.getInstance();
                     calendar.add(Calendar.DATE, -1 * logExpire);
-                    int count = logIJobLogMapper.deleteByCreateTime(new Timestamp(calendar.getTimeInMillis()), logIJobProperties.getAppName());
+                    int count = logIJobLogMapper.deleteByCreateTime(
+                            new Timestamp(calendar.getTimeInMillis()), logIJobProperties.getAppName()
+                    );
 
                     logger.info("class=LogCleanHandler||method=run||url=||msg=clean log count={}", count);
                     // 间隔一段时间执行一次

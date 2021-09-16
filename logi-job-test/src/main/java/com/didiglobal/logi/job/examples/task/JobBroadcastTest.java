@@ -15,20 +15,20 @@ import java.util.concurrent.TimeUnit;
 @Component
 @Task(name = "cc broad", description = "hello broad", cron = "0 0/1 * * * ? *", autoRegister = true, timeout = 300)
 public class JobBroadcastTest implements Job {
-  private static final Logger logger = LoggerFactory.getLogger(JobBroadcastTest.class);
+    private static final Logger logger = LoggerFactory.getLogger(JobBroadcastTest.class);
 
-  @Override
-  public TaskResult execute(JobContext jobContext) {
-    logger.info("**************************************************** hihi broad broad start" + System.currentTimeMillis());
+    @Override
+    public TaskResult execute(JobContext jobContext) {
+        logger.info("**************************************** hihi broad broad start" + System.currentTimeMillis());
 
 
-    for (long i = 0; i < 30000000L; i++) {
+        for (long i = 0; i < 30000000L; i++) {
 //      logger.info("hihi broad broad");
 //      System.out.println("hello world broad broad" + i);
+        }
+
+        logger.info("**************************************** hihi broad broad end" + System.currentTimeMillis());
+
+        return TaskResult.SUCCESS;
     }
-
-    logger.info("**************************************************** hihi broad broad end" + System.currentTimeMillis());
-
-    return TaskResult.SUCCESS;
-  }
 }

@@ -83,16 +83,16 @@ public class RoleServiceImpl implements RoleService {
 
     @Override
     public PagingData<RoleVO> getRolePage(RoleQueryDTO queryDTO) {
-        IPage<Role> iPage = roleDao.selectPage(queryDTO);
+        IPage<Role> pageInfo = roleDao.selectPage(queryDTO);
         List<RoleVO> roleVOList = new ArrayList<>();
-        for(Role role : iPage.getRecords()) {
+        for(Role role : pageInfo.getRecords()) {
             RoleVO roleVO = CopyBeanUtil.copy(role, RoleVO.class);
             // 获取该角色已分配给的用户数
             roleVO.setAuthedUserCnt(userRoleService.getUserRoleCountByRoleId(role.getId()));
             roleVO.setCreateTime(role.getCreateTime().getTime());
             roleVOList.add(roleVO);
         }
-        return new PagingData<>(roleVOList, iPage);
+        return new PagingData<>(roleVOList, pageInfo);
     }
 
     @Override
@@ -114,8 +114,8 @@ public class RoleServiceImpl implements RoleService {
         // 保持角色与权限的关联信息
         rolePermissionService.saveRolePermission(role.getId(), roleSaveDTO.getPermissionIdList());
         // 保存操作日志
-        OplogDTO oplogDTO = new OplogDTO(OplogConstant.RM, OplogConstant.RM_A, OplogConstant.RM_R, roleSaveDTO.getRoleName());
-        oplogService.saveOplogWithUserId(userId, oplogDTO);
+        oplogService.saveOplogWithUserId(userId,
+                new OplogDTO(OplogConstant.RM, OplogConstant.RM_A, OplogConstant.RM_R, roleSaveDTO.getRoleName()));
     }
 
     @Override

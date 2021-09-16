@@ -38,7 +38,8 @@ public interface LogITaskMapper {
 
     @Select("select id, task_code, task_name, task_desc, cron, class_name, params, retry_times, "
             + "last_fire_time, timeout, status, sub_task_codes, consensual"
-            + ", task_worker_str, create_time, update_time, app_name, owner from logi_task where task_code=#{taskCode} and app_name=#{appName}")
+            + ", task_worker_str, create_time, update_time, app_name, owner "
+            + "from logi_task where task_code=#{taskCode} and app_name=#{appName}")
     LogITaskPO selectByCode(@Param("taskCode") String code, @Param("appName") String appName);
 
     @Select("<script>"
@@ -71,14 +72,17 @@ public interface LogITaskMapper {
             + "last_fire_time, timeout, status, sub_task_codes, consensual, task_worker_str,"
             + " create_time, update_time, app_name, owner from logi_task where app_name=#{appName} "
             + " order by id desc limit #{start}, #{size} ")
-    List<LogITaskPO> selectByAppNameAndSize(@Param("appName") String appName, @Param("start") int start, @Param("size") int size);
+    List<LogITaskPO> selectByAppNameAndSize(@Param("appName") String appName,
+                                            @Param("start") int start,
+                                            @Param("size") int size);
 
     @Select("select count(1) from logi_task where app_name=#{appName}")
     int selectCountByAppName(@Param("appName") String appName);
 
     List<LogITaskPO> pagineListByCondition(@Param("appName") String appName, @Param("id") Long id,
                                            @Param("taskDesc") String taskDesc, @Param("className") String className,
-                                           @Param("jobStatus") Integer jobStatus, @Param("start") Integer start, @Param("size") Integer size);
+                                           @Param("jobStatus") Integer jobStatus, @Param("start") Integer start,
+                                           @Param("size") Integer size);
 
     Integer pagineCountByCondition(@Param("appName") String appName, @Param("id") Long id,
                                    @Param("taskDesc") String taskDesc, @Param("className") String className,

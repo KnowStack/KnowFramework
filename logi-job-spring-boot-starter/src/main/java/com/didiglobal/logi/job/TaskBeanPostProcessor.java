@@ -71,7 +71,7 @@ public class TaskBeanPostProcessor implements BeanPostProcessor {
         return bean;
     }
 
-    /**************************************************** private method ****************************************************/
+    /*********************************************** private method ***********************************************/
     private boolean check(Task schedule) {
         return CronExpression.isValidExpression(schedule.cron());
     }

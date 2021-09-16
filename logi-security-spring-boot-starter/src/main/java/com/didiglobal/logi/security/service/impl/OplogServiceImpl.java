@@ -31,19 +31,16 @@ public class OplogServiceImpl implements OplogService {
     @Autowired
     private UserService userService;
 
-    @Autowired
-    private OplogExtraService oplogExtraService;
-    
     @Override
     public PagingData<OplogVO> getOplogPage(OplogQueryDTO queryDTO) {
         // 分页查询
-        IPage<Oplog> iPage = oplogDao.selectPageWithoutDetail(queryDTO);
+        IPage<Oplog> pageInfo = oplogDao.selectPageWithoutDetail(queryDTO);
         List<OplogVO> oplogVOList = new ArrayList<>();
-        for(Oplog oplog : iPage.getRecords()) {
+        for(Oplog oplog : pageInfo.getRecords()) {
             OplogVO oplogVO = CopyBeanUtil.copy(oplog, OplogVO.class);
             oplogVO.setCreateTime(oplog.getCreateTime().getTime());
         }
-        return new PagingData<>(oplogVOList, iPage);
+        return new PagingData<>(oplogVOList, pageInfo);
     }
 
     @Override

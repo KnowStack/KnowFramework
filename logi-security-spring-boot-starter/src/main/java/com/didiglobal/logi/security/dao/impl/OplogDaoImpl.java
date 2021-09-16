@@ -28,7 +28,7 @@ public class OplogDaoImpl extends BaseDaoImpl<OplogPO> implements OplogDao {
     public IPage<Oplog> selectPageWithoutDetail(OplogQueryDTO queryDTO) {
         QueryWrapper<OplogPO> queryWrapper = getQueryWrapper();
         // 分页查询
-        IPage<OplogPO> iPage = new Page<>(queryDTO.getPage(), queryDTO.getSize());
+        IPage<OplogPO> pageInfo = new Page<>(queryDTO.getPage(), queryDTO.getSize());
         // 不查找detail字段
         queryWrapper.select(OplogPO.class, oplog -> !FieldConstant.DETAIL.equals(oplog.getColumn()));
         String operatorIp = queryDTO.getOperatorIp();
@@ -45,7 +45,7 @@ public class OplogDaoImpl extends BaseDaoImpl<OplogPO> implements OplogDao {
         if(queryDTO.getEndTime() != null) {
             queryWrapper.le(FieldConstant.CREATE_TIME, new Timestamp(queryDTO.getEndTime()));
         }
-        return CopyBeanUtil.copyPage(oplogMapper.selectPage(iPage, queryWrapper), Oplog.class);
+        return CopyBeanUtil.copyPage(oplogMapper.selectPage(pageInfo, queryWrapper), Oplog.class);
     }
 
     @Override

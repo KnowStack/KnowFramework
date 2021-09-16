@@ -40,7 +40,9 @@ public class TaskController {
         List<LogITask> logITasks = taskManager.getPagineList(taskPageQueryDTO);
         int count = taskManager.pagineTaskConut(taskPageQueryDTO);
 
-        return PagingResult.buildSucc(logITask2LogITaskVO(logITasks), count, taskPageQueryDTO.getPage(), taskPageQueryDTO.getSize());
+        return PagingResult.buildSucc(
+                logITask2LogITaskVO(logITasks), count, taskPageQueryDTO.getPage(), taskPageQueryDTO.getSize()
+        );
     }
 
     @PostMapping("/{taskCode}/{status}")

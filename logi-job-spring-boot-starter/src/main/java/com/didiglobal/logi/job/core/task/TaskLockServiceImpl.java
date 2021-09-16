@@ -49,7 +49,8 @@ public class TaskLockServiceImpl implements TaskLockService {
 
     @Override
     public Boolean tryAcquire(String taskCode, String workerCode, Long expireTime) {
-        List<LogITaskLockPO> logITaskLockPOList = logITaskLockMapper.selectByTaskCode(taskCode, logIJobProperties.getAppName());
+        List<LogITaskLockPO> logITaskLockPOList =
+                logITaskLockMapper.selectByTaskCode(taskCode, logIJobProperties.getAppName());
 
         boolean hasLock;
         if (CollectionUtils.isEmpty(logITaskLockPOList)) {
@@ -75,7 +76,9 @@ public class TaskLockServiceImpl implements TaskLockService {
                 if (e instanceof SQLException && e.getMessage().contains("Duplicate entry")) {
                     logger.info("class=TaskLockServiceImpl||method=tryAcquire||taskCode=||msg=duplicate key", taskCode);
                 } else {
-                    logger.error("class=TaskLockServiceImpl||method=tryAcquire||taskCode=||msg=", taskCode, e.getMessage());
+                    logger.error(
+                            "class=TaskLockServiceImpl||method=tryAcquire||taskCode=||msg=", taskCode, e.getMessage()
+                    );
                 }
             }
         }

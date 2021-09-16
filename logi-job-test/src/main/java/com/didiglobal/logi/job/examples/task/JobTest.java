@@ -11,19 +11,19 @@ import org.springframework.stereotype.Component;
 @Component
 @Task(name = "cc", description = "hello cc", cron = "0 0/1 * * * ? *", autoRegister = true)
 public class JobTest implements Job {
-  private static final Logger logger = LoggerFactory.getLogger(JobTest.class);
+    private static final Logger logger = LoggerFactory.getLogger(JobTest.class);
 
-  @Override
+    @Override
     public TaskResult execute(JobContext jobContext) throws Exception {
-    for (int i = 0; i < 40; i++) {
+        for (int i = 0; i < 40; i++) {
 //      ThreadUtil.sleep(1, TimeUnit.SECONDS);
-      logger.info("hihi：" + i);
-      System.out.println("hello world");
-    }
+            logger.info("hihi：" + i);
+            System.out.println("hello world");
+        }
 
-    throw new NullPointerException();
+        throw new NullPointerException();
 
 //    return new TaskResult(TaskResult.FAIL_CODE, "sdfsdfsdfdsfsdfdsfsdfsfsfsfs");
-  }
+    }
 
 }
