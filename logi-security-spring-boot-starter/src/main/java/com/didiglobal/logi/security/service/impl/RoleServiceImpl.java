@@ -158,8 +158,8 @@ public class RoleServiceImpl implements RoleService {
         // 更新角色与权限关联信息
         rolePermissionService.updateRolePermission(role.getId(), saveDTO.getPermissionIdList());
         // 保存操作日志
-        OplogDTO oplogDTO = new OplogDTO(OplogConstant.RM, OplogConstant.RM_E, OplogConstant.RM_R, saveDTO.getRoleName());
-        oplogService.saveOplogWithUserId(userId, oplogDTO);
+        oplogService.saveOplogWithUserId(userId,
+                new OplogDTO(OplogConstant.RM, OplogConstant.RM_E, OplogConstant.RM_R, saveDTO.getRoleName()));
     }
 
     @Override
@@ -178,8 +178,8 @@ public class RoleServiceImpl implements RoleService {
             userRoleService.updateUserRoleByUserId(userId, assignDTO.getIdList());
             // 保存操作日志
             UserBriefVO userBriefVO = userService.getUserBriefByUserId(assignDTO.getId());
-            OplogDTO oplogDTO = new OplogDTO(OplogConstant.UM, OplogConstant.UM_AR, OplogConstant.UM_U, userBriefVO.getUsername());
-            Integer oplogId = oplogService.saveOplogWithUserId(operatorId, oplogDTO);
+            Integer oplogId = oplogService.saveOplogWithUserId(operatorId,
+                    new OplogDTO(OplogConstant.UM, OplogConstant.UM_AR, OplogConstant.UM_U, userBriefVO.getUsername()));
             // 打包和保存角色更新消息
             packAndSaveMessage(oplogId, oldRoleIdList, assignDTO);
         } else {
@@ -191,8 +191,8 @@ public class RoleServiceImpl implements RoleService {
             userRoleService.updateUserRoleByRoleId(roleId, assignDTO.getIdList());
             // 保存操作日志
             Role role = roleDao.selectByRoleId(assignDTO.getId());
-            OplogDTO oplogDTO = new OplogDTO(OplogConstant.RM, OplogConstant.RM_AU, OplogConstant.RM_R, role.getRoleName());
-            Integer oplogId = oplogService.saveOplogWithUserId(operatorId, oplogDTO);
+            Integer oplogId = oplogService.saveOplogWithUserId(operatorId,
+                    new OplogDTO(OplogConstant.RM, OplogConstant.RM_AU, OplogConstant.RM_R, role.getRoleName()));
             // 打包和保存角色更新消息
             packAndSaveMessage(oplogId, oldUserIdList, assignDTO);
         }

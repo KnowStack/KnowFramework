@@ -33,8 +33,9 @@ public class PermissionController {
 
     @PostMapping("/import")
     @ApiOperation(value = "权限信息导入", notes = "权限信息导入")
-    public Result<String> imports(@RequestBody @ApiParam(name = "permissionDTOList", value = "权限信息List")  List<PermissionDTO> permissionDTOList) {
-        permissionService.savePermission(permissionDTOList);
+    public Result<String> imports(
+            @RequestBody @ApiParam(name = "permissionDTOList", value = "权限信息List") List<PermissionDTO> list) {
+        permissionService.savePermission(list);
         return Result.success();
     }
 }

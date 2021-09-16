@@ -12,7 +12,8 @@ public interface OplogService {
 
     /**
      * 保存操作日志，并获取操作日志id
-     * @param userId 操作用户id
+     *
+     * @param userId   操作用户id
      * @param oplogDTO 操作日志
      * @return 操作日志id
      */
@@ -20,6 +21,7 @@ public interface OplogService {
 
     /**
      * 分页查询操作日志
+     *
      * @param queryDTO 查询条件
      * @return 分页信息
      */
@@ -27,6 +29,7 @@ public interface OplogService {
 
     /**
      * 根据id查找操作日志详情
+     *
      * @param opLogId 操作日志id
      * @return OplogVo 详情
      */

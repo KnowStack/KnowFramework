@@ -31,18 +31,18 @@ public class PagingData<T> {
         this.bizData = bizData;
     }
 
-    public PagingData(List<T> bizData, IPage<?> iPage) {
+    public PagingData(List<T> bizData, IPage<?> pageInfo) {
         this.pagination = Pagination.builder()
-                .total(iPage.getTotal()).pages(iPage.getPages())
-                .pageNo(iPage.getCurrent()).pageSize(iPage.getSize())
+                .total(pageInfo.getTotal()).pages(pageInfo.getPages())
+                .pageNo(pageInfo.getCurrent()).pageSize(pageInfo.getSize())
                 .build();
         this.bizData = bizData;
     }
 
-    public PagingData(IPage<?> iPage) {
+    public PagingData(IPage<?> pageInfo) {
         this.pagination = Pagination.builder()
-                .total(iPage.getTotal()).pages(iPage.getPages())
-                .pageNo(iPage.getCurrent()).pageSize(iPage.getSize())
+                .total(pageInfo.getTotal()).pages(pageInfo.getPages())
+                .pageNo(pageInfo.getCurrent()).pageSize(pageInfo.getSize())
                 .build();
         this.bizData = new ArrayList<>();
     }

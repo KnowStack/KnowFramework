@@ -50,11 +50,17 @@ public class UserResource {
 
     public UserResource() {}
 
-    public UserResource(Integer userId, Integer projectId, Integer resourceTypeId, Integer resourceId, Integer controlLevel) {
+    public UserResource(Integer userId, Integer projectId, Integer resourceTypeId,
+                        Integer resourceId, Integer controlLevel) {
         this.userId = userId;
         this.projectId = projectId;
         this.resourceTypeId = resourceTypeId;
         this.resourceId = resourceId;
         this.controlLevel = controlLevel;
+    }
+
+    public static UserResource getOpenViewPermissionControlEntity() {
+        // 构造查看控制权限，是否开启的标记实体（全为0）
+        return new UserResource(0, 0, 0, 0, 0);
     }
 }

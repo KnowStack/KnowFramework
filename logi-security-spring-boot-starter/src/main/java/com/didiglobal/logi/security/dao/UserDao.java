@@ -20,7 +20,9 @@ public interface UserDao {
      * @param userIdList 用户idList
      * @return 用户信息page
      */
-    IPage<User> selectPageByDeptIdListAndUserIdList(UserQueryDTO queryDTO, List<Integer> deptIdList, List<Integer> userIdList);
+    IPage<User> selectPageByDeptIdListAndUserIdList(
+            UserQueryDTO queryDTO, List<Integer> deptIdList, List<Integer> userIdList
+    );
 
     /**
      * 根据指定条件分页查询用户简要信息

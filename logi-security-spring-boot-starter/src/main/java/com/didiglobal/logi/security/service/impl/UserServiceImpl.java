@@ -65,9 +65,9 @@ public class UserServiceImpl implements UserService {
         // 获取该部门下的所有子部门idList
         List<Integer> deptIdList = deptService.getDeptIdListByParentId(queryDTO.getDeptId());
 
-        IPage<User> iPage = userDao.selectPageByDeptIdListAndUserIdList(queryDTO, deptIdList, userIdList);
+        IPage<User> pageInfo = userDao.selectPageByDeptIdListAndUserIdList(queryDTO, deptIdList, userIdList);
         List<UserVO> userVOList = new ArrayList<>();
-        List<User> userList = iPage.getRecords();
+        List<User> userList = pageInfo.getRecords();
 
         // 提前获取所有部门
         Map<Integer, Dept> deptMap = deptService.getAllDeptMap();
@@ -82,13 +82,14 @@ public class UserServiceImpl implements UserService {
             privacyProcessing(userVo);
             userVOList.add(userVo);
         }
-        return new PagingData<>(userVOList, iPage);
+        return new PagingData<>(userVOList, pageInfo);
     }
 
     @Override
     public PagingData<UserBriefVO> getUserBriefPage(UserBriefQueryDTO queryDTO) {
         // 查找合适的部门idList
-        List<Integer> deptIdList = deptService.getDeptIdListByParentIdAndDeptName(queryDTO.getDeptId(), queryDTO.getDeptName());
+        List<Integer> deptIdList = deptService.
+                getDeptIdListByParentIdAndDeptName(queryDTO.getDeptId(), queryDTO.getDeptName());
         // 分页获取
         IPage<UserBrief> iPage = userDao.selectBriefPageByDeptIdList(queryDTO, deptIdList);
         List<UserBriefVO> userBriefVOList = CopyBeanUtil.copyList(iPage.getRecords(), UserBriefVO.class);
@@ -210,7 +211,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserBriefVO verifyLogin(AccountLoginDTO loginDTO, HttpServletRequest request) throws LogiSecurityException {
+    public UserBriefVO verifyLogin(AccountLoginDTO loginDTO,
+                                   HttpServletRequest request) throws LogiSecurityException {
         User user = userDao.selectByUsername(loginDTO.getUsername());
         if(user == null) {
             throw new LogiSecurityException(ResultCode.USER_NOT_EXISTS);

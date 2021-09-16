@@ -34,7 +34,7 @@ public class ProjectPOServiceTest extends BaseTest {
     }
 
     @Test
-    public void TestGetDetailByIdOrCode() {
+    public void testGetDetailByIdOrCode() {
         Assert.assertNull(null);
         int projectId = 1;
         ProjectVO projectVO = projectService.getProjectDetailByProjectId(projectId);

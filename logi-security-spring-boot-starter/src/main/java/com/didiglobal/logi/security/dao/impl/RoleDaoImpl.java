@@ -38,12 +38,14 @@ public class RoleDaoImpl extends BaseDaoImpl<RolePO> implements RoleDao {
     public IPage<Role> selectPage(RoleQueryDTO queryDTO) {
         IPage<RolePO> iPage = new Page<>(queryDTO.getPage(), queryDTO.getSize());
         QueryWrapper<RolePO> roleWrapper = getQueryWrapper();
+        String roleName = queryDTO.getRoleName();
+        String description = queryDTO.getDescription();
         if(!StringUtils.isEmpty(queryDTO.getRoleCode())) {
             roleWrapper.eq(FieldConstant.ROLE_CODE, queryDTO.getRoleCode());
         } else {
             roleWrapper
-                    .like(!StringUtils.isEmpty(queryDTO.getRoleName()), FieldConstant.ROLE_NAME, queryDTO.getRoleName())
-                    .like(!StringUtils.isEmpty(queryDTO.getDescription()), FieldConstant.DESCRIPTION, queryDTO.getDescription());
+                    .like(!StringUtils.isEmpty(roleName), FieldConstant.ROLE_NAME, roleName)
+                    .like(!StringUtils.isEmpty(description), FieldConstant.DESCRIPTION, description);
         }
         roleMapper.selectPage(iPage, roleWrapper);
         return CopyBeanUtil.copyPage(iPage, Role.class);

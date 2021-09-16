@@ -97,24 +97,29 @@ public interface UserResourceDao {
     List<Integer> selectResourceIdListByUserId(Integer userId, UserResourceQueryDTO queryDTO);
 
     /**
+     * 删除用户与资源的关联信息
      * @param queryDTO 删除条件
      * @param excludeUserIdList 不删除与这些userId关联的数据
      */
     void deleteWithoutUserIdList(UserResourceQueryDTO queryDTO, List<Integer> excludeUserIdList);
 
     /**
+     * 删除用户与资源的关联信息
      * @param userId 用户id
      * @param queryDTO 删除条件
      * @param excludeIdList 不删除与这些projectId关联的数据
      */
-    void deleteByUserIdWithoutProjectIdList(Integer userId, UserResourceQueryDTO queryDTO, List<Integer> excludeIdList);
+    void deleteByUserIdWithoutProjectIdList(
+            Integer userId, UserResourceQueryDTO queryDTO, List<Integer> excludeIdList);
 
     /**
+     * 删除用户与资源的关联信息
      * @param userId 用户id
      * @param queryDTO 删除条件
      * @param excludeIdList 不删除与这些resourceTypeId关联的数据
      */
-    void deleteByUserIdWithoutResourceTypeIdList(Integer userId, UserResourceQueryDTO queryDTO, List<Integer> excludeIdList);
+    void deleteByUserIdWithoutResourceTypeIdList(
+            Integer userId, UserResourceQueryDTO queryDTO, List<Integer> excludeIdList);
 
     /**
      * 根据指定条件查询，并根据用户id分组

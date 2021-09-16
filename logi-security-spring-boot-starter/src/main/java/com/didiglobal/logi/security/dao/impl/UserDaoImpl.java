@@ -30,13 +30,14 @@ public class UserDaoImpl extends BaseDaoImpl<UserPO> implements UserDao {
     private UserMapper userMapper;
 
     @Override
-    public IPage<User> selectPageByDeptIdListAndUserIdList(UserQueryDTO queryDTO, List<Integer> deptIdList, List<Integer> userIdList) {
-        IPage<UserPO> iPage = new Page<>(queryDTO.getPage(), queryDTO.getSize());
+    public IPage<User> selectPageByDeptIdListAndUserIdList(UserQueryDTO queryDTO, List<Integer> deptIdList,
+                                                           List<Integer> userIdList) {
+        IPage<UserPO> page = new Page<>(queryDTO.getPage(), queryDTO.getSize());
         if(deptIdList != null && deptIdList.isEmpty()) {
-            return CopyBeanUtil.copyPage(iPage, User.class);
+            return CopyBeanUtil.copyPage(page, User.class);
         }
         if(userIdList != null && userIdList.isEmpty()) {
-            return CopyBeanUtil.copyPage(iPage, User.class);
+            return CopyBeanUtil.copyPage(page, User.class);
         }
         QueryWrapper<UserPO> queryWrapper = getQueryWrapper();
         queryWrapper
@@ -44,23 +45,23 @@ public class UserDaoImpl extends BaseDaoImpl<UserPO> implements UserDao {
                 .like(queryDTO.getRealName() != null, FieldConstant.REAL_NAME, queryDTO.getRealName())
                 .in(deptIdList != null, FieldConstant.DEPT_ID, deptIdList)
                 .in(userIdList != null, FieldConstant.ID, userIdList);
-        userMapper.selectPage(iPage, queryWrapper);
-        return CopyBeanUtil.copyPage(iPage, User.class);
+        userMapper.selectPage(page, queryWrapper);
+        return CopyBeanUtil.copyPage(page, User.class);
     }
 
     @Override
     public IPage<UserBrief> selectBriefPageByDeptIdList(UserBriefQueryDTO queryDTO, List<Integer> deptIdList) {
-        IPage<UserPO> iPage = new Page<>(queryDTO.getPage(), queryDTO.getSize());
+        IPage<UserPO> page = new Page<>(queryDTO.getPage(), queryDTO.getSize());
         if(deptIdList != null && deptIdList.isEmpty()) {
-            return CopyBeanUtil.copyPage(iPage, UserBrief.class);
+            return CopyBeanUtil.copyPage(page, UserBrief.class);
         }
         QueryWrapper<UserPO> queryWrapper = wrapBriefQuery();
         queryWrapper
                 .like(!StringUtils.isEmpty(queryDTO.getUsername()), FieldConstant.USERNAME, queryDTO.getUsername())
                 .like(!StringUtils.isEmpty(queryDTO.getRealName()), FieldConstant.REAL_NAME, queryDTO.getRealName())
                 .in(deptIdList != null, FieldConstant.DEPT_ID, deptIdList);
-        userMapper.selectPage(iPage, queryWrapper);
-        return CopyBeanUtil.copyPage(iPage, UserBrief.class);
+        userMapper.selectPage(page, queryWrapper);
+        return CopyBeanUtil.copyPage(page, UserBrief.class);
     }
 
     @Override

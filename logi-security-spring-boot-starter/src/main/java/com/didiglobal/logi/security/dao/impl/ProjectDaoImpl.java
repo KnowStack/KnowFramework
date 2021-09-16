@@ -67,14 +67,14 @@ public class ProjectDaoImpl extends BaseDaoImpl<ProjectPO> implements ProjectDao
 
     @Override
     public IPage<ProjectBrief> selectBriefPage(ProjectBriefQueryDTO queryDTO) {
-        IPage<ProjectPO> iPage = new Page<>(queryDTO.getPage(), queryDTO.getSize());
+        IPage<ProjectPO> page = new Page<>(queryDTO.getPage(), queryDTO.getSize());
         QueryWrapper<ProjectPO> projectWrapper = wrapBriefQuery();
         String projectName = queryDTO.getProjectName();
         if(!StringUtils.isEmpty(projectName)) {
             projectWrapper.like(FieldConstant.PROJECT_NAME, projectName);
         }
-        projectMapper.selectPage(iPage, projectWrapper);
-        return CopyBeanUtil.copyPage(iPage, ProjectBrief.class);
+        projectMapper.selectPage(page, projectWrapper);
+        return CopyBeanUtil.copyPage(page, ProjectBrief.class);
     }
 
     @Override
@@ -83,22 +83,24 @@ public class ProjectDaoImpl extends BaseDaoImpl<ProjectPO> implements ProjectDao
     }
 
     @Override
-    public IPage<Project> selectPageByDeptIdListAndProjectIdList(ProjectQueryDTO queryDTO,
-                                                                   List<Integer> deptIdList, List<Integer> projectIdList) {
-        IPage<ProjectPO> iPage = new Page<>(queryDTO.getPage(), queryDTO.getSize());
+    public IPage<Project> selectPageByDeptIdListAndProjectIdList(ProjectQueryDTO queryDTO, List<Integer> deptIdList,
+                                                                 List<Integer> projectIdList) {
+        IPage<ProjectPO> page = new Page<>(queryDTO.getPage(), queryDTO.getSize());
         if(deptIdList != null && deptIdList.isEmpty()) {
-            return CopyBeanUtil.copyPage(iPage, Project.class);
+            return CopyBeanUtil.copyPage(page, Project.class);
         }
         if(projectIdList != null && projectIdList.isEmpty()) {
-            return CopyBeanUtil.copyPage(iPage, Project.class);
+            return CopyBeanUtil.copyPage(page, Project.class);
         }
         QueryWrapper<ProjectPO> projectWrapper = getQueryWrapper();
+        String projectCode = queryDTO.getProjectCode();
+        String projectName = queryDTO.getProjectName();
         projectWrapper
                 .eq(queryDTO.getRunning() != null, FieldConstant.RUNNING, queryDTO.getRunning())
-                .eq(!StringUtils.isEmpty(queryDTO.getProjectCode()), FieldConstant.PROJECT_CODE, queryDTO.getProjectCode())
-                .like(!StringUtils.isEmpty(queryDTO.getProjectName()), FieldConstant.PROJECT_NAME, queryDTO.getProjectName())
+                .eq(!StringUtils.isEmpty(projectCode), FieldConstant.PROJECT_CODE, projectCode)
+                .like(!StringUtils.isEmpty(projectName), FieldConstant.PROJECT_NAME, projectName)
                 .in(deptIdList != null, FieldConstant.DEPT_ID, deptIdList)
                 .in(projectIdList != null, FieldConstant.ID, projectIdList);
-        return CopyBeanUtil.copyPage(projectMapper.selectPage(iPage, projectWrapper), Project.class);
+        return CopyBeanUtil.copyPage(projectMapper.selectPage(page, projectWrapper), Project.class);
     }
 }

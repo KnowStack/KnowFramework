@@ -38,7 +38,7 @@ public class MessageController {
 
     @PutMapping("/switch")
     @ApiOperation(value = "更改消息状态", notes = "调用该接口则消息状态被反转")
-    public Result<String> switched(@RequestBody @ApiParam(name = "idList", value = "需要改变状态的消息idList") List<Integer> idList) {
+    public Result<String> switched(@RequestBody @ApiParam(name = "idList", value = "消息idList") List<Integer> idList) {
         messageService.changeMessageStatus(idList);
         return Result.success();
     }

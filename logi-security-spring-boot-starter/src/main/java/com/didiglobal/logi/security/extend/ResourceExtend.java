@@ -21,7 +21,9 @@ public interface ResourceExtend {
      * @param size 页大小（分页条件）
      * @return 资源信息List
      */
-    PagingData<ResourceDTO> getResourcePage(Integer projectId, Integer resourceTypeId, String resourceName, int page, int size);
+    PagingData<ResourceDTO> getResourcePage(
+            Integer projectId, Integer resourceTypeId, String resourceName, int page, int size
+    );
 
     /**
      * 获取资源信息List，资源id指的是该资源所在服务对该资源的标识

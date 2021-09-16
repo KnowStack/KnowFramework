@@ -29,17 +29,18 @@ public class ResourceExtendImpl implements ResourceExtend {
     private static final String RESOURCE_NAME = "resource_name";
 
     @Override
-    public PagingData<ResourceDTO> getResourcePage(Integer projectId, Integer resourceTypeId, String resourceName, int page, int size) {
+    public PagingData<ResourceDTO> getResourcePage(Integer projectId, Integer resourceTypeId,
+                                                   String resourceName, int page, int size) {
 
-        IPage<ProjectResourcePO> iPage = new Page<>(page, size);
+        IPage<ProjectResourcePO> pageInfo = new Page<>(page, size);
         QueryWrapper<ProjectResourcePO> queryWrapper = new QueryWrapper<>();
         queryWrapper
                 .eq(projectId != null, PROJECT_ID, projectId)
                 .eq(resourceTypeId != null, RESOURCE_TYPE_ID, resourceTypeId)
                 .like(!StringUtils.isEmpty(resourceName), RESOURCE_NAME, resourceName);
-        projectResourceMapper.selectPage(iPage, queryWrapper);
-        List<ResourceDTO> resourceDTOList = CopyBeanUtil.copyList(iPage.getRecords(), ResourceDTO.class);
-        return new PagingData<>(resourceDTOList, iPage);
+        projectResourceMapper.selectPage(pageInfo, queryWrapper);
+        List<ResourceDTO> resourceDTOList = CopyBeanUtil.copyList(pageInfo.getRecords(), ResourceDTO.class);
+        return new PagingData<>(resourceDTOList, pageInfo);
     }
 
     @Override

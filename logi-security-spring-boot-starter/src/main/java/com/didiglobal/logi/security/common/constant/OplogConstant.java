@@ -41,6 +41,22 @@ public class OplogConstant {
 
     public static final String UM_AR = "分配角色";
 
+    // ---------------------------------------
+
+    public static final String PM = "项目配置";
+
+    public static final String PM_P = "项目";
+
+    public static final String PM_A = "新增";
+
+    public static final String PM_D = "删除";
+
+    public static final String PM_E = "编辑";
+
+    public static final String PM_U = "启用";
+
+    public static final String PM_S = "停用";
+
     private OplogConstant() {}
 
 }

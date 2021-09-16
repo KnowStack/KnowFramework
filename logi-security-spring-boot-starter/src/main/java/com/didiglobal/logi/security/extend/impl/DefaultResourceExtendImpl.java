@@ -14,7 +14,8 @@ import java.util.List;
 @Component("logiSecurityDefaultResourceExtendImpl")
 public class DefaultResourceExtendImpl implements ResourceExtend {
     @Override
-    public PagingData<ResourceDTO> getResourcePage(Integer projectId, Integer resourceTypeId, String resourceName, int page, int size) {
+    public PagingData<ResourceDTO> getResourcePage(Integer projectId, Integer resourceTypeId,
+                                                   String resourceName, int page, int size) {
         return null;
     }
 

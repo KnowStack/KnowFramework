@@ -33,7 +33,9 @@ public interface ProjectDao {
      * @param projectIdList 项目idList
      * @return 分页信息
      */
-    IPage<Project> selectPageByDeptIdListAndProjectIdList(ProjectQueryDTO queryDTO, List<Integer> deptIdList, List<Integer> projectIdList);
+    IPage<Project> selectPageByDeptIdListAndProjectIdList(
+            ProjectQueryDTO queryDTO, List<Integer> deptIdList, List<Integer> projectIdList
+    );
 
     /**
      * 根据项目id删除

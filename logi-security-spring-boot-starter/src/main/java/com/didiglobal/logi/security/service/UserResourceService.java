@@ -55,7 +55,8 @@ public interface UserResourceService {
      * @param assignDTO 分配信息
      * @throws LogiSecurityException 异常信息
      */
-    void assignResourcePermission(AssignToManyUserDTO assignDTO, HttpServletRequest request) throws LogiSecurityException;
+    void assignResourcePermission(AssignToManyUserDTO assignDTO,
+                                  HttpServletRequest request) throws LogiSecurityException;
 
     /**
      * 批量分配资源的权限给用户
@@ -64,7 +65,8 @@ public interface UserResourceService {
      * @param assignDTO 分配信息
      * @throws LogiSecurityException 异常信息
      */
-    void batchAssignResourcePermission(BatchAssignDTO assignDTO, HttpServletRequest request) throws LogiSecurityException;
+    void batchAssignResourcePermission(BatchAssignDTO assignDTO,
+                                       HttpServletRequest request) throws LogiSecurityException;
 
     /**
      * 资源权限管理/按用户管理/分配资源/数据列表的信息

@@ -78,7 +78,7 @@ public class UserResourceServiceImpl implements UserResourceService {
      */
     @Override
     public boolean getViewPermissionControlStatus() {
-        UserResourceQueryDTO queryDTO = new UserResourceQueryDTO(0, 0, 0, 0);
+        UserResourceQueryDTO queryDTO = UserResourceQueryDTO.getOpenViewPermissionControlQueryEntity();
         return userResourceDao.selectCountByUserId(0, queryDTO) > 0;
     }
 
@@ -100,7 +100,9 @@ public class UserResourceServiceImpl implements UserResourceService {
             List<ProjectBriefVO> projectBriefVOList = projectService.getProjectBriefList();
             for (ProjectBriefVO projectBriefVO : projectBriefVOList) {
                 MByUDataVO dataVo = new MByUDataVO(projectBriefVO.getId(), projectBriefVO.getProjectName());
-                HasLevelCode hasLevel = getHasLevel(isBatch, controlLevel, userId, projectBriefVO.getId(), null, null);
+                HasLevelCode hasLevel = getHasLevel(
+                        isBatch, controlLevel, userId, projectBriefVO.getId(), null, null
+                );
                 dataVo.setHasLevel(hasLevel.getType());
                 resultList.add(dataVo);
             }
@@ -109,7 +111,9 @@ public class UserResourceServiceImpl implements UserResourceService {
             List<ResourceTypeVO> resourceTypeVOList = resourceTypeService.getAllResourceTypeList();
             for (ResourceTypeVO resourceTypeVO : resourceTypeVOList) {
                 MByUDataVO dataVo = new MByUDataVO(resourceTypeVO.getId(), resourceTypeVO.getTypeName());
-                HasLevelCode hasLevel = getHasLevel(isBatch, controlLevel, userId, projectId, resourceTypeVO.getId(), null);
+                HasLevelCode hasLevel = getHasLevel(
+                        isBatch, controlLevel, userId, projectId, resourceTypeVO.getId(), null
+                );
                 dataVo.setHasLevel(hasLevel.getType());
                 resultList.add(dataVo);
             }
@@ -119,7 +123,9 @@ public class UserResourceServiceImpl implements UserResourceService {
             List<ResourceDTO> resourceDTOList = resourceExtend.getResourceList(projectId, resourceTypeId);
             for (ResourceDTO resourceDto : resourceDTOList) {
                 MByUDataVO dataVo = new MByUDataVO(resourceDto.getResourceId(), resourceDto.getResourceName());
-                HasLevelCode hasLevel = getHasLevel(isBatch, controlLevel, userId, projectId, resourceTypeId, resourceDto.getResourceId());
+                HasLevelCode hasLevel = getHasLevel(
+                        isBatch, controlLevel, userId, projectId, resourceTypeId, resourceDto.getResourceId()
+                );
                 dataVo.setHasLevel(hasLevel.getType());
                 resultList.add(dataVo);
             }
@@ -145,7 +151,9 @@ public class UserResourceServiceImpl implements UserResourceService {
             dataVo.setUserId(userBriefVO.getId());
             dataVo.setUsername(userBriefVO.getUsername());
             dataVo.setRealName(userBriefVO.getRealName());
-            HasLevelCode hasLevel = getHasLevel(isBatch, controlLevel, userBriefVO.getId(), projectId, resourceTypeId, resourceId);
+            HasLevelCode hasLevel = getHasLevel(
+                    isBatch, controlLevel, userBriefVO.getId(), projectId, resourceTypeId, resourceId
+            );
             dataVo.setHasLevel(hasLevel.getType());
             result.add(dataVo);
         });
@@ -194,14 +202,14 @@ public class UserResourceServiceImpl implements UserResourceService {
         boolean isOn = getViewPermissionControlStatus();
         if (isOn) {
             // 如果true，则之前已经打开了资源的查看权限控制，将要置为false，则所有人具有查看权限
-            UserResourceQueryDTO queryDTO = new UserResourceQueryDTO(0, 0, 0, 0);
+            UserResourceQueryDTO queryDTO = UserResourceQueryDTO.getOpenViewPermissionControlQueryEntity();
             userResourceDao.deleteByUserId(0, queryDTO);
         } else {
             // 如果false，则之前关闭了资源的查看权限控制，将要置为true，则所有人不具有查看权限
             // 则等于查看权限level的记录都要被删除（因为查看权限控制将被置为false，所有人默认具有查看权限）
             userResourceDao.deleteByControlLevel(ControlLevelCode.VIEW);
             // 构造全0的数据，表示 资源查看权限控制 被开启了
-            UserResource userResource = new UserResource(0, 0, 0, 0, 0);
+            UserResource userResource = UserResource.getOpenViewPermissionControlEntity();
             userResourceDao.insert(userResource);
         }
     }
@@ -240,7 +248,8 @@ public class UserResourceServiceImpl implements UserResourceService {
      * @param resourceTypeId 资源类别id
      * @param resourceId     具体资源id
      */
-    private void checkParam(Integer controlLevel, Integer projectId, Integer resourceTypeId, Integer resourceId) throws LogiSecurityException {
+    private void checkParam(Integer controlLevel, Integer projectId,
+                            Integer resourceTypeId, Integer resourceId) throws LogiSecurityException {
         if (projectId == null) {
             // 项目id不可为nul
             throw new LogiSecurityException(ResultCode.PROJECT_ID_CANNOT_BE_NULL);
@@ -371,7 +380,7 @@ public class UserResourceServiceImpl implements UserResourceService {
         int controlLevel = assignDTO.getControlLevel();
 
         // 删除old的关联信息
-        UserResourceQueryDTO queryDTO = new UserResourceQueryDTO(controlLevel, projectId, resourceTypeId, null);
+        UserResourceQueryDTO queryDTO = new UserResourceQueryDTO(controlLevel, projectId, resourceTypeId);
         if (CollectionUtils.isEmpty(assignDTO.getExcludeIdList())) {
             // 如果不存在排除的idList，则
             userResourceDao.deleteByUserId(userId, queryDTO);
@@ -384,18 +393,21 @@ public class UserResourceServiceImpl implements UserResourceService {
         List<Integer> idList = assignDTO.getIdList();
         List<Integer> userIdList = new ArrayList<>();
         userIdList.add(userId);
-        List<UserResource> userResourceList = getUserResourceList(projectId, resourceTypeId, controlLevel, idList, userIdList);
+        List<UserResource> userResourceList = getUserResourceList(
+                projectId, resourceTypeId, controlLevel, idList, userIdList
+        );
         // 插入new关联信息
         userResourceDao.insertBatch(userResourceList);
 
         // 保存操作日志
-        OplogDTO oplogDTO = new OplogDTO(OplogConstant.RPM, OplogConstant.RPM_AR, OplogConstant.RPM_U, "用户+资源名称");
-        oplogService.saveOplogWithUserId(userId, oplogDTO);
+        oplogService.saveOplogWithUserId(userId,
+                new OplogDTO(OplogConstant.RPM, OplogConstant.RPM_AR, OplogConstant.RPM_U, "用户+资源名称"));
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void assignResourcePermission(AssignToManyUserDTO assignDTO, HttpServletRequest request) throws LogiSecurityException {
+    public void assignResourcePermission(AssignToManyUserDTO assignDTO,
+                                         HttpServletRequest request) throws LogiSecurityException {
         // 检查参数
         checkParam(assignDTO);
         List<Integer> userIdList = assignDTO.getUserIdList();
@@ -424,8 +436,8 @@ public class UserResourceServiceImpl implements UserResourceService {
         userResourceDao.insertBatch(buildUserResourceList(controlLevel, userIdList, resourceDTOList));
 
         // 保存操作日志
-        OplogDTO oplogDTO = new OplogDTO(OplogConstant.RPM, OplogConstant.RPM_AU, OplogConstant.RPM_R, "资源名称+用户");
-        oplogService.saveOplogWithUserId(HttpRequestUtil.getOperatorId(request), oplogDTO);
+        oplogService.saveOplogWithUserId(HttpRequestUtil.getOperatorId(request),
+                new OplogDTO(OplogConstant.RPM, OplogConstant.RPM_AU, OplogConstant.RPM_R, "资源名称+用户"));
     }
 
     /**
@@ -439,7 +451,7 @@ public class UserResourceServiceImpl implements UserResourceService {
      */
     private void deleteOldRelationBeforeBatchAssign(Integer projectId, Integer resourceTypeId,
                                                     boolean flag, int controlLevel, List<Integer> idList) {
-        UserResourceQueryDTO queryDTO = new UserResourceQueryDTO(controlLevel, projectId, resourceTypeId, null);
+        UserResourceQueryDTO queryDTO = new UserResourceQueryDTO(controlLevel, projectId, resourceTypeId);
         if (flag) {
             // 按资源管理/批量分配用户，先删除N资源先前已分配的用户
             if (projectId == null) {
@@ -460,7 +472,8 @@ public class UserResourceServiceImpl implements UserResourceService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void batchAssignResourcePermission(BatchAssignDTO assignDTO, HttpServletRequest request) throws LogiSecurityException {
+    public void batchAssignResourcePermission(BatchAssignDTO assignDTO,
+                                              HttpServletRequest request) throws LogiSecurityException {
         // 检查参数
         checkParam(assignDTO);
         // 获取参数
@@ -468,20 +481,22 @@ public class UserResourceServiceImpl implements UserResourceService {
         List<Integer> idList = assignDTO.getIdList();
         int controlLevel = assignDTO.getControlLevel();
         boolean assignFlag = assignDTO.getAssignFlag();
+        Integer projectId = assignDTO.getProjectId();
+        Integer resourceTypeId = assignDTO.getResourceTypeId();
         // 先删除全部old关联信息
-        deleteOldRelationBeforeBatchAssign(assignDTO.getProjectId(), assignDTO.getResourceTypeId(), assignFlag, controlLevel, idList);
+        deleteOldRelationBeforeBatchAssign(projectId, resourceTypeId, assignFlag, controlLevel, idList);
         // 插入新关联信息
-        userResourceDao.insertBatch(getUserResourceList(assignDTO.getProjectId(), assignDTO.getResourceTypeId(), controlLevel, idList, userIdList));
+        userResourceDao.insertBatch(getUserResourceList(projectId, resourceTypeId, controlLevel, idList, userIdList));
 
         Integer userId = HttpRequestUtil.getOperatorId(request);
         if (assignFlag) {
             // 保存操作日志
-            OplogDTO oplogDTO = new OplogDTO(OplogConstant.RPM, OplogConstant.RPM_BAU, OplogConstant.RPM_R, "资源名称+用户");
-            oplogService.saveOplogWithUserId(userId, oplogDTO);
+            oplogService.saveOplogWithUserId(userId,
+                    new OplogDTO(OplogConstant.RPM, OplogConstant.RPM_BAU, OplogConstant.RPM_R, "资源名称+用户"));
         } else {
             // 保存操作日志
-            OplogDTO oplogDTO = new OplogDTO(OplogConstant.RPM, OplogConstant.RPM_BAR, OplogConstant.RPM_U, "用户+资源名称");
-            oplogService.saveOplogWithUserId(userId, oplogDTO);
+            oplogService.saveOplogWithUserId(userId,
+                    new OplogDTO(OplogConstant.RPM, OplogConstant.RPM_BAR, OplogConstant.RPM_U, "用户+资源名称"));
         }
     }
 
@@ -526,11 +541,15 @@ public class UserResourceServiceImpl implements UserResourceService {
             // 设置部门信息
             dataVo.setDeptList(deptService.getDeptBriefListFromDeptMapByChildId(deptMap, userBriefVO.getDeptId()));
             // 计算管理权限资源数
-            dataVo.setAdminResourceCnt(userResourceDao.selectCountByUserIdAndControlLevel(userBriefVO.getId(), ControlLevelCode.ADMIN));
+            dataVo.setAdminResourceCnt(
+                    userResourceDao.selectCountByUserIdAndControlLevel(userBriefVO.getId(), ControlLevelCode.ADMIN)
+            );
             // 如果 资源查看控制权限 没开启，就不计算了
             if (isOn) {
                 // 计算查看权限资源数
-                dataVo.setViewResourceCnt(userResourceDao.selectCountByUserIdAndControlLevel(userBriefVO.getId(), ControlLevelCode.VIEW));
+                dataVo.setViewResourceCnt(
+                        userResourceDao.selectCountByUserIdAndControlLevel(userBriefVO.getId(), ControlLevelCode.VIEW)
+                );
             }
             result.add(dataVo);
         });
@@ -563,7 +582,8 @@ public class UserResourceServiceImpl implements UserResourceService {
         return result;
     }
 
-    private void checkParam(Integer showLevel, Integer projectId, Integer resourceTypeId) throws LogiSecurityException {
+    private void checkParam(Integer showLevel, Integer projectId,
+                            Integer resourceTypeId) throws LogiSecurityException {
         if (ShowLevelCode.getByType(showLevel) == null) {
             // 请输入有效的展示级别（1 <= showLevel <= 3）
             throw new LogiSecurityException(ResultCode.RESOURCE_INVALID_SHOW_LEVEL);
@@ -618,7 +638,8 @@ public class UserResourceServiceImpl implements UserResourceService {
      * @return PagingData<ManageByResourceVo>
      */
     private PagingData<MByRVO> dealProjectLevel(MByRQueryDTO mByRQueryDTO, boolean isOn) {
-        PagingData<ProjectBriefVO> projectPage = projectService.getProjectBriefPage(new ProjectBriefQueryDTO(mByRQueryDTO));
+        ProjectBriefQueryDTO projectBriefQueryDTO = new ProjectBriefQueryDTO(mByRQueryDTO);
+        PagingData<ProjectBriefVO> projectPage = projectService.getProjectBriefPage(projectBriefQueryDTO);
 
         List<MByRVO> result = Collections.synchronizedList(new ArrayList<>());
         projectPage.getBizData().parallelStream().forEach(projectBriefVO -> {
@@ -627,13 +648,14 @@ public class UserResourceServiceImpl implements UserResourceService {
             data.setProjectCode(projectBriefVO.getProjectCode());
             data.setProjectName(projectBriefVO.getProjectName());
 
+            Integer projectId = projectBriefVO.getId();
             // 获取管理权限用户数
-            UserResourceQueryDTO queryDTO = new UserResourceQueryDTO(ControlLevelCode.ADMIN.getType(), projectBriefVO.getId(), null, null);
+            UserResourceQueryDTO queryDTO = new UserResourceQueryDTO(ControlLevelCode.ADMIN.getType(), projectId);
             data.setAdminUserCnt(getAdminOrViewUserCnt(queryDTO));
 
             if (isOn) {
                 // 获取查看权限用户数
-                queryDTO = new UserResourceQueryDTO(ControlLevelCode.VIEW.getType(), projectBriefVO.getId(), null, null);
+                queryDTO = new UserResourceQueryDTO(ControlLevelCode.VIEW.getType(), projectId);
                 data.setViewUserCnt(getAdminOrViewUserCnt(queryDTO));
             }
             result.add(data);
@@ -650,8 +672,8 @@ public class UserResourceServiceImpl implements UserResourceService {
      */
     private PagingData<MByRVO> dealResourceTypeLevel(MByRQueryDTO queryDTO, boolean isOn) {
         List<MByRVO> result = Collections.synchronizedList(new ArrayList<>());
-
-        PagingData<ResourceTypeVO> resourceTypePage = resourceTypeService.getResourceTypePage(new ResourceTypeQueryDTO(queryDTO));
+        ResourceTypeQueryDTO resourceTypeQueryDTO = new ResourceTypeQueryDTO(queryDTO);
+        PagingData<ResourceTypeVO> resourceTypePage = resourceTypeService.getResourceTypePage(resourceTypeQueryDTO);
 
         // 获取项目信息
         ProjectBriefVO projectBriefVO = projectService.getProjectBriefByProjectId(queryDTO.getProjectId());
@@ -663,12 +685,14 @@ public class UserResourceServiceImpl implements UserResourceService {
             data.setProjectName(projectBriefVO.getProjectName());
 
             // 获取管理权限用户数
-            UserResourceQueryDTO queryDTO2 = new UserResourceQueryDTO(ControlLevelCode.ADMIN.getType(), queryDTO.getProjectId(), resourceTypeVO.getId(), null);
+            UserResourceQueryDTO queryDTO2 = new UserResourceQueryDTO(
+                    ControlLevelCode.ADMIN.getType(), queryDTO.getProjectId(), resourceTypeVO.getId());
             data.setAdminUserCnt(getAdminOrViewUserCnt(queryDTO2));
 
             if (isOn) {
                 // 获取查看权限用户数
-                queryDTO2 = new UserResourceQueryDTO(ControlLevelCode.VIEW.getType(), queryDTO.getProjectId(), resourceTypeVO.getId(), null);
+                queryDTO2 = new UserResourceQueryDTO(
+                        ControlLevelCode.VIEW.getType(), queryDTO.getProjectId(), resourceTypeVO.getId());
                 data.setViewUserCnt(getAdminOrViewUserCnt(queryDTO2));
             }
             result.add(data);
@@ -696,7 +720,9 @@ public class UserResourceServiceImpl implements UserResourceService {
 
         List<MByRVO> list = new ArrayList<>();
         // 获取资源类别信息
-        ResourceTypeVO resourceTypeVO = resourceTypeService.getResourceTypeByResourceTypeId(queryDTO.getResourceTypeId());
+        Integer projectId = queryDTO.getProjectId();
+        Integer resourceTypeId = queryDTO.getResourceTypeId();
+        ResourceTypeVO resourceTypeVO = resourceTypeService.getResourceTypeByResourceTypeId(resourceTypeId);
 
         for (ResourceDTO resourceDTO : page.getBizData()) {
             MByRVO data = new MByRVO();
@@ -707,12 +733,14 @@ public class UserResourceServiceImpl implements UserResourceService {
             data.setResourceName(resourceDTO.getResourceName());
 
             // 获取管理权限用户数
-            UserResourceQueryDTO queryDTO2 = new UserResourceQueryDTO(ControlLevelCode.ADMIN.getType(), queryDTO.getProjectId(), queryDTO.getResourceTypeId(), resourceDTO.getResourceId());
+            UserResourceQueryDTO queryDTO2 = new UserResourceQueryDTO(
+                    ControlLevelCode.ADMIN.getType(), projectId, resourceTypeId, resourceDTO.getResourceId());
             data.setAdminUserCnt(userResourceDao.selectCountGroupByUserId(queryDTO2));
 
             if (isOn) {
                 // 获取查看权限用户数
-                queryDTO2 = new UserResourceQueryDTO(ControlLevelCode.VIEW.getType(), queryDTO.getProjectId(), queryDTO.getResourceTypeId(), resourceDTO.getResourceId());
+                queryDTO2 = new UserResourceQueryDTO(
+                        ControlLevelCode.VIEW.getType(), projectId, resourceTypeId, resourceDTO.getResourceId());
                 data.setViewUserCnt(userResourceDao.selectCountGroupByUserId(queryDTO2));
             }
             list.add(data);
