@@ -7,7 +7,7 @@ spring:
     jdbc-url: jdbc:mysql://10.179.222.237:4859/es_manager_test?useUnicode=true&characterEncoding=utf8&jdbcCompliantTruncation=true&allowMultiQueries=true&useSSL=false
     username: didi_cCHn
     password: KEA9kEPR4
-    driver-class-name: com.mysql.jdbc.Driver
+    driver-class-name: org.mariadb.jdbc.Driver
     max-lifetime: 60000
     init-sql: true
     init-thread-num: 10

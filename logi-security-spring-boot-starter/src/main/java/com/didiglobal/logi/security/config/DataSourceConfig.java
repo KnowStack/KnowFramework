@@ -49,7 +49,7 @@ public class DataSourceConfig {
     @Bean("logiSecurityMybatisPlusInterceptor")
     public MybatisPlusInterceptor mybatisPlusInterceptor() {
         MybatisPlusInterceptor interceptor = new MybatisPlusInterceptor();
-        interceptor.addInnerInterceptor(new PaginationInnerInterceptor(DbType.MYSQL));
+        interceptor.addInnerInterceptor(new PaginationInnerInterceptor(DbType.MARIADB));
         return interceptor;
     }
 

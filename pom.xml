@@ -25,7 +25,6 @@
 
         <logi.version>1.0-SNAPSHOT</logi.version>
         <spring-boot.version>2.2.11.RELEASE</spring-boot.version>
-        <mysql.version>5.1.41</mysql.version>
         <mybatis-plus.version>3.3.2</mybatis-plus.version>
         <mybatis.version>2.1.0</mybatis.version>
         <freemarker.version>2.3.29</freemarker.version>
@@ -59,11 +58,17 @@
                 <scope>import</scope>
             </dependency>
 
-            <!-- mysql -->
             <dependency>
-                <groupId>mysql</groupId>
-                <artifactId>mysql-connector-java</artifactId>
-                <version>${mysql.version}</version>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-starter-jdbc</artifactId>
+                <version>${spring-boot.version}</version>
+            </dependency>
+
+            <!-- 数据库驱动 -->
+            <dependency>
+                <groupId>org.mariadb.jdbc</groupId>
+                <artifactId>mariadb-java-client</artifactId>
+                <version>2.5.4</version>
             </dependency>
 
             <!-- mybatis  -->
