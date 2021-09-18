@@ -45,7 +45,7 @@ import static com.didiglobal.logi.job.common.TaskResult.RUNNING_CODE;
 /**
  * job manager impl.
  *
- * @author dengshan
+ * @author ds
  */
 @Service
 public class JobManagerImpl implements JobManager {

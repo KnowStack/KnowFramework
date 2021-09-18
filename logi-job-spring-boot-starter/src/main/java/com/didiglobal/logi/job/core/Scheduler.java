@@ -3,7 +3,7 @@ package com.didiglobal.logi.job.core;
 /**
  * 一个worker代表调度执行，负责调度管理.
  *
- * @author dengshan
+ * @author ds
  */
 public interface Scheduler {
 

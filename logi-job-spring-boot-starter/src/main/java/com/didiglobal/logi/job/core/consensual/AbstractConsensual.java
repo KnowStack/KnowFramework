@@ -23,7 +23,7 @@ import org.springframework.stereotype.Service;
 /**
  * 随机算法.
  *
- * @author dengshan
+ * @author ds
  */
 @Service
 public abstract class AbstractConsensual implements Consensual {

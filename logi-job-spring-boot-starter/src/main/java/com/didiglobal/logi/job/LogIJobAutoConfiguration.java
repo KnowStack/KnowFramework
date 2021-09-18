@@ -19,7 +19,7 @@ import org.springframework.transaction.PlatformTransactionManager;
 /**
  * 配置类.
  *
- * @author dengshan
+ * @author ds
  */
 @Configuration
 @ConditionalOnClass({Scheduler.class, PlatformTransactionManager.class})

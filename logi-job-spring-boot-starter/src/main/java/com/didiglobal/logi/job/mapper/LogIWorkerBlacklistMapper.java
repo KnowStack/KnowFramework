@@ -14,7 +14,7 @@ import org.apache.ibatis.annotations.Select;
  * worker黑名单列表信息 Mapper 接口.
  * </p>
  *
- * @author dengshan
+ * @author ds
  * @since 2020-11-10
  */
 public interface LogIWorkerBlacklistMapper {

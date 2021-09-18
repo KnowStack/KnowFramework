@@ -6,7 +6,7 @@ import com.didiglobal.logi.job.common.domain.LogITask;
 /**
  * job factory.
  *
- * @author dengshan
+ * @author ds
  */
 public interface JobFactory {
     void addJob(String className, Job job);

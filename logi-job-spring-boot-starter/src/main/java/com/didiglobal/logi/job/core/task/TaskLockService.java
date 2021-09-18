@@ -7,7 +7,7 @@ import java.util.List;
 /**
  * task lock service.
  *
- * @author dengshan
+ * @author ds
  */
 public interface TaskLockService {
     /**

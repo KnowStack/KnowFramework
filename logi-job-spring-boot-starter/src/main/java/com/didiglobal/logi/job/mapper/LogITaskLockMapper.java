@@ -15,7 +15,7 @@ import org.apache.ibatis.annotations.Update;
  * 任务锁 Mapper 接口.
  * </p>
  *
- * @author dengshan
+ * @author ds
  * @since 2020-11-10
  */
 public interface LogITaskLockMapper {
