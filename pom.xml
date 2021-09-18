@@ -24,7 +24,7 @@
         <maven.compiler.target>${java.version}</maven.compiler.target>
 
         <logi.version>1.0-SNAPSHOT</logi.version>
-        <spring-boot.version>2.2.11.RELEASE</spring-boot.version>
+        <spring-boot.version>2.2.13.RELEASE</spring-boot.version>
         <mybatis-plus.version>3.3.2</mybatis-plus.version>
         <mybatis.version>2.1.0</mybatis.version>
         <mybatis-plus.version>3.4.2</mybatis-plus.version>
@@ -38,7 +38,7 @@
         <commons-collections.version>3.2.2</commons-collections.version>
         <swagger.version>2.9.0</swagger.version>
         <lombok.version>1.18.16</lombok.version>
-        <jackson.version>2.9.10</jackson.version>
+        <jackson.version>2.12.4</jackson.version>
         <oshi-core.version>5.3.6</oshi-core.version>
         <fastjson.version>1.2.76</fastjson.version>
         <junit.version>4.13.2</junit.version>
@@ -63,6 +63,12 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-starter-jdbc</artifactId>
                 <version>${spring-boot.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.yaml</groupId>
+                        <artifactId>snakeyaml</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
             <!-- ======spring-boot-starter-jdbc===== -->
 
@@ -72,11 +78,25 @@
                 <artifactId>spring-boot-starter-web</artifactId>
                 <version>${spring-boot.version}</version>
                 <!-- 这些排除的依赖，记得给 logi-common的child pom 加上 -->
+                <exclusions>
+                    <exclusion>
+                        <groupId>com.fasterxml.jackson.core</groupId>
+                        <artifactId>jackson-databind</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.yaml</groupId>
+                        <artifactId>snakeyaml</artifactId>
+                    </exclusion>
+                </exclusions>
                 <!--
                 <exclusions>
                     <exclusion>
                         <groupId>junit</groupId>
                         <artifactId>junit</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.springframework</groupId>
+                        <artifactId>spring-web</artifactId>
                     </exclusion>
                     <exclusion>
                         <groupId>com.fasterxml.jackson.core</groupId>
@@ -85,14 +105,6 @@
                     <exclusion>
                         <groupId>ch.qos.logback</groupId>
                         <artifactId>logback-classic</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.springframework</groupId>
-                        <artifactId>spring-web</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.yaml</groupId>
-                        <artifactId>snakeyaml</artifactId>
                     </exclusion>
                     <exclusion>
                         <groupId>com.fasterxml.jackson.core</groupId>
@@ -115,16 +127,6 @@
                 <version>${jackson.version}</version>
             </dependency>
             <dependency>
-                <groupId>org.yaml</groupId>
-                <artifactId>snakeyaml</artifactId>
-                <version>1.20</version>
-            </dependency>
-            <dependency>
-                <groupId>org.springframework</groupId>
-                <artifactId>spring-web</artifactId>
-                <version>5.3.7</version>
-            </dependency>
-            <dependency>
                 <groupId>ch.qos.logback</groupId>
                 <artifactId>logback-classic</artifactId>
                 <version>${logback.version}</version>
@@ -137,7 +139,6 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-starter-test</artifactId>
                 <version>${spring-boot.version}</version>
-                <!--
                 <exclusions>
                     <exclusion>
                         <groupId>junit</groupId>
@@ -148,18 +149,15 @@
                         <artifactId>json-smart</artifactId>
                     </exclusion>
                 </exclusions>
-                -->
             </dependency>
             <!-- =======spring-boot-starter-test======= -->
 
             <!-- =======spring-boot-starter-test 补充依赖======= -->
-            <!--
             <dependency>
                 <groupId>net.minidev</groupId>
                 <artifactId>json-smart</artifactId>
                 <version>${json-smart.version}</version>
             </dependency>
-            -->
             <dependency>
                 <groupId>junit</groupId>
                 <artifactId>junit</artifactId>
@@ -185,6 +183,10 @@
                     <exclusion>
                         <groupId>org.mybatis</groupId>
                         <artifactId>mybatis</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.yaml</groupId>
+                        <artifactId>snakeyaml</artifactId>
                     </exclusion>
                 </exclusions>
             </dependency>
@@ -280,6 +282,12 @@
                 <scope>provided</scope>
             </dependency>
             <!-- ======servlet===== -->
+
+            <dependency>
+                <groupId>org.yaml</groupId>
+                <artifactId>snakeyaml</artifactId>
+                <version>1.20</version>
+            </dependency>
 
         </dependencies>
     </dependencyManagement>
