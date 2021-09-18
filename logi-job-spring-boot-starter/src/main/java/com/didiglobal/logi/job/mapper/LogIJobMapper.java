@@ -14,7 +14,7 @@ import org.apache.ibatis.annotations.Select;
  * 正在执行的job信息 Mapper 接口.
  * </p>
  *
- * @author dengshan
+ * @author ds
  * @since 2020-11-10
  */
 public interface LogIJobMapper {

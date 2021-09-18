@@ -10,7 +10,7 @@ import java.util.List;
 /**
  * 任务的CRUD及执行管控.
  *
- * @author dengshan
+ * @author ds
  */
 public interface TaskManager {
 

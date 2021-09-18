@@ -14,7 +14,7 @@ import org.springframework.stereotype.Component;
 /**
  * job thread pool executor.
  *
- * @author dengshan
+ * @author ds
  */
 @Component
 public class JobExecutor {

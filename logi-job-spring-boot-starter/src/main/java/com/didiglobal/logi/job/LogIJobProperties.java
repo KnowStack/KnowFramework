@@ -6,7 +6,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 /**
  * job属性.
  *
- * @author dengshan
+ * @author ds
  */
 @ConfigurationProperties("spring.logi-job")
 @Data

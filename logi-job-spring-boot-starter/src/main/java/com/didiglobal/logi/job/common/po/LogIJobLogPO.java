@@ -12,7 +12,7 @@ import lombok.experimental.Accessors;
  * job执行历史日志.
  * </p>
  *
- * @author dengshan
+ * @author ds
  * @since 2020-11-10
  */
 @Data

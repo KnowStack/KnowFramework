@@ -9,7 +9,7 @@ import java.util.concurrent.Future;
 /**
  * job管理器，负责CRUD、启动、暂停job.
  *
- * @author dengshan
+ * @author ds
  */
 public interface JobManager {
 

@@ -32,7 +32,7 @@ public class SwaggerConfig {
                 .title("logi-security在线文档")
                 .description(("用户、项目、角色、部门、界面权限、资源权限、操作日志、消息通知"))
                 // 作者信息
-                .contact(new Contact("didi","",""))
+                .contact(new Contact("home","",""))
                 .version("v1.0")
                 .build();
     }

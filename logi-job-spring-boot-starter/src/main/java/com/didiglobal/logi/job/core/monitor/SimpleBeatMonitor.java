@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
 /**
  * simple beat monitor.
  *
- * @author dengshan
+ * @author ds
  */
 @Service
 public class SimpleBeatMonitor implements BeatMonitor {

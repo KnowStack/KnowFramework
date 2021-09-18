@@ -6,7 +6,7 @@ import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 /**
- * @author jmcai
+ * @author cjm
  */
 @Configuration("logiSecurityInterceptorConfig")
 public class InterceptorConfig implements WebMvcConfigurer {

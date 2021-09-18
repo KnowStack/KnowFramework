@@ -14,7 +14,7 @@ import org.springframework.stereotype.Component;
 /**
  * simple job factory.
  *
- * @author dengshan
+ * @author ds
  */
 @Component
 public class SimpleJobFactory implements JobFactory {

@@ -10,7 +10,7 @@ import java.util.List;
  * worker信息 Mapper 接口.
  * </p>
  *
- * @author dengshan
+ * @author ds
  * @since 2020-11-10
  */
 public interface LogIWorkerMapper {

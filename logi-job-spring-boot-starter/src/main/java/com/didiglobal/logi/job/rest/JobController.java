@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 /**
  * job 的启动、暂停、job信息、job日志相关操作.
  *
- * @author dengshan
+ * @author ds
  */
 @RestController
 @RequestMapping(Constants.V1 + "/logi-job/job")

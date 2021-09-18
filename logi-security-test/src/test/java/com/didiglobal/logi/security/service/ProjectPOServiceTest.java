@@ -23,7 +23,7 @@ public class ProjectPOServiceTest extends BaseTest {
     public void testCreateProject() {
         Assert.assertNull(null);
         ProjectSaveDTO saveVo = new ProjectSaveDTO();
-        saveVo.setDescription("开机啦是否够哦");
+        saveVo.setDescription("iiii哦哦哦");
         saveVo.setProjectName("测试项目002");
         List<Integer> list = new ArrayList<>();
         list.add(1);
@@ -48,7 +48,7 @@ public class ProjectPOServiceTest extends BaseTest {
         queryVo.setPage(1);
         queryVo.setSize(5);
         // queryVo.setProjectName("rr");
-        queryVo.setChargeUsername("caijiamin");
+        queryVo.setChargeUsername("wulawula");
         // IPage<ProjectVo> pageProject = projectService.getPageProject(queryVo);
         // System.out.println(pageProject);
     }
@@ -66,7 +66,7 @@ public class ProjectPOServiceTest extends BaseTest {
         ProjectSaveDTO saveVo = new ProjectSaveDTO();
         saveVo.setId(2);
         saveVo.setDescription("更改了。。。");
-        saveVo.setProjectName("滴滴滴滴i");
+        saveVo.setProjectName("乒乒乓乓");
         List<Integer> list = new ArrayList<>();
         list.add(1);
         list.add(2);

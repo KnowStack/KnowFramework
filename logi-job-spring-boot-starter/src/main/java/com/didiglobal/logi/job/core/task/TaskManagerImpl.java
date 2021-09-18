@@ -37,7 +37,7 @@ import org.springframework.util.StringUtils;
 /**
  * task manager impl.
  *
- * @author dengshan
+ * @author ds
  */
 @Service
 public class TaskManagerImpl implements TaskManager {

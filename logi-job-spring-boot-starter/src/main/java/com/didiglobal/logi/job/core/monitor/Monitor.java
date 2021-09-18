@@ -3,7 +3,7 @@ package com.didiglobal.logi.job.core.monitor;
 /**
  * 监控器.
  *
- * @author dengshan
+ * @author ds
  */
 public interface Monitor {
 

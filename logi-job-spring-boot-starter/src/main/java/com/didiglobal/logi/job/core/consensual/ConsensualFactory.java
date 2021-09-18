@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 /**
  * 一致协议工厂，通过名称获取一致性协议.
  *
- * @author dengshan
+ * @author ds
  */
 @Component
 public class ConsensualFactory implements ApplicationContextAware {

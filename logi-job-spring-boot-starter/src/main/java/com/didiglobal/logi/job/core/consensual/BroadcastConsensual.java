@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 /**
  * 随机算法.
  *
- * @author dengshan
+ * @author ds
  */
 @Service
 public class BroadcastConsensual extends AbstractConsensual {

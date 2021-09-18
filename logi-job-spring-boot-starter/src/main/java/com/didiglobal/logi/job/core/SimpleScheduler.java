@@ -8,7 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 /**
  * 默认worker实现.
  *
- * @author dengshan
+ * @author ds
  */
 public class SimpleScheduler implements Scheduler {
 
