@@ -27,29 +27,28 @@
         <spring-boot.version>2.2.11.RELEASE</spring-boot.version>
         <mybatis-plus.version>3.3.2</mybatis-plus.version>
         <mybatis.version>2.1.0</mybatis.version>
+        <mybatis-plus.version>3.4.2</mybatis-plus.version>
+        <maria.version>2.5.4</maria.version>
         <freemarker.version>2.3.29</freemarker.version>
         <slf4j.version>1.7.30</slf4j.version>
-        <logback.version>1.1.11</logback.version>
-        <guava.version>23.0</guava.version>
+        <logback.version>1.2.3</logback.version>
+        <guava.version>30.0-jre</guava.version>
         <commons-lang3.version>3.11</commons-lang3.version>
         <commons-codec.version>1.15</commons-codec.version>
         <commons-collections.version>3.2.2</commons-collections.version>
         <swagger.version>2.9.0</swagger.version>
         <lombok.version>1.18.16</lombok.version>
-        <jackson.version>2.10.5</jackson.version>
+        <jackson.version>2.9.10</jackson.version>
         <oshi-core.version>5.3.6</oshi-core.version>
+        <fastjson.version>1.2.76</fastjson.version>
+        <junit.version>4.13.2</junit.version>
+        <json-smart.version>2.4.2</json-smart.version>
     </properties>
 
     <dependencyManagement>
         <dependencies>
-            <!-- self -->
-            <dependency>
-                <groupId>com.didiglobal.logi</groupId>
-                <artifactId>logi-job-spring-boot-starter</artifactId>
-                <version>${logi.version}</version>
-            </dependency>
 
-            <!-- spring boot -->
+            <!-- =====spring boot parent====== -->
             <dependency>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-starter-parent</artifactId>
@@ -57,95 +56,189 @@
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
+            <!-- =====spring boot parent====== -->
 
+            <!-- ======spring-boot-starter-jdbc===== -->
             <dependency>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-starter-jdbc</artifactId>
                 <version>${spring-boot.version}</version>
             </dependency>
+            <!-- ======spring-boot-starter-jdbc===== -->
 
-            <!-- 数据库驱动 -->
+            <!-- =======spring-boot-starter-web======= -->
             <dependency>
-                <groupId>org.mariadb.jdbc</groupId>
-                <artifactId>mariadb-java-client</artifactId>
-                <version>2.5.4</version>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-starter-web</artifactId>
+                <version>${spring-boot.version}</version>
+                <!-- 这些排除的依赖，记得给 logi-common的child pom 加上 -->
+                <!--
+                <exclusions>
+                    <exclusion>
+                        <groupId>junit</groupId>
+                        <artifactId>junit</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>com.fasterxml.jackson.core</groupId>
+                        <artifactId>jackson-databind</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>ch.qos.logback</groupId>
+                        <artifactId>logback-classic</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.springframework</groupId>
+                        <artifactId>spring-web</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.yaml</groupId>
+                        <artifactId>snakeyaml</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>com.fasterxml.jackson.core</groupId>
+                        <artifactId>jackson-core</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>com.fasterxml.jackson.core</groupId>
+                        <artifactId>jackson-annotations</artifactId>
+                    </exclusion>
+                </exclusions>
+                -->
             </dependency>
+            <!-- =======spring-boot-starter-web======= -->
 
-            <!-- mybatis  -->
+            <!-- =======spring-boot-starter-web 补充依赖======= -->
+            <!--
             <dependency>
-                <groupId>org.mybatis.spring.boot</groupId>
-                <artifactId>mybatis-spring-boot-starter</artifactId>
-                <version>${mybatis.version}</version>
-            </dependency>
-
-            <!-- slf4j & logback -->
-            <dependency>
-                <groupId>org.slf4j</groupId>
-                <artifactId>slf4j-api</artifactId>
-                <version>${slf4j.version}</version>
+                <groupId>com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-databind</artifactId>
+                <version>${jackson.version}</version>
             </dependency>
             <dependency>
-                <groupId>ch.qos.logback</groupId>
-                <artifactId>logback-core</artifactId>
-                <version>${logback.version}</version>
+                <groupId>org.yaml</groupId>
+                <artifactId>snakeyaml</artifactId>
+                <version>1.20</version>
             </dependency>
             <dependency>
-                <groupId>ch.qos.logback</groupId>
-                <artifactId>logback-access</artifactId>
-                <version>${logback.version}</version>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-web</artifactId>
+                <version>5.3.7</version>
             </dependency>
             <dependency>
                 <groupId>ch.qos.logback</groupId>
                 <artifactId>logback-classic</artifactId>
                 <version>${logback.version}</version>
             </dependency>
+            -->
+            <!-- =======spring-boot-starter-web 补充依赖======= -->
 
-            <!-- guava & apache commons -->
+            <!-- =======spring-boot-starter-test======= -->
             <dependency>
-                <groupId>com.google.guava</groupId>
-                <artifactId>guava</artifactId>
-                <version>${guava.version}</version>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-starter-test</artifactId>
+                <version>${spring-boot.version}</version>
+                <!--
+                <exclusions>
+                    <exclusion>
+                        <groupId>junit</groupId>
+                        <artifactId>junit</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>net.minidev</groupId>
+                        <artifactId>json-smart</artifactId>
+                    </exclusion>
+                </exclusions>
+                -->
+            </dependency>
+            <!-- =======spring-boot-starter-test======= -->
+
+            <!-- =======spring-boot-starter-test 补充依赖======= -->
+            <!--
+            <dependency>
+                <groupId>net.minidev</groupId>
+                <artifactId>json-smart</artifactId>
+                <version>${json-smart.version}</version>
+            </dependency>
+            -->
+            <dependency>
+                <groupId>junit</groupId>
+                <artifactId>junit</artifactId>
+                <version>${junit.version}</version>
+                <scope>test</scope>
+            </dependency>
+            <!-- =======spring-boot-starter-test 补充依赖======= -->
+
+            <!-- =====mariaDB 数据库驱动====== -->
+            <dependency>
+                <groupId>org.mariadb.jdbc</groupId>
+                <artifactId>mariadb-java-client</artifactId>
+                <version>${maria.version}</version>
+            </dependency>
+            <!-- =====mariaDB 数据库驱动====== -->
+
+            <!-- =====mybatis 和 mybatis-plus======  -->
+            <dependency>
+                <groupId>org.mybatis.spring.boot</groupId>
+                <artifactId>mybatis-spring-boot-starter</artifactId>
+                <version>${mybatis.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.mybatis</groupId>
+                        <artifactId>mybatis</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
             <dependency>
-                <groupId>org.apache.commons</groupId>
-                <artifactId>commons-lang3</artifactId>
-                <version>${commons-lang3.version}</version>
+                <groupId>com.baomidou</groupId>
+                <artifactId>mybatis-plus-boot-starter</artifactId>
+                <version>${mybatis-plus.version}</version>
             </dependency>
+            <!-- =====mybatis 和 mybatis-plus======  -->
+
+            <!-- =====mybatis的补充依赖======  -->
             <dependency>
-                <groupId>commons-codec</groupId>
-                <artifactId>commons-codec</artifactId>
-                <version>${commons-codec.version}</version>
+                <groupId>org.mybatis</groupId>
+                <artifactId>mybatis</artifactId>
+                <version>3.5.6</version>
             </dependency>
-            <dependency>
-                <groupId>commons-collections</groupId>
-                <artifactId>commons-collections</artifactId>
-                <version>${commons-collections.version}</version>
-            </dependency>
-            <!-- swagger -->
+            <!-- =====mybatis的补充依赖======  -->
+
+            <!-- =====swagger===== -->
             <dependency>
                 <groupId>io.springfox</groupId>
                 <artifactId>springfox-swagger2</artifactId>
                 <version>${swagger.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>com.google.guava</groupId>
+                        <artifactId>guava</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
             <dependency>
                 <groupId>io.springfox</groupId>
                 <artifactId>springfox-swagger-ui</artifactId>
                 <version>${swagger.version}</version>
             </dependency>
+            <!-- =====swagger===== -->
 
-            <!-- lombok -->
+            <!-- =====swagger 的补充依赖===== -->
+            <dependency>
+                <groupId>com.google.guava</groupId>
+                <artifactId>guava</artifactId>
+                <version>${guava.version}</version>
+            </dependency>
+            <!-- =====swagger 的补充依赖===== -->
+
+            <!-- =====lombok====== -->
             <dependency>
                 <groupId>org.projectlombok</groupId>
                 <artifactId>lombok</artifactId>
                 <version>${lombok.version}</version>
             </dependency>
+            <!-- =====lombok====== -->
 
-            <!-- jackson -->
-            <dependency>
-                <groupId>com.fasterxml.jackson.core</groupId>
-                <artifactId>jackson-core</artifactId>
-                <version>${jackson.version}</version>
-            </dependency>
+            <!-- =====jackson===== -->
             <dependency>
                 <groupId>com.fasterxml.jackson.core</groupId>
                 <artifactId>jackson-databind</artifactId>
@@ -153,16 +246,41 @@
             </dependency>
             <dependency>
                 <groupId>com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-core</artifactId>
+                <version>${jackson.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.fasterxml.jackson.core</groupId>
                 <artifactId>jackson-annotations</artifactId>
                 <version>${jackson.version}</version>
             </dependency>
+            <!-- =====jackson===== -->
 
-            <!-- oshi-core -->
+            <!-- ======oshi-core===== -->
             <dependency>
                 <groupId>com.github.oshi</groupId>
                 <artifactId>oshi-core</artifactId>
                 <version>${oshi-core.version}</version>
             </dependency>
+            <!-- ======oshi-core===== -->
+
+            <!-- ======fastjson===== -->
+            <dependency>
+                <groupId>com.alibaba</groupId>
+                <artifactId>fastjson</artifactId>
+                <version>${fastjson.version}</version>
+            </dependency>
+            <!-- ======oshi-core===== -->
+
+            <!-- ======servlet===== -->
+            <dependency>
+                <groupId>javax.servlet</groupId>
+                <artifactId>javax.servlet-api</artifactId>
+                <version>4.0.1</version>
+                <scope>provided</scope>
+            </dependency>
+            <!-- ======servlet===== -->
+
         </dependencies>
     </dependencyManagement>
 
