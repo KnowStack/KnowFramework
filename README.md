@@ -30,7 +30,7 @@ logi.security.app-name: ES
 logi.security.resource-extend-bean-name: myResourceExtendImpl
 
 # ---------------数据源信息---------------
-logi.security.username=didi
+logi.security.username=root
 logi.security.password=123456
 logi.security.url=jdbc:mysql://localhost:3306/logi_security?useUnicode=true&characterEncoding=utf-8&useSSL=false&serverTimezone=Asia/Shanghai
 logi.security.driver-class-name=com.mysql.jdbc.Driver
@@ -105,8 +105,8 @@ logi-job基于springBoot框架开发，在使用的时候需要在配置文件�
 ```yaml
 spring:
 logi-job:
-  jdbc-url: jdbc:mysql://localhost:4859/es_manager_test?useUnicode=true&characterEncoding=utf8&jdbcCompliantTruncation=true&allowMultiQueries=true&useSSL=false
-  username: didi
+  jdbc-url: jdbc:mysql://localhost:3306/es_manager_test?useUnicode=true&characterEncoding=utf8&jdbcCompliantTruncation=true&allowMultiQueries=true&useSSL=false
+  username: root
   password: 123456
   driver-class-name: com.mysql.jdbc.Driver
   max-lifetime: 60000
