@@ -9,28 +9,19 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <version>1.6.0</version>
+    <version>1.6.2</version>
 
     <artifactId>logi-security-spring-boot-starter</artifactId>
     <packaging>jar</packaging>
     <name>${project.groupId}:${project.artifactId}</name>
     <description>logi-security 提供项目大多都需要的一些基础功能（用户、角色、权限、登录、注册、操作记录）</description>
 
-    <url>https://github.com/zqrferrari/LogiCommon</url>
-
-    <!-- 开发者信息 -->
-    <developers>
-        <developer>
-            <name>zhaoqingrong</name>
-            <email>zhaoqingrong@didiglobal.com</email>
-            <timezone>+8</timezone>
-        </developer>
-    </developers>
+    <url>https://github.com/didi/LogiCommon</url>
 
     <scm>
-        <url>https://github.com/zqrferrari/LogiCommon.git</url>
-        <connection>scm:git:git://github.com/zqrferrari/LogiCommon.git</connection>
-        <developerConnection>scm:git:ssh://github.com/zqrferrari/LogiCommon.git</developerConnection>
+        <url>https://github.com/didi/LogiCommon.git</url>
+        <connection>scm:git:git://github.com/didi/LogiCommon.git</connection>
+        <developerConnection>scm:git:ssh://github.com/didi/LogiCommon.git</developerConnection>
     </scm>
 
     <!-- 许可证信息 -->
