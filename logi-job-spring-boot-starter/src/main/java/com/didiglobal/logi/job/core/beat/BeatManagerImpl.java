@@ -28,6 +28,7 @@ public class BeatManagerImpl implements BeatManager {
      *
      * @param jobManager       job manager
      * @param logIWorkerMapper worker mapper
+     * @param logIJobProperties job 配置信息
      */
     @Autowired
     public BeatManagerImpl(JobManager jobManager, LogIWorkerMapper logIWorkerMapper,

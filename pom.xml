@@ -14,6 +14,9 @@
         <module>logi-job-test</module>
         <module>logi-security-test</module>
         <module>logi-security-spring-boot-starter</module>
+        <module>logi-log</module>
+        <module>logi-dsl-prase</module>
+        <module>logi-metrices</module>
     </modules>
 
     <description>提供公共maven依赖</description>

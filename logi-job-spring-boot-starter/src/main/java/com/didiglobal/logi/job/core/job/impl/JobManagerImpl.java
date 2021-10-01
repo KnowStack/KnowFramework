@@ -74,7 +74,15 @@ public class JobManagerImpl implements JobManager {
     private ConcurrentHashMap<LogIJob, Future> jobFutureMap = new ConcurrentHashMap<>();
 
     /**
-     * constructor.
+     * construct
+     * @param jobFactory job
+     * @param logIJobMapper mapper
+     * @param logIJobLogMapper mapper
+     * @param logITaskMapper mapper
+     * @param jobExecutor jobExecutor
+     * @param taskLockService service
+     * @param logITaskLockMapper mapper
+     * @param logIJobProperties 配置信息
      */
     @Autowired
     public JobManagerImpl(JobFactory jobFactory, LogIJobMapper logIJobMapper,
