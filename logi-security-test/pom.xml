@@ -17,6 +17,7 @@
 
     <dependencies>
 
+        <!-- logi-security 依赖 -->
         <dependency>
             <groupId>io.github.zqrferrari</groupId>
             <artifactId>logi-security-spring-boot-starter</artifactId>
