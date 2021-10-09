@@ -173,12 +173,18 @@ Trace功能，是为了根据一个flag，把单个请求的日志关联起来�
 另，新建的线程里打印日志，是不会自动带上flag的，如果需要，可以将flag传入runnable对象。
 <img src="picture/105.png" alt="105.png" style="zoom:50%;" />
 ### 3.2.3 日志聚合
-1. 日志聚合，是为了防止频繁打印日志，影响应用的运行，特别是在异常场景下，每条数据都会触发异常。聚合是通过key来实现聚合的，可以自定义key来实现多种聚合。
-<img src="picture/106.png" alt="106.png" style="zoom: 50%;" />
+1. 日志聚合
+
+  是为了防止频繁打印日志，影响应用的运行，特别是在异常场景下，每条数据都会触发异常。聚合是通过key来实现聚合的，可以自定义key来实现多种聚合。
+  <img src="picture/106.png" alt="106.png" style="zoom: 50%;" />
+
 2. 日志采样
-<img src="picture/107.png" alt="107.png" style="zoom:50%;" />
-3. 聚合结果：count表示同一个key出现多少次
-![108.png](picture/108.png)
+  <img src="picture/107.png" alt="107.png" style="zoom:50%;" />
+
+3. 聚合结果
+
+  count表示同一个key出现多少次
+  ![108.png](picture/108.png)
 ## 3.3 logi-log-log4j2
 logi-log-log4j2，是基于log4j2 2.9.1封装的，支持日志发送到kafka，以及过滤重复日志功能。
 ### 3.3.1 添加Maven
@@ -231,6 +237,7 @@ logi-log-log4j2，是基于log4j2 2.9.1封装的，支持日志发送到kafka，
 <img src="picture/112.png" alt="112.png" style="zoom:50%;" />
 日志输出如，count代表1分钟内，同样的日志出现几次
 <img src="picture/113.png" alt="113.png" style="zoom:50%;" />
+
 ## 4.logi-metrices
 Arius内部指标采集和计算的工具包。
 ### 4.1 添加Maven
