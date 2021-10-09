@@ -238,7 +238,9 @@ logi-log-log4j2，是基于log4j2 2.9.1封装的，支持日志发送到kafka，
 配置appender即可
 <img src="picture/111.png" alt="111.png" style="zoom:50%;" />
 打印日志
-<img src="picture/112.png" alt="112.png" style="zoom:50%;" />
+
+<img src="picture/112.png" alt="112.png" style="zoom:40%;" />
+
 日志输出如，count代表1分钟内，同样的日志出现几次
 <img src="picture/113.png" alt="113.png" style="zoom:50%;" />
 
