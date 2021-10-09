@@ -29,7 +29,6 @@
         <java.version>1.8</java.version>
         <maven.compiler.source>${java.version}</maven.compiler.source>
         <maven.compiler.target>${java.version}</maven.compiler.target>
-
         <logi.version>1.0-SNAPSHOT</logi.version>
         <spring-boot.version>2.2.13.RELEASE</spring-boot.version>
         <mybatis-plus.version>3.3.2</mybatis-plus.version>
@@ -48,6 +47,7 @@
         <jackson.version>2.12.4</jackson.version>
         <oshi-core.version>5.3.6</oshi-core.version>
         <fastjson.version>1.2.76</fastjson.version>
+        <servlet.version>4.0.1</servlet.version>
     </properties>
 
     <dependencyManagement>
@@ -180,7 +180,7 @@
             <dependency>
                 <groupId>javax.servlet</groupId>
                 <artifactId>javax.servlet-api</artifactId>
-                <version>4.0.1</version>
+                <version>${servlet.version}</version>
                 <scope>provided</scope>
             </dependency>
             <!-- ======servlet===== -->

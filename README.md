@@ -4,7 +4,7 @@ LogiCommon 公共模块，包括Logi-security、Logi-job 。LogiCommon 会尽量
 - Logi-job 是分布式的定时调度服务
 ## 1.logi-security
 ### 1.1 介绍
-Logi-security 平台型项目大多都需要基础的一些功能（用户、角色、权限、登录、注册、操作记录），这些功能开发简单但是开发起来又比较繁琐和有一定的工作量（开发、测试、联调、编写接口文档等等），所以打算把这类的功能抽取出来，整合进 Logi-security，让这些项目开发人员更加专注于核心功能，避免时间花费在繁琐的基础功能的开发。
+logi-security 提供项目大多都需要基础的一些功能（用户、角色、权限、登录、注册、操作记录），这些功能开发简单但是开发起来又比较繁琐和有一定的工作量（开发、测试、联调、编写接口文档等等），所以打算把这类的功能抽取出来，整合进 Logi-security，让这些项目开发人员更加专注于核心功能，避免时间花费在繁琐的基础功能的开发。
 ### 1.2 功能支持
 主要提供：用户、项目、角色、部门、界面权限、资源权限、操作日志、消息通知
 - 用户模块：提供了注册、登录、认证功能，以及用户信息的展示等基础功能；
@@ -18,9 +18,9 @@ Logi-security 平台型项目大多都需要基础的一些功能（用户、角
 #### 1.3.1 添加Maven
 ```xml
 <dependency>
-    <groupId>com.didiglobal.logi</groupId>
+    <groupId>io.github.zqrferrari</groupId>
     <artifactId>logi-security-spring-boot-starter</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>1.6.2</version>
 </dependency>
 ```
 #### 1.3.2 配置文件
@@ -95,9 +95,9 @@ logi-security相关界面并没提供【角色权限元数据、资源类别数�
 #### 2.3.1 添加Maven
 ```xml
 <dependency>
-    <groupId>com.didiglobal.logi</groupId>
+    <groupId>io.github.zqrferrari</groupId>
     <artifactId>logi-job-spring-boot-starter</artifactId>
-    <version>1.6-SNAPSHOT</version>
+    <version>1.0.0</version>
 </dependency>
 ```
 #### 2.3.2 配置信息
@@ -144,4 +144,110 @@ public class ESMonitorJobTask implements Job {
         return TaskResult.SUCCESS;
     }
 }
+```
+## 3.logi-log
+### 3.1 介绍
+logi-log是基于slf4j封装的组件，为用户提供trace功能，主要包括logi-log-log、logi-log-log4j2。
+### 3.2 logi-log-log
+logi-log-log是基于slf4j封装的组件，为用户提供日志相关功能。各个业务可以选择log4j，logback，log4j2，只要配置上桥接就可以使用。
+### 3.2.1 添加Maven
+```xml
+<dependency>
+    <groupId>io.github.zqrferrari</groupId>
+    <artifactId>logi-log-log</artifactId>
+    <version>1.0.0</version>
+</dependency>
+```
+### 3.2.2 Trace功能
+Trace功能，是为了根据一个flag，把单个请求的日志关联起来。
+1. 入口设置flag
+<img src="picture/101.png" alt="101.png" style="zoom:50%;" />
+2. Logger对象
+<img src="picture/100.png" alt="100.png" style="zoom:50%;" />
+3. 打印日志
+<img src="picture/102.png" alt="102.png" style="zoom:50%;" />
+4. 日志打印结果
+![103.png](picture/103.png)
+5. 根据flag，查询单次请求相关日志
+![104.png](picture/104.png)
+另，新建的线程里打印日志，是不会自动带上flag的，如果需要，可以将flag传入runnable对象。
+<img src="picture/105.png" alt="105.png" style="zoom:50%;" />
+### 3.2.3 日志聚合
+1. 日志聚合，是为了防止频繁打印日志，影响应用的运行，特别是在异常场景下，每条数据都会触发异常。聚合是通过key来实现聚合的，可以自定义key来实现多种聚合。
+<img src="picture/106.png" alt="106.png" style="zoom: 50%;" />
+2. 日志采样
+<img src="picture/107.png" alt="107.png" style="zoom:50%;" />
+3. 聚合结果：count表示同一个key出现多少次
+![108.png](picture/108.png)
+## 3.3 logi-log-log4j2
+logi-log-log4j2，是基于log4j2 2.9.1封装的，支持日志发送到kafka，以及过滤重复日志功能。
+### 3.3.1 添加Maven
+```xml
+<dependency>
+    <groupId>io.github.zqrferrari</groupId>
+    <artifactId>logi-log-log4j2</artifactId>
+    <version>1.0.0</version>
+</dependency>
+```
+### 3.3.2 日志发送到kafka
+配置kafka appender和layout
+<img src="picture/109.png" alt="109.png" style="zoom:50%;" />
+配置appender
+
+```xml
+<Appenders>
+    <Kafka name="kafka" topic="${log.kafka.topic}" syncSend="false">
+        <SimpleMqLogEventPatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %-5level %L - %msg%xEx%n"
+                                       appName="${log.app.name}"/>
+        <Property name="bootstrap.servers">
+            ${log.kafka.bootstrap}
+        </Property>
+    </Kafka>
+ 
+</Appenders>
+<Loggers>
+    <logger name="errorLogger" additivity="false">
+        <level value="error"/>
+        <AppenderRef ref="errorLogger"/>
+        <AppenderRef ref="kafka"/>
+    </logger>
+</Loggers>
+```
+日志输出形如：
+![110.png](picture/110.png)
+也可以选择直接发送原始日志：
+```xml
+<Kafka name="kafka" topic="${log.kafka.topic}" syncSend="false">
+    <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %-5level %L - %msg%xEx%n"/>
+    <Property name="bootstrap.servers">
+        ${log.kafka.bootstrap}
+    </Property>
+</Kafka>
+```
+### 3.3.3 过滤重复日志
+配置appender即可
+<img src="picture/111.png" alt="111.png" style="zoom:50%;" />
+打印日志
+<img src="picture/112.png" alt="112.png" style="zoom:50%;" />
+日志输出如，count代表1分钟内，同样的日志出现几次
+<img src="picture/113.png" alt="113.png" style="zoom:50%;" />
+## 4.logi-metrices
+Arius内部指标采集和计算的工具包。
+### 4.1 添加Maven
+```xml
+<dependency>
+    <groupId>io.github.zqrferrari</groupId>
+    <artifactId>logi-metrices</artifactId>
+    <version>1.0.0</version>
+</dependency>
+```
+## 5.logi-dsl-prase
+用于解析dsl语法树的组件，用于解析用户查询的dsl，生成dsl模板，用于gatewayjoin日志的聚合，dsl限流等场景。
+### 5.1 添加Maven
+```xml
+<dependency>
+    <groupId>io.github.zqrferrari</groupId>
+    <artifactId>logi-dsl-prase</artifactId>
+    <version>1.0.0</version>
+</dependency>
 ```
