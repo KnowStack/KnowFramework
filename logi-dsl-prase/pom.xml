@@ -48,10 +48,9 @@
             <artifactId>fastjson</artifactId>
         </dependency>
 
-        <!-- logi-log-log4j2依赖 -->
         <dependency>
             <groupId>io.github.zqrferrari</groupId>
-            <artifactId>logi-log-log4j2</artifactId>
+            <artifactId>logi-log</artifactId>
             <version>1.0.0</version>
         </dependency>
 
@@ -81,12 +80,6 @@
         </dependency>
 
         <dependency>
-            <groupId>org.apache.httpcomponents</groupId>
-            <artifactId>httpclient</artifactId>
-            <version>4.5.2</version>
-        </dependency>
-
-        <dependency>
             <groupId>com.alibaba</groupId>
             <artifactId>druid</artifactId>
             <version>1.0.15</version>
@@ -103,12 +96,6 @@
             <groupId>commons-lang</groupId>
             <artifactId>commons-lang</artifactId>
             <version>2.6</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-api</artifactId>
-            <version>1.7.5</version>
         </dependency>
     </dependencies>
 

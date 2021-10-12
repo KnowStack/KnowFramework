@@ -12,8 +12,8 @@ import com.didiglobal.logi.dsl.parse.dsl.ast.common.value.JsonNode;
 import com.didiglobal.logi.dsl.parse.dsl.ast.query.Regexp;
 import com.didiglobal.logi.dsl.parse.dsl.ast.query.Wildcard;
 import com.didiglobal.logi.dsl.parse.dsl.visitor.basic.OutputVisitor;
-import com.didiglobal.logi.log.log.ILog;
-import com.didiglobal.logi.log.log.LogFactory;
+import com.didiglobal.logi.log.ILog;
+import com.didiglobal.logi.log.LogFactory;
 import com.google.common.collect.Sets;
 import org.apache.commons.lang.StringUtils;
 
