@@ -10,7 +10,7 @@
     </parent>
 
     <artifactId>logi-job-spring-boot-starter</artifactId>
-    <version>1.0.0</version>
+    <version>1.0.1</version>
     <packaging>jar</packaging>
     <name>${project.groupId}:${project.artifactId}</name>
     <description>logi-job 提供分布式的定时调度服务</description>
