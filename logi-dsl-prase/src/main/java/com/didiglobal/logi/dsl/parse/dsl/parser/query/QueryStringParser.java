@@ -18,8 +18,8 @@ import com.didiglobal.logi.dsl.parse.dsl.parser.ParserType;
 import com.didiglobal.logi.dsl.parse.query_string.ast.QSNode;
 import com.didiglobal.logi.dsl.parse.query_string.parser.QSParser;
 import com.didiglobal.logi.dsl.parse.util.Utils;
-import com.didiglobal.logi.log.log.ILog;
-import com.didiglobal.logi.log.log.LogFactory;
+import com.didiglobal.logi.log.ILog;
+import com.didiglobal.logi.log.LogFactory;
 
 import java.util.HashSet;
 import java.util.Set;

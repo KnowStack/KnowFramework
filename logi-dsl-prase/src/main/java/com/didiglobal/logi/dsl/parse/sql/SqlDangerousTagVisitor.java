@@ -4,8 +4,8 @@ import com.alibaba.druid.sql.ast.expr.*;
 import com.alibaba.druid.sql.ast.statement.SQLSelectGroupByClause;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlOutputVisitor;
 import com.didiglobal.logi.dsl.parse.bean.DangerousDslTagEnum;
-import com.didiglobal.logi.log.log.ILog;
-import com.didiglobal.logi.log.log.LogFactory;
+import com.didiglobal.logi.log.ILog;
+import com.didiglobal.logi.log.LogFactory;
 import com.google.common.collect.Sets;
 import org.apache.commons.lang.StringUtils;
 

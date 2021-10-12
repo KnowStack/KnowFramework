@@ -9,11 +9,11 @@
         <version>1.0.0</version>
     </parent>
 
-    <version>1.0.0</version>
+    <version>1.0.1</version>
     <artifactId>logi-log</artifactId>
-    <packaging>pom</packaging>
+    <packaging>jar</packaging>
     <name>${project.groupId}:${project.artifactId}</name>
-    <description>logi-log base</description>
+    <description>logi-log包</description>
 
     <properties>
         <maven.compiler.source>8</maven.compiler.source>

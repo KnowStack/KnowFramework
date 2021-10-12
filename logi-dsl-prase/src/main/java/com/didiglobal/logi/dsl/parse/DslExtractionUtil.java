@@ -1,8 +1,9 @@
 package com.didiglobal.logi.dsl.parse;
 
 import com.didiglobal.logi.dsl.parse.bean.ExtractResult;
-import com.didiglobal.logi.log.log.ILog;
-import com.didiglobal.logi.log.log.LogFactory;
+import com.didiglobal.logi.log.ILog;
+import com.didiglobal.logi.log.LogFactory;
+
 
 /**
  * @author D10865

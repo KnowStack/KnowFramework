@@ -31,7 +31,6 @@ HELP.md
 .mvn
 target/
 logs/
-log/
 
 ### generator ###
 ./**.iml

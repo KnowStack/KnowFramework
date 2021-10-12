@@ -14,8 +14,9 @@ import com.didiglobal.logi.dsl.parse.dsl.parser.logic.FilterParser;
 import com.didiglobal.logi.dsl.parse.dsl.parser.query.QueryParser;
 import com.didiglobal.logi.dsl.parse.dsl.parser.script.ScriptParser;
 import com.didiglobal.logi.dsl.parse.dsl.parser.root.*;
-import com.didiglobal.logi.log.log.ILog;
-import com.didiglobal.logi.log.log.LogFactory;
+import com.didiglobal.logi.log.ILog;
+import com.didiglobal.logi.log.LogFactory;
+
 
 public abstract class DslParser {
     protected ParserType parserType;

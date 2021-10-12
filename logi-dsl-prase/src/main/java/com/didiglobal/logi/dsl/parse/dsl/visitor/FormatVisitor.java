@@ -19,8 +19,8 @@ import com.didiglobal.logi.dsl.parse.dsl.ast.root.Fields;
 import com.didiglobal.logi.dsl.parse.dsl.ast.root.Source;
 import com.didiglobal.logi.dsl.parse.dsl.visitor.basic.OutputVisitor;
 import com.didiglobal.logi.dsl.parse.query_string.visitor.QSFormatVisitor;
-import com.didiglobal.logi.log.log.ILog;
-import com.didiglobal.logi.log.log.LogFactory;
+import com.didiglobal.logi.log.ILog;
+import com.didiglobal.logi.log.LogFactory;
 
 import java.util.*;
 
