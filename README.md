@@ -20,7 +20,7 @@ logi-security 提供项目大多都需要基础的一些功能（用户、角色
 <dependency>
     <groupId>io.github.zqrferrari</groupId>
     <artifactId>logi-security-spring-boot-starter</artifactId>
-    <version>1.6.2</version>
+    <version>1.6.3</version>
 </dependency>
 ```
 #### 1.3.2 配置文件
@@ -85,7 +85,7 @@ logi-security相关界面并没提供【角色权限元数据、资源类别数�
 建议全部都导入，简单的数据也行。
 ## 2.logi-job
 ### 2.1 介绍
-是分布式的定时调度服务
+是分布式的定时调度服务。
 ### 2.2 功能支持
 主要提供：分布式定时调度服务、任务管理、分布式锁等功能
 - 分布式定时调度服务：添加指定注解，并实现规定的接口，编写待调度的方法；
@@ -97,7 +97,7 @@ logi-security相关界面并没提供【角色权限元数据、资源类别数�
 <dependency>
     <groupId>io.github.zqrferrari</groupId>
     <artifactId>logi-job-spring-boot-starter</artifactId>
-    <version>1.0.0</version>
+    <version>1.0.4</version>
 </dependency>
 ```
 #### 2.3.2 配置信息
@@ -147,18 +147,18 @@ public class ESMonitorJobTask implements Job {
 ```
 ## 3.logi-log
 ### 3.1 介绍
-logi-log是基于slf4j封装的组件，为用户提供trace功能，主要包括logi-log-log、logi-log-log4j2。
-### 3.2 logi-log-log
-logi-log-log是基于slf4j封装的组件，为用户提供日志相关功能。各个业务可以选择log4j，logback，log4j2，只要配置上桥接就可以使用。
-### 3.2.1 添加Maven
+集成了：logi-log-log、logi-log-log4j2。
+### 3.2 添加maven
 ```xml
 <dependency>
     <groupId>io.github.zqrferrari</groupId>
     <artifactId>logi-log-log</artifactId>
-    <version>1.0.0</version>
+    <version>1.0.4</version>
 </dependency>
 ```
-### 3.2.2 Trace功能
+### 3.2 logi-log-log
+logi-log-log是基于slf4j封装的组件，为用户提供日志相关功能。各个业务可以选择log4j，logback，log4j2，只要配置上桥接就可以使用。
+#### 3.2.1 Trace功能
 Trace功能，是为了根据一个flag，把单个请求的日志关联起来。
 1. 入口设置flag
 <img src="picture/101.png" alt="101.png" style="zoom:50%;" />
@@ -172,11 +172,7 @@ Trace功能，是为了根据一个flag，把单个请求的日志关联起来�
 ![104.png](picture/104.png)
 另，新建的线程里打印日志，是不会自动带上flag的，如果需要，可以将flag传入runnable对象。
 <img src="picture/105.png" alt="105.png" style="zoom:50%;" />
-
-
-
-### 3.2.3 日志聚合
-
+#### 3.2.2 日志聚合
 1. 日志聚合
 
   是为了防止频繁打印日志，影响应用的运行，特别是在异常场景下，每条数据都会触发异常。聚合是通过key来实现聚合的，可以自定义key来实现多种聚合。
@@ -189,17 +185,9 @@ Trace功能，是为了根据一个flag，把单个请求的日志关联起来�
 
   count表示同一个key出现多少次
   ![108.png](picture/108.png)
-## 3.3 logi-log-log4j2
+### 3.3 logi-log-log4j2
 logi-log-log4j2，是基于log4j2 2.9.1封装的，支持日志发送到kafka，以及过滤重复日志功能。
-### 3.3.1 添加Maven
-```xml
-<dependency>
-    <groupId>io.github.zqrferrari</groupId>
-    <artifactId>logi-log-log4j2</artifactId>
-    <version>1.0.0</version>
-</dependency>
-```
-### 3.3.2 日志发送到kafka
+#### 3.3.1 日志发送到kafka
 配置kafka appender和layout
 <img src="picture/109.png" alt="109.png" style="zoom:50%;" />
 配置appender
@@ -234,7 +222,7 @@ logi-log-log4j2，是基于log4j2 2.9.1封装的，支持日志发送到kafka，
     </Property>
 </Kafka>
 ```
-### 3.3.3 过滤重复日志
+#### 3.3.2 过滤重复日志
 配置appender即可
 <img src="picture/111.png" alt="111.png" style="zoom:50%;" />
 打印日志
@@ -251,7 +239,7 @@ Arius内部指标采集和计算的工具包。
 <dependency>
     <groupId>io.github.zqrferrari</groupId>
     <artifactId>logi-metrices</artifactId>
-    <version>1.0.0</version>
+    <version>1.0.4</version>
 </dependency>
 ```
 ## 5.logi-dsl-prase
@@ -261,6 +249,6 @@ Arius内部指标采集和计算的工具包。
 <dependency>
     <groupId>io.github.zqrferrari</groupId>
     <artifactId>logi-dsl-prase</artifactId>
-    <version>1.0.0</version>
+    <version>1.0.4</version>
 </dependency>
 ```

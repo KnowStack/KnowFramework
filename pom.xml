@@ -47,7 +47,6 @@
         <maven.compiler.target>${java.version}</maven.compiler.target>
         <logi.version>1.0-SNAPSHOT</logi.version>
         <spring-boot.version>2.2.13.RELEASE</spring-boot.version>
-        <mybatis-plus.version>3.3.2</mybatis-plus.version>
         <mybatis.version>2.2.0</mybatis.version>
         <mybatis-plus.version>3.4.2</mybatis-plus.version>
         <maria.version>2.5.4</maria.version>
