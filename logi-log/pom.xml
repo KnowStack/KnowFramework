@@ -3,21 +3,21 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <parent>
-        <artifactId>logi-common</artifactId>
-        <groupId>io.github.zqrferrari</groupId>
-        <version>1.0.0</version>
-    </parent>
 
-    <version>1.0.1</version>
+    <version>1.0.3</version>
+    <groupId>io.github.zqrferrari</groupId>
     <artifactId>logi-log</artifactId>
     <packaging>jar</packaging>
     <name>${project.groupId}:${project.artifactId}</name>
     <description>logi-log包</description>
 
     <properties>
-        <maven.compiler.source>8</maven.compiler.source>
-        <maven.compiler.target>8</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <maven.compiler.encoding>UTF-8</maven.compiler.encoding>
+        <java.version>1.8</java.version>
+        <maven.compiler.source>${java.version}</maven.compiler.source>
+        <maven.compiler.target>${java.version}</maven.compiler.target>
     </properties>
 
     <url>https://github.com/didi/LogiCommon</url>
@@ -27,6 +27,15 @@
         <connection>scm:git:git://github.com/didi/LogiCommon.git</connection>
         <developerConnection>scm:git:ssh://github.com/didi/LogiCommon.git</developerConnection>
     </scm>
+
+    <!-- 开发者信息 -->
+    <developers>
+        <developer>
+            <name>zhaoqingrong</name>
+            <email>zhaoqingrong@didiglobal.com</email>
+            <timezone>+8</timezone>
+        </developer>
+    </developers>
 
     <!-- 许可证信息 -->
     <licenses>
@@ -40,16 +49,19 @@
         <dependency>
             <groupId>javax.servlet</groupId>
             <artifactId>javax.servlet-api</artifactId>
+            <version>4.0.1</version>
         </dependency>
 
         <dependency>
             <groupId>com.alibaba</groupId>
             <artifactId>fastjson</artifactId>
+            <version>1.2.76</version>
         </dependency>
 
         <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
+            <version>30.0-jre</version>
         </dependency>
 
         <dependency>
