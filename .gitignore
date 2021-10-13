@@ -31,6 +31,7 @@ HELP.md
 .mvn
 target/
 logs/
+/logi-dsl-prase/log
 
 ### generator ###
 ./**.iml
