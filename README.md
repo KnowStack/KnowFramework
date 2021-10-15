@@ -97,25 +97,25 @@ logi-security相关界面并没提供【角色权限元数据、资源类别数�
 <dependency>
     <groupId>io.github.zqrferrari</groupId>
     <artifactId>logi-job-spring-boot-starter</artifactId>
-    <version>1.0.4</version>
+    <version>1.0.5</version>
 </dependency>
 ```
 #### 2.3.2 配置信息
 logi-job基于springBoot框架开发，在使用的时候需要在配置文件中增加几项配置信息，如下：
 ```yaml
 spring:
-logi-job:
-  jdbc-url: jdbc:mysql://localhost:3306/es_manager_test?useUnicode=true&characterEncoding=utf8&jdbcCompliantTruncation=true&allowMultiQueries=true&useSSL=false
-  username: root
-  password: 123456
-  driver-class-name: com.mysql.jdbc.Driver
-  max-lifetime: 60000
-  init-sql: true
-  init-thread-num: 10
-  max-thread-num: 20 #调度最大线程数
-  log-exipre: 3  #日志保存天数，以天为单位
-  app_name: arius_test02 #应用名，用户隔离机器和环境
-  claim-strategy: com.didiglobal.logi.job.core.consensual.RandomConsensual #调度策略，有两种随机和广播，默认是随机
+  logi-job:
+    jdbc-url: jdbc:mysql://localhost:3306/es_manager_test?useUnicode=true&characterEncoding=utf8&jdbcCompliantTruncation=true&allowMultiQueries=true&useSSL=false
+    username: root
+    password: 123456
+    driver-class-name: com.mysql.jdbc.Driver
+    max-lifetime: 60000
+    init-sql: true
+    init-thread-num: 10
+    max-thread-num: 20 #调度最大线程数
+    log-exipre: 3  #日志保存天数，以天为单位
+    app_name: arius_test02 #应用名，用户隔离机器和环境
+    claim-strategy: com.didiglobal.logi.job.core.consensual.RandomConsensual #调度策略，有两种随机和广播，默认是随机
 ```
 #### 2.3.3 使用样例
 ```java
@@ -130,6 +130,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
+// @Task 注解自带了 @Component
 @Task(name = "esMonitorJob", description = "monitor调度任务", cron = "0 0/1 * * * ? *", autoRegister = true)
 public class ESMonitorJobTask implements Job {
     private static final Logger LOGGER = LoggerFactory.getLogger(ESMonitorJobTask.class);
