@@ -253,3 +253,12 @@ Arius内部指标采集和计算的工具包。
     <version>1.0.4</version>
 </dependency>
 ```
+## 6.logi-elasticsearch-client
+### 6.1 添加Maven
+```xml
+<dependency>
+    <groupId>io.github.zqrferrari</groupId>
+    <artifactId>logi-elasticsearch-client</artifactId>
+    <version>1.0.0</version>
+</dependency>
+```
