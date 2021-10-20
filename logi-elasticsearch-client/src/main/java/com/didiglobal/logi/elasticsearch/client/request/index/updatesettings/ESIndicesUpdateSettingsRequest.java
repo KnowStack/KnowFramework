@@ -35,6 +35,7 @@ import java.util.Map;
 public class ESIndicesUpdateSettingsRequest extends ESActionRequest<ESIndicesUpdateSettingsRequest> {
     private String index;
     private Map<String, String> settings = new HashMap<>();
+    private String masterTimeout = null;
 
 
     public ESIndicesUpdateSettingsRequest setIndex(String index) {
@@ -48,6 +49,9 @@ public class ESIndicesUpdateSettingsRequest extends ESActionRequest<ESIndicesUpd
         return this;
     }
 
+    public void setMasterTimeout(String masterTimeout) {
+        this.masterTimeout =masterTimeout;
+    }
 
     @Override
     public RestRequest toRequest() throws Exception {
@@ -56,10 +60,13 @@ public class ESIndicesUpdateSettingsRequest extends ESActionRequest<ESIndicesUpd
         }
 
         String endPoint = "/" + index.trim() + "/_settings";
+        if(masterTimeout!=null) {
+            endPoint = endPoint + "?master_timeout=" + masterTimeout;
+        }
+
         RestRequest rr = new RestRequest("PUT", endPoint, null);
 
-        JSONObject obj = new JSONObject();
-        obj.put("index", JsonUtils.reFlat(settings));
+        JSONObject obj = JsonUtils.reFlat(settings);
         rr.setBody(obj.toJSONString());
         return rr;
     }

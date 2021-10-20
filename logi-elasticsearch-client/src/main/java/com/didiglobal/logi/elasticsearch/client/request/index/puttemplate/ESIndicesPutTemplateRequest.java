@@ -33,6 +33,7 @@ import com.didiglobal.logi.elasticsearch.client.response.setting.template.Templa
 public class ESIndicesPutTemplateRequest extends ESActionRequest<ESIndicesPutTemplateRequest> {
     private String template;
     private String templateConfig;
+    private boolean include_type_name = false;
 
     public ESIndicesPutTemplateRequest setTemplate(String template) {
         this.template = template;
@@ -56,6 +57,11 @@ public class ESIndicesPutTemplateRequest extends ESActionRequest<ESIndicesPutTem
         return this;
     }
 
+    public ESIndicesPutTemplateRequest setIncludeTypeName(boolean include_type_name) {
+        this.include_type_name = include_type_name;
+        return this;
+    }
+
 
     @Override
     public RestRequest toRequest() throws Exception {
@@ -71,6 +77,11 @@ public class ESIndicesPutTemplateRequest extends ESActionRequest<ESIndicesPutTem
 
         RestRequest rr = new RestRequest("PUT", endPoint, null);
         rr.setBody(templateConfig);
+
+        if(include_type_name) {
+            rr.addParam("include_type_name", "true");
+        }
+
         return rr;
     }
 

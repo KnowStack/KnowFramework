@@ -30,7 +30,12 @@ public enum ESVersion {
 
         try {
 
-            Integer versionBig = Integer.valueOf(version.replace(".", ""));
+            String[] parts = version.split("[.-]");
+            if (parts.length < 3 || parts.length > 4) {
+                return ES651;
+            }
+
+            Integer versionBig = Integer.parseInt(parts[0]);
 
             if (versionBig < 5) {
                 return ES233;

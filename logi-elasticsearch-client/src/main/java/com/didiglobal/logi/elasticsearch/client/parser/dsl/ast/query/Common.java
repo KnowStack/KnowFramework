@@ -4,11 +4,6 @@ import com.didiglobal.logi.elasticsearch.client.parser.dsl.ast.common.KeyWord;
 import com.didiglobal.logi.elasticsearch.client.parser.dsl.ast.common.Node;
 import com.didiglobal.logi.elasticsearch.client.parser.dsl.visitor.basic.Visitor;
 
-/**
- * @author D10865
- *
- * 存储common查询子句里的元素
- */
 public class Common extends KeyWord {
 
     public Node n;

@@ -19,6 +19,7 @@
 
 package com.didiglobal.logi.elasticsearch.client.request.query.scroll;
 
+import com.didiglobal.logi.elasticsearch.client.gateway.search.ESSearchResponse;
 import com.didiglobal.logi.elasticsearch.client.response.query.query.ESQueryResponse;
 import org.elasticsearch.action.ActionRequestBuilder;
 import org.elasticsearch.client.ElasticsearchClient;

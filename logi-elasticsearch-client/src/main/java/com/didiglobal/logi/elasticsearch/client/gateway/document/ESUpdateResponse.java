@@ -4,6 +4,7 @@ import com.didiglobal.logi.elasticsearch.client.utils.XContentParserUtils;
 import org.elasticsearch.common.xcontent.ToXContent;
 import org.elasticsearch.common.xcontent.XContentBuilder;
 import org.elasticsearch.common.xcontent.XContentParser;
+import org.elasticsearch.index.get.GetResult;
 
 import java.io.IOException;
 
@@ -37,9 +38,7 @@ public class ESUpdateResponse extends DocWriteResponse implements ToXContent {
         return context.build();
     }
 
-    /**
-     * Parse the current token and update the parsing context appropriately.
-     */
+
     public static void parseXContentFields(XContentParser parser, Builder context) throws IOException {
         XContentParser.Token token = parser.currentToken();
         String currentFieldName = parser.currentName();
@@ -49,7 +48,7 @@ public class ESUpdateResponse extends DocWriteResponse implements ToXContent {
                 context.setEsGetResponse(ESGetResponse.fromXContentEmbedded(parser));
             }
         } else {
-            parseInnerToXContent(parser, context);
+            DocWriteResponse.parseInnerToXContent(parser, context);
         }
     }
 

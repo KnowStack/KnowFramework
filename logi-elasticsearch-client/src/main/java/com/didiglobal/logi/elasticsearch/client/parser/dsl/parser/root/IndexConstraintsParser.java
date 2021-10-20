@@ -10,7 +10,6 @@ import com.didiglobal.logi.elasticsearch.client.parser.dsl.parser.DslParser;
 import com.didiglobal.logi.elasticsearch.client.parser.dsl.parser.ParserType;
 
 /**
- * @author D10865
  *
  * fields 解析器
  */

@@ -24,7 +24,18 @@ import com.didiglobal.logi.elasticsearch.client.model.ESActionResponse;
 import com.didiglobal.logi.elasticsearch.client.model.RestRequest;
 import com.didiglobal.logi.elasticsearch.client.model.RestResponse;
 import com.didiglobal.logi.elasticsearch.client.response.query.query.ESQueryResponse;
+import org.apache.commons.lang3.StringUtils;
 import org.elasticsearch.action.ActionRequestValidationException;
+import org.elasticsearch.action.IndicesRequest;
+import org.elasticsearch.action.search.SearchType;
+import org.elasticsearch.action.support.IndicesOptions;
+import org.elasticsearch.client.Requests;
+import org.elasticsearch.common.Strings;
+import org.elasticsearch.common.bytes.BytesArray;
+import org.elasticsearch.common.bytes.BytesReference;
+import org.elasticsearch.common.unit.TimeValue;
+import org.elasticsearch.common.xcontent.XContentBuilder;
+import org.elasticsearch.search.builder.SearchSourceBuilder;
 
 public class ESSQLRequest extends ESActionRequest<ESSQLRequest> {
     private String sql;

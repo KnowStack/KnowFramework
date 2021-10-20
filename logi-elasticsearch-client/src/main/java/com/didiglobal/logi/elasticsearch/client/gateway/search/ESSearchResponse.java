@@ -15,9 +15,6 @@ import org.elasticsearch.rest.RestResponse;
 import java.io.IOException;
 import java.util.Map;
 
-/**
- * @author D10865
- */
 public class ESSearchResponse extends ESActionResponse implements ToXContent {
     private static final ILog LOGGER = LogFactory.getLog(ESSearchResponse.class);
 

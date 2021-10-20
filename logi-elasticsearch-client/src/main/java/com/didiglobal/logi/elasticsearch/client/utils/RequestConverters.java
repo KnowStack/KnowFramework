@@ -15,6 +15,10 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Locale;
 import java.util.StringJoiner;
+import java.util.function.Function;
+import java.util.stream.Stream;
+
+import static java.util.stream.Collectors.toList;
 
 public class RequestConverters {
     static final XContentType REQUEST_BODY_CONTENT_TYPE = XContentType.JSON;

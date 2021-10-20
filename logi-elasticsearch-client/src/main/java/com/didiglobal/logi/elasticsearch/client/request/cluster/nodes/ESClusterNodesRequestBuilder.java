@@ -34,6 +34,11 @@ public class ESClusterNodesRequestBuilder extends ActionRequestBuilder<ESCluster
         return this;
     }
 
+    public ESClusterNodesRequestBuilder nodeIds(String nodeIds) {
+        request.nodeIds(nodeIds);
+        return this;
+    }
+
     public ESClusterNodesRequestBuilder addFlag(String flagName) {
         request.flag(flagName);
         return this;

@@ -7,7 +7,6 @@ import com.didiglobal.logi.elasticsearch.client.parser.dsl.parser.DslParser;
 import com.didiglobal.logi.elasticsearch.client.parser.dsl.parser.ParserType;
 
 /**
- * @author D10865
  * 解析index关键字
  *
  * {"index":["arius_dsl_log_2018-09-20"],"ignore_unavailable":true}

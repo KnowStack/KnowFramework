@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.alibaba.fastjson.JSONObject;
+import com.didiglobal.logi.elasticsearch.client.model.type.ESVersion;
 import com.didiglobal.logi.elasticsearch.client.response.setting.common.MappingConfig;
 import com.didiglobal.logi.elasticsearch.client.utils.JsonUtils;
 
@@ -16,6 +17,8 @@ public class IndexConfig {
     private MappingConfig mappings = null;
     private JSONObject settings;
     private Map<String, Object> notUsedMap = new HashMap<>();
+
+    private ESVersion version            = ESVersion.ES651;
 
 
     public IndexConfig() {}
@@ -80,8 +83,19 @@ public class IndexConfig {
         this.notUsedMap.put(key, value);
     }
 
+    public ESVersion getVersion() {
+        return version;
+    }
+
+    public void setVersion(ESVersion version) {
+        this.version = version;
+    }
 
     public JSONObject toJson() {
+        return toJson(version);
+    }
+
+    public JSONObject toJson(ESVersion toVersion) {
         JSONObject root = new JSONObject();
 
         if(settings!=null && settings.size()>0) {
@@ -93,7 +107,7 @@ public class IndexConfig {
         }
 
         if(mappings!=null && !mappings.isEmpty()) {
-            root.put(MAPPINGS_STR, mappings.toJson());
+            root.put(MAPPINGS_STR, mappings.toJson(toVersion));
         }
 
         for(String key : notUsedMap.keySet()) {

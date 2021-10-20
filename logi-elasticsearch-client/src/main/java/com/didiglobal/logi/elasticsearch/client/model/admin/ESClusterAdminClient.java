@@ -24,6 +24,7 @@ import com.didiglobal.logi.elasticsearch.client.request.cluster.getsetting.ESClu
 import com.didiglobal.logi.elasticsearch.client.request.cluster.getversion.ESClusterVersionRequestBuilder;
 import com.didiglobal.logi.elasticsearch.client.request.cluster.health.ESClusterHealthRequest;
 import com.didiglobal.logi.elasticsearch.client.request.cluster.health.ESClusterHealthRequestBuilder;
+import com.didiglobal.logi.elasticsearch.client.request.cluster.nodes.ESClusterNodesAction;
 import com.didiglobal.logi.elasticsearch.client.request.cluster.nodes.ESClusterNodesRequest;
 import com.didiglobal.logi.elasticsearch.client.request.cluster.nodes.ESClusterNodesRequestBuilder;
 import com.didiglobal.logi.elasticsearch.client.request.cluster.nodessetting.ESClusterNodesSettingRequest;
@@ -33,6 +34,7 @@ import com.didiglobal.logi.elasticsearch.client.request.cluster.nodestats.ESClus
 import com.didiglobal.logi.elasticsearch.client.request.cluster.updatesetting.ESClusterUpdateSettingsRequest;
 import com.didiglobal.logi.elasticsearch.client.request.cluster.updatesetting.ESClusterUpdateSettingsRequestBuilder;
 import com.didiglobal.logi.elasticsearch.client.response.cluster.ESClusterHealthResponse;
+import com.didiglobal.logi.elasticsearch.client.response.cluster.ESClusterVersionResponse;
 import com.didiglobal.logi.elasticsearch.client.response.cluster.getsetting.ESClusterGetSettingsResponse;
 import com.didiglobal.logi.elasticsearch.client.response.cluster.nodes.ESClusterNodesResponse;
 import com.didiglobal.logi.elasticsearch.client.response.cluster.nodessetting.ESClusterNodesSettingResponse;

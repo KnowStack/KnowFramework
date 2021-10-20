@@ -36,6 +36,7 @@ import com.didiglobal.logi.elasticsearch.client.request.query.sql.ESSQLRequest;
 import com.didiglobal.logi.elasticsearch.client.request.query.sql.ESSQLRequestBuilder;
 import com.didiglobal.logi.elasticsearch.client.response.batch.ESBatchResponse;
 import com.didiglobal.logi.elasticsearch.client.response.cat.ESCatResponse;
+import com.didiglobal.logi.elasticsearch.client.response.query.clearScroll.ESQueryClearScrollResponse;
 import com.didiglobal.logi.elasticsearch.client.response.query.query.ESQueryResponse;
 import org.elasticsearch.action.ActionFuture;
 import org.elasticsearch.action.ActionListener;

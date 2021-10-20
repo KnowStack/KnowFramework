@@ -12,7 +12,6 @@ import com.didiglobal.logi.elasticsearch.client.parser.dsl.parser.DslParser;
 import com.didiglobal.logi.elasticsearch.client.parser.dsl.parser.ParserType;
 
 /**
- * @author D10865
  *
  * 解析dis_max查询子句
  *

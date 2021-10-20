@@ -1,8 +1,5 @@
 package com.didiglobal.logi.elasticsearch.client.parser.bean;
 
-/**
- * @author D10865
- */
 public class Tuple<T, V> {
 
     private T v1;

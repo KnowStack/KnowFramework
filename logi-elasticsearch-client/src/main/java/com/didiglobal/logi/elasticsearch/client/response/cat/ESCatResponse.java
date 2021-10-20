@@ -21,6 +21,7 @@ package com.didiglobal.logi.elasticsearch.client.response.cat;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson.annotation.JSONField;
 import com.didiglobal.logi.elasticsearch.client.model.ESActionResponse;
 
 public class ESCatResponse extends ESActionResponse {

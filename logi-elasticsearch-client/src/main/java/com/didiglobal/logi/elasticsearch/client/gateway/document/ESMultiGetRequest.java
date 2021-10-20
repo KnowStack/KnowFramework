@@ -1,11 +1,13 @@
 package com.didiglobal.logi.elasticsearch.client.gateway.document;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.didiglobal.logi.elasticsearch.client.model.ESActionRequest;
 import com.didiglobal.logi.elasticsearch.client.model.ESActionResponse;
 import com.didiglobal.logi.elasticsearch.client.model.RestRequest;
 import com.didiglobal.logi.elasticsearch.client.model.RestResponse;
+import com.didiglobal.logi.elasticsearch.client.model.type.ESVersion;
 import com.didiglobal.logi.elasticsearch.client.utils.RequestConverters;
 import org.apache.http.client.methods.HttpPost;
 import org.elasticsearch.ElasticsearchParseException;
@@ -21,6 +23,7 @@ import org.elasticsearch.common.xcontent.XContentParser;
 import org.elasticsearch.common.xcontent.json.JsonXContent;
 import org.elasticsearch.index.VersionType;
 import org.elasticsearch.search.fetch.source.FetchSourceContext;
+import org.jboss.netty.handler.codec.http.HttpMethod;
 
 import java.io.IOException;
 import java.util.*;
@@ -28,9 +31,7 @@ import java.util.*;
 public class ESMultiGetRequest extends ESActionRequest<ESMultiGetRequest> {
     private Map<String, String> params = new HashMap<>();
 
-    /**
-     * A single get item.
-     */
+
     public static class Item {
         private String index;
         private String type;
@@ -41,18 +42,13 @@ public class ESMultiGetRequest extends ESActionRequest<ESMultiGetRequest> {
         private long version = Versions.MATCH_ANY;
         private VersionType versionType = VersionType.INTERNAL;
         private FetchSourceContext fetchSourceContext;
+        private ESVersion esVersion;
 
         public Item() {
 
         }
 
-        /**
-         * Constructs a single get item.
-         *
-         * @param index The index name
-         * @param type  The type (can be null)
-         * @param id    The id
-         */
+
         public Item(String index, @Nullable String type, String id) {
             this.index = index;
             this.type = type;
@@ -81,9 +77,7 @@ public class ESMultiGetRequest extends ESActionRequest<ESMultiGetRequest> {
             return this.id;
         }
 
-        /**
-         * The routing associated with this document.
-         */
+
         public ESMultiGetRequest.Item routing(String routing) {
             this.routing = routing;
             return this;
@@ -140,11 +134,18 @@ public class ESMultiGetRequest extends ESActionRequest<ESMultiGetRequest> {
             return this.fetchSourceContext;
         }
 
-        /**
-         * Allows setting the {@link FetchSourceContext} for this request, controlling if and how _source should be returned.
-         */
+
         public ESMultiGetRequest.Item fetchSourceContext(FetchSourceContext fetchSourceContext) {
             this.fetchSourceContext = fetchSourceContext;
+            return this;
+        }
+
+        public ESVersion esVersion() {
+            return esVersion;
+        }
+
+        public ESMultiGetRequest.Item esVersion(ESVersion esVersion) {
+            this.esVersion = esVersion;
             return this;
         }
 
@@ -211,12 +212,21 @@ public class ESMultiGetRequest extends ESActionRequest<ESMultiGetRequest> {
             itemJson.put("_id", item.id);
 
             if (item.routing != null) {
-                itemJson.put("_routing", item.routing);
-                itemJson.put("_parent", item.routing);
+
+                if (ESVersion.ES760.equals(item.esVersion)) {
+                    itemJson.put("routing", item.routing);
+                } else {
+                    itemJson.put("_routing", item.routing);
+                    itemJson.put("_parent", item.routing);
+                }
             }
 
             if (item.version != 0) {
-                itemJson.put("_version", item.version);
+                if (ESVersion.ES760.equals(item.esVersion)) {
+                    itemJson.put("version", item.version);
+                } else {
+                    itemJson.put("_version", item.version);
+                }
             }
 
             if (item.versionType != null) {
@@ -305,11 +315,7 @@ public class ESMultiGetRequest extends ESActionRequest<ESMultiGetRequest> {
         return validationException;
     }
 
-    /**
-     * Sets the preference to execute the search. Defaults to randomize across shards. Can be set to
-     * <tt>_local</tt> to prefer local shards, <tt>_primary</tt> to execute only on primary shards, or
-     * a custom value, which guarantees that the same order will be used across different requests.
-     */
+
     public ESMultiGetRequest preference(String preference) {
         this.preference = preference;
         return this;

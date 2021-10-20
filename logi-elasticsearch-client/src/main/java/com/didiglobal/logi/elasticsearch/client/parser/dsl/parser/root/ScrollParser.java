@@ -7,8 +7,6 @@ import com.didiglobal.logi.elasticsearch.client.parser.dsl.parser.DslParser;
 import com.didiglobal.logi.elasticsearch.client.parser.dsl.parser.ParserType;
 
 /**
- * @author D10865
- *
  * 解析scroll关键字
  *
  * {"scroll":"60s","scroll_id":"cXVlcnlBbmRGZXRjaDsxOzEyNjEzOTpXYW9YS2dlQVM1YU9hZFJXVFNZa2x3OzA7"}

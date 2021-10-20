@@ -5,7 +5,6 @@ import com.didiglobal.logi.elasticsearch.client.parser.dsl.ast.common.Node;
 import com.didiglobal.logi.elasticsearch.client.parser.dsl.visitor.basic.Visitor;
 
 /**
- * @author D10865
  *
  * 存储scroll关键字的结果
  *  {"scroll":"60s","scroll_id":"cXVlcnlBbmRGZXRjaDsxOzEyNjEzOTpXYW9YS2dlQVM1YU9hZFJXVFNZa2x3OzA7"}

@@ -40,40 +40,29 @@ public class ESIndexRequest extends ESBaseReplicationRequest<ESIndexRequest> {
         return index;
     }
 
-    /**
-     * The type of the indexed document.
-     */
+
     public String type() {
         return type;
     }
 
-    /**
-     * Sets the type of the indexed document.
-     */
+
     public ESIndexRequest type(String type) {
         this.type = type;
         return this;
     }
 
-    /**
-     * The id of the indexed document. If not set, will be automatically generated.
-     */
+
     public String id() {
         return id;
     }
 
-    /**
-     * Sets the id of the indexed document. If not set, will be automatically generated.
-     */
+
     public ESIndexRequest id(String id) {
         this.id = id;
         return this;
     }
 
-    /**
-     * Controls the shard routing of the request. Using this value to hash the shard
-     * and not the id.
-     */
+
     public ESIndexRequest routing(String routing) {
         if (routing != null && routing.length() == 0) {
             this.routing = null;
@@ -83,17 +72,12 @@ public class ESIndexRequest extends ESBaseReplicationRequest<ESIndexRequest> {
         return this;
     }
 
-    /**
-     * Controls the shard routing of the request. Using this value to hash the shard
-     * and not the id.
-     */
+
     public String routing() {
         return this.routing;
     }
 
-    /**
-     * Sets the parent id of this document.
-     */
+
     public ESIndexRequest parent(String parent) {
         this.parent = parent;
         return this;
@@ -103,9 +87,7 @@ public class ESIndexRequest extends ESBaseReplicationRequest<ESIndexRequest> {
         return this.parent;
     }
 
-    /**
-     * The source of the document to index, recopied to a new array if it is unsafe.
-     */
+
     public BytesReference source() {
         return source;
     }
@@ -120,9 +102,7 @@ public class ESIndexRequest extends ESBaseReplicationRequest<ESIndexRequest> {
         return this;
     }
 
-    /**
-     * Sets the type of operation to perform.
-     */
+
     public ESIndexRequest opType(OpType opType) {
         if (opType != OpType.CREATE && opType != OpType.INDEX) {
             throw new IllegalArgumentException("opType must be 'create' or 'index', found: [" + opType + "]");
@@ -131,10 +111,7 @@ public class ESIndexRequest extends ESBaseReplicationRequest<ESIndexRequest> {
         return this;
     }
 
-    /**
-     * Sets a string representation of the {@link #opType(OpType)}. Can
-     * be either "index" or "create".
-     */
+
     public ESIndexRequest opType(String opType) {
         String op = opType.toLowerCase(Locale.ROOT);
         if (op.equals("create")) {
@@ -148,9 +125,7 @@ public class ESIndexRequest extends ESBaseReplicationRequest<ESIndexRequest> {
     }
 
 
-    /**
-     * Set to {@code true} to force this index to use {@link OpType#CREATE}.
-     */
+
     public ESIndexRequest create(boolean create) {
         if (create) {
             return opType(OpType.CREATE);
@@ -168,17 +143,12 @@ public class ESIndexRequest extends ESBaseReplicationRequest<ESIndexRequest> {
         return this;
     }
 
-    /**
-     * Returns stored version. If currently stored version is {@link Versions#MATCH_ANY} and
-     * opType is {@link OpType#CREATE}, returns {@link Versions#MATCH_ANY}.
-     */
+
     public long version() {
         return resolveVersionDefaults();
     }
 
-    /**
-     * Resolves the version based on operation type {@link #opType()}.
-     */
+
     private long resolveVersionDefaults() {
         if (opType == OpType.CREATE && version == Versions.MATCH_ANY) {
             return Versions.MATCH_ANY;

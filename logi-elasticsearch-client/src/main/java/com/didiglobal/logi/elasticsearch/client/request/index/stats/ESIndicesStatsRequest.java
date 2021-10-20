@@ -62,7 +62,6 @@ public class ESIndicesStatsRequest extends ESBroadcastRequest<ESIndicesStatsRequ
 
     /**
      * Sets all flags to return all nodestats.
-     * @return ESIndicesStatsRequest
      */
     public ESIndicesStatsRequest all() {
         flags.add(COMPLETION);
@@ -87,7 +86,6 @@ public class ESIndicesStatsRequest extends ESBroadcastRequest<ESIndicesStatsRequ
 
     /**
      * Clears all nodestats.
-     * @return ESIndicesStatsRequest
      */
     public ESIndicesStatsRequest clear() {
         flags.clear();

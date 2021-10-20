@@ -3,6 +3,9 @@ package com.didiglobal.logi.elasticsearch.client.model.admin;
 import com.didiglobal.logi.elasticsearch.client.request.dcdr.*;
 import com.didiglobal.logi.elasticsearch.client.request.index.catindices.ESIndicesCatIndicesAction;
 import com.didiglobal.logi.elasticsearch.client.request.index.catindices.ESIndicesCatIndicesRequestBuilder;
+import com.didiglobal.logi.elasticsearch.client.request.index.clearcache.ESIndicesClearCacheAction;
+import com.didiglobal.logi.elasticsearch.client.request.index.clearcache.ESIndicesClearCacheRequest;
+import com.didiglobal.logi.elasticsearch.client.request.index.clearcache.ESIndicesClearCacheRequestBuilder;
 import com.didiglobal.logi.elasticsearch.client.request.index.closeindex.ESIndicesCloseIndexAction;
 import com.didiglobal.logi.elasticsearch.client.request.index.closeindex.ESIndicesCloseIndexRequest;
 import com.didiglobal.logi.elasticsearch.client.request.index.closeindex.ESIndicesCloseIndexRequestBuilder;
@@ -18,6 +21,9 @@ import com.didiglobal.logi.elasticsearch.client.request.index.deletetemplate.ESI
 import com.didiglobal.logi.elasticsearch.client.request.index.exists.ESIndicesExistsAction;
 import com.didiglobal.logi.elasticsearch.client.request.index.exists.ESIndicesExistsRequest;
 import com.didiglobal.logi.elasticsearch.client.request.index.exists.ESIndicesExistsRequestBuilder;
+import com.didiglobal.logi.elasticsearch.client.request.index.flush.ESIndicesFlushIndexAction;
+import com.didiglobal.logi.elasticsearch.client.request.index.flush.ESIndicesFlushIndexRequest;
+import com.didiglobal.logi.elasticsearch.client.request.index.flush.ESIndicesFlushIndexRequestBuilder;
 import com.didiglobal.logi.elasticsearch.client.request.index.frozen.ESIndicesFreezeIndexAction;
 import com.didiglobal.logi.elasticsearch.client.request.index.frozen.ESIndicesFreezeIndexRequest;
 import com.didiglobal.logi.elasticsearch.client.request.index.frozen.ESIndicesFreezeIndexRequestBuilder;
@@ -58,15 +64,15 @@ import com.didiglobal.logi.elasticsearch.client.request.index.updatesettings.ESI
 import com.didiglobal.logi.elasticsearch.client.request.index.updatesettings.ESIndicesUpdateSettingsRequest;
 import com.didiglobal.logi.elasticsearch.client.request.index.updatesettings.ESIndicesUpdateSettingsRequestBuilder;
 import com.didiglobal.logi.elasticsearch.client.request.ingest.*;
-import com.didiglobal.logi.elasticsearch.client.response.dcdr.ESDeleteDCDRTemplateResponse;
-import com.didiglobal.logi.elasticsearch.client.response.dcdr.ESGetDCDRIndexResponse;
-import com.didiglobal.logi.elasticsearch.client.response.dcdr.ESGetDCDRStatsResponse;
-import com.didiglobal.logi.elasticsearch.client.response.dcdr.ESGetDCDRTemplateResponse;
+import com.didiglobal.logi.elasticsearch.client.request.security.*;
+import com.didiglobal.logi.elasticsearch.client.response.dcdr.*;
+import com.didiglobal.logi.elasticsearch.client.response.indices.clearcache.ESIndicesClearCacheResponse;
 import com.didiglobal.logi.elasticsearch.client.response.indices.closeindex.ESIndicesCloseIndexResponse;
 import com.didiglobal.logi.elasticsearch.client.response.indices.deletebyquery.ESIndicesDeleteByQueryResponse;
 import com.didiglobal.logi.elasticsearch.client.response.indices.deleteindex.ESIndicesDeleteIndexResponse;
 import com.didiglobal.logi.elasticsearch.client.response.indices.deletetemplate.ESIndicesDeleteTemplateResponse;
 import com.didiglobal.logi.elasticsearch.client.response.indices.exists.ESIndicesExistsResponse;
+import com.didiglobal.logi.elasticsearch.client.response.indices.flush.ESIndicesFlushIndexResponse;
 import com.didiglobal.logi.elasticsearch.client.response.indices.frozen.ESIndicesFreezeIndexResponse;
 import com.didiglobal.logi.elasticsearch.client.response.indices.getalias.ESIndicesGetAliasResponse;
 import com.didiglobal.logi.elasticsearch.client.response.indices.getindex.ESIndicesGetIndexResponse;
@@ -83,6 +89,7 @@ import com.didiglobal.logi.elasticsearch.client.response.indices.updatesettings.
 import com.didiglobal.logi.elasticsearch.client.response.ingest.ESDeletePipelineResponse;
 import com.didiglobal.logi.elasticsearch.client.response.ingest.ESGetPipelineResponse;
 import com.didiglobal.logi.elasticsearch.client.response.ingest.ESPutPipelineResponse;
+import com.didiglobal.logi.elasticsearch.client.response.security.*;
 import org.elasticsearch.action.*;
 import org.elasticsearch.client.ElasticsearchClient;
 import org.elasticsearch.threadpool.ThreadPool;
@@ -507,17 +514,125 @@ public class ESIndicesAdmin implements ESIndicesAdminClient {
         execute(ESGetDCDRStatsAction.INSTANCE, request, listener);
     }
 
-
+    @Override
     public ActionFuture<ESIndicesFreezeIndexResponse> freezeIndex(final ESIndicesFreezeIndexRequest request) {
         return execute(ESIndicesFreezeIndexAction.INSTANCE, request);
     }
 
+    @Override
     public void freezeIndex(ESIndicesFreezeIndexRequest request, ActionListener<ESIndicesFreezeIndexResponse> listener) {
         execute(ESIndicesFreezeIndexAction.INSTANCE, request, listener);
     }
 
-
+    @Override
     public ESIndicesFreezeIndexRequestBuilder prepareFreezeIndex(boolean freeze, String... indices) {
         return new ESIndicesFreezeIndexRequestBuilder(this, ESIndicesFreezeIndexAction.INSTANCE).setIndices(freeze, indices);
+    }
+
+    @Override
+    public ESGetSecurityRoleRequestBuilder prepareGetSecurityRole() {
+        return new ESGetSecurityRoleRequestBuilder(this, ESGetSecurityRoleAction.INSTANCE);
+    }
+
+    @Override
+    public ESGetSecurityUserRequestBuilder prepareGetSecurityUser() {
+        return new ESGetSecurityUserRequestBuilder(this, ESGetSecurityUserAction.INSTANCE);
+    }
+
+    @Override
+    public ActionFuture<ESGetSecurityRoleResponse> getSecurityRole(ESGetSecurityRoleRequest request) {
+        return execute(ESGetSecurityRoleAction.INSTANCE, request);
+    }
+
+    @Override
+    public ActionFuture<ESGetSecurityUserResponse> getSecurityRole(ESGetSecurityUserRequest request) {
+        return execute(ESGetSecurityUserAction.INSTANCE, request);
+    }
+
+    @Override
+    public ESPutSecurityRoleRequestBuilder preparePutSecurityRole() {
+        return new ESPutSecurityRoleRequestBuilder(this, ESPutSecurityRoleAction.INSTANCE);
+    }
+
+    @Override
+    public ESPutSecurityUserRequestBuilder preparePutSecurityUser() {
+        return new ESPutSecurityUserRequestBuilder(this, ESPutSecurityUserAction.INSTANCE);
+    }
+
+    @Override
+    public ActionFuture<ESPutSecurityRoleResponse> putSecurityRole(ESPutSecurityRoleRequest request) {
+        return execute(ESPutSecurityRoleAction.INSTANCE, request);
+    }
+
+    @Override
+    public ActionFuture<ESPutSecurityUserResponse> putSecurityUser(ESPutSecurityUserRequest request) {
+        return execute(ESPutSecurityUserAction.INSTANCE, request);
+    }
+
+    @Override
+    public ESDeleteSecurityRoleRequestBuilder prepareDeleteSecurityRole() {
+        return new ESDeleteSecurityRoleRequestBuilder(this, ESDeleteSecurityRoleAction.INSTANCE);
+    }
+
+    @Override
+    public ESDeleteSecurityUserRequestBuilder prepareDeleteSecurityUser() {
+        return new ESDeleteSecurityUserRequestBuilder(this, ESDeleteSecurityUserAction.INSTANCE);
+    }
+
+    @Override
+    public ActionFuture<ESDeleteSecurityRoleResponse> deleteSecurityRole(ESDeleteSecurityRoleRequest request) {
+        return execute(ESDeleteSecurityRoleAction.INSTANCE, request);
+    }
+
+    @Override
+    public ActionFuture<ESDeleteSecurityUserResponse> deleteSecurityUser(ESDeleteSecurityUserRequest request) {
+        return execute(ESDeleteSecurityUserAction.INSTANCE, request);
+    }
+
+
+    @Override
+    public ActionFuture<ESIndicesClearCacheResponse> clearCache(final ESIndicesClearCacheRequest request) {
+        return execute(ESIndicesClearCacheAction.INSTANCE, request);
+    }
+
+    @Override
+    public void clearCache(ESIndicesClearCacheRequest request, ActionListener<ESIndicesClearCacheResponse> listener) {
+        execute(ESIndicesClearCacheAction.INSTANCE, request, listener);
+    }
+
+    @Override
+    public ESIndicesClearCacheRequestBuilder prepareClearCache(String index) {
+        return new ESIndicesClearCacheRequestBuilder(this, ESIndicesClearCacheAction.INSTANCE).setIndices(index);
+    }
+
+
+    @Override
+    public ActionFuture<ESIndicesFlushIndexResponse> flush(final ESIndicesFlushIndexRequest request) {
+        return execute(ESIndicesFlushIndexAction.INSTANCE, request);
+    }
+
+    @Override
+    public void flush(ESIndicesFlushIndexRequest request, ActionListener<ESIndicesFlushIndexResponse> listener) {
+        execute(ESIndicesFlushIndexAction.INSTANCE, request, listener);
+    }
+
+    @Override
+    public ESIndicesFlushIndexRequestBuilder prepareFlush(String index) {
+        return new ESIndicesFlushIndexRequestBuilder(this, ESIndicesFlushIndexAction.INSTANCE).setIndices(index);
+    }
+
+    @Override
+    public ActionFuture<ESPutDCDRIndexResponse> putDCDRIndex(final ESPutDCDRIndexRequest request) {
+        return execute(ESPutDCDRIndexAction.INSTANCE, request);
+    }
+
+    @Override
+    public void putDCDRIndex(ESPutDCDRIndexRequest request, ActionListener<ESPutDCDRIndexResponse> listener) {
+        execute(ESPutDCDRIndexAction.INSTANCE, request, listener);
+    }
+
+    @Override
+    public ESPutDCDRIndexRequestBuilder preparePutDCDRIndex(String index) {
+        return new ESPutDCDRIndexRequestBuilder(this, ESPutDCDRIndexAction.INSTANCE).setIndexName(index);
     }
 }

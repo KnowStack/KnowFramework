@@ -10,9 +10,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
-/**
- * @author D10865
- */
 public class Hit implements ToXContent {
     public static class Fields {
         static final String _INDEX = new String("_index");

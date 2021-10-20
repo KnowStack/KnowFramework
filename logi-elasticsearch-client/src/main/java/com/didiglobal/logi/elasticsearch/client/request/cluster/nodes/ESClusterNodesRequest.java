@@ -28,11 +28,13 @@ import com.didiglobal.logi.elasticsearch.client.model.RestResponse;
 import com.didiglobal.logi.elasticsearch.client.response.cluster.nodes.ESClusterNodesResponse;
 import org.apache.commons.lang3.StringUtils;
 import org.elasticsearch.action.ActionRequestValidationException;
+import org.elasticsearch.common.Strings;
 
 import java.util.HashSet;
 import java.util.Set;
 
 public class ESClusterNodesRequest extends ESActionRequest<ESClusterNodesRequest> {
+    private String nodeIds;
     private Set<String> flags = new HashSet<>();
 
     public ESClusterNodesRequest clear() {
@@ -43,6 +45,11 @@ public class ESClusterNodesRequest extends ESActionRequest<ESClusterNodesRequest
 
     public ESClusterNodesRequest flag(String name) {
         flags.add(name);
+        return this;
+    }
+
+    public ESClusterNodesRequest nodeIds(String nodeIds) {
+        this.nodeIds = nodeIds;
         return this;
     }
 
@@ -67,7 +74,11 @@ public class ESClusterNodesRequest extends ESActionRequest<ESClusterNodesRequest
     }
 
     private String buildEndPoint() {
+        String endpoint = "_nodes";
         String flagStr = null;
+        if (Strings.hasText(nodeIds)) {
+            endpoint = endpoint + "/" + nodeIds;
+        }
         if (flags.size() < 10) {
             flagStr = StringUtils.join(flags, ",");
         }
@@ -76,9 +87,9 @@ public class ESClusterNodesRequest extends ESActionRequest<ESClusterNodesRequest
         }
 
         if (flagStr == null) {
-            return "_nodes";
+            return endpoint;
         } else {
-            return "_nodes/" + flagStr.trim();
+            return endpoint + "/" + flagStr.trim();
         }
     }
 }

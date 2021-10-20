@@ -6,7 +6,6 @@ import com.didiglobal.logi.elasticsearch.client.parser.dsl.ast.common.Node;
 import com.didiglobal.logi.elasticsearch.client.parser.dsl.visitor.basic.Visitor;
 
 /**
- * @author D10865
  *
  *  存储search_type关键字的结果
  *

@@ -6,9 +6,6 @@ import com.alibaba.fastjson.util.ParameterizedTypeImpl;
 
 import java.lang.reflect.Type;
 
-/**
- * @author D10865
- */
 public class SrcResponse<T> {
     /**
      * 索引名称

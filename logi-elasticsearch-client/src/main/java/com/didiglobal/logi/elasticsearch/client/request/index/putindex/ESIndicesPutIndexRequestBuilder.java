@@ -44,4 +44,9 @@ public class ESIndicesPutIndexRequestBuilder extends ActionRequestBuilder<ESIndi
         request.setIndexConfig(indexConfig);
         return this;
     }
+
+    public ESIndicesPutIndexRequestBuilder setIncludeTypeName(boolean include_type_name) {
+        request.setIncludeTypeName(include_type_name);
+        return this;
+    }
 }

@@ -227,7 +227,7 @@ public class TemplateConfig {
 
     /**
      * 获取mapping中所有字段名 fieldName,不包含type这层，由于不同type的类型必须一致
-     * @return Set
+     * @return
      */
     public Set<String> getFieldNames() {
         Set<String> fieldNameSet = Sets.newLinkedHashSet();

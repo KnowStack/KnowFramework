@@ -6,13 +6,6 @@ import com.didiglobal.logi.elasticsearch.client.parser.dsl.ast.root.FieldFormatM
 import com.didiglobal.logi.elasticsearch.client.parser.dsl.parser.DslParser;
 import com.didiglobal.logi.elasticsearch.client.parser.dsl.parser.ParserType;
 
-/**
- * @author D10865
- * <p>
- * 解析fieldFormatMap关键字
- * <p>
- * {"fieldFormatMap":"{\"_source\":{\"id\":\"_source\"}}","timeFieldName":"logTime","title":"cn_wo21072_automarket_devcon-customer.automarket*","fields":"[]"}
- */
 public class FieldFormatMapParser extends DslParser {
 
     public FieldFormatMapParser(ParserType type) {

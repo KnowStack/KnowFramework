@@ -4,11 +4,6 @@ import com.didiglobal.logi.elasticsearch.client.parser.dsl.ast.common.KeyWord;
 import com.didiglobal.logi.elasticsearch.client.parser.dsl.ast.common.multi.NodeMap;
 import com.didiglobal.logi.elasticsearch.client.parser.dsl.visitor.basic.Visitor;
 
-/**
- * @author D10865
- *
- * 存储positive查询子句里的元素
- */
 public class Positive extends KeyWord {
 
     public NodeMap m = new NodeMap();

@@ -37,6 +37,7 @@ public class ESIndicesGetIndexRequest extends ESActionRequest<ESIndicesGetIndexR
 
     private String[] indices;
     private Set<String> flags = new HashSet<>();
+    private boolean include_type_name = false;
 
     public ESIndicesGetIndexRequest setIndices(String... indices) {
         this.indices = indices;
@@ -73,6 +74,11 @@ public class ESIndicesGetIndexRequest extends ESActionRequest<ESIndicesGetIndexR
         return this;
     }
 
+    public ESIndicesGetIndexRequest setIncludeTypeName(boolean include_type_name) {
+        this.include_type_name = include_type_name;
+        return this;
+    }
+
 
     @Override
     public RestRequest toRequest() throws Exception {
@@ -105,7 +111,12 @@ public class ESIndicesGetIndexRequest extends ESActionRequest<ESIndicesGetIndexR
             }
         }
 
-        return new RestRequest("GET", endPoint, null);
+        RestRequest rr = new RestRequest("GET", endPoint, null);
+        if(include_type_name) {
+            rr.addParam("include_type_name", "true");
+        }
+
+        return rr;
     }
 
     @Override

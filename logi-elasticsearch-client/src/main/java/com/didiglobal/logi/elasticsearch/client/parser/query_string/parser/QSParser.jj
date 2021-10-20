@@ -7,7 +7,7 @@ options {
 PARSER_BEGIN(QSParser)
 
 package com.didiglobal.logi.elasticsearch.client.parser.query_string.parser;
-import QSNode;
+import com.didiglobal.logi.elasticsearch.client.parser.query_string.ast.QSNode;
 import java.io.StringReader;
 
 public class QSParser extends QSBaseParser {

@@ -6,11 +6,6 @@ import org.apache.commons.lang3.StringUtils;
 import java.util.Set;
 import java.util.TreeSet;
 
-/**
- * @author D10865
- *
- * 导出query string中的字段信息
- */
 public class QSExportFieldVisitor extends QSSeekVisitor {
 
     /**

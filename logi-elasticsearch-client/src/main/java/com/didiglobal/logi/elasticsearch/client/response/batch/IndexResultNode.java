@@ -1,5 +1,6 @@
 package com.didiglobal.logi.elasticsearch.client.response.batch;
 
+import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.annotation.JSONField;
 import com.didiglobal.logi.elasticsearch.client.gateway.search.response.Shards;
 
@@ -106,10 +107,7 @@ public class IndexResultNode {
         this.status = status;
     }
 
-    /**
-     * The failure message, <tt>null</tt> if it did not fail.
-     * @return String
-     */
+
     public String getFailureMessage() {
         if (error != null) {
             return error.getReason();

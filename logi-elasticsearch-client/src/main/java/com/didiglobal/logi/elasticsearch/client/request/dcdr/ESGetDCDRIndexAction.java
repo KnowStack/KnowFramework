@@ -1,5 +1,6 @@
 package com.didiglobal.logi.elasticsearch.client.request.dcdr;
 
+import com.didiglobal.logi.elasticsearch.client.response.dcdr.ESDeleteDCDRIndexResponse;
 import com.didiglobal.logi.elasticsearch.client.response.dcdr.ESGetDCDRIndexResponse;
 import org.elasticsearch.action.Action;
 import org.elasticsearch.client.ElasticsearchClient;

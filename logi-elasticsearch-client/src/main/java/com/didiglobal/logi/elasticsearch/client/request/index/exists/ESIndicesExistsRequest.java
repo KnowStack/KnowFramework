@@ -19,6 +19,7 @@
 
 package com.didiglobal.logi.elasticsearch.client.request.index.exists;
 
+import com.alibaba.fastjson.JSON;
 import com.didiglobal.logi.elasticsearch.client.model.ESActionRequest;
 import com.didiglobal.logi.elasticsearch.client.model.ESActionResponse;
 import com.didiglobal.logi.elasticsearch.client.model.RestRequest;

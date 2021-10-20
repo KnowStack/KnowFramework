@@ -36,8 +36,12 @@ public class MappingConfig {
 
     private boolean isIncludeTypeName(JSONObject root) {
         for(String key : root.keySet()) {
+            if (!(root.get(key) instanceof JSONObject)) {
+                return false;
+            }
+
             JSONObject properties = root.getJSONObject(key);
-            // 如果key是下面这些关键字，说明很可能是不包含type名称，再进一步判断子项中不包含properties，来确认不包含type
+
             if (key.equals("properties")
                 || key.equals("numeric_detection")
                 || key.equals("dynamic_templates")
@@ -47,8 +51,9 @@ public class MappingConfig {
                 } else {
                     return false;
                 }
-            } else { // 如果key不包含这些关键字，那么进一步校验子项中是否包含，子项目中如果包含这些关键字，则确认key是type名称
-                if (properties.containsKey("properties")
+            } else {
+                if (properties.isEmpty()
+                    || properties.containsKey("properties")
                     || properties.containsKey("numeric_detection")
                     || properties.containsKey("dynamic_templates")
                     || properties.containsKey("dynamic_date_formats")) {
@@ -59,7 +64,7 @@ public class MappingConfig {
             }
         }
 
-        return false;
+        return true;
     }
 
 
@@ -141,12 +146,7 @@ public class MappingConfig {
         mapping.get(typeName).deleteField(fieldName);
     }
 
-    /**
-     * 判断字段是否存在
-     *
-     * @param fieldName fieldName
-     * @return boolean
-     */
+
     public boolean isFieldExist(String fieldName) {
         for(String typeName : mapping.keySet()) {
             if (mapping.get(typeName).isFieldExists(fieldName)) {
@@ -167,7 +167,7 @@ public class MappingConfig {
 
 
 
-    public Map<String/*typeName*/, Map<String/*field*/, TypeDefine>> getTypeDefines() {
+    public Map<String, Map<String, TypeDefine>> getTypeDefines() {
         Map<String, Map<String, TypeDefine>> ret = new HashMap<>();
 
         for(String type : mapping.keySet()) {
@@ -180,12 +180,8 @@ public class MappingConfig {
         return ret;
     }
 
-    /**
-     * 获取原生字段定义
-     *
-     * @return Map
-     */
-    public Map<String/*typeName*/, Map<String/*field*/, TypeDefine>> getTypeDefinesRaw() {
+
+    public Map<String, Map<String, TypeDefine>> getTypeDefinesRaw() {
         Map<String, Map<String, TypeDefine>> ret = new HashMap<>();
 
         for(String type : mapping.keySet()) {
@@ -199,7 +195,7 @@ public class MappingConfig {
     }
 
 
-    public Map<String/*field*/, List<TypeDefine>> getTypes() {
+    public Map<String, List<TypeDefine>> getTypes() {
         Map<String, List<TypeDefine>> ret = new HashMap<>();
 
         for(String type : mapping.keySet()) {
@@ -217,7 +213,7 @@ public class MappingConfig {
         return ret;
     }
 
-    // 判断mapping只是否有字段在多处使用不同的定义
+
     public Set<String> checkMapping() {
         Map<String, List<TypeDefine>> m = getTypes();
 
@@ -283,7 +279,7 @@ public class MappingConfig {
         }
     }
 
-    // m的配置覆盖当前mapping。粒度是field层面
+
     public void merge(MappingConfig m) {
         for(String type : m.mapping.keySet()) {
             if(type.equals(DEFAULT_TYPE_STR)) {
@@ -319,4 +315,18 @@ public class MappingConfig {
 
         return false;
     }
+
+
+    public void enableSource() {
+        for (Map.Entry<String, TypeConfig> entry : this.mapping.entrySet()) {
+            entry.getValue().setSource(true);
+        }
+    }
+
+    public void disableSource() {
+        for (Map.Entry<String, TypeConfig> entry : this.mapping.entrySet()) {
+            entry.getValue().setSource(false);
+        }
+    }
+
 }

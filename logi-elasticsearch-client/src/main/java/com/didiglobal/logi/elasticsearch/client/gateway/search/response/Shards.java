@@ -11,9 +11,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * @author D10865
- */
 public class Shards implements ToXContent {
     static final class Fields {
         public static final String _SHARDS = "_shards";

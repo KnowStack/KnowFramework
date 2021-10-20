@@ -8,11 +8,6 @@ import com.didiglobal.logi.elasticsearch.client.parser.dsl.ast.root.Fields;
 import com.didiglobal.logi.elasticsearch.client.parser.dsl.parser.DslParser;
 import com.didiglobal.logi.elasticsearch.client.parser.dsl.parser.ParserType;
 
-/**
- * @author D10865
- *
- * fields 解析器
- */
 public class FieldsParser extends DslParser {
 
     public FieldsParser(ParserType type) {

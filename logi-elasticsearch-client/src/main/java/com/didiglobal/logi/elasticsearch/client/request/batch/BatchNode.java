@@ -1,6 +1,7 @@
 package com.didiglobal.logi.elasticsearch.client.request.batch;
 
 import com.alibaba.fastjson.JSONObject;
+import com.didiglobal.logi.elasticsearch.client.model.type.ESVersion;
 
 public class BatchNode {
     private BatchType batchType;
@@ -13,6 +14,7 @@ public class BatchNode {
     private String routing;
 
     private String parent;
+    private ESVersion esVersion;
 
     public BatchNode(BatchType batchType, String index, String type, String id, String content) {
         this.batchType = batchType;
@@ -40,11 +42,19 @@ public class BatchNode {
         }
 
         if (routing != null) {
-            jsonObject.put("_routing", routing);
+            if (ESVersion.ES760.equals(esVersion)) {
+                jsonObject.put("routing", routing);
+            } else {
+                jsonObject.put("_routing", routing);
+            }
         }
 
         if (parent != null) {
-            jsonObject.put("_parent", parent);
+            if (ESVersion.ES760.equals(esVersion)) {
+                jsonObject.put("parent", parent);
+            } else {
+                jsonObject.put("_parent", parent);
+            }
         }
 
         JSONObject outter = new JSONObject();
@@ -126,5 +136,13 @@ public class BatchNode {
 
     public String getParent() {
         return parent;
+    }
+
+    public ESVersion esVersion() {
+        return esVersion;
+    }
+
+    public void setEsVersion(ESVersion esVersion) {
+        this.esVersion = esVersion;
     }
 }

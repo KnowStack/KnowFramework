@@ -30,9 +30,15 @@ import com.didiglobal.logi.elasticsearch.client.response.indices.gettemplate.ESI
 
 public class ESIndicesGetTemplateRequest extends ESActionRequest<ESIndicesGetTemplateRequest> {
     private String[] templates;
+    private boolean include_type_name = false;
 
     public ESIndicesGetTemplateRequest setTemplates(String... tempaltes) {
         this.templates = tempaltes;
+        return this;
+    }
+
+    public ESIndicesGetTemplateRequest setIncludeTypeName(boolean include_type_name) {
+        this.include_type_name = include_type_name;
         return this;
     }
 
@@ -54,7 +60,12 @@ public class ESIndicesGetTemplateRequest extends ESActionRequest<ESIndicesGetTem
             endPoint = "/_template/" + tempalteStr.trim();
         }
 
-        return new RestRequest("GET", endPoint, null);
+        RestRequest rr = new RestRequest("GET", endPoint, null);
+        if(include_type_name) {
+            rr.addParam("include_type_name", "true");
+        }
+
+        return rr;
     }
 
     @Override

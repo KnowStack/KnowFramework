@@ -40,40 +40,29 @@ public class ESUpdateRequest extends ESBaseReplicationRequest<ESUpdateRequest> {
     private boolean docAsUpsert = false;
     private boolean detectNoop = true;
 
-    /**
-     * The type of the indexed document.
-     */
+
     public String type() {
         return type;
     }
 
-    /**
-     * Sets the type of the indexed document.
-     */
+
     public ESUpdateRequest type(String type) {
         this.type = type;
         return this;
     }
 
-    /**
-     * The id of the indexed document.
-     */
+
     public String id() {
         return id;
     }
 
-    /**
-     * Sets the id of the indexed document.
-     */
+
     public ESUpdateRequest id(String id) {
         this.id = id;
         return this;
     }
 
-    /**
-     * Controls the shard routing of the request. Using this value to hash the shard
-     * and not the id.
-     */
+
     public ESUpdateRequest routing(String routing) {
         if (routing != null && routing.length() == 0) {
             this.routing = null;
@@ -83,17 +72,12 @@ public class ESUpdateRequest extends ESBaseReplicationRequest<ESUpdateRequest> {
         return this;
     }
 
-    /**
-     * Controls the shard routing of the request. Using this value to hash the shard
-     * and not the id.
-     */
+
     public String routing() {
         return this.routing;
     }
 
-    /**
-     * The parent id is used for the upsert request and also implicitely sets the routing if not already set.
-     */
+
     public ESUpdateRequest parent(String parent) {
         this.parent = parent;
         if (routing == null) {
@@ -106,9 +90,7 @@ public class ESUpdateRequest extends ESBaseReplicationRequest<ESUpdateRequest> {
         return parent;
     }
 
-    /**
-     * The source of the document to index, recopied to a new array if it is unsafe.
-     */
+
     public BytesReference source() {
         return source;
     }
@@ -123,91 +105,53 @@ public class ESUpdateRequest extends ESBaseReplicationRequest<ESUpdateRequest> {
         return this;
     }
 
-    /**
-     * Explicitly specify the fields that will be returned. By default, nothing is returned.
-     * @deprecated Use {@link ESUpdateRequest#fetchSource(String[], String[])} instead
-     */
+
     @Deprecated
     public ESUpdateRequest fields(String... fields) {
         this.fields = fields;
         return this;
     }
 
-    /**
-     * Indicate that _source should be returned with every hit, with an
-     * "include" and/or "exclude" set which can include simple wildcard
-     * elements.
-     *
-     * @param include
-     *            An optional include (optionally wildcarded) pattern to filter
-     *            the returned _source
-     * @param exclude
-     *            An optional exclude (optionally wildcarded) pattern to filter
-     *            the returned _source
-     */
+
     public ESUpdateRequest fetchSource(@Nullable String include, @Nullable String exclude) {
         FetchSourceContext context = this.fetchSourceContext == null ? FetchSourceContext.FETCH_SOURCE : this.fetchSourceContext;
         this.fetchSourceContext = new FetchSourceContext(context.fetchSource(), new String[] {include}, new String[]{exclude}, false);
         return this;
     }
 
-    /**
-     * Indicate that _source should be returned, with an
-     * "include" and/or "exclude" set which can include simple wildcard
-     * elements.
-     *
-     * @param includes
-     *            An optional list of include (optionally wildcarded) pattern to
-     *            filter the returned _source
-     * @param excludes
-     *            An optional list of exclude (optionally wildcarded) pattern to
-     *            filter the returned _source
-     */
+
     public ESUpdateRequest fetchSource(@Nullable String[] includes, @Nullable String[] excludes) {
         FetchSourceContext context = this.fetchSourceContext == null ? FetchSourceContext.FETCH_SOURCE : this.fetchSourceContext;
         this.fetchSourceContext = new FetchSourceContext(context.fetchSource(), includes, excludes, false);
         return this;
     }
 
-    /**
-     * Indicates whether the response should contain the updated _source.
-     */
+
     public ESUpdateRequest fetchSource(boolean fetchSource) {
         FetchSourceContext context = this.fetchSourceContext == null ? FetchSourceContext.FETCH_SOURCE : this.fetchSourceContext;
         this.fetchSourceContext = new FetchSourceContext(fetchSource, context.includes(), context.excludes(), false);
         return this;
     }
 
-    /**
-     * Explicitly set the fetch source context for this request
-     */
+
     public ESUpdateRequest fetchSource(FetchSourceContext context) {
         this.fetchSourceContext = context;
         return this;
     }
 
 
-    /**
-     * Get the fields to be returned.
-     * @deprecated Use {@link ESUpdateRequest#fetchSource()} instead
-     */
+
     @Deprecated
     public String[] fields() {
         return fields;
     }
 
-    /**
-     * Gets the {@link FetchSourceContext} which defines how the _source should
-     * be fetched.
-     */
+
     public FetchSourceContext fetchSource() {
         return fetchSourceContext;
     }
 
-    /**
-     * Sets the number of retries of a version conflict occurs because the document was updated between
-     * getting it and updating it. Defaults to 0.
-     */
+
     public ESUpdateRequest retryOnConflict(int retryOnConflict) {
         this.retryOnConflict = retryOnConflict;
         return this;

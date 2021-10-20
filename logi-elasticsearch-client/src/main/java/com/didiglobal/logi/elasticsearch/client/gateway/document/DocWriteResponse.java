@@ -24,10 +24,7 @@ public class DocWriteResponse extends ESActionResponse {
     protected static final String FOUND = "found";
     protected static final String CREATED = "created";
 
-    /**
-     * An enum that represents the results of CRUD operations, primarily used to communicate the type of
-     * operation that occurred.
-     */
+
     public enum Result {
         CREATED(0),
         UPDATED(1),
@@ -83,9 +80,7 @@ public class DocWriteResponse extends ESActionResponse {
         this.created = created;
     }
 
-    /**
-     * The change that occurred to the document.
-     */
+
     public Result getResult() {
         return result;
     }
@@ -94,30 +89,22 @@ public class DocWriteResponse extends ESActionResponse {
         this.result = result;
     }
 
-    /**
-     * The index the document was changed in.
-     */
+
     public String getIndex() {
         return index;
     }
 
-    /**
-     * The type of the document changed.
-     */
+
     public String getType() {
         return this.type;
     }
 
-    /**
-     * The id of the document changed.
-     */
+
     public String getId() {
         return this.id;
     }
 
-    /**
-     * Returns the current version of the doc.
-     */
+
     public long getVersion() {
         return this.version;
     }
@@ -126,11 +113,7 @@ public class DocWriteResponse extends ESActionResponse {
         return seqNo;
     }
 
-    /**
-     * The primary term for this change.
-     *
-     * @return the primary term
-     */
+
     public long getPrimaryTerm() {
         return primaryTerm;
     }
@@ -180,7 +163,7 @@ public class DocWriteResponse extends ESActionResponse {
 
         if (token.isValue()) {
             if (_INDEX.equals(currentFieldName)) {
-                // index uuid and shard id are unknown and can't be parsed back for now.
+
                 context.setIndex(parser.text());
             } else if (_TYPE.equals(currentFieldName)) {
                 context.setType(parser.text());
@@ -211,10 +194,10 @@ public class DocWriteResponse extends ESActionResponse {
             if (_SHARDS.equals(currentFieldName)) {
                 context.setShards(Shards.fromXContent(parser));
             } else {
-                parser.skipChildren(); // skip potential inner objects for forward compatibility
+                parser.skipChildren();
             }
         } else if (token == XContentParser.Token.START_ARRAY) {
-            parser.skipChildren(); // skip potential inner arrays for forward compatibility
+            parser.skipChildren();
         }
     }
 

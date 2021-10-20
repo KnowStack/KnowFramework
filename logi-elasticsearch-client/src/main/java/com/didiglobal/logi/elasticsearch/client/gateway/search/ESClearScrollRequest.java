@@ -19,11 +19,13 @@
 
 package com.didiglobal.logi.elasticsearch.client.gateway.search;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.didiglobal.logi.elasticsearch.client.model.ESActionRequest;
 import com.didiglobal.logi.elasticsearch.client.model.ESActionResponse;
 import com.didiglobal.logi.elasticsearch.client.model.RestRequest;
 import com.didiglobal.logi.elasticsearch.client.model.RestResponse;
+import com.didiglobal.logi.elasticsearch.client.response.query.clearScroll.ESQueryClearScrollResponse;
 import org.elasticsearch.action.ActionRequestValidationException;
 import org.elasticsearch.common.xcontent.XContentParser;
 import org.elasticsearch.common.xcontent.json.JsonXContent;

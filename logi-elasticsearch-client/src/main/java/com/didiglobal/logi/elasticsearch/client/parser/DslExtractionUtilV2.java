@@ -31,11 +31,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
-/**
- * @author D10865
- * <p>
- * 查询模板提取工具
- */
 public class DslExtractionUtilV2 {
 
     private static final ILog LOGGER = LogFactory.getLog(DslExtractionUtilV2.class);
@@ -48,8 +43,8 @@ public class DslExtractionUtilV2 {
     /**
      * 提取dsl语句成查询模板
      *
-     * @param dslContent dslContent
-     * @return ExtractResult
+     * @param dslContent
+     * @return
      */
     public static ExtractResult extractDsl(String dslContent) {
         String dslTemplate = "";

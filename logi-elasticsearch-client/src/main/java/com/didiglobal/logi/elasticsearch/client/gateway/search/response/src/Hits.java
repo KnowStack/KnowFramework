@@ -5,15 +5,15 @@ import com.alibaba.fastjson.annotation.JSONField;
 import com.didiglobal.logi.elasticsearch.client.utils.XContentParserUtils;
 import org.elasticsearch.common.xcontent.ToXContent;
 import org.elasticsearch.common.xcontent.XContentBuilder;
+import org.elasticsearch.common.xcontent.XContentBuilderString;
 import org.elasticsearch.common.xcontent.XContentParser;
+import org.elasticsearch.search.SearchHit;
+import org.elasticsearch.search.SearchHits;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * @author D10865
- */
 public class Hits implements ToXContent {
     static final class Fields {
         static final String HITS = "hits";

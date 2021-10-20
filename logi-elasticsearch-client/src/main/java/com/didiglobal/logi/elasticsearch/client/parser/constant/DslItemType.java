@@ -1,8 +1,5 @@
 package com.didiglobal.logi.elasticsearch.client.parser.constant;
 
-/**
- * @author D10865
- */
 public enum DslItemType {
     SELECT,
     WHERE,

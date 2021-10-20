@@ -24,7 +24,7 @@ import java.util.List;
  *         "primary_max_seq_no" : 34127709,
  *         "replica_global_checkpoint" : -1,
  *         "replica_max_seq_no" : -1,
- *         "last_requested_seq_no" : -1,
+ *         "time_since_update_replica_checkpoint" : -1,
  *         "total_send_time_millis" : 0,
  *         "successful_send_requests" : 0,
  *         "failed_send_requests" : 0,
@@ -99,10 +99,10 @@ public class DCDRStats {
     private long replicaMaxSeqNo;
 
     /**
-     * send的时候获取
+     * 上一次更新checkpoint的时间
      */
-    @JSONField(name = "last_requested_seq_no")
-    private long lastRequestedSeqNo;
+    @JSONField(name = "time_since_update_replica_checkpoint")
+    private long timeSinceUpdateReplicaCheckPoint;
 
     /**
      * send的时候获取
@@ -251,14 +251,6 @@ public class DCDRStats {
         this.replicaMaxSeqNo = replicaMaxSeqNo;
     }
 
-    public long getLastRequestedSeqNo() {
-        return lastRequestedSeqNo;
-    }
-
-    public void setLastRequestedSeqNo(long lastRequestedSeqNo) {
-        this.lastRequestedSeqNo = lastRequestedSeqNo;
-    }
-
     public long getTotalSendTimeMillis() {
         return totalSendTimeMillis;
     }
@@ -385,5 +377,13 @@ public class DCDRStats {
 
     public void setRecoverTotalTimeMillis(long recoverTotalTimeMillis) {
         this.recoverTotalTimeMillis = recoverTotalTimeMillis;
+    }
+
+    public long getTimeSinceUpdateReplicaCheckPoint() {
+        return timeSinceUpdateReplicaCheckPoint;
+    }
+
+    public void setTimeSinceUpdateReplicaCheckPoint(long timeSinceUpdateReplicaCheckPoint) {
+        this.timeSinceUpdateReplicaCheckPoint = timeSinceUpdateReplicaCheckPoint;
     }
 }

@@ -20,7 +20,7 @@ public class ESIndexResponse extends DocWriteResponse implements ToXContent {
 
         Builder context = new Builder();
         while (parser.nextToken() != XContentParser.Token.END_OBJECT) {
-            parseInnerToXContent(parser, context);
+            DocWriteResponse.parseInnerToXContent(parser, context);
         }
         return context.build();
     }

@@ -1,5 +1,6 @@
 package com.didiglobal.logi.elasticsearch.client.gateway.search;
 
+import com.alibaba.fastjson.JSONObject;
 import com.didiglobal.logi.elasticsearch.client.model.ESActionRequest;
 import com.didiglobal.logi.elasticsearch.client.model.ESActionResponse;
 import com.didiglobal.logi.elasticsearch.client.model.RestRequest;
@@ -39,9 +40,7 @@ public class ESSearchRequest extends ESActionRequest<ESSearchRequest> {
 
     private Map<String, String> params = new HashMap<>();
 
-    /**
-     * Sets the indices the search will be executed on.
-     */
+
     public ESSearchRequest indices(String... indices) {
         if (indices == null) {
             throw new IllegalArgumentException("indices must not be null");
@@ -56,50 +55,35 @@ public class ESSearchRequest extends ESActionRequest<ESSearchRequest> {
         return this;
     }
 
-    /**
-     * The indices
-     */
+
     public String[] indices() {
         return indices;
     }
 
-    /**
-     * The document types to execute the search against. Defaults to be executed against
-     * all types.
-     */
+
     public String[] types() {
         return types;
     }
 
-    /**
-     * The document types to execute the search against. Defaults to be executed against
-     * all types.
-     */
+
     public ESSearchRequest types(String... types) {
         this.types = types;
         return this;
     }
 
-    /**
-     * The source of the search request.
-     */
+
     public ESSearchRequest source(SearchSourceBuilder sourceBuilder) {
         this.source = sourceBuilder.buildAsBytes(Requests.CONTENT_TYPE);
         return this;
     }
 
-    /**
-     * The source of the search request. Consider using either {@link #source(byte[])} or
-     * {@link #source(org.elasticsearch.search.builder.SearchSourceBuilder)}.
-     */
+
     public ESSearchRequest source(String source) {
         this.source = new BytesArray(source);
         return this;
     }
 
-    /**
-     * The source of the search request in the form of a map.
-     */
+
     public ESSearchRequest source(Map source) {
         try {
             XContentBuilder builder = XContentFactory.contentBuilder(Requests.CONTENT_TYPE);
@@ -115,39 +99,28 @@ public class ESSearchRequest extends ESActionRequest<ESSearchRequest> {
         return this;
     }
 
-    /**
-     * The search source to execute.
-     */
+
     public ESSearchRequest source(byte[] source) {
         return source(source, 0, source.length);
     }
 
 
-    /**
-     * The search source to execute.
-     */
     public ESSearchRequest source(byte[] source, int offset, int length) {
         return source(new BytesArray(source, offset, length));
     }
 
-    /**
-     * The search source to execute.
-     */
+
     public ESSearchRequest source(BytesReference source) {
         this.source = source;
         return this;
     }
 
-    /**
-     * The search source to execute.
-     */
+
     public BytesReference source() {
         return source;
     }
 
-    /**
-     * Allows to provide additional source that will be used as well.
-     */
+
     public ESSearchRequest extraSource(SearchSourceBuilder sourceBuilder) {
         if (sourceBuilder == null) {
             extraSource = null;
@@ -172,39 +145,29 @@ public class ESSearchRequest extends ESActionRequest<ESSearchRequest> {
         return this;
     }
 
-    /**
-     * Allows to provide additional source that will use used as well.
-     */
+
     public ESSearchRequest extraSource(String source) {
         this.extraSource = new BytesArray(source);
         return this;
     }
 
-    /**
-     * Allows to provide additional source that will be used as well.
-     */
+
     public ESSearchRequest extraSource(byte[] source) {
         return extraSource(source, 0, source.length);
     }
 
-    /**
-     * Allows to provide additional source that will be used as well.
-     */
+
     public ESSearchRequest extraSource(byte[] source, int offset, int length) {
         return extraSource(new BytesArray(source, offset, length));
     }
 
-    /**
-     * Allows to provide additional source that will be used as well.
-     */
+
     public ESSearchRequest extraSource(BytesReference source) {
         this.extraSource = source;
         return this;
     }
 
-    /**
-     * Additional search source to execute.
-     */
+
     public BytesReference extraSource() {
         return this.extraSource;
     }
@@ -258,34 +221,24 @@ public class ESSearchRequest extends ESActionRequest<ESSearchRequest> {
         this.params = params;
     }
 
-    /**
-     * A comma separated list of routing values to control the shards the search will be executed on.
-     */
+
     public String routing() {
         return this.params.get("routing");
     }
 
-    /**
-     * A comma separated list of routing values to control the shards the search will be executed on.
-     */
+
     public ESSearchRequest routing(String routing) {
         putParam("routing", routing);
         return this;
     }
 
-    /**
-     * The routing values to control the shards that the search will be executed on.
-     */
+
     public ESSearchRequest routing(String... routings) {
         putParam("routing", Strings.arrayToCommaDelimitedString(routings));
         return this;
     }
 
-    /**
-     * Sets the preference to execute the search. Defaults to randomize across shards. Can be set to
-     * <tt>_local</tt> to prefer local shards, <tt>_primary</tt> to execute only on primary shards, or
-     * a custom value, which guarantees that the same order will be used across different requests.
-     */
+
     public ESSearchRequest preference(String preference) {
         putParam("preference", preference);
         return this;
@@ -295,26 +248,18 @@ public class ESSearchRequest extends ESActionRequest<ESSearchRequest> {
         return params.get("preference");
     }
 
-    /**
-     * The tye of search to execute.
-     */
+
     public SearchType searchType() {
         return SearchType.fromString(params.get("search_type"), ParseFieldMatcher.EMPTY);
     }
 
-    /**
-     * The search type to execute, defaults to {@link SearchType#DEFAULT}.
-     */
+
     public ESSearchRequest searchType(SearchType searchType) {
         putParam("search_type", searchType.name());
         return this;
     }
 
-    /**
-     * The a string representation search type to execute, defaults to {@link SearchType#DEFAULT}. Can be
-     * one of "dfs_query_then_fetch"/"dfsQueryThenFetch", "dfs_query_and_fetch"/"dfsQueryAndFetch",
-     * "query_then_fetch"/"queryThenFetch", and "query_and_fetch"/"queryAndFetch".
-     */
+
     public ESSearchRequest searchType(String searchType) {
         SearchType st = SearchType.fromString(searchType, ParseFieldMatcher.EMPTY);
         putParam("search_type", st.name());
@@ -349,11 +294,7 @@ public class ESSearchRequest extends ESActionRequest<ESSearchRequest> {
         return this;
     }
 
-    /**
-     * Sets if this request should use the request cache or not, assuming that it can (for
-     * example, if "now" is used, it will never be cached). By default (not set, or null,
-     * will default to the index level setting if request cache is enabled or not).
-     */
+
     public ESSearchRequest requestCache(Boolean requestCache) {
         putParam("request_cache", String.valueOf(requestCache));
         return this;

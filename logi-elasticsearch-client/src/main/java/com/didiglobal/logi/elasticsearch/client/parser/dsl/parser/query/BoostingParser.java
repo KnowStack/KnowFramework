@@ -11,7 +11,6 @@ import com.didiglobal.logi.elasticsearch.client.parser.dsl.parser.ParserRegister
 import com.didiglobal.logi.elasticsearch.client.parser.dsl.parser.ParserType;
 
 /**
- * @author D10865
  *
  * 解析boosting查询子句，例如
 {

@@ -52,18 +52,12 @@ public class EsSqlFormatVisitor extends MySqlOutputVisitor {
     }
 
 
-    /**
-     * 查询注释语法树 / * a, b * /
-     *
-     * @param x x
-     * @return boolean
-     */
     @Override
     public boolean visit(SQLCommentHint x) {
         print("/*");
 
         String text = x.getText();
-        if(text != null && text.contains("ROUTINGS(")) {
+        if (text != null && text.contains("ROUTINGS(")) {
             print("! ROUTINGS(?) ");
 
             // to fix error sql select /*! '1_1557513856880_6529246_0727' */ * from mysql_daijia_kuaipay*/account_flow_statement where trade_flow_no ='1_1557513856880_6529246_0727'
@@ -79,11 +73,6 @@ public class EsSqlFormatVisitor extends MySqlOutputVisitor {
         return false;
     }
 
-    /**
-     * select a,b 语法树
-     *
-     * @param selectList selectList
-     */
     @Override
     protected void printSelectList(List<SQLSelectItem> selectList) {
         incrementIndent();
@@ -106,7 +95,7 @@ public class EsSqlFormatVisitor extends MySqlOutputVisitor {
         }
         ignoreIdentifier = false;
 
-        if(columns.size()==0) {
+        if (columns.size() == 0) {
             columns.add("?");
         }
 
@@ -125,12 +114,6 @@ public class EsSqlFormatVisitor extends MySqlOutputVisitor {
         decrementIndent();
     }
 
-    /**
-     * table 语法树
-     *
-     * @param x x
-     * @return boolean
-     */
     @Override
     public boolean visit(SQLExprTableSource x) {
         print("?");
@@ -138,12 +121,6 @@ public class EsSqlFormatVisitor extends MySqlOutputVisitor {
         return false;
     }
 
-    /**
-     * table 语法树
-     *
-     * @param x x
-     * @return boolean
-     */
     @Override
     public boolean visit(SQLJoinTableSource x) {
         print("?");
@@ -151,12 +128,6 @@ public class EsSqlFormatVisitor extends MySqlOutputVisitor {
         return false;
     }
 
-    /**
-     * between a and b 语法树
-     *
-     * @param x x
-     * @return boolean
-     */
     @Override
     public boolean visit(SQLBetweenExpr x) {
         x.getTestExpr().accept(this);
@@ -180,12 +151,6 @@ public class EsSqlFormatVisitor extends MySqlOutputVisitor {
 
     private static final String STR = "str";
 
-    /**
-     * where 语法树
-     *
-     * @param x x
-     * @return boolean
-     */
     @Override
     public boolean visit(SQLBinaryOpExpr x) {
 
@@ -209,7 +174,7 @@ public class EsSqlFormatVisitor extends MySqlOutputVisitor {
                 || x.getOperator() == SQLBinaryOperator.RegExp
                 || x.getOperator() == SQLBinaryOperator.NotRegExp
                 || x.getOperator() == SQLBinaryOperator.Equality
-                ) {
+        ) {
 
             x.getLeft().accept(this);
             print(" ");
@@ -230,7 +195,7 @@ public class EsSqlFormatVisitor extends MySqlOutputVisitor {
 
         SQLExpr left = x.getLeft();
 
-        for (;;) {
+        for (; ; ) {
 
             if (left instanceof SQLBinaryOpExpr && ((SQLBinaryOpExpr) left).getOperator() == x.getOperator()) {
                 SQLBinaryOpExpr binaryLeft = (SQLBinaryOpExpr) left;
@@ -243,7 +208,7 @@ public class EsSqlFormatVisitor extends MySqlOutputVisitor {
         }
 
         int len = sb.length();
-        for(SQLExpr node : groupList) {
+        for (SQLExpr node : groupList) {
 
             node.accept(this);
 
@@ -281,10 +246,8 @@ public class EsSqlFormatVisitor extends MySqlOutputVisitor {
     }
 
     /**
-     *
-     *
-     * @param x x
-     * @return boolean
+     * @param x
+     * @return
      */
     @Override
     public boolean visit(SQLVariantRefExpr x) {
@@ -293,12 +256,6 @@ public class EsSqlFormatVisitor extends MySqlOutputVisitor {
         return false;
     }
 
-    /**
-     * in (a, b) / not in (a, b) 语法树
-     *
-     * @param x x
-     * @return boolean
-     */
     @Override
     public boolean visit(SQLInListExpr x) {
         x.getExpr().accept(this);
@@ -312,25 +269,13 @@ public class EsSqlFormatVisitor extends MySqlOutputVisitor {
         return false;
     }
 
-    /**
-     * 整数 语法树
-     *
-     * @param x x
-     * @return boolean
-     */
     @Override
     public boolean visit(SQLIntegerExpr x) {
         print("?");
 
-        return  false;
+        return false;
     }
 
-    /**
-     * 数值 语法树
-     *
-     * @param x x
-     * @return boolean
-     */
     @Override
     public boolean visit(SQLNumberExpr x) {
         print("?");
@@ -338,12 +283,6 @@ public class EsSqlFormatVisitor extends MySqlOutputVisitor {
         return false;
     }
 
-    /**
-     * char 语法树
-     *
-     * @param x x
-     * @return boolean
-     */
     @Override
     public boolean visit(SQLCharExpr x) {
         print('?');
@@ -351,15 +290,9 @@ public class EsSqlFormatVisitor extends MySqlOutputVisitor {
         return false;
     }
 
-    /**
-     * 子节点(字段名)语法树
-     *
-     * @param x x
-     * @return boolean
-     */
     @Override
     public boolean visit(SQLIdentifierExpr x) {
-        if(ignoreIdentifier) {
+        if (ignoreIdentifier) {
             print("?");
         } else {
             print(x.getName());
@@ -368,25 +301,7 @@ public class EsSqlFormatVisitor extends MySqlOutputVisitor {
         return false;
     }
 
-    /**
-     * limit 语法树
-     *
-     * @param x x
-     * @return boolean
-     */
-//    @Override
-//    public boolean visit(MySqlSelectQueryBlock.Limit x) {
-//        print("LIMIT ?");
-//
-//        return false;
-//    }
 
-    /**
-     * limit 语法树
-     *
-     * @param x x
-     * @return boolean
-     */
     @Override
     public boolean visit(SQLLimit x) {
         print("LIMIT ?");
@@ -394,19 +309,12 @@ public class EsSqlFormatVisitor extends MySqlOutputVisitor {
         return false;
     }
 
-    /**
-     * 输出一个node的内容
-     *
-     * @param node node
-     * @param parentOp parentOp
-     * @param isLeft isLeft
-     */
     private void visitNode(SQLExpr node, SQLBinaryOperator parentOp, boolean isLeft) {
         if (node instanceof SQLBinaryOpExpr) {
             SQLBinaryOpExpr binaryNode = (SQLBinaryOpExpr) node;
 
-            if ((isLeft&&(binaryNode.getOperator().priority > parentOp.priority))
-                    || (!isLeft&&(binaryNode.getOperator().priority >= parentOp.priority))) {
+            if ((isLeft && (binaryNode.getOperator().priority > parentOp.priority))
+                    || (!isLeft && (binaryNode.getOperator().priority >= parentOp.priority))) {
 
                 print('(');
                 node.accept(this);

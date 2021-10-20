@@ -34,6 +34,7 @@ public class ESIndicesUpdateMappingRequest extends ESActionRequest<ESIndicesUpda
     private String index;
     private String type;
     private TypeConfig typeConfig;
+    private boolean include_type_name = false;
 
     public ESIndicesUpdateMappingRequest setIndex(String index) {
         this.index = index;
@@ -49,6 +50,12 @@ public class ESIndicesUpdateMappingRequest extends ESActionRequest<ESIndicesUpda
         this.typeConfig = typeConfig;
         return this;
     }
+
+    public ESIndicesUpdateMappingRequest setIncludeTypeName(boolean include_type_name) {
+        this.include_type_name = include_type_name;
+        return this;
+    }
+
 
     @Override
     public RestRequest toRequest() throws Exception {
@@ -66,6 +73,9 @@ public class ESIndicesUpdateMappingRequest extends ESActionRequest<ESIndicesUpda
 
         String endPoint = index+ "/_mapping/" + type;
         RestRequest rr = new RestRequest("PUT", endPoint, null);
+        if(include_type_name) {
+            rr.addParam("include_type_name", "true");
+        }
         rr.setBody(typeConfig.toJson().toJSONString());
 
         return rr;

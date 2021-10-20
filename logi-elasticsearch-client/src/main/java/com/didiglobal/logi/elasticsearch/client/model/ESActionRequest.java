@@ -9,6 +9,8 @@ import org.apache.http.message.BasicHeader;
 import org.elasticsearch.action.ActionRequest;
 import org.elasticsearch.rest.RestStatus;
 
+import com.didiglobal.logi.elasticsearch.client.ESClient;
+
 public abstract class ESActionRequest<T extends ESActionRequest> extends ActionRequest {
     public ESActionRequest() {
         super();

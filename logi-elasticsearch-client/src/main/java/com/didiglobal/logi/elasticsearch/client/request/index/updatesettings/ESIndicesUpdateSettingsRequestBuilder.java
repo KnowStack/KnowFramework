@@ -38,4 +38,9 @@ public class ESIndicesUpdateSettingsRequestBuilder extends ActionRequestBuilder<
         request.addSettings(key, value);
         return this;
     }
+
+    public ESIndicesUpdateSettingsRequestBuilder setMasterTimeout(String masterTimeout) {
+        request.setMasterTimeout(masterTimeout);
+        return this;
+    }
 }

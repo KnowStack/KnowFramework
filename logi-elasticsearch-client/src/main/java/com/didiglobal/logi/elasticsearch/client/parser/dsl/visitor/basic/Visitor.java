@@ -16,7 +16,6 @@ import com.didiglobal.logi.elasticsearch.client.parser.dsl.ast.common.value.Stri
 import com.didiglobal.logi.elasticsearch.client.parser.dsl.ast.query.*;
 import com.didiglobal.logi.elasticsearch.client.parser.dsl.ast.root.*;
 
-
 public interface Visitor {
     public void visit(DslNode node);
 

@@ -5,13 +5,7 @@ import org.apache.commons.lang3.StringUtils;
 import com.alibaba.fastjson.JSONObject;
 import com.didiglobal.logi.elasticsearch.client.model.type.ESVersion;
 
-/**
- * TypeDefine操作类
- *
- * 主要是完成高低版本兼容
- *
- * Created by d06679 on 2019/3/6.
- */
+
 public class TypeDefineOperator {
 
     private static final String TYPE_STR                       = "type";
@@ -44,11 +38,7 @@ public class TypeDefineOperator {
 
     private static final String ES_LOW_STRING_FIELDDATA_STR    = "fielddata";
 
-    /**
-     * 是否需要忽略mapping优化
-     * @param define define
-     * @return boolean
-     */
+
     public static boolean isNotOptimze(JSONObject define) {
         if (define.containsKey(TYPE_STR)) {
             String v = define.getString(TYPE_STR);
@@ -56,15 +46,15 @@ public class TypeDefineOperator {
                 return true;
             }
         } else if (define.containsKey(FIELDS_STR)) {
-            //                    \"artifact\": {\n"
-            //                              \"type\": \"string\",\n"
-            //                              \"fields\": {\n"
-            //                                \"raw\": {\n"
-            //                                  \"ignore_above\": 1024,\n"
-            //                                  \"index\": \"not_analyzed\",\n"
-            //                                   \"type\": \"string\"\n"
-            //                                }\n"
-            //                              }\n"
+
+
+
+
+
+
+
+
+
             if (define.get(FIELDS_STR) instanceof JSONObject) {
                 JSONObject fieldsObj = define.getJSONObject(FIELDS_STR);
                 if (fieldsObj.containsKey(RAW_STR)) {
@@ -76,11 +66,7 @@ public class TypeDefineOperator {
         return false;
     }
 
-    /**
-     * 获取类型
-     * @param define define
-     * @return String
-     */
+
     public static String getType(JSONObject define) {
         if (define != null && define.containsKey(TYPE_STR)) {
             return define.getString(TYPE_STR);
@@ -103,7 +89,7 @@ public class TypeDefineOperator {
     public static boolean isIndexOff(JSONObject define) {
 
         if (isHighVersionString(define)) {
-            //高版本的es
+
             if ("false".equalsIgnoreCase(define.getString(INDEX_STR))
                 && "true".equalsIgnoreCase(define.getString(DOC_VALUES_STR))) {
                 return true;
@@ -118,10 +104,7 @@ public class TypeDefineOperator {
         return false;
     }
 
-    /**
-     * 设置成不检索
-     * @param define define
-     */
+
     public static void setIndexOff(JSONObject define) {
         if (isHighVersionString(define)) {
             define.put(INDEX_STR, "false");
@@ -130,10 +113,7 @@ public class TypeDefineOperator {
         }
     }
 
-    /**
-     * 设置成检索
-     * @param define define
-     */
+
     public static void setIndexOn(JSONObject define) {
         if (isHighVersionString(define)) {
             define.remove(INDEX_STR);
@@ -159,18 +139,12 @@ public class TypeDefineOperator {
         return false;
     }
 
-    /**
-     * @param define define
-     * 设置成不支持排序
-     */
+
     public static void setDocValuesOff(JSONObject define) {
         define.put(DOC_VALUES_STR, false);
     }
 
-    /**
-     * @param define define
-     * 设置成支持排序
-     */
+
     public static void setDocValuesOn(JSONObject define) {
         define.put(DOC_VALUES_STR, true);
     }
@@ -192,7 +166,7 @@ public class TypeDefineOperator {
         j1.remove(IGNORE_ABOVE_STR);
         j2.remove(IGNORE_ABOVE_STR);
 
-        // 去除默认值配置
+
         removeDefaultValue(j1, ENABLED, "true");
         removeDefaultValue(j1, DYNAMIC, "false");
         removeDefaultValue(j1, DOC_VALUE, "true");
@@ -238,14 +212,14 @@ public class TypeDefineOperator {
 
     private static void dealHighLevelType(JSONObject define) {
         if (isLowVersionString(define)) {
-            // 处理String
+
             if (define.containsKey(INDEX_STR)) {
                 if (ES_LOW_STRING_NOT_ANALYZED_STR.equals(define.get(INDEX_STR))) {
-                    // keyword
+
                     define.remove(INDEX_STR);
                     define.put(TYPE_STR, ES_HIGH_TYPE_KEYWORD_STR);
                 } else if ("no".equals(define.get(INDEX_STR))) {
-                    // keyword and not index
+
                     define.put(INDEX_STR, false);
                     define.remove(IGNORE_ABOVE_STR);
                     define.put(DOC_VALUES_STR, false);
@@ -260,14 +234,14 @@ public class TypeDefineOperator {
                 define.put(TYPE_STR, ES_HIGH_TYPE_TEXT_STR);
             }
         } else {
-            // 处理其他字段
+
             if (define.containsKey(INDEX_STR) && "no".equals(define.get(INDEX_STR))) {
                 define.put(INDEX_STR, false);
                 define.put(DOC_VALUES_STR, false);
             }
         }
 
-        // 移除高版本不兼容字段
+
         define.remove(ES_LOW_STRING_FIELDDATA_STR);
         define.remove(INCLUDE_IN_ALL_STR);
         define.remove(PRECISION_STEP_STR);

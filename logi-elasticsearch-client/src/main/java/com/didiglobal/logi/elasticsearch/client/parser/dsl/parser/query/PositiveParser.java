@@ -9,7 +9,6 @@ import com.didiglobal.logi.elasticsearch.client.parser.dsl.parser.ParserRegister
 import com.didiglobal.logi.elasticsearch.client.parser.dsl.parser.ParserType;
 
 /**
- * @author D10865
  *
  * 解析boosting子查询中positive子句
  */

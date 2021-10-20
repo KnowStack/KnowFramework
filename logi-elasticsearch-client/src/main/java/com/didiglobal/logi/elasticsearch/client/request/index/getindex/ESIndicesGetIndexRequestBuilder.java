@@ -49,4 +49,9 @@ public class ESIndicesGetIndexRequestBuilder extends ActionRequestBuilder<ESIndi
         request.alias(enable);
         return this;
     }
+
+    public ESIndicesGetIndexRequestBuilder setIncludeTypeName(boolean include_type_name) {
+        request.setIncludeTypeName(include_type_name);
+        return this;
+    }
 }

@@ -19,9 +19,28 @@
 
 package com.didiglobal.logi.elasticsearch.client.request.query.sql;
 
+import com.didiglobal.logi.elasticsearch.client.request.query.query.ESQueryRequestBuilder;
 import com.didiglobal.logi.elasticsearch.client.response.query.query.ESQueryResponse;
+import org.elasticsearch.ExceptionsHelper;
 import org.elasticsearch.action.ActionRequestBuilder;
 import org.elasticsearch.client.ElasticsearchClient;
+import org.elasticsearch.common.Nullable;
+import org.elasticsearch.common.bytes.BytesReference;
+import org.elasticsearch.common.unit.TimeValue;
+import org.elasticsearch.common.xcontent.XContentBuilder;
+import org.elasticsearch.common.xcontent.XContentHelper;
+import org.elasticsearch.index.query.QueryBuilder;
+import org.elasticsearch.script.Script;
+import org.elasticsearch.search.aggregations.AbstractAggregationBuilder;
+import org.elasticsearch.search.builder.SearchSourceBuilder;
+import org.elasticsearch.search.fetch.innerhits.InnerHitsBuilder;
+import org.elasticsearch.search.highlight.HighlightBuilder;
+import org.elasticsearch.search.rescore.RescoreBuilder;
+import org.elasticsearch.search.sort.SortBuilder;
+import org.elasticsearch.search.sort.SortOrder;
+import org.elasticsearch.search.suggest.SuggestBuilder;
+
+import java.util.Map;
 
 /**
  * A search request request builder.

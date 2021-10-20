@@ -1,7 +1,18 @@
 package com.didiglobal.logi.elasticsearch.client;
 
+
+import com.alibaba.fastjson.JSONException;
+import com.didiglobal.logi.elasticsearch.client.gateway.document.ESDeleteRequest;
+import com.didiglobal.logi.elasticsearch.client.gateway.document.ESIndexRequest;
+import com.didiglobal.logi.elasticsearch.client.gateway.document.ESUpdateRequest;
+import com.didiglobal.logi.elasticsearch.client.gateway.search.ESSearchRequest;
+import com.didiglobal.logi.elasticsearch.client.gateway.search.ESSearchScrollRequest;
 import com.didiglobal.logi.elasticsearch.client.model.*;
 import com.didiglobal.logi.elasticsearch.client.model.exception.ExceptionFactory;
+import com.didiglobal.logi.elasticsearch.client.request.batch.ESBatchRequest;
+import com.didiglobal.logi.elasticsearch.client.request.query.clearScroll.ESQueryClearScrollRequest;
+import com.didiglobal.logi.elasticsearch.client.request.query.scroll.ESQueryScrollRequest;
+import com.didiglobal.logi.elasticsearch.client.request.query.sql.ESSQLRequest;
 import com.didiglobal.logi.elasticsearch.client.response.cluster.ESClusterVersionResponse;
 import com.didiglobal.logi.log.ILog;
 import com.didiglobal.logi.log.LogFactory;
@@ -24,7 +35,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 
 public class ESClient extends ESAbstractClient {
-    protected static final ILog logger = LogFactory.getLog(ESClient.class);
+    protected static final ILog LOGGER = LogFactory.getLog(ESClient.class);
 
     private List<TransportAddress> tas = new ArrayList<>();
 
@@ -125,14 +136,16 @@ public class ESClient extends ESAbstractClient {
                 ESClusterVersionResponse versionResponse = this.admin().cluster().prepareVersion().execute().actionGet(10,
                         TimeUnit.SECONDS);
                 esVersion = versionResponse.getVersion().getNumber();
+                clusterName = versionResponse.getClusterName();
             }
         } catch (Throwable t) {
             esVersion = DEFAULT_ES_VERSION;
+            LOGGER.error("fail to get es {} version", clusterName, t);
         }
     }
 
     private void reset() {
-        logger.info("reset client, cluster=" + clusterName);
+        LOGGER.info("reset client, cluster=" + clusterName);
         
         ArrayList<HttpHost> hosts = Lists.newArrayList();
 
@@ -179,8 +192,6 @@ public class ESClient extends ESAbstractClient {
             RestRequest rr = req.buildRequest(headers);
             rr.addEndpointPrefix(uriPrefix);
 
-            // System.out.println("request:" + rr.toString());
-
             org.elasticsearch.client.Request clientRequest = rr.buildRequest();
 
             try {
@@ -206,12 +217,22 @@ public class ESClient extends ESAbstractClient {
     }
 
     private <Response extends ActionResponse> void sendRequest(ESActionRequest req, Request request, ActionListener<Response> listener) {
+        // 将涉及产生集群任务的请求(判断method 是不是get)
+        boolean isGetMethod = ("GET".equalsIgnoreCase(request.getMethod())) || ("HEAD".equalsIgnoreCase(request.getMethod()));
+        // 需要排除日志记录的请求，，写入相关的请求_bulk,{index}/{type}/{id})，滚动查询scroll
+        boolean isExcludeActionRequest = (req instanceof ESBatchRequest) || (req instanceof ESIndexRequest) ||
+                (req instanceof ESUpdateRequest) || (req instanceof ESDeleteRequest) ||
+                (req instanceof ESQueryScrollRequest) || (req instanceof ESQueryClearScrollRequest ||
+                req instanceof ESSearchRequest || req instanceof ESSearchScrollRequest || req instanceof ESSQLRequest);
+        long startTick = System.currentTimeMillis();
+
         restClient.performRequestAsync(request, new ResponseListener() {
             @Override
             public void onSuccess(org.elasticsearch.client.Response response) {
+                RestResponse restResponse = null;
                 try {
                     if (req.checkResponse(response)) {
-                        RestResponse restResponse = new RestResponse(getEsVersion(), response);
+                        restResponse = new RestResponse(getEsVersion(), response);
                         ESActionResponse tr = req.buildResponse(restResponse);
 
                         listener.onResponse((Response) tr);
@@ -219,14 +240,28 @@ public class ESClient extends ESAbstractClient {
                         throw new ResponseException(response);
                     }
                 } catch (Exception e) {
+                    if (e instanceof JSONException && restResponse != null) {
+                        LOGGER.error("ESClient_sendRequest||cluster={}||req={}||url={}||cost={}||response={}",
+                                clusterName, req.getClass().getSimpleName(), request.getEndpoint(),
+                                System.currentTimeMillis() - startTick, restResponse.getContent(), e);
+                    }
                     listener.onFailure(e);
+                } finally {
+                    if (!isGetMethod && !isExcludeActionRequest) {
+                        LOGGER.info("ESClient_sendRequest||cluster={}||req={}||url={}||cost={}",
+                                clusterName, req.getClass().getSimpleName(), request.getEndpoint(), System.currentTimeMillis() - startTick);
+                    }
                 }
-
             }
 
             @Override
             public void onFailure(Exception e) {
-                listener.onFailure(ExceptionFactory.translate(e));
+                Throwable throwable = ExceptionFactory.translate(e);
+                listener.onFailure(throwable);
+                if (!isGetMethod && !isExcludeActionRequest) {
+                    LOGGER.error("ESClient_sendRequest||cluster={}||req={}||url={}||cost={}",
+                            clusterName, req.getClass().getSimpleName(), request.getEndpoint(), System.currentTimeMillis() - startTick, throwable);
+                }
             }
         });
     }
@@ -237,8 +272,7 @@ public class ESClient extends ESAbstractClient {
         try {
             restClient.close();
         } catch (IOException e) {
-            // TODO
-            e.printStackTrace();
+            LOGGER.error("fail to close", e);
         }
     }
 

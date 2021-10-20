@@ -44,4 +44,9 @@ public class ESIndicesUpdateMappingRequestBuilder extends ActionRequestBuilder<E
         request.setTypeConfig(type);
         return this;
     }
+
+    public ESIndicesUpdateMappingRequestBuilder setIncludeTypeName(boolean include_type_name) {
+        request.setIncludeTypeName(include_type_name);
+        return this;
+    }
 }

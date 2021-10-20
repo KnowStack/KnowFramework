@@ -64,6 +64,12 @@ public class CommonStat {
     @JSONField(name = "recovery")
     private Recovery recovery;
 
+    @JSONField(name = "commit")
+    private Commit commit;
+
+    @JSONField(name = "seq_no")
+    private SeqNo seqNo;
+
     @JSONField(name = "shards")
     private Map<String, List<Map<String, CommonStat>>> shards;
 
@@ -238,5 +244,21 @@ public class CommonStat {
 
     public void setIndices(Map<String, CommonStat> indices) {
         this.indices = indices;
+    }
+
+    public SeqNo getSeqNo() {
+        return seqNo;
+    }
+
+    public void setSeqNo(SeqNo seqNo) {
+        this.seqNo = seqNo;
+    }
+
+    public Commit getCommit() {
+        return commit;
+    }
+
+    public void setCommit(Commit commit) {
+        this.commit = commit;
     }
 }

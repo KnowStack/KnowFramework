@@ -12,6 +12,8 @@ public class RestResponse {
 
     private Response response;
 
+    private String content = "";
+
     public String getEsVersion() {
         return esVersion;
     }
@@ -44,7 +46,7 @@ public class RestResponse {
         } catch (IOException e) {
             content = "{}";
         }
-
+        this.content = content;
         return content;
     }
 
@@ -55,4 +57,9 @@ public class RestResponse {
     public int getStatusCode() {
         return response.getStatusLine().getStatusCode();
     }
+
+    public String getContent() {
+        return this.content;
+    }
+
 }

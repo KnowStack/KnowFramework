@@ -12,6 +12,9 @@ public class TypeConfig {
 
     private TypeProperties      properties = null;
 
+    private static final String ENABLED = "enabled";
+    private static final String SOURCE = "_source";
+
     public TypeConfig() {
     }
 
@@ -140,7 +143,7 @@ public class TypeConfig {
     /**
      * 获取原生类型定义
      *
-     * @return Map
+     * @return
      */
     public Map<String, TypeDefine> getTypeDefineRaw() {
         if (properties != null) {
@@ -154,6 +157,8 @@ public class TypeConfig {
     public void merge(TypeConfig tm) {
         if (properties != null) {
             properties.merge(tm.properties);
+        } else {
+            properties = tm.properties;
         }
     }
 
@@ -172,4 +177,31 @@ public class TypeConfig {
     public void setProperties(TypeProperties properties) {
         this.properties = properties;
     }
+
+    public void setSource(boolean enable) {
+        JSONObject source = new JSONObject();
+        source.put(ENABLED, enable);
+        if (this.notUsedMap == null) {
+            this.notUsedMap = new HashMap<>();
+        }
+
+        this.notUsedMap.put(SOURCE, source);
+    }
+
+    public boolean getSource() {
+        if (this.notUsedMap != null &&
+                this.notUsedMap.containsKey(SOURCE) &&
+                this.notUsedMap.get(SOURCE) instanceof JSONObject
+        ) {
+            JSONObject source = (JSONObject)this.notUsedMap.get(SOURCE);
+            // 有enabled不存在的情况 默认为true,例如"_source" : {"excludes" : ["geo_term"]}
+            if (source.containsKey(ENABLED)) {
+                return source.getBoolean(ENABLED);
+            }
+        }
+        // ES默认开启_source
+        return true;
+    }
+
+
 }

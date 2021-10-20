@@ -33,4 +33,9 @@ public class ESIndicesGetTemplateRequestBuilder extends ActionRequestBuilder<ESI
         request.setTemplates(template);
         return this;
     }
+
+    public ESIndicesGetTemplateRequestBuilder setIncludeTypeName(boolean include_type_name) {
+        request.setIncludeTypeName(include_type_name);
+        return this;
+    }
 }

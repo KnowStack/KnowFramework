@@ -31,12 +31,12 @@ import org.elasticsearch.action.ActionRequestValidationException;
 public class ESIndicesPutIndexRequest extends ESActionRequest<ESIndicesPutIndexRequest> {
     private String index;
     private String indexConfig;
+    private boolean include_type_name = false;
 
     public ESIndicesPutIndexRequest setIndex(String index) {
         this.index = index;
         return this;
     }
-
 
     public ESIndicesPutIndexRequest setIndexConfig(String indexConfig) {
         this.indexConfig = indexConfig;
@@ -49,6 +49,10 @@ public class ESIndicesPutIndexRequest extends ESActionRequest<ESIndicesPutIndexR
         return this;
     }
 
+    public ESIndicesPutIndexRequest setIncludeTypeName(boolean include_type_name) {
+        this.include_type_name = include_type_name;
+        return this;
+    }
 
     @Override
     public RestRequest toRequest() throws Exception {
@@ -62,6 +66,9 @@ public class ESIndicesPutIndexRequest extends ESActionRequest<ESIndicesPutIndexR
             rr.setBody(indexConfig);
         }
 
+        if(include_type_name) {
+            rr.addParam("include_type_name", "true");
+        }
         return rr;
     }
 

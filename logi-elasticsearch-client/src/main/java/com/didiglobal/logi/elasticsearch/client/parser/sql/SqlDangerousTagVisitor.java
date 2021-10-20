@@ -11,17 +11,13 @@ import org.apache.commons.lang3.StringUtils;
 
 import java.util.Set;
 
-/**
- * @author D10865
- *
- * 危害dsl查询语句标签遍历器
- */
+
 public class SqlDangerousTagVisitor extends MySqlOutputVisitor {
 
     private static final ILog LOGGER = LogFactory.getLog(SqlDangerousTagVisitor.class);
-    // 标签集合
+
     private Set<String> tags = Sets.newHashSet();
-    // aggs次数
+
     private int aggsLevel = 0;
 
     private StringBuilder stringBuilder;
@@ -31,12 +27,7 @@ public class SqlDangerousTagVisitor extends MySqlOutputVisitor {
         this.stringBuilder = sb;
     }
 
-    /**
-     * group by 语法树
-     *
-     * @param groupBySQLExpr groupBySQLExpr
-     * @return boolean
-     */
+
     @Override
     public boolean visit(SQLSelectGroupByClause groupBySQLExpr) {
         this.aggsLevel += groupBySQLExpr.getItems().size();
@@ -44,12 +35,7 @@ public class SqlDangerousTagVisitor extends MySqlOutputVisitor {
         return super.visit(groupBySQLExpr);
     }
 
-    /**
-     * group by 语法树
-     *
-     * @param sqlAggregateExpr sqlAggregateExpr
-     * @return boolean
-     */
+
     @Override
     public boolean visit(SQLAggregateExpr sqlAggregateExpr) {
         this.aggsLevel += sqlAggregateExpr.getArguments().size();
@@ -65,16 +51,11 @@ public class SqlDangerousTagVisitor extends MySqlOutputVisitor {
         return super.visit(sqlAggregateExpr);
     }
 
-    /**
-     * where 语法树
-     *
-     * @param x x
-     * @return boolean
-     */
+
     @Override
     public boolean visit(SQLBinaryOpExpr x) {
 
-        // 判断是否为以下二元操作符，是否为like
+
         if (x.getOperator() == SQLBinaryOperator.Like
                 ) {
 
@@ -93,12 +74,7 @@ public class SqlDangerousTagVisitor extends MySqlOutputVisitor {
         return super.visit(x);
     }
 
-    /**
-     * 判断是否有script、regexp 方法
-     *
-     * @param x x
-     * @return boolean
-     */
+
     @Override
     public boolean visit(SQLMethodInvokeExpr x) {
 
@@ -112,18 +88,15 @@ public class SqlDangerousTagVisitor extends MySqlOutputVisitor {
         return super.visit(x);
     }
 
-    /**
-     * 获取危害标签
-     * @return Set
-     */
+
     public Set<String> getDangerousTags() {
 
-        // 查询语句超过5k
+
         if (this.stringBuilder.length() > 5 * 1024) {
-            // LOGGER.error("sql length more than 5k {}", stringBuilder.toString());
+
             this.tags.add(DangerousDslTagEnum.DSL_LENGTH_TOO_LARGE.getTag());
         }
-        // aggs 嵌套层数过深
+
         if (this.aggsLevel >= 3) {
             this.tags.add(DangerousDslTagEnum.AGGS_DEEP_NEST.getTag());
         }
@@ -131,11 +104,7 @@ public class SqlDangerousTagVisitor extends MySqlOutputVisitor {
         return tags;
     }
 
-    /**
-     * 获取sql
-     *
-     * @return String
-     */
+
     public String getSql() {
         return stringBuilder.toString();
     }

@@ -43,7 +43,7 @@ import org.elasticsearch.search.builder.SearchSourceBuilder;
  * <p>
  * Note, the search {@link #source(SearchSourceBuilder)}
  * is required. The search source is the different search options, including aggregations and such.
- * </p>
+ * <p>
  *
  * @see Requests#searchRequest(String...)
  */

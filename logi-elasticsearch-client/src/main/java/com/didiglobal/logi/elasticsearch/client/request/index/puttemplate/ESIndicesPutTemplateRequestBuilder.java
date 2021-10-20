@@ -51,4 +51,10 @@ public class ESIndicesPutTemplateRequestBuilder extends ActionRequestBuilder<ESI
         request.setTemplateConfig(templateConfig, version);
         return this;
     }
+
+    public ESIndicesPutTemplateRequestBuilder setIncludeTypeName(boolean include_type_name) {
+        request.setIncludeTypeName(include_type_name);
+        return this;
+    }
+
 }
