@@ -35,6 +35,7 @@ public class Retry {
 
     /**
      * @param backoffPolicy The backoff policy that defines how long and how often to wait for retries.
+     * @return Retry
      */
     public Retry policy(BackoffPolicy backoffPolicy) {
         this.backoffPolicy = backoffPolicy;

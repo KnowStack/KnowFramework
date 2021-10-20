@@ -1308,6 +1308,7 @@ public class QSParserTokenManager implements QSParserConstants {
 
     /**
      * Reinitialise parser.
+     * @param stream s
      */
     public void ReInit(CharStream stream) {
         jjmatchedPos = jjnewStateCnt = 0;

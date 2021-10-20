@@ -34,8 +34,8 @@ public class SqlDangerousTagVisitor extends MySqlOutputVisitor {
     /**
      * group by 语法树
      *
-     * @param groupBySQLExpr
-     * @return
+     * @param groupBySQLExpr groupBySQLExpr
+     * @return boolean
      */
     @Override
     public boolean visit(SQLSelectGroupByClause groupBySQLExpr) {
@@ -47,8 +47,8 @@ public class SqlDangerousTagVisitor extends MySqlOutputVisitor {
     /**
      * group by 语法树
      *
-     * @param sqlAggregateExpr
-     * @return
+     * @param sqlAggregateExpr sqlAggregateExpr
+     * @return boolean
      */
     @Override
     public boolean visit(SQLAggregateExpr sqlAggregateExpr) {
@@ -68,8 +68,8 @@ public class SqlDangerousTagVisitor extends MySqlOutputVisitor {
     /**
      * where 语法树
      *
-     * @param x
-     * @return
+     * @param x x
+     * @return boolean
      */
     @Override
     public boolean visit(SQLBinaryOpExpr x) {
@@ -96,8 +96,8 @@ public class SqlDangerousTagVisitor extends MySqlOutputVisitor {
     /**
      * 判断是否有script、regexp 方法
      *
-     * @param x
-     * @return
+     * @param x x
+     * @return boolean
      */
     @Override
     public boolean visit(SQLMethodInvokeExpr x) {
@@ -114,6 +114,7 @@ public class SqlDangerousTagVisitor extends MySqlOutputVisitor {
 
     /**
      * 获取危害标签
+     * @return Set
      */
     public Set<String> getDangerousTags() {
 
@@ -133,7 +134,7 @@ public class SqlDangerousTagVisitor extends MySqlOutputVisitor {
     /**
      * 获取sql
      *
-     * @return
+     * @return String
      */
     public String getSql() {
         return stringBuilder.toString();

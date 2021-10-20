@@ -503,6 +503,7 @@ public class QSParser extends QSBaseParser implements QSParserConstants {
 
     /**
      * Constructor with user supplied CharStream.
+     *
      * @param stream s
      */
     public QSParser(CharStream stream) {
@@ -516,6 +517,8 @@ public class QSParser extends QSBaseParser implements QSParserConstants {
 
     /**
      * Reinitialise.
+     *
+     * @param stream s
      */
     public void ReInit(CharStream stream) {
         token_source.ReInit(stream);
@@ -542,6 +545,7 @@ public class QSParser extends QSBaseParser implements QSParserConstants {
 
     /**
      * Reinitialise.
+     * @param tm tm
      */
     public void ReInit(QSParserTokenManager tm) {
         token_source = tm;

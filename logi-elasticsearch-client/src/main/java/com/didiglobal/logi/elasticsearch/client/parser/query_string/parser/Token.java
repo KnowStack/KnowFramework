@@ -89,6 +89,7 @@ public class Token implements java.io.Serializable {
 
     /**
      * Constructs a new token for the specified Image.
+     * @param kind k
      */
     public Token(int kind) {
         this(kind, null);

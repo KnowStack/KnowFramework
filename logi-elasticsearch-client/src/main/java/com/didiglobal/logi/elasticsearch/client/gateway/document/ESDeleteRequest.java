@@ -31,6 +31,8 @@ public class ESDeleteRequest extends ESBaseReplicationRequest<ESDeleteRequest> {
 
     /**
      * Sets the type of the document to delete.
+     * @param type t
+     * @return ESDeleteRequest
      */
     public ESDeleteRequest type(String type) {
         this.type = type;
@@ -39,6 +41,8 @@ public class ESDeleteRequest extends ESBaseReplicationRequest<ESDeleteRequest> {
 
     /**
      * The id of the document to delete.
+     *
+     * @return String
      */
     public String id() {
         return id;
@@ -46,6 +50,9 @@ public class ESDeleteRequest extends ESBaseReplicationRequest<ESDeleteRequest> {
 
     /**
      * Sets the id of the document to delete.
+     *
+     * @param id id
+     * @return ESDeleteRequest
      */
     public ESDeleteRequest id(String id) {
         this.id = id;

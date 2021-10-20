@@ -37,11 +37,16 @@ public class ESBulkProcessor implements Closeable {
 
         /**
          * Callback before the bulk is executed.
+         * @param executionId executionId
+         * @param request request
          */
         void beforeBulk(long executionId, ESBatchRequest request);
 
         /**
          * Callback after a successful execution of bulk request.
+         * @param executionId executionId
+         * @param request request
+         * @param response response
          */
         void afterBulk(long executionId, ESBatchRequest request, ESBatchResponse response);
 
@@ -50,6 +55,9 @@ public class ESBulkProcessor implements Closeable {
          *
          * Note that in case an instance of <code>InterruptedException</code> is passed, which means that request processing has been
          * cancelled externally, the thread's interruption status has been restored prior to calling this method.
+         * @param request request
+         * @param executionId executionId
+         * @param failure failure
          */
         void afterBulk(long executionId, ESBatchRequest request, Throwable failure);
     }
@@ -80,6 +88,8 @@ public class ESBulkProcessor implements Closeable {
 
         /**
          * Sets an optional name to identify this bulk processor.
+         * @param name name
+         * @return ESBulkProcessor.Builder ESBulkProcessor.Builder
          */
         public ESBulkProcessor.Builder setName(String name) {
             this.name = name;
@@ -99,6 +109,7 @@ public class ESBulkProcessor implements Closeable {
         /**
          * Sets when to flush a new bulk request based on the number of actions currently added. Defaults to
          * <tt>1000</tt>. Can be set to <tt>-1</tt> to disable it.
+         * @param bulkActions bulkActions
          * @return ESBulkProcessor.Builder
          */
         public ESBulkProcessor.Builder setBulkActions(int bulkActions) {
@@ -109,6 +120,7 @@ public class ESBulkProcessor implements Closeable {
         /**
          * Sets when to flush a new bulk request based on the size of actions currently added. Defaults to
          * <tt>5mb</tt>. Can be set to <tt>-1</tt> to disable it.
+         * @param bulkSize bulkSize
          * @return ESBulkProcessor.Builder
          */
         public ESBulkProcessor.Builder setBulkSize(ByteSizeValue bulkSize) {
@@ -121,6 +133,7 @@ public class ESBulkProcessor implements Closeable {
          * <p>
          * Note, both {@link #setBulkActions(int)} and {@link #setBulkSize(org.elasticsearch.common.unit.ByteSizeValue)}
          * can be set to <tt>-1</tt> with the flush interval set allowing for complete async processing of bulk actions.
+         * @param flushInterval flushInterval
          * @return ESBulkProcessor.Builder
          */
         public ESBulkProcessor.Builder setFlushInterval(TimeValue flushInterval) {
@@ -133,8 +146,9 @@ public class ESBulkProcessor implements Closeable {
          * in case they have failed due to resource constraints (i.e. a thread pool was full).
          *
          * The default is to back off exponentially.
-         *
+         * @param backoffPolicy backoffPolicy
          * @see org.elasticsearch.action.bulk.BackoffPolicy#exponentialBackoff()
+         * @return ESBulkProcessor.Builder
          */
         public ESBulkProcessor.Builder setBackoffPolicy(BackoffPolicy backoffPolicy) {
             if (backoffPolicy == null) {
@@ -146,6 +160,7 @@ public class ESBulkProcessor implements Closeable {
 
         /**
          * Builds a new bulk processor.
+         * @return ESBulkProcessor
          */
         public ESBulkProcessor build() {
             return new ESBulkProcessor(client, backoffPolicy, listener, name, concurrentRequests, bulkActions, bulkSize, flushInterval);

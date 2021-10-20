@@ -50,6 +50,7 @@ public class ESIndicesStatsRequestBuilder extends ESBroadcastOperationRequestBui
 
     /**
      * Clears all nodestats.
+     * @return ESIndicesStatsRequest
      */
     public ESIndicesStatsRequestBuilder clear() {
         request.clear();
@@ -59,63 +60,119 @@ public class ESIndicesStatsRequestBuilder extends ESBroadcastOperationRequestBui
     /**
      * Document types to return nodestats for. Mainly affects {@link #setIndexing(boolean)} when
      * enabled, returning specific indexing nodestats for those types.
+     * @param types types
+     * @return ESIndicesStatsRequest
      */
     public ESIndicesStatsRequestBuilder setTypes(String... types) {
         request.types(types);
         return this;
     }
 
-
+    /**
+     *
+     * @param docs docs
+     * @return ESIndicesStatsRequestBuilder
+     */
     public ESIndicesStatsRequestBuilder setDocs(boolean docs) {
         request.flag(DOCS, docs);
         return this;
     }
 
+    /**
+     *
+     * @param store store
+     * @return ESIndicesStatsRequestBuilder
+     */
     public ESIndicesStatsRequestBuilder setStore(boolean store) {
         request.flag(STORE, store);
         return this;
     }
 
+    /**
+     *
+     * @param indexing indexing
+     * @return ESIndicesStatsRequestBuilder
+     */
     public ESIndicesStatsRequestBuilder setIndexing(boolean indexing) {
         request.flag(INDEXING, indexing);
         return this;
     }
 
+    /**
+     *
+     * @param get get
+     * @return ESIndicesStatsRequestBuilder
+     */
     public ESIndicesStatsRequestBuilder setGet(boolean get) {
         request.flag(GET, get);
         return this;
     }
 
+    /**
+     *
+     * @param search search
+     * @return ESIndicesStatsRequestBuilder
+     */
     public ESIndicesStatsRequestBuilder setSearch(boolean search) {
         request.flag(SEARCH, search);
         return this;
     }
 
+    /**
+     *
+     * @param merge merge
+     * @return ESIndicesStatsRequestBuilder
+     */
     public ESIndicesStatsRequestBuilder setMerge(boolean merge) {
         request.flag(MERGE, merge);
         return this;
     }
 
+    /**
+     *
+     * @param refresh refresh
+     * @return ESIndicesStatsRequestBuilder
+     */
     public ESIndicesStatsRequestBuilder setRefresh(boolean refresh) {
         request.flag(REFRESH, refresh);
         return this;
     }
 
+    /**
+     *
+     * @param flush flush
+     * @return ESIndicesStatsRequestBuilder
+     */
     public ESIndicesStatsRequestBuilder setFlush(boolean flush) {
         request.flag(FLUSH, flush);
         return this;
     }
 
+    /**
+     *
+     * @param warmer warmer
+     * @return ESIndicesStatsRequestBuilder
+     */
     public ESIndicesStatsRequestBuilder setWarmer(boolean warmer) {
         request.flag(WARMER, warmer);
         return this;
     }
 
+    /**
+     *
+     * @param queryCache queryCache
+     * @return ESIndicesStatsRequestBuilder
+     */
     public ESIndicesStatsRequestBuilder setQueryCache(boolean queryCache) {
         request.flag(QUERY_CACHE, queryCache);
         return this;
     }
 
+    /**
+     *
+     * @param fieldData fieldData
+     * @return ESIndicesStatsRequestBuilder
+     */
     public ESIndicesStatsRequestBuilder setFieldData(boolean fieldData) {
         request.flag(FIELDDATA, fieldData);
         return this;
@@ -128,37 +185,71 @@ public class ESIndicesStatsRequestBuilder extends ESBroadcastOperationRequestBui
 //        return this;
 //    }
 
+    /**
+     *
+     * @param segments segments
+     * @return ESIndicesStatsRequestBuilder
+     */
     public ESIndicesStatsRequestBuilder setSegments(boolean segments) {
         request.flag(SEGMENTS, segments);
         return this;
     }
 
+    /**
+     *
+     * @param completion completion
+     * @return ESIndicesStatsRequestBuilder
+     */
     public ESIndicesStatsRequestBuilder setCompletion(boolean completion) {
         request.flag(COMPLETION, completion);
         return this;
     }
 
-
+    /**
+     *
+     * @param translog translog
+     * @return ESIndicesStatsRequestBuilder
+     */
     public ESIndicesStatsRequestBuilder setTranslog(boolean translog) {
         request.flag(TRANSLOG, translog);
         return this;
     }
 
+    /**
+     *
+     * @param suggest suggest
+     * @return ESIndicesStatsRequestBuilder
+     */
     public ESIndicesStatsRequestBuilder setSuggest(boolean suggest) {
         request.flag(SUGGEST, suggest);
         return this;
     }
 
+    /**
+     *
+     * @param requestCache requestCache
+     * @return ESIndicesStatsRequestBuilder
+     */
     public ESIndicesStatsRequestBuilder setRequestCache(boolean requestCache) {
         request.flag(REQUEST_CACHE, requestCache);
         return this;
     }
 
+    /**
+     *
+     * @param recovery recovery
+     * @return ESIndicesStatsRequestBuilder
+     */
     public ESIndicesStatsRequestBuilder setRecovery(boolean recovery) {
         request.flag(RECOVERY, recovery);
         return this;
     }
 
+    /**
+     *
+     * @param level level
+     * @return ESIndicesStatsRequestBuilder
+     */
     public ESIndicesStatsRequestBuilder setLevel(IndicesStatsLevel level) {
         request.setLevel(level);
         return this;

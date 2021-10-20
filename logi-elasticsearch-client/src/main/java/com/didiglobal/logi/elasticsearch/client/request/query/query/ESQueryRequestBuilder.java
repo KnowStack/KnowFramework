@@ -70,7 +70,7 @@ public class ESQueryRequestBuilder extends ActionRequestBuilder<ESQueryRequest, 
     /**
      * The document types to execute the search against. Defaults to be executed against
      * all types.
-     *
+     * @param types
      * @return ESQueryRequestBuilder
      */
     public ESQueryRequestBuilder setTypes(String... types) {
@@ -324,6 +324,8 @@ public class ESQueryRequestBuilder extends ActionRequestBuilder<ESQueryRequest, 
      * Constructs a new search source builder with a raw search query.
      * @param query query
      * @return ESQueryRequestBuilder
+     * @param query
+     * @return ESQueryRequestBuilder
      */
     public ESQueryRequestBuilder setQuery(Map query) {
         sourceBuilder().query(query);
@@ -333,6 +335,8 @@ public class ESQueryRequestBuilder extends ActionRequestBuilder<ESQueryRequest, 
     /**
      * Sets a filter that will be executed after the query has been executed and only has affect on the search hits
      * (not aggregations). This filter is always executed as last filtering mechanism.
+     * @param postFilter
+     * @return ESQueryRequestBuilder
      */
     public ESQueryRequestBuilder setPostFilter(QueryBuilder postFilter) {
         sourceBuilder().postFilter(postFilter);
@@ -342,6 +346,8 @@ public class ESQueryRequestBuilder extends ActionRequestBuilder<ESQueryRequest, 
     /**
      * Sets a filter on the query executed that only applies to the search query
      * (and not aggs for example).
+     * @param postFilter postFilter
+     * @return ESQueryRequestBuilder
      */
     public ESQueryRequestBuilder setPostFilter(String postFilter) {
         sourceBuilder().postFilter(postFilter);
@@ -351,6 +357,8 @@ public class ESQueryRequestBuilder extends ActionRequestBuilder<ESQueryRequest, 
     /**
      * Sets a filter on the query executed that only applies to the search query
      * (and not aggs for example).
+     * @param postFilter postFilter
+     * @return ESQueryRequestBuilder
      */
     public ESQueryRequestBuilder setPostFilter(BytesReference postFilter) {
         sourceBuilder().postFilter(postFilter);
@@ -360,6 +368,8 @@ public class ESQueryRequestBuilder extends ActionRequestBuilder<ESQueryRequest, 
     /**
      * Sets a filter on the query executed that only applies to the search query
      * (and not aggs for example).
+     * @param postFilter postFilter
+     * @return ESQueryRequestBuilder
      */
     public ESQueryRequestBuilder setPostFilter(byte[] postFilter) {
         sourceBuilder().postFilter(postFilter);
@@ -369,6 +379,10 @@ public class ESQueryRequestBuilder extends ActionRequestBuilder<ESQueryRequest, 
     /**
      * Sets a filter on the query executed that only applies to the search query
      * (and not aggs for example).
+     * @param postFilter postFilter
+     * @param postFilterLength postFilterLength
+     * @param postFilterOffset postFilterOffset
+     * @return ESQueryRequestBuilder
      */
     public ESQueryRequestBuilder setPostFilter(byte[] postFilter, int postFilterOffset, int postFilterLength) {
         sourceBuilder().postFilter(postFilter, postFilterOffset, postFilterLength);
@@ -378,6 +392,8 @@ public class ESQueryRequestBuilder extends ActionRequestBuilder<ESQueryRequest, 
     /**
      * Sets a filter on the query executed that only applies to the search query
      * (and not aggs for example).
+     * @param postFilter
+     * @return ESQueryRequestBuilder
      */
     public ESQueryRequestBuilder setPostFilter(XContentBuilder postFilter) {
         sourceBuilder().postFilter(postFilter);
@@ -387,6 +403,8 @@ public class ESQueryRequestBuilder extends ActionRequestBuilder<ESQueryRequest, 
     /**
      * Sets a filter on the query executed that only applies to the search query
      * (and not aggs for example).
+     * @param postFilter
+     * @return ESQueryRequestBuilder
      */
     public ESQueryRequestBuilder setPostFilter(Map postFilter) {
         sourceBuilder().postFilter(postFilter);
@@ -395,6 +413,8 @@ public class ESQueryRequestBuilder extends ActionRequestBuilder<ESQueryRequest, 
 
     /**
      * Sets the minimum score below which docs will be filtered out.
+     * @param minScore minScore
+     * @return ESQueryRequestBuilder
      */
     public ESQueryRequestBuilder setMinScore(float minScore) {
         sourceBuilder().minScore(minScore);
@@ -403,6 +423,8 @@ public class ESQueryRequestBuilder extends ActionRequestBuilder<ESQueryRequest, 
 
     /**
      * From index to start the search from. Defaults to <tt>0</tt>.
+     * @param from from
+     * @return ESQueryRequestBuilder
      */
     public ESQueryRequestBuilder setFrom(int from) {
         sourceBuilder().from(from);
@@ -411,6 +433,8 @@ public class ESQueryRequestBuilder extends ActionRequestBuilder<ESQueryRequest, 
 
     /**
      * The number of search hits to return. Defaults to <tt>10</tt>.
+     * @param size size
+     * @return ESQueryRequestBuilder
      */
     public ESQueryRequestBuilder setSize(int size) {
         sourceBuilder().size(size);
@@ -420,6 +444,8 @@ public class ESQueryRequestBuilder extends ActionRequestBuilder<ESQueryRequest, 
     /**
      * Should each {@link org.elasticsearch.search.SearchHit} be returned with an
      * explanation of the hit (ranking).
+     * @param explain explain
+     * @return ESQueryRequestBuilder
      */
     public ESQueryRequestBuilder setExplain(boolean explain) {
         sourceBuilder().explain(explain);
@@ -429,6 +455,8 @@ public class ESQueryRequestBuilder extends ActionRequestBuilder<ESQueryRequest, 
     /**
      * Should each {@link org.elasticsearch.search.SearchHit} be returned with its
      * version.
+     * @param version version
+     * @return ESQueryRequestBuilder
      */
     public ESQueryRequestBuilder setVersion(boolean version) {
         sourceBuilder().version(version);
@@ -440,6 +468,7 @@ public class ESQueryRequestBuilder extends ActionRequestBuilder<ESQueryRequest, 
      *
      * @param index      The index to apply the boost against
      * @param indexBoost The boost to apply to the index
+     * @return ESQueryRequestBuilder
      */
     public ESQueryRequestBuilder addIndexBoost(String index, float indexBoost) {
         sourceBuilder().indexBoost(index, indexBoost);
@@ -448,6 +477,8 @@ public class ESQueryRequestBuilder extends ActionRequestBuilder<ESQueryRequest, 
 
     /**
      * The nodestats groups this request will be aggregated under.
+     * @param statsGroups statsGroups
+     * @return ESQueryRequestBuilder
      */
     public ESQueryRequestBuilder setStats(String... statsGroups) {
         sourceBuilder().stats(statsGroups);
@@ -456,6 +487,7 @@ public class ESQueryRequestBuilder extends ActionRequestBuilder<ESQueryRequest, 
 
     /**
      * Sets no fields to be loaded, resulting in only id and type to be returned per field.
+     * @return ESQueryRequestBuilder
      */
     public ESQueryRequestBuilder setNoFields() {
         sourceBuilder().noFields();
@@ -464,6 +496,8 @@ public class ESQueryRequestBuilder extends ActionRequestBuilder<ESQueryRequest, 
 
     /**
      * Indicates whether the response should contain the stored _source for every hit
+     * @param fetch fetch
+     * @return ESQueryRequestBuilder
      */
     public ESQueryRequestBuilder setFetchSource(boolean fetch) {
         sourceBuilder().fetchSource(fetch);
@@ -476,6 +510,7 @@ public class ESQueryRequestBuilder extends ActionRequestBuilder<ESQueryRequest, 
      *
      * @param include An optional include (optionally wildcarded) pattern to filter the returned _source
      * @param exclude An optional exclude (optionally wildcarded) pattern to filter the returned _source
+     * @return ESQueryRequestBuilder
      */
     public ESQueryRequestBuilder setFetchSource(@Nullable String include, @Nullable String exclude) {
         sourceBuilder().fetchSource(include, exclude);
@@ -488,6 +523,7 @@ public class ESQueryRequestBuilder extends ActionRequestBuilder<ESQueryRequest, 
      *
      * @param includes An optional list of include (optionally wildcarded) pattern to filter the returned _source
      * @param excludes An optional list of exclude (optionally wildcarded) pattern to filter the returned _source
+     * @return ESQueryRequestBuilder
      */
     public ESQueryRequestBuilder setFetchSource(@Nullable String[] includes, @Nullable String[] excludes) {
         sourceBuilder().fetchSource(includes, excludes);
@@ -498,6 +534,8 @@ public class ESQueryRequestBuilder extends ActionRequestBuilder<ESQueryRequest, 
     /**
      * Adds a field to load and return (note, it must be stored) as part of the search request.
      * If none are specified, the source of the document will be return.
+     * @param field
+     * @return ESQueryRequestBuilder
      */
     public ESQueryRequestBuilder addField(String field) {
         sourceBuilder().field(field);
@@ -509,6 +547,7 @@ public class ESQueryRequestBuilder extends ActionRequestBuilder<ESQueryRequest, 
      * but its recommended to use non analyzed or numeric fields.
      *
      * @param name The field to get from the field data cache
+     * @return ESQueryRequestBuilder
      */
     public ESQueryRequestBuilder addFieldDataField(String name) {
         sourceBuilder().fieldDataField(name);
@@ -521,6 +560,7 @@ public class ESQueryRequestBuilder extends ActionRequestBuilder<ESQueryRequest, 
      *
      * @param name   The name that will represent this value in the return hit
      * @param script The script to use
+     * @return ESQueryRequestBuilder
      */
     public ESQueryRequestBuilder addScriptField(String name, Script script) {
         sourceBuilder().scriptField(name, script);
@@ -532,6 +572,7 @@ public class ESQueryRequestBuilder extends ActionRequestBuilder<ESQueryRequest, 
      *
      * @param field The name of the field
      * @param order The sort ordering
+     * @return ESQueryRequestBuilder
      */
     public ESQueryRequestBuilder addSort(String field, SortOrder order) {
         sourceBuilder().sort(field, order);
@@ -542,6 +583,8 @@ public class ESQueryRequestBuilder extends ActionRequestBuilder<ESQueryRequest, 
      * Adds a generic sort builder.
      *
      * @see org.elasticsearch.search.sort.SortBuilders
+     * @param sort sort
+     * @return ESQueryRequestBuilder
      */
     public ESQueryRequestBuilder addSort(SortBuilder sort) {
         sourceBuilder().sort(sort);
@@ -551,6 +594,8 @@ public class ESQueryRequestBuilder extends ActionRequestBuilder<ESQueryRequest, 
     /**
      * Applies when sorting, and controls if scores will be tracked as well. Defaults to
      * <tt>false</tt>.
+     * @param trackScores trackScores
+     * @return ESQueryRequestBuilder
      */
     public ESQueryRequestBuilder setTrackScores(boolean trackScores) {
         sourceBuilder().trackScores(trackScores);
@@ -560,6 +605,8 @@ public class ESQueryRequestBuilder extends ActionRequestBuilder<ESQueryRequest, 
     /**
      * Adds the fields to load and return as part of the search request. If none are specified,
      * the source of the document will be returned.
+     * @param fields fields
+     * @return ESQueryRequestBuilder
      */
     public ESQueryRequestBuilder addFields(String... fields) {
         sourceBuilder().fields(fields);
@@ -568,6 +615,8 @@ public class ESQueryRequestBuilder extends ActionRequestBuilder<ESQueryRequest, 
 
     /**
      * Adds an get to the search operation.
+     * @param aggregation aggregation
+     * @return ESQueryRequestBuilder
      */
     public ESQueryRequestBuilder addAggregation(AbstractAggregationBuilder aggregation) {
         sourceBuilder().aggregation(aggregation);
@@ -576,6 +625,8 @@ public class ESQueryRequestBuilder extends ActionRequestBuilder<ESQueryRequest, 
 
     /**
      * Sets a raw (xcontent) binary representation of addAggregation to use.
+     * @param aggregations aggregations
+     * @return ESQueryRequestBuilder
      */
     public ESQueryRequestBuilder setAggregations(BytesReference aggregations) {
         sourceBuilder().aggregations(aggregations);
@@ -584,6 +635,8 @@ public class ESQueryRequestBuilder extends ActionRequestBuilder<ESQueryRequest, 
 
     /**
      * Sets a raw (xcontent) binary representation of addAggregation to use.
+     * @param aggregations aggregations
+     * @return ESQueryRequestBuilder
      */
     public ESQueryRequestBuilder setAggregations(byte[] aggregations) {
         sourceBuilder().aggregations(aggregations);
@@ -592,6 +645,10 @@ public class ESQueryRequestBuilder extends ActionRequestBuilder<ESQueryRequest, 
 
     /**
      * Sets a raw (xcontent) binary representation of addAggregation to use.
+     * @param aggregations aggregations
+     * @param aggregationsLength aggregationsLength
+     * @param aggregationsOffset aggregationsOffset
+     * @return ESQueryRequestBuilder
      */
     public ESQueryRequestBuilder setAggregations(byte[] aggregations, int aggregationsOffset, int aggregationsLength) {
         sourceBuilder().aggregations(aggregations, aggregationsOffset, aggregationsLength);
@@ -600,6 +657,8 @@ public class ESQueryRequestBuilder extends ActionRequestBuilder<ESQueryRequest, 
 
     /**
      * Sets a raw (xcontent) binary representation of addAggregation to use.
+     * @param aggregations aggregations
+     * @return ESQueryRequestBuilder
      */
     public ESQueryRequestBuilder setAggregations(XContentBuilder aggregations) {
         sourceBuilder().aggregations(aggregations);
@@ -608,6 +667,8 @@ public class ESQueryRequestBuilder extends ActionRequestBuilder<ESQueryRequest, 
 
     /**
      * Sets a raw (xcontent) binary representation of addAggregation to use.
+     * @param aggregations aggregations
+     * @return ESQueryRequestBuilder
      */
     public ESQueryRequestBuilder setAggregations(Map aggregations) {
         sourceBuilder().aggregations(aggregations);
@@ -619,6 +680,7 @@ public class ESQueryRequestBuilder extends ActionRequestBuilder<ESQueryRequest, 
      * default number of fragments of 5.
      *
      * @param name The field to highlight
+     * @return ESQueryRequestBuilder ESQueryRequestBuilder
      */
     public ESQueryRequestBuilder addHighlightedField(String name) {
         highlightBuilder().field(name);
@@ -632,6 +694,7 @@ public class ESQueryRequestBuilder extends ActionRequestBuilder<ESQueryRequest, 
      *
      * @param name         The field to highlight
      * @param fragmentSize The size of a fragment in characters
+     * @return ESQueryRequestBuilder
      */
     public ESQueryRequestBuilder addHighlightedField(String name, int fragmentSize) {
         highlightBuilder().field(name, fragmentSize);
@@ -645,6 +708,7 @@ public class ESQueryRequestBuilder extends ActionRequestBuilder<ESQueryRequest, 
      * @param name              The field to highlight
      * @param fragmentSize      The size of a fragment in characters
      * @param numberOfFragments The (maximum) number of fragments
+     * @return ESQueryRequestBuilder
      */
     public ESQueryRequestBuilder addHighlightedField(String name, int fragmentSize, int numberOfFragments) {
         highlightBuilder().field(name, fragmentSize, numberOfFragments);
@@ -667,6 +731,7 @@ public class ESQueryRequestBuilder extends ActionRequestBuilder<ESQueryRequest, 
 
     /**
      * Adds a highlighted field.
+     * @return ESQueryRequestBuilder
      */
     public ESQueryRequestBuilder addHighlightedField(HighlightBuilder.Field field) {
         highlightBuilder().field(field);
@@ -701,6 +766,7 @@ public class ESQueryRequestBuilder extends ActionRequestBuilder<ESQueryRequest, 
 
     /**
      * The encoder to set for highlighting
+     * @return ESQueryRequestBuilder
      */
     public ESQueryRequestBuilder setHighlighterEncoder(String encoder) {
         highlightBuilder().encoder(encoder);
@@ -709,6 +775,7 @@ public class ESQueryRequestBuilder extends ActionRequestBuilder<ESQueryRequest, 
 
     /**
      * Explicitly set the pre tags that will be used for highlighting.
+     * @return ESQueryRequestBuilder
      */
     public ESQueryRequestBuilder setHighlighterPreTags(String... preTags) {
         highlightBuilder().preTags(preTags);
@@ -717,6 +784,7 @@ public class ESQueryRequestBuilder extends ActionRequestBuilder<ESQueryRequest, 
 
     /**
      * Explicitly set the post tags that will be used for highlighting.
+     * @return ESQueryRequestBuilder
      */
     public ESQueryRequestBuilder setHighlighterPostTags(String... postTags) {
         highlightBuilder().postTags(postTags);
@@ -727,6 +795,7 @@ public class ESQueryRequestBuilder extends ActionRequestBuilder<ESQueryRequest, 
      * The order of fragments per field. By default, ordered by the order in the
      * highlighted text. Can be <tt>score</tt>, which then it will be ordered
      * by score of the fragments.
+     * @return ESQueryRequestBuilder
      */
     public ESQueryRequestBuilder setHighlighterOrder(String order) {
         highlightBuilder().order(order);
@@ -763,6 +832,7 @@ public class ESQueryRequestBuilder extends ActionRequestBuilder<ESQueryRequest, 
 
     /**
      * Sets a query to be used for highlighting all fields instead of the search query.
+     * @return ESQueryRequestBuilder
      */
     public ESQueryRequestBuilder setHighlighterQuery(QueryBuilder highlightQuery) {
         highlightBuilder().highlightQuery(highlightQuery);
@@ -783,6 +853,7 @@ public class ESQueryRequestBuilder extends ActionRequestBuilder<ESQueryRequest, 
 
     /**
      * Sets the maximum number of phrases the fvh will consider if the field doesn't also define phraseLimit.
+     * @return ESQueryRequestBuilder
      */
     public ESQueryRequestBuilder setHighlighterPhraseLimit(Integer phraseLimit) {
         highlightBuilder().phraseLimit(phraseLimit);
@@ -796,6 +867,7 @@ public class ESQueryRequestBuilder extends ActionRequestBuilder<ESQueryRequest, 
 
     /**
      * Forces to highlight fields based on the source even if fields are stored separately.
+     * @return ESQueryRequestBuilder
      */
     public ESQueryRequestBuilder setHighlighterForceSource(Boolean forceSource) {
         highlightBuilder().forceSource(forceSource);
@@ -819,6 +891,7 @@ public class ESQueryRequestBuilder extends ActionRequestBuilder<ESQueryRequest, 
 
     /**
      * Delegates to {@link SuggestBuilder#setText(String)}.
+     * @return ESQueryRequestBuilder
      */
     public ESQueryRequestBuilder setSuggestText(String globalText) {
         suggestBuilder().setText(globalText);
@@ -827,6 +900,7 @@ public class ESQueryRequestBuilder extends ActionRequestBuilder<ESQueryRequest, 
 
     /**
      * Delegates to {@link SuggestBuilder#addSuggestion(SuggestBuilder.SuggestionBuilder)}.
+     * @return ESQueryRequestBuilder
      */
     public ESQueryRequestBuilder addSuggestion(SuggestBuilder.SuggestionBuilder<?> suggestion) {
         suggestBuilder().addSuggestion(suggestion);
@@ -910,6 +984,7 @@ public class ESQueryRequestBuilder extends ActionRequestBuilder<ESQueryRequest, 
 
     /**
      * Returns the internal search source builder used to construct the request.
+     * @return SearchSourceBuilder
      */
     public SearchSourceBuilder internalBuilder() {
         return sourceBuilder();

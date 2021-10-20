@@ -56,8 +56,8 @@ public class EsExportParameterVisitor extends MySqlASTVisitorAdapter {
     /**
      * select * 语法树
      *
-     * @param x
-     * @return
+     * @param x x
+     * @return boolean
      */
     @Override
     public boolean visit(SQLAllColumnExpr x) {
@@ -241,7 +241,7 @@ public class EsExportParameterVisitor extends MySqlASTVisitorAdapter {
     /**
      * order by 语法树
      *
-     * @param orderBySQLExpr
+     * @param orderBySQLExpr orderBySQLExpr
      * @return boolean
      */
     @Override
@@ -279,8 +279,8 @@ public class EsExportParameterVisitor extends MySqlASTVisitorAdapter {
     /**
      * table 语法树，es sql 2.3.3版本不支持join 操作
      *
-     * @param x
-     * @return
+     * @param x x
+     * @return boolean
      */
     @Override
     public boolean visit(SQLJoinTableSource x) {
@@ -292,8 +292,8 @@ public class EsExportParameterVisitor extends MySqlASTVisitorAdapter {
     /**
      * 子节点(自动名) 语法树
      *
-     * @param x
-     * @return
+     * @param x x
+     * @return boolean
      */
     @Override
     public boolean visit(SQLIdentifierExpr x) {
@@ -327,7 +327,7 @@ public class EsExportParameterVisitor extends MySqlASTVisitorAdapter {
     /**
      * 获取表名
      *
-     * @return
+     * @return String
      */
     public String getTableName() {
         return StringUtils.join(this.tableNameSet, ",");
@@ -336,7 +336,7 @@ public class EsExportParameterVisitor extends MySqlASTVisitorAdapter {
     /**
      * 获取select字段
      *
-     * @return
+     * @return String
      */
     public String getSelectFieldNames() {
         return StringUtils.join(this.selectFieldNameSet, ",");
@@ -345,7 +345,7 @@ public class EsExportParameterVisitor extends MySqlASTVisitorAdapter {
     /**
      * 获取group by字段
      *
-     * @return
+     * @return String
      */
     public String getGroupByFieldNames() {
         return StringUtils.join(this.groupByFieldNameSet, ",");
@@ -354,7 +354,7 @@ public class EsExportParameterVisitor extends MySqlASTVisitorAdapter {
     /**
      * 获取order by字段
      *
-     * @return
+     * @return String
      */
     public String getOrderByFieldNames() {
         return StringUtils.join(this.sortByFieldNameSet, ",");
@@ -379,7 +379,7 @@ public class EsExportParameterVisitor extends MySqlASTVisitorAdapter {
     }
 
     /**
-     * 获取where 字段名集合中使用>,<
+     * 获取where
      *
      * @return String
      */
@@ -390,8 +390,8 @@ public class EsExportParameterVisitor extends MySqlASTVisitorAdapter {
     /**
      * set添加元素
      *
-     * @param set
-     * @param fieldName
+     * @param set set
+     * @param fieldName fieldName
      */
     private void setAddItem(Set<String> set, String fieldName) {
         if (StringUtils.isNotBlank(fieldName)) {

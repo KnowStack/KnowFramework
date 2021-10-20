@@ -21,7 +21,7 @@ public class QSNodeBuilder {
      * 转换节点
      *
      * @return QSNode
-     * @throws ParseException
+     * @throws ParseException e
      */
     public QSNode toNode() throws ParseException {
         if (stack.size() != 1) {
@@ -63,8 +63,8 @@ public class QSNodeBuilder {
     /**
      * 添加And节点
      *
-     * @param src
-     * @throws ParseException
+     * @param src src
+     * @throws ParseException e
      */
     public void addAnd(Token src) throws ParseException {
         QSANDNode an = new QSANDNode(getImage(src));
@@ -88,7 +88,7 @@ public class QSNodeBuilder {
      * 添加-节点
      *
      * @param src src
-     * @throws ParseException
+     * @throws ParseException e
      */
     public void addMinus(Token src) throws ParseException {
         QSMinusNode mn = new QSMinusNode(getImage(src));
@@ -112,7 +112,7 @@ public class QSNodeBuilder {
      * 添加加号节点
      *
      * @param src src
-     * @throws ParseException
+     * @throws ParseException e
      */
     public void addPlus(Token src) throws ParseException {
         QSPlusNode pn = new QSPlusNode(getImage(src));
@@ -157,9 +157,9 @@ public class QSNodeBuilder {
     /**
      * 得到token中具体内容
      *
-     * @param t
-     * @return
-     * @throws ParseException
+     * @param t t
+     * @return String
+     * @throws ParseException e
      */
     private String getImage(Token t) throws ParseException {
         if (t == null) {
@@ -171,8 +171,8 @@ public class QSNodeBuilder {
     /**
      * 节点压入栈
      *
-     * @param node
-     * @throws ParseException
+     * @param node node
+     * @throws ParseException e
      */
     private void putStack(QSNode node) throws ParseException {
 

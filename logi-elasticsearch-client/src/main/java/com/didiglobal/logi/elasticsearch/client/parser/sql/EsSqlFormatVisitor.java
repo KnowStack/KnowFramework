@@ -283,8 +283,8 @@ public class EsSqlFormatVisitor extends MySqlOutputVisitor {
     /**
      *
      *
-     * @param x
-     * @return
+     * @param x x
+     * @return boolean
      */
     @Override
     public boolean visit(SQLVariantRefExpr x) {
@@ -296,8 +296,8 @@ public class EsSqlFormatVisitor extends MySqlOutputVisitor {
     /**
      * in (a, b) / not in (a, b) 语法树
      *
-     * @param x
-     * @return
+     * @param x x
+     * @return boolean
      */
     @Override
     public boolean visit(SQLInListExpr x) {
@@ -315,8 +315,8 @@ public class EsSqlFormatVisitor extends MySqlOutputVisitor {
     /**
      * 整数 语法树
      *
-     * @param x
-     * @return
+     * @param x x
+     * @return boolean
      */
     @Override
     public boolean visit(SQLIntegerExpr x) {
@@ -328,8 +328,8 @@ public class EsSqlFormatVisitor extends MySqlOutputVisitor {
     /**
      * 数值 语法树
      *
-     * @param x
-     * @return
+     * @param x x
+     * @return boolean
      */
     @Override
     public boolean visit(SQLNumberExpr x) {
@@ -341,8 +341,8 @@ public class EsSqlFormatVisitor extends MySqlOutputVisitor {
     /**
      * char 语法树
      *
-     * @param x
-     * @return
+     * @param x x
+     * @return boolean
      */
     @Override
     public boolean visit(SQLCharExpr x) {
@@ -354,8 +354,8 @@ public class EsSqlFormatVisitor extends MySqlOutputVisitor {
     /**
      * 子节点(字段名)语法树
      *
-     * @param x
-     * @return
+     * @param x x
+     * @return boolean
      */
     @Override
     public boolean visit(SQLIdentifierExpr x) {
@@ -371,8 +371,8 @@ public class EsSqlFormatVisitor extends MySqlOutputVisitor {
     /**
      * limit 语法树
      *
-     * @param x
-     * @return
+     * @param x x
+     * @return boolean
      */
 //    @Override
 //    public boolean visit(MySqlSelectQueryBlock.Limit x) {
@@ -384,8 +384,8 @@ public class EsSqlFormatVisitor extends MySqlOutputVisitor {
     /**
      * limit 语法树
      *
-     * @param x
-     * @return
+     * @param x x
+     * @return boolean
      */
     @Override
     public boolean visit(SQLLimit x) {
@@ -397,9 +397,9 @@ public class EsSqlFormatVisitor extends MySqlOutputVisitor {
     /**
      * 输出一个node的内容
      *
-     * @param node
-     * @param parentOp
-     * @param isLeft
+     * @param node node
+     * @param parentOp parentOp
+     * @param isLeft isLeft
      */
     private void visitNode(SQLExpr node, SQLBinaryOperator parentOp, boolean isLeft) {
         if (node instanceof SQLBinaryOpExpr) {

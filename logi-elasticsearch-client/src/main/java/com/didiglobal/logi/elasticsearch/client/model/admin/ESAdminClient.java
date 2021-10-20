@@ -29,11 +29,13 @@ public interface ESAdminClient {
 
     /**
      * A client allowing to perform actions/operations against the cluster.
+     * @return ESClusterAdminClient
      */
     ESClusterAdminClient cluster();
 
     /**
      * A client allowing to perform actions/operations against the indices.
+     * @return ESIndicesAdminClient
      */
     ESIndicesAdminClient indices();
 }

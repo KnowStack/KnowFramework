@@ -143,6 +143,8 @@ public class ESGetRequest extends ESActionRequest<ESGetRequest> {
 
     /**
      * Sets the type of the document to fetch.
+     * @param type type
+     * @return ESGetRequest
      */
     public ESGetRequest type(@Nullable String type) {
         if (type == null) {
@@ -154,6 +156,8 @@ public class ESGetRequest extends ESActionRequest<ESGetRequest> {
 
     /**
      * Sets the id of the document to fetch.
+     * @param id id
+     * @return ESGetRequest
      */
     public ESGetRequest id(String id) {
         this.id = id;
@@ -163,6 +167,8 @@ public class ESGetRequest extends ESActionRequest<ESGetRequest> {
     /**
      * Controls the shard routing of the request. Using this value to hash the shard
      * and not the id.
+     * @param routing r
+     * @return ESGetRequest
      */
     public ESGetRequest routing(String routing) {
         this.routing = routing;
@@ -173,6 +179,8 @@ public class ESGetRequest extends ESActionRequest<ESGetRequest> {
      * Sets the preference to execute the search. Defaults to randomize across shards. Can be set to
      * <tt>_local</tt> to prefer local shards, <tt>_primary</tt> to execute only on primary shards, or
      * a custom value, which guarantees that the same order will be used across different requests.
+     * @param preference preference
+     * @return ESGetRequest
      */
     public ESGetRequest preference(String preference) {
         this.preference = preference;
@@ -197,6 +205,8 @@ public class ESGetRequest extends ESActionRequest<ESGetRequest> {
 
     /**
      * Allows setting the {@link FetchSourceContext} for this request, controlling if and how _source should be returned.
+     * @param context context
+     * @return ESGetRequest
      */
     public ESGetRequest fetchSourceContext(FetchSourceContext context) {
         this.fetchSourceContext = context;
@@ -210,6 +220,8 @@ public class ESGetRequest extends ESActionRequest<ESGetRequest> {
     /**
      * Explicitly specify the fields that will be returned. By default, the <tt>_source</tt>
      * field will be returned.
+     * @param fields fields
+     * @return ESGetRequest
      */
     public ESGetRequest fields(String... fields) {
         this.fields = fields;

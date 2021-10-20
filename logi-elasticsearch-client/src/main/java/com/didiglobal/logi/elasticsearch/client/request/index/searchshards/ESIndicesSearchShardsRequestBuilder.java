@@ -25,12 +25,6 @@ import org.elasticsearch.client.ElasticsearchClient;
 
 /**
  * A request to get indices level nodestats. Allow to enable different nodestats to be returned.
- * <p>
- * By default, the {@link #setDocs(boolean)}, {@link #setStore(boolean)}, {@link #setIndexing(boolean)}
- * are enabled. Other nodestats can be enabled as well.
- * <p>
- * All the nodestats to be returned can be cleared using {@link #clear()}, at which point, specific
- * nodestats can be enabled.
  */
 public class ESIndicesSearchShardsRequestBuilder extends ESBroadcastOperationRequestBuilder<ESIndicesSearchShardsRequest, ESIndicesSearchShardsResponse, ESIndicesSearchShardsRequestBuilder> {
 

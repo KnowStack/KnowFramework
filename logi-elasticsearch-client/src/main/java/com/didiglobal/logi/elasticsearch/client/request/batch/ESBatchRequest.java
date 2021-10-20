@@ -66,6 +66,7 @@ public class ESBatchRequest extends ESActionRequest<ESBatchRequest> {
 
     /**
      * The number of actions in the bulk request.
+     * @return int
      */
     public int numberOfActions() {
         return batchNodes.size();
@@ -73,6 +74,7 @@ public class ESBatchRequest extends ESActionRequest<ESBatchRequest> {
 
     /**
      * The estimated size in bytes of the bulk request.
+     * @return long
      */
     public long estimatedSizeInBytes() {
         return sizeInBytes;
@@ -80,6 +82,7 @@ public class ESBatchRequest extends ESActionRequest<ESBatchRequest> {
 
     /**
      * The list of requests in this bulk request.
+     * @return List
      */
     public List<BatchNode> requests() {
         return this.batchNodes;

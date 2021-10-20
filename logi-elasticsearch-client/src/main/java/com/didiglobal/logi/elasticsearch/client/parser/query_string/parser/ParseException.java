@@ -55,6 +55,7 @@ public class ParseException extends Exception {
 
     /**
      * Constructor with message.
+     * @param message message
      */
     public ParseException(String message) {
         super(message);

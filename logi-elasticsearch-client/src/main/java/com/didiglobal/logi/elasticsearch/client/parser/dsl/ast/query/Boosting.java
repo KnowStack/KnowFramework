@@ -5,10 +5,7 @@ import com.didiglobal.logi.elasticsearch.client.parser.dsl.ast.common.Node;
 import com.didiglobal.logi.elasticsearch.client.parser.dsl.visitor.basic.Visitor;
 
 /**
- * @Author: D10865
- * @Description:
- * @Date: Create on 2018/9/14 下午3:33
- * @Modified By
+ * @author D10865
  *
  * 存储boosting查询子句里的元素
  *

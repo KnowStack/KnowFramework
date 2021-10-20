@@ -24,6 +24,7 @@ public interface CharStream {
      * of selecting the input is the responsibility of the class
      * implementing this interface.  Can throw any java.io.IOException.
      * @return char
+     * @throws java.io.IOException e
      */
     char readChar() throws java.io.IOException;
 
@@ -87,6 +88,7 @@ public interface CharStream {
      * All characters must remain in the buffer between two successive calls
      * to this method to implement backup correctly.
      * @return char
+     * @throws java.io.IOException e
      */
     char BeginToken() throws java.io.IOException;
 
@@ -95,6 +97,7 @@ public interface CharStream {
      * to the current buffer position. Implementations have the choice of returning
      * anything that they want to. For example, for efficiency, one might decide
      * to just return null, which is a valid implementation.
+     * @return String
      */
     String GetImage();
 
