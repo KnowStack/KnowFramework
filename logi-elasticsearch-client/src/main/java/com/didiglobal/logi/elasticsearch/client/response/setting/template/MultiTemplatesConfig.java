@@ -15,7 +15,7 @@ import com.didiglobal.logi.log.ILog;
 import com.didiglobal.logi.log.LogFactory;
 
 public class MultiTemplatesConfig {
-    private final ILog                  LOGGER            = LogFactory.getLog(MultiTemplatesConfig.class);
+    private final ILog LOGGER = LogFactory.getLog(MultiTemplatesConfig.class);
 
     private Map<String, TemplateConfig> templateConfigMap = new HashMap<>();
 
@@ -66,8 +66,8 @@ public class MultiTemplatesConfig {
     }
 
     // 检测模版和base是否一直
-    private static final String BASE_STR     = "base";
-    public static final String  TESTMAPPINGS = "testMappings";
+    private static final String BASE_STR = "base";
+    public static final String TESTMAPPINGS = "testMappings";
 
     public Map<String, Set<String>> checkBaseConfig(String cluster, MappingConfig testMappings) throws Exception {
         TemplateConfig baseConfig = templateConfigMap.get(BASE_STR);

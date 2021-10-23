@@ -67,7 +67,7 @@ public class QSOutputVisitor implements QSVisitor {
 
     @Override
     public void visit(QSRangeNode node) {
-        if(node.isStartInc()) {
+        if (node.isStartInc()) {
             sb.append("[");
         } else {
             sb.append("{");
@@ -77,7 +77,7 @@ public class QSOutputVisitor implements QSVisitor {
         sb.append(" TO ");
         node.getRight().accept(this);
 
-        if(node.isEndInc()) {
+        if (node.isEndInc()) {
             sb.append("]");
         } else {
             sb.append("}");
@@ -87,11 +87,11 @@ public class QSOutputVisitor implements QSVisitor {
 
     private void doBinary(QSBinaryOpNode node, boolean white) {
         node.getLeft().accept(this);
-        if(white) {
+        if (white) {
             sb.append(" ");
         }
         sb.append(node.getSource());
-        if(white) {
+        if (white) {
             sb.append(" ");
         }
         node.getRight().accept(this);
@@ -99,7 +99,7 @@ public class QSOutputVisitor implements QSVisitor {
 
     private void doSingle(QSSingleOpNode node, boolean white) {
         sb.append(node.getSource());
-        if(white) {
+        if (white) {
             sb.append(" ");
         }
         node.getNode().accept(this);

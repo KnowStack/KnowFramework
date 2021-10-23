@@ -21,7 +21,7 @@ public class ESGetPipelineRequest extends ESActionRequest<ESGetPipelineRequest> 
 
     @Override
     public RestRequest toRequest() throws Exception {
-        if(pipelineId==null || pipelineId.length()==0) {
+        if (pipelineId == null || pipelineId.length() == 0) {
             throw new Exception("pipelineId is null");
         }
 

@@ -25,7 +25,8 @@ public class StatsTest {
     public void indicesStat() throws Exception {
         try {
             client.admin().indices().preparePutIndex(index).execute().get().getAcknowledged();
-        } catch (Throwable t) { }
+        } catch (Throwable t) {
+        }
 
         ESIndicesStatsResponse response = client.admin().indices().prepareStats(index).setLevel(IndicesStatsLevel.SHARDS).execute().get();
         System.out.println(response);
@@ -38,7 +39,8 @@ public class StatsTest {
     public void indicesSearchShards() throws Exception {
         try {
             client.admin().indices().preparePutIndex(index).execute().get().getAcknowledged();
-        } catch (Throwable t) { }
+        } catch (Throwable t) {
+        }
 
         ESIndicesSearchShardsResponse response = client.admin().indices().prepareSearchShards(index).execute().get();
         System.out.println(response);
@@ -49,58 +51,58 @@ public class StatsTest {
 
     @Test
     public void healthCluster() throws Exception {
-        ESClusterHealthResponse response = client.admin().cluster() .prepareHealth().execute().get();
+        ESClusterHealthResponse response = client.admin().cluster().prepareHealth().execute().get();
         System.out.println(response);
     }
 
     @Test
     public void clusterNodeStats() throws Exception {
-        ESClusterNodesStatsResponse response = client.admin() .cluster() .prepareNodeStats().level("shards").execute().get();
+        ESClusterNodesStatsResponse response = client.admin().cluster().prepareNodeStats().level("shards").execute().get();
         System.out.println(response);
     }
 
     @Test
     public void clusterNodes() throws Exception {
-        ESClusterNodesResponse resp = client.admin() .cluster() .prepareNodes().addFlag("http").execute().get();
+        ESClusterNodesResponse resp = client.admin().cluster().prepareNodes().addFlag("http").execute().get();
         System.out.println(JSON.toJSONString(resp));
 
         String cluster = "hello";
 
-        if(resp==null) {
+        if (resp == null) {
             throw new Exception("get node info get null, cluster:" + cluster);
         }
 
         Map<String, ClusterNodeInfo> clusterNodeInfoMap = resp.getNodes();
-        if(clusterNodeInfoMap==null) {
+        if (clusterNodeInfoMap == null) {
             throw new Exception("get node info clusterNodeInfo is null, cluster:" + cluster);
         }
 
         Map<String, Integer> ret = new HashMap<String, Integer>();
-        for(String nodeName : clusterNodeInfoMap.keySet()) {
+        for (String nodeName : clusterNodeInfoMap.keySet()) {
             ClusterNodeInfo clusterNodeInfo = clusterNodeInfoMap.get(nodeName);
 
-            if(clusterNodeInfo==null) {
+            if (clusterNodeInfo == null) {
                 throw new Exception("clusterNodeInfo is null, cluster:" + cluster + ", node:" + nodeName);
             }
 
             HttpInfo httpInfo = clusterNodeInfo.getHttpInfo();
-            if(httpInfo == null) {
+            if (httpInfo == null) {
                 throw new Exception("http info is null, cluster:" + cluster + ", node:" + nodeName);
             }
 
             String publishAddress = httpInfo.getPublishAddress();
-            if(publishAddress == null) {
+            if (publishAddress == null) {
                 throw new Exception("publish address is null, cluster:" + cluster + ", node:" + nodeName);
             }
 
             try {
                 int indexStart = publishAddress.indexOf(":");
                 int indexEnd = publishAddress.indexOf(",");
-                if(indexEnd<0) {
+                if (indexEnd < 0) {
                     indexEnd = publishAddress.length();
                 }
 
-                int port = Integer.valueOf(publishAddress.substring(indexStart+1, indexEnd));
+                int port = Integer.valueOf(publishAddress.substring(indexStart + 1, indexEnd));
                 ret.put(nodeName, port);
             } catch (Throwable t) {
                 throw new Exception("get port error, cluster:" + cluster + ", node:" + nodeName + ", publishAddress" + publishAddress);

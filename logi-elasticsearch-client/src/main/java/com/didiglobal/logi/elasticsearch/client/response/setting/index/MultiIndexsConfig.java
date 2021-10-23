@@ -11,11 +11,11 @@ public class MultiIndexsConfig {
     private Map<String, IndexConfig> indexConfigMap = new HashMap<>();
 
     public MultiIndexsConfig(JSONObject root) throws Exception {
-        if(root==null) {
+        if (root == null) {
             throw new Exception("root is null");
         }
 
-        for(String indexName: root.keySet()) {
+        for (String indexName : root.keySet()) {
             indexConfigMap.put(indexName, new IndexConfig(root.getJSONObject(indexName)));
         }
     }
@@ -23,7 +23,7 @@ public class MultiIndexsConfig {
     public JSONObject toJson() {
         JSONObject root = new JSONObject();
 
-        for(String indexName: indexConfigMap.keySet()) {
+        for (String indexName : indexConfigMap.keySet()) {
             root.put(indexName, indexConfigMap.get(indexName).toJson());
         }
 
@@ -38,11 +38,11 @@ public class MultiIndexsConfig {
         return indexConfigMap.get(index);
     }
 
-    @JSONField(serialize=false)
+    @JSONField(serialize = false)
     public MappingConfig getNewestMappings() {
-        String newestName= "";
-        for(String indexName : indexConfigMap.keySet()) {
-            if(newestName.compareTo(indexName)<0) {
+        String newestName = "";
+        for (String indexName : indexConfigMap.keySet()) {
+            if (newestName.compareTo(indexName) < 0) {
                 newestName = indexName;
             }
         }
@@ -50,7 +50,7 @@ public class MultiIndexsConfig {
         return indexConfigMap.get(newestName).getMappings();
     }
 
-    @JSONField(serialize=false)
+    @JSONField(serialize = false)
     public boolean isEmpty() {
         return indexConfigMap.isEmpty();
     }

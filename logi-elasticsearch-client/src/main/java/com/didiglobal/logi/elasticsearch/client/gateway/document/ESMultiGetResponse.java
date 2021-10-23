@@ -48,17 +48,23 @@ public class ESMultiGetResponse extends ESActionResponse implements ToXContent {
             this.exception = exception;
         }
 
-
+        /**
+         * The index name of the action.
+         */
         public String getIndex() {
             return this.index;
         }
 
-
+        /**
+         * The type of the action.
+         */
         public String getType() {
             return type;
         }
 
-
+        /**
+         * The id of the action.
+         */
         public String getId() {
             return id;
         }
@@ -93,7 +99,9 @@ public class ESMultiGetResponse extends ESActionResponse implements ToXContent {
             this.failure = failure;
         }
 
-
+        /**
+         * Is it a failed search?
+         */
         public boolean isFailure() {
             return failure != null;
         }
@@ -107,7 +115,10 @@ public class ESMultiGetResponse extends ESActionResponse implements ToXContent {
             return failure;
         }
 
-
+        /**
+         * The index name of the document.
+         * @return String
+         */
         public String getIndex() {
             if (failure != null) {
                 return failure.getIndex();
@@ -115,7 +126,10 @@ public class ESMultiGetResponse extends ESActionResponse implements ToXContent {
             return response.getIndex();
         }
 
-
+        /**
+         * The type of the document.
+         * @return String
+         */
         public String getType() {
             if (failure != null) {
                 return failure.getType();
@@ -123,7 +137,10 @@ public class ESMultiGetResponse extends ESActionResponse implements ToXContent {
             return response.getType();
         }
 
-
+        /**
+         * The id of the document.
+         * @return String
+         */
         public String getId() {
             if (failure != null) {
                 return failure.getId();
@@ -150,8 +167,8 @@ public class ESMultiGetResponse extends ESActionResponse implements ToXContent {
                     }
                     break;
                 default:
-
-
+                    // If unknown tokens are encounter then these should be ignored, because
+                    // this is parsing logic on the client side.
                     break;
             }
         }
@@ -193,8 +210,8 @@ public class ESMultiGetResponse extends ESActionResponse implements ToXContent {
                     }
                     break;
                 default:
-
-
+                    // If unknown tokens are encounter then these should be ignored, because
+                    // this is parsing logic on the client side.
                     break;
             }
             if (esGetResponse != null) {

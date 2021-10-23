@@ -23,9 +23,9 @@ public class ParserRegister {
         Map<String, DslParser> m = getMap(type);
 
         assert m != null;
-        DslParser parser  = m.get(name);
+        DslParser parser = m.get(name);
 
-        if(parser==null) {
+        if (parser == null) {
             // System.out.println("can't find parser " + name);
             return null;
         }

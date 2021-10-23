@@ -42,7 +42,7 @@ public class ESIndicesGetAliasResponse extends ESActionResponse {
         return toJson().toJSONString();
     }
 
-    public JSONObject toJson()  {
+    public JSONObject toJson() {
         return (JSONObject) JSONObject.toJSON(this);
     }
 
@@ -51,7 +51,7 @@ public class ESIndicesGetAliasResponse extends ESActionResponse {
         Map<String, AliasIndexNode> m = new HashMap<>();
 
         JSONObject obj = JSON.parseObject(str);
-        for(String key : obj.keySet()) {
+        for (String key : obj.keySet()) {
             m.put(key, JSON.parseObject(obj.get(key).toString(), AliasIndexNode.class));
         }
 

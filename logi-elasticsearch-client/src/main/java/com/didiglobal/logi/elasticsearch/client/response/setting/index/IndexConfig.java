@@ -18,24 +18,25 @@ public class IndexConfig {
     private JSONObject settings;
     private Map<String, Object> notUsedMap = new HashMap<>();
 
-    private ESVersion version            = ESVersion.ES651;
+    private ESVersion version = ESVersion.ES651;
 
 
-    public IndexConfig() {}
+    public IndexConfig() {
+    }
 
     public IndexConfig(JSONObject root) throws Exception {
-        if(root==null) {
+        if (root == null) {
             throw new Exception("root is null");
         }
 
-        for(String key : root.keySet()) {
-            if(key.equalsIgnoreCase(SETTINGS_STR)) {
+        for (String key : root.keySet()) {
+            if (key.equalsIgnoreCase(SETTINGS_STR)) {
                 settings = root.getJSONObject(key);
 
-            } else if(key.equalsIgnoreCase(ALIASES_STR)) {
+            } else if (key.equalsIgnoreCase(ALIASES_STR)) {
                 aliases = root.getJSONObject(key);
 
-            } else if(key.equalsIgnoreCase(MAPPINGS_STR)) {
+            } else if (key.equalsIgnoreCase(MAPPINGS_STR)) {
                 mappings = new MappingConfig(root.getJSONObject(key));
 
             } else {
@@ -98,19 +99,19 @@ public class IndexConfig {
     public JSONObject toJson(ESVersion toVersion) {
         JSONObject root = new JSONObject();
 
-        if(settings!=null && settings.size()>0) {
+        if (settings != null && settings.size() > 0) {
             root.put(SETTINGS_STR, settings);
         }
 
-        if(aliases!=null && aliases.size()>0) {
+        if (aliases != null && aliases.size() > 0) {
             root.put(ALIASES_STR, aliases);
         }
 
-        if(mappings!=null && !mappings.isEmpty()) {
+        if (mappings != null && !mappings.isEmpty()) {
             root.put(MAPPINGS_STR, mappings.toJson(toVersion));
         }
 
-        for(String key : notUsedMap.keySet()) {
+        for (String key : notUsedMap.keySet()) {
             root.put(key, notUsedMap.get(key));
         }
 

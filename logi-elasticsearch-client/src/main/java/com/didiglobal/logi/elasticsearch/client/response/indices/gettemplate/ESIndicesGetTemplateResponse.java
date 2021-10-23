@@ -40,7 +40,7 @@ public class ESIndicesGetTemplateResponse extends ESActionResponse {
         return toJson().toJSONString();
     }
 
-    public JSONObject toJson()  {
+    public JSONObject toJson() {
         return (JSONObject) JSONObject.toJSON(this);
     }
 

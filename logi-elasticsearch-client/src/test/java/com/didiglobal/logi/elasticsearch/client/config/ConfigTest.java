@@ -54,8 +54,6 @@ public class ConfigTest {
     }
 
 
-
-
     @Test
     public void deleteTemplate() throws Exception {
         Map<String, String> settings = new HashMap<>();
@@ -84,7 +82,8 @@ public class ConfigTest {
     public void putTemplate() throws Exception {
         try {
             client.admin().indices().prepareDeleteTemplate(index).execute().get().getAcknowledged();
-        } catch (Throwable t) { }
+        } catch (Throwable t) {
+        }
 
 
         Map<String, String> settings = new HashMap<>();

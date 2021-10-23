@@ -24,16 +24,16 @@ public class BodyParser extends DslParser {
         NodeMap nm = new NodeMap();
         JSONObject jsonObject = (JSONObject) obj;
 
-         for (String key : jsonObject.keySet()) {
-             KeyNode keyNode = new StringNode(key);
+        for (String key : jsonObject.keySet()) {
+            KeyNode keyNode = new StringNode(key);
 
-             Node valueNode = ParserRegister.parse(parserType, key, jsonObject.get(key));
-             if (valueNode == null) {
-                 valueNode = ValueNode.getValueNode(jsonObject.get(key));
-             }
+            Node valueNode = ParserRegister.parse(parserType, key, jsonObject.get(key));
+            if (valueNode == null) {
+                valueNode = ValueNode.getValueNode(jsonObject.get(key));
+            }
 
-             nm.m.put(keyNode, valueNode);
-         }
+            nm.m.put(keyNode, valueNode);
+        }
 
         node.n = nm;
         return node;

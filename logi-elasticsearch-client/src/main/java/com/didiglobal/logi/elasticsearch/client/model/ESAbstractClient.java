@@ -92,7 +92,7 @@ public abstract class ESAbstractClient implements Client {
 
     // 子类继承
     protected abstract <Request extends ActionRequest, Response extends ActionResponse, RequestBuilder extends ActionRequestBuilder<Request, Response, RequestBuilder>>
-        void doExecute(final Action<Request, Response, RequestBuilder> action, final Request request, ActionListener<Response> listener);
+    void doExecute(final Action<Request, Response, RequestBuilder> action, final Request request, ActionListener<Response> listener);
 
 
     @Override
@@ -141,7 +141,6 @@ public abstract class ESAbstractClient implements Client {
     }
 
 
-
     @Override
     public ActionFuture<ESBatchResponse> batch(final ESBatchRequest request) {
         return execute(ESBatchAction.INSTANCE, request);
@@ -156,7 +155,6 @@ public abstract class ESAbstractClient implements Client {
     public ESBatchRequestBuilder prepareBatch() {
         return new ESBatchRequestBuilder(this, ESBatchAction.INSTANCE);
     }
-
 
 
     @Override
@@ -175,10 +173,7 @@ public abstract class ESAbstractClient implements Client {
     }
 
 
-
-
-
-                        /******** for gateway  ********/
+    /******** for gateway  ********/
     @Override
     public ActionFuture<DirectResponse> direct(DirectRequest request) {
         return execute(DirectAction.INSTANCE, request);
@@ -190,7 +185,6 @@ public abstract class ESAbstractClient implements Client {
     }
 
 
-
     @Override
     public ActionFuture<ESSearchResponse> search(ESSearchRequest request) {
         return execute(ESSearchAction.INSTANCE, request);
@@ -200,7 +194,6 @@ public abstract class ESAbstractClient implements Client {
     public void search(ESSearchRequest request, ActionListener<ESSearchResponse> listener) {
         execute(ESSearchAction.INSTANCE, request, listener);
     }
-
 
 
     @Override
@@ -244,7 +237,6 @@ public abstract class ESAbstractClient implements Client {
     }
 
 
-
     @Override
     public ActionFuture<ESMultiGetResponse> multiGet(ESMultiGetRequest request) {
         return execute(ESMultiGetAction.INSTANCE, request);
@@ -261,7 +253,7 @@ public abstract class ESAbstractClient implements Client {
     }
 
     @Override
-    public void index(ESIndexRequest request, ActionListener<ESIndexResponse> listener){
+    public void index(ESIndexRequest request, ActionListener<ESIndexResponse> listener) {
         execute(ESIndexAction.INSTANCE, request, listener);
     }
 
@@ -271,7 +263,7 @@ public abstract class ESAbstractClient implements Client {
     }
 
     @Override
-    public void update(ESUpdateRequest request, ActionListener<ESUpdateResponse> listener){
+    public void update(ESUpdateRequest request, ActionListener<ESUpdateResponse> listener) {
         execute(ESUpdateAction.INSTANCE, request, listener);
     }
 
@@ -281,7 +273,7 @@ public abstract class ESAbstractClient implements Client {
     }
 
     @Override
-    public void delete(ESDeleteRequest request, ActionListener<ESDeleteResponse> listener){
+    public void delete(ESDeleteRequest request, ActionListener<ESDeleteResponse> listener) {
         execute(ESDeleteAction.INSTANCE, request, listener);
     }
 

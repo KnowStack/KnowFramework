@@ -15,15 +15,13 @@ public class ESSearchResponseTest {
         JSONObject ret = response.toJson();
         System.out.println(ret.toJSONString());
 
-        if(obj.equals(ret)) {
+        if (obj.equals(ret)) {
             System.out.println("ok");
         } else {
             System.out.println("obj:" + obj.toJSONString());
             System.out.println("ret:" + ret.toJSONString());
         }
     }
-
-
 
 
     public static String respStr = "{\n" +

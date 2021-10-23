@@ -1,4 +1,21 @@
-
+/*
+ * Licensed to Elasticsearch under one or more contributor
+ * license agreements. See the NOTICE file distributed with
+ * this work for additional information regarding copyright
+ * ownership. Elasticsearch licenses this file to you under
+ * the Apache License, Version 2.0 (the "License"); you may
+ * not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
 
 package com.didiglobal.logi.elasticsearch.client.gateway.document;
 
@@ -45,7 +62,11 @@ public class ESGetRequest extends ESActionRequest<ESGetRequest> {
         type = "_all";
     }
 
-
+    /**
+     * Copy constructor that creates a new get request that is a copy of the one provided as an argument.
+     * The new request will inherit though headers and context from the original request that caused it.
+     * @param getRequest getRequest
+     */
     public ESGetRequest(ESGetRequest getRequest) {
         this.index = getRequest.index;
         this.type = getRequest.type;
@@ -61,13 +82,22 @@ public class ESGetRequest extends ESActionRequest<ESGetRequest> {
         this.ignoreErrorsOnGeneratedFields = getRequest.ignoreErrorsOnGeneratedFields;
     }
 
-
+    /**
+     * Constructs a new get request against the specified index. The {@link #type(String)} and {@link #id(String)}
+     * must be set.
+     */
     public ESGetRequest(String index) {
         this.index = index;
         this.type = "_all";
     }
 
-
+    /**
+     * Constructs a new get request against the specified index with the type and id.
+     *
+     * @param index The index to get the document from
+     * @param type  The type of the document
+     * @param id    The id of the document
+     */
     public ESGetRequest(String index, String type, String id) {
         this.index = index;
         this.type = type;
@@ -113,7 +143,9 @@ public class ESGetRequest extends ESActionRequest<ESGetRequest> {
         return this;
     }
 
-
+    /**
+     * Sets the type of the document to fetch.
+     */
     public ESGetRequest type(@Nullable String type) {
         if (type == null) {
             type = "_all";
@@ -122,19 +154,34 @@ public class ESGetRequest extends ESActionRequest<ESGetRequest> {
         return this;
     }
 
-
+    /**
+     * Sets the id of the document to fetch.
+     * @param id id
+     * @return ESGetRequest
+     */
     public ESGetRequest id(String id) {
         this.id = id;
         return this;
     }
 
-
+    /**
+     * Controls the shard routing of the request. Using this value to hash the shard
+     * and not the id.
+     * @param routing r
+     * @return ESGetRequest
+     */
     public ESGetRequest routing(String routing) {
         this.routing = routing;
         return this;
     }
 
-
+    /**
+     * Sets the preference to execute the search. Defaults to randomize across shards. Can be set to
+     * <tt>_local</tt> to prefer local shards, <tt>_primary</tt> to execute only on primary shards, or
+     * a custom value, which guarantees that the same order will be used across different requests.
+     * @param preference p
+     * @return ESGetRequest
+     */
     public ESGetRequest preference(String preference) {
         this.preference = preference;
         return this;
@@ -156,7 +203,9 @@ public class ESGetRequest extends ESActionRequest<ESGetRequest> {
         return this.preference;
     }
 
-
+    /**
+     * Allows setting the {@link FetchSourceContext} for this request, controlling if and how _source should be returned.
+     */
     public ESGetRequest fetchSourceContext(FetchSourceContext context) {
         this.fetchSourceContext = context;
         return this;
@@ -166,13 +215,22 @@ public class ESGetRequest extends ESActionRequest<ESGetRequest> {
         return fetchSourceContext;
     }
 
-
+    /**
+     * Explicitly specify the fields that will be returned. By default, the <tt>_source</tt>
+     * field will be returned.
+     * @param fields f
+     * @return ESGetRequest
+     */
     public ESGetRequest fields(String... fields) {
         this.fields = fields;
         return this;
     }
 
-
+    /**
+     * Explicitly specify the fields that will be returned. By default, the <tt>_source</tt>
+     * field will be returned.
+     * @return String[]
+     */
     public String[] fields() {
         return this.fields;
     }
@@ -195,7 +253,11 @@ public class ESGetRequest extends ESActionRequest<ESGetRequest> {
         return this;
     }
 
-
+    /**
+     * Sets the version, which will cause the get operation to only be performed if a matching
+     * version exists and no changes happened on the doc since then.
+     * @return long
+     */
     public long version() {
         return version;
     }
@@ -205,7 +267,9 @@ public class ESGetRequest extends ESActionRequest<ESGetRequest> {
         return this;
     }
 
-
+    /**
+     * Sets the versioning type. Defaults to {@link org.elasticsearch.index.VersionType#INTERNAL}.
+     */
     public ESGetRequest versionType(VersionType versionType) {
         this.versionType = versionType;
         return this;
@@ -224,24 +288,39 @@ public class ESGetRequest extends ESActionRequest<ESGetRequest> {
         return ignoreErrorsOnGeneratedFields;
     }
 
-
+    /**
+     * @return The parent for this request.
+     */
     public String parent() {
         return parent;
     }
 
-
+    /**
+     * Sets the parent id of this document.
+     * @param parent p
+     * @return ESGetRequest
+     */
     public ESGetRequest parent(String parent) {
         this.parent = parent;
         return this;
     }
 
-
+    /**
+     * Explicitly specify the stored fields that will be returned. By default, the {@code _source}
+     * field will be returned.
+     * @param fields f
+     * @return ESGetRequest
+     */
     public ESGetRequest storedFields(String... fields) {
         this.storedFields = fields;
         return this;
     }
 
-
+    /**
+     * Explicitly specify the stored fields that will be returned. By default, the {@code _source}
+     * field will be returned.
+     * @return String[]
+     */
     public String[] storedFields() {
         return this.storedFields;
     }

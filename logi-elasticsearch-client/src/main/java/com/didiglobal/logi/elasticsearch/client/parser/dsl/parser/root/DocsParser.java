@@ -18,9 +18,9 @@ public class DocsParser extends DslParser {
     public KeyWord parse(String name, Object obj) throws Exception {
         Docs node = new Docs(name);
 
-        if(obj instanceof JSONArray) {
-          node.n = new NodeList() ;
-          NodeList.toList((JSONArray)obj, (NodeList)node.n);
+        if (obj instanceof JSONArray) {
+            node.n = new NodeList();
+            NodeList.toList((JSONArray) obj, (NodeList) node.n);
 
         } else {
             node.n = ValueNode.getValueNode(obj);

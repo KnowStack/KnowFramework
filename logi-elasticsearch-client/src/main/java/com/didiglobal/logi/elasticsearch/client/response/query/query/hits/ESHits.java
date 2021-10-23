@@ -15,7 +15,9 @@ public class ESHits {
     private List<ESHit> hits;
 
 
-    public ESHits() { }
+    public ESHits() {
+    }
+
     public ESHits(JSONObject root, Class clazz) {
         if (root == null) {
             return;
@@ -24,9 +26,9 @@ public class ESHits {
         for (String key : root.keySet()) {
             if (HITS_STR.equalsIgnoreCase(key)) {
                 JSONArray array = (JSONArray) root.get(HITS_STR);
-                hits= new ArrayList<>();
+                hits = new ArrayList<>();
 
-                for(Object obj : array) {
+                for (Object obj : array) {
                     hits.add(new ESHit((JSONObject) obj, clazz));
                 }
 
@@ -70,14 +72,14 @@ public class ESHits {
 
     public JSONObject toJson() {
         JSONObject root = new JSONObject();
-        for(String key : unusedMap.keySet()) {
+        for (String key : unusedMap.keySet()) {
             root.put(key, unusedMap.get(key));
         }
 
 
-        if(hits!=null) {
+        if (hits != null) {
             JSONArray array = new JSONArray();
-            for(ESHit hit : hits) {
+            for (ESHit hit : hits) {
                 array.add(hit.toJson());
             }
             root.put(HITS_STR, array);

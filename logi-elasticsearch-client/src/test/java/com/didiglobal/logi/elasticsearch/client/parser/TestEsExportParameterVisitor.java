@@ -55,11 +55,11 @@ public class TestEsExportParameterVisitor {
                     System.out.println(line);
                     ExtractResult extractResultV2 = DslExtractionUtilV2.extractDsl(line);
                     System.out.println(extractResultV2.getDslTemplate());
-                    System.out.println("select [" + extractResultV2.getSelectFields()+"]");
-                    System.out.println("table [" + extractResultV2.getIndices()+"]");
-                    System.out.println("where [" + extractResultV2.getWhereFields()+"]");
-                    System.out.println("group by [" + extractResultV2.getGroupByFields()+"]");
-                    System.out.println("sort by [" + extractResultV2.getSortByFields()+"]");
+                    System.out.println("select [" + extractResultV2.getSelectFields() + "]");
+                    System.out.println("table [" + extractResultV2.getIndices() + "]");
+                    System.out.println("where [" + extractResultV2.getWhereFields() + "]");
+                    System.out.println("group by [" + extractResultV2.getGroupByFields() + "]");
+                    System.out.println("sort by [" + extractResultV2.getSortByFields() + "]");
                     //System.out.println(DslExtractionUtilV2.extractDsl(line));
                     System.out.println();
 
@@ -80,10 +80,10 @@ public class TestEsExportParameterVisitor {
                     System.out.println(line);
                     ExtractResult extractResultV2 = DslExtractionUtilV2.extractDsl(line);
                     System.out.println(extractResultV2.getDslTemplate());
-                    System.out.println("select [" + extractResultV2.getSelectFields()+"]");
-                    System.out.println("where [" + extractResultV2.getWhereFields()+"]");
-                    System.out.println("group by [" + extractResultV2.getGroupByFields()+"]");
-                    System.out.println("sort by [" + extractResultV2.getSortByFields()+"]");
+                    System.out.println("select [" + extractResultV2.getSelectFields() + "]");
+                    System.out.println("where [" + extractResultV2.getWhereFields() + "]");
+                    System.out.println("group by [" + extractResultV2.getGroupByFields() + "]");
+                    System.out.println("sort by [" + extractResultV2.getSortByFields() + "]");
                     //System.out.println(DslExtractionUtilV2.extractDsl(line));
                     System.out.println();
 
@@ -110,7 +110,7 @@ public class TestEsExportParameterVisitor {
 
         for (String sql : sqls) {
             ExtractResult extractResult = DslExtractionUtilV2.extractDsl(sql);
-            System.out.println("["+extractResult.getDslTemplate()+"]");
+            System.out.println("[" + extractResult.getDslTemplate() + "]");
             System.out.println(extractResult.getDslTemplateMd5());
         }
     }
@@ -123,14 +123,14 @@ public class TestEsExportParameterVisitor {
     @Test
     public void testWhereFieldExport() throws Exception {
 
-        String[] dsls = new String[] {
+        String[] dsls = new String[]{
 //                "select count(*) as counts from endpoint_security_da_2018-04-11, endpoint_security_da_2018-04-12 where m_errors.raw <> null and eventtime >= '1523376000000' and eventtime < '1523462400000' group by m_errors.raw limit 10",
 //                "select a,c,b,d, COUNT(c), AVG(b) from xx where a=0 and b=1 and c=2 or d=2 and e=3 and f=10",
 //                "select /*! ROUTINGS(/swan/bizlog/bigdata/DP_FE_SNAPSHOT_COLLECTOR) */ * from dquality_metrics_20*,dquality_metrics_21*,dquality_metrics_22* where datasourceId = 1 and topic=\"/swan/bizlog/bigdata/DP_FE_SNAPSHOT_COLLECTOR\" and type=2 and sinkTime >= 1522250100000 order by timestamp asc limit 1",
 //                "select *,sum(f) from         a where b    > 3 and    c <1  group by a having e>0  limit 1,10 order by z",
                 "select /*! HIGHLIGHT(datasource_name,pre_tags:['<em>'], post_tags:['<em/>']) */ /*! HIGHLIGHT(datasource_title,pre_tags:['<em>'], post_tags:['<em/>']) */ /*! HIGHLIGHT(datasource_intro,pre_tags:['<em>'], post_tags:['<em/>']) */ /*! HIGHLIGHT(username,pre_tags:['<em>'], post_tags:['<em/>']) */ /*! HIGHLIGHT(real_name,pre_tags:['<em>'], post_tags:['<em/>']) */ * from ?  where status <> -1 and (datasource_name like '%soda_tianji_shop_tmp%' or datasource_title like '%soda_tianji_shop_tmp%' or datasource_intro like '%soda_tianji_shop_tmp%' or username like '%soda_tianji_shop_tmp%' or real_name like '%soda_tianji_shop_tmp%')  limit 0,10"
 
-      };
+        };
 
         for (String sql : dsls) {
             SQLExprParser parser = new ElasticSqlExprParser(sql);

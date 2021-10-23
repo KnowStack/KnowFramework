@@ -11,7 +11,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class DocCountAggr implements Aggr{
+public class DocCountAggr implements Aggr {
 
     private Map<String, Object> notUseMap = new HashMap<>();
 //    private long docCountErrorUpperBound;
@@ -20,15 +20,16 @@ public class DocCountAggr implements Aggr{
     private List<Bucket> buckets = new ArrayList<>();
 
 
-//    public static final String DOC_COUNT_ERROR_UPPER_BOUND_STR = "doc_count_error_upper_bound";
+    //    public static final String DOC_COUNT_ERROR_UPPER_BOUND_STR = "doc_count_error_upper_bound";
 //    private static final String SUM_OTHER_DOC_COUNT_STR = "sum_other_doc_count";
     public static final String BUCKETS_STR = "buckets";
+
     public DocCountAggr(JSONObject root) {
 
-        for(String key : root.keySet()) {
-            if(BUCKETS_STR.equalsIgnoreCase(key)) {
+        for (String key : root.keySet()) {
+            if (BUCKETS_STR.equalsIgnoreCase(key)) {
                 JSONArray array = root.getJSONArray(key);
-                for(Object obj : array) {
+                for (Object obj : array) {
                     buckets.add(new Bucket((JSONObject) obj));
                 }
             } else {
@@ -45,14 +46,14 @@ public class DocCountAggr implements Aggr{
     public JSONObject toJson() {
         JSONObject root = new JSONObject();
 
-        for(String key : notUseMap.keySet()) {
+        for (String key : notUseMap.keySet()) {
             root.put(key, notUseMap.get(key));
         }
 //        root.put(DOC_COUNT_ERROR_UPPER_BOUND_STR, docCountErrorUpperBound);
 //        root.put(SUM_OTHER_DOC_COUNT_STR, sumOtherDocCount);
 
         JSONArray array = new JSONArray();
-        for(Bucket bucket : buckets) {
+        for (Bucket bucket : buckets) {
             array.add(bucket.toJson());
         }
         root.put(BUCKETS_STR, array);
@@ -61,7 +62,7 @@ public class DocCountAggr implements Aggr{
 
     @Override
     public LoopResult loop(List<String> keys, AggrLooper looper) throws Exception {
-        for(Bucket bucket : buckets) {
+        for (Bucket bucket : buckets) {
             if (bucket.loop(keys, looper) == LoopResult.RETURN) {
                 return LoopResult.RETURN;
             }

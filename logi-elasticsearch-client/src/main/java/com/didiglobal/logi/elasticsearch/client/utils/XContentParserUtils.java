@@ -9,13 +9,23 @@ import java.io.IOException;
 import java.util.Locale;
 import java.util.function.Supplier;
 
-
+/**
+ * A set of static methods to get {@link Token} from {@link XContentParser}
+ * while checking for their types and throw {@link ParsingException} if needed.
+ */
 public final class XContentParserUtils {
 
     private XContentParserUtils() {
     }
 
-
+    /**
+     * Makes sure that current token is of type {@link Token#FIELD_NAME} and the field name is equal to the provided one
+     * @param fieldName fieldName
+     * @param parser parser
+     * @param token token
+     * @throws ParsingException if the token is not of type {@link Token#FIELD_NAME} or is not equal to the given field name
+     * @throws IOException e
+     */
     public static void ensureFieldName(XContentParser parser, Token token, String fieldName) throws IOException {
         ensureExpectedToken(Token.FIELD_NAME, token, parser::getTokenLocation);
         String currentName = parser.currentName();
@@ -25,19 +35,33 @@ public final class XContentParserUtils {
         }
     }
 
-
+    /**
+     * @param field field
+     * @param location location
+     * @throws ParsingException with a "unknown field found" reason
+     */
     public static void throwUnknownField(String field, XContentLocation location) {
         String message = "Failed to parse object: unknown field [%s] found";
         throw new ParsingException(location, String.format(Locale.ROOT, message, field));
     }
 
-
+    /**
+     * @param token token
+     * @param location location
+     * @throws ParsingException with a "unknown token found" reason
+     */
     public static void throwUnknownToken(Token token, XContentLocation location) {
         String message = "Failed to parse object: unexpected token [%s] found";
         throw new ParsingException(location, String.format(Locale.ROOT, message, token));
     }
 
-
+    /**
+     * Makes sure that provided token is of the expected type
+     * @param location location
+     * @param expected expected
+     * @param actual actual
+     * @throws ParsingException if the token is not equal to the expected type
+     */
     public static void ensureExpectedToken(Token expected, Token actual, Supplier<XContentLocation> location) {
         if (actual != expected) {
             String message = "Failed to parse object: expecting token of type [%s] but found [%s]";
@@ -45,19 +69,36 @@ public final class XContentParserUtils {
         }
     }
 
-
+    /**
+     * Parse the current token depending on its token type. The following token types will be
+     * parsed by the corresponding parser methods:
+     * <ul>
+     *    <li>{@link Token#VALUE_STRING}: {@link XContentParser#text()}</li>
+     *    <li>{@link Token#VALUE_NUMBER}: {@link XContentParser#numberValue()} ()}</li>
+     *    <li>{@link Token#VALUE_BOOLEAN}: {@link XContentParser#booleanValue()} ()}</li>
+     *    <li>{@link Token#VALUE_EMBEDDED_OBJECT}: {@link XContentParser#binaryValue()} ()}</li>
+     *    <li>{@link Token#VALUE_NULL}: returns null</li>
+     *    <li>{@link Token#START_OBJECT}: {@link XContentParser#mapOrdered()} ()}</li>
+     *    <li>{@link Token#START_ARRAY}: {@link XContentParser#listOrderedMap()} ()}</li>
+     * </ul>
+     *
+     * @param parser parser
+     * @return Object
+     * @throws ParsingException if the token is none of the allowed values
+     * @throws IOException e
+     */
     public static Object parseFieldsValue(XContentParser parser) throws IOException {
         Token token = parser.currentToken();
         Object value = null;
         if (token == Token.VALUE_STRING) {
-
+            //binary values will be parsed back and returned as base64 strings when reading from json and yaml
             value = parser.text();
         } else if (token == Token.VALUE_NUMBER) {
             value = parser.numberValue();
         } else if (token == Token.VALUE_BOOLEAN) {
             value = parser.booleanValue();
         } else if (token == Token.VALUE_EMBEDDED_OBJECT) {
-
+            //binary values will be parsed back and returned as BytesArray when reading from cbor and smile
             value = new BytesArray(parser.binaryValue());
         } else if (token == Token.VALUE_NULL) {
             value = null;

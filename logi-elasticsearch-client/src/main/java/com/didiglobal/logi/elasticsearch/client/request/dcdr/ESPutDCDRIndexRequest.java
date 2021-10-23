@@ -38,7 +38,7 @@ public class ESPutDCDRIndexRequest extends ESActionRequest<ESPutDCDRIndexRequest
             throw new Exception("index name is null");
         }
 
-        String endPoint = "/_dcdr/" +indexName+ "/replication/create";
+        String endPoint = "/_dcdr/" + indexName + "/replication/create";
         RestRequest rr = new RestRequest("PUT", endPoint, null);
         rr.setBody(JSON.toJSONString(param));
         return rr;

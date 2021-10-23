@@ -46,12 +46,12 @@ public class ESIndicesFreezeIndexRequest extends ESActionRequest<ESIndicesFreeze
             indicesStr = StringUtils.join(indices, ",");
         }
 
-        if(StringUtils.isBlank(indicesStr)) {
+        if (StringUtils.isBlank(indicesStr)) {
             throw new Exception("not set indices");
         }
 
         String endPoint = null;
-        if(freeze) {
+        if (freeze) {
             endPoint = "/" + indicesStr + "/_freeze";
         } else {
             endPoint = "/" + indicesStr + "/_unfreeze";

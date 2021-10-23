@@ -43,14 +43,14 @@ public class PutAliasNode {
     }
 
     public JSONObject toJson() throws Exception {
-        if(type==null || index==null || alias==null) {
+        if (type == null || index == null || alias == null) {
             throw new Exception("type, index, alias is null");
         }
 
         JSONObject obj = new JSONObject();
         obj.put(INDEX_STR, index);
         obj.put(ALIAS_STR, alias);
-        for(String key : other.keySet()) {
+        for (String key : other.keySet()) {
             obj.put(key, other.get(key));
         }
 

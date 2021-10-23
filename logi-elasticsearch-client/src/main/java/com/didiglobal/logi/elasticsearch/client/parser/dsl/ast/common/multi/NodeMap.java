@@ -26,8 +26,8 @@ public class NodeMap extends Node {
     }
 
     public static void toField4Value(JSONObject root, NodeMap node) throws Exception {
-        for(String key : root.keySet()) {
-            if(checkName(key, root, node)) {
+        for (String key : root.keySet()) {
+            if (checkName(key, root, node)) {
                 continue;
             }
 
@@ -36,13 +36,13 @@ public class NodeMap extends Node {
     }
 
     public static void toField2ValueList(JSONObject root, NodeMap node) throws Exception {
-        for(String key : root.keySet()) {
+        for (String key : root.keySet()) {
             if (checkName(key, root, node)) {
                 continue;
             }
 
             Object obj = root.get(key);
-            if(obj instanceof JSON) {
+            if (obj instanceof JSON) {
                 NodeList l = new NodeList();
                 NodeList.toValueList((JSONArray) obj, l);
                 node.m.put(new FieldNode(key), l);
@@ -53,11 +53,11 @@ public class NodeMap extends Node {
     }
 
     public static void toString2Node(ParserType type, JSONObject root, NodeMap node) throws Exception {
-        for(String key : root.keySet()) {
+        for (String key : root.keySet()) {
 
             Object obj = root.get(key);
             Node n = ParserRegister.parse(type, key, obj);
-            if(n==null) {
+            if (n == null) {
                 n = ValueNode.getValueNode(obj);
             }
 
@@ -66,18 +66,18 @@ public class NodeMap extends Node {
     }
 
     public static void toString2ValueWithField(ParserType type, JSONObject root, NodeMap node, String fieldColumn) {
-        for(String key : root.keySet()) {
+        for (String key : root.keySet()) {
             Object obj = root.get(key);
 
 
-            if(fieldColumn!=null && key.equalsIgnoreCase(fieldColumn)) {
-                if(!(obj instanceof JSONArray)) {
+            if (fieldColumn != null && key.equalsIgnoreCase(fieldColumn)) {
+                if (!(obj instanceof JSONArray)) {
                     node.m.put(new StringNode(key), new FieldNode(obj));
                 } else {
                     //             "fields" : ["title", "description"]
                     NodeList nl = new NodeList();
                     JSONArray array = (JSONArray) obj;
-                    for(Object o : array) {
+                    for (Object o : array) {
                         nl.l.add(new FieldNode(o));
                     }
                     node.m.put(new StringNode(key), nl);
@@ -93,7 +93,7 @@ public class NodeMap extends Node {
         if (key.equalsIgnoreCase(ConstValue.NAME)) {
             node.m.put(new StringNode(key), ValueNode.getValueNode(obj.get(key)));
             return true;
-        } else if(key.equalsIgnoreCase(ConstValue.BOOST)) {
+        } else if (key.equalsIgnoreCase(ConstValue.BOOST)) {
             node.m.put(new StringNode(key), ValueNode.getValueNode(obj.get(key)));
             return true;
         } else {

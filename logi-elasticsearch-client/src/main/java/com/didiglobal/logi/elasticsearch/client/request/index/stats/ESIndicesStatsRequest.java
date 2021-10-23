@@ -62,6 +62,7 @@ public class ESIndicesStatsRequest extends ESBroadcastRequest<ESIndicesStatsRequ
 
     /**
      * Sets all flags to return all nodestats.
+     * @return ESIndicesStatsRequest
      */
     public ESIndicesStatsRequest all() {
         flags.add(COMPLETION);
@@ -109,7 +110,7 @@ public class ESIndicesStatsRequest extends ESBroadcastRequest<ESIndicesStatsRequ
         return this;
     }
 
-   public ESIndicesStatsRequest setLevel(IndicesStatsLevel level) {
+    public ESIndicesStatsRequest setLevel(IndicesStatsLevel level) {
         this.level = level;
 
         return this;
@@ -125,7 +126,7 @@ public class ESIndicesStatsRequest extends ESBroadcastRequest<ESIndicesStatsRequ
         String endpoint = buildEndPoint();
         RestRequest rr = new RestRequest("GET", endpoint, null);
 
-        if(level!=null) {
+        if (level != null) {
             rr.addParam("level", level.getStr());
         }
 

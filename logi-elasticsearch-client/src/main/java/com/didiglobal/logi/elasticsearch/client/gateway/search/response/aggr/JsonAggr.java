@@ -6,7 +6,7 @@ import com.didiglobal.logi.elasticsearch.client.gateway.search.response.aggr.loo
 
 import java.util.List;
 
-public class JsonAggr implements Aggr{
+public class JsonAggr implements Aggr {
     private JSONObject obj;
 
 
@@ -19,7 +19,7 @@ public class JsonAggr implements Aggr{
     }
 
     public boolean containKey(String key) {
-        if(obj!=null && obj.containsKey(key)) {
+        if (obj != null && obj.containsKey(key)) {
             return true;
         }
 

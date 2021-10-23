@@ -9,7 +9,8 @@ import java.io.IOException;
 
 public class ESIndexResponse extends DocWriteResponse implements ToXContent {
 
-    public ESIndexResponse() {}
+    public ESIndexResponse() {
+    }
 
     private ESIndexResponse(String index, String type, String id, long seqNo, long primaryTerm, long version, Result result, boolean found, boolean created) {
         super(index, type, id, seqNo, primaryTerm, version, result, found, created);

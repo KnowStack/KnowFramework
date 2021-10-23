@@ -26,23 +26,23 @@ public class SourceParser extends DslParser {
     public KeyWord parse(String name, Object root) throws Exception {
         Source node = new Source(name);
 
-        if(root instanceof Boolean) {
+        if (root instanceof Boolean) {
             node.n = new ObjectNode(root);
             return node;
         }
 
-        if(!(root instanceof JSONObject) && !(root instanceof JSONArray)) {
+        if (!(root instanceof JSONObject) && !(root instanceof JSONArray)) {
             node.n = new FieldNode(root);
             return node;
         }
 
-        if(root instanceof  JSONArray) {
+        if (root instanceof JSONArray) {
             node.n = new NodeList();
             NodeList.toFieldList((JSONArray) root, (NodeList) node.n);
             return node;
         }
 
-        if(root instanceof  JSONObject) {
+        if (root instanceof JSONObject) {
             JSONObject jsonObject = (JSONObject) root;
             NodeMap nm = new NodeMap();
 

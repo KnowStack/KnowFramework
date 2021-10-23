@@ -16,19 +16,19 @@ public class ESAggr {
     private List<ESBucket> bucketList = null;
 
     public ESAggr(JSONObject root) {
-        if(root==null) {
-           return;
+        if (root == null) {
+            return;
         }
 
 
         // TODO 增加处理是JSONObjec的情况
-        for(String key : root.keySet()) {
-            if(BUCKETS_STR.equalsIgnoreCase(key)
+        for (String key : root.keySet()) {
+            if (BUCKETS_STR.equalsIgnoreCase(key)
                     && root.get(key) instanceof JSONArray) {
                 bucketList = new ArrayList<>();
 
                 JSONArray array = root.getJSONArray(key);
-                for(Object obj : array) {
+                for (Object obj : array) {
                     JSONObject jsonObject = (JSONObject) obj;
 
                     bucketList.add(new ESBucket(jsonObject));
@@ -65,14 +65,14 @@ public class ESAggr {
     public JSONObject toJson() {
         JSONObject root = new JSONObject();
 
-        for(String key : unusedMap.keySet()) {
+        for (String key : unusedMap.keySet()) {
             root.put(key, unusedMap.get(key));
         }
 
 
-        if(bucketList!=null) {
+        if (bucketList != null) {
             JSONArray array = new JSONArray();
-            for(ESBucket bucket : bucketList) {
+            for (ESBucket bucket : bucketList) {
                 array.add(bucket.toJson());
             }
 

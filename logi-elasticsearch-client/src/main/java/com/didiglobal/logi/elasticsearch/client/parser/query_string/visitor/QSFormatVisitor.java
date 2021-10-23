@@ -28,6 +28,7 @@ public class QSFormatVisitor extends QSOutputVisitor {
 
     /**
      * AND/OR 运算符
+     *
      * @param node
      * @param white
      */
@@ -56,11 +57,11 @@ public class QSFormatVisitor extends QSOutputVisitor {
 
         // 如果不存在重复元素
         if (andOprSets.size() > 1) {
-            if(white) {
+            if (white) {
                 sb.append(" ");
             }
             sb.append(node.getSource());
-            if(white) {
+            if (white) {
                 sb.append(" ");
             }
             sb.append(andOprSets.last());

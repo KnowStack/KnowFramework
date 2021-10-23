@@ -65,7 +65,7 @@ public class ESCatRequest extends ESActionRequest<ESCatRequest> {
         String endpoint = buildEndPoint();
         RestRequest req = new RestRequest("GET", endpoint, null);
 
-        for(String key : param.keySet()) {
+        for (String key : param.keySet()) {
             req.addParam(key, param.get(key));
         }
 
@@ -79,7 +79,7 @@ public class ESCatRequest extends ESActionRequest<ESCatRequest> {
     }
 
     private String buildEndPoint() {
-        if(uri.startsWith("/")) {
+        if (uri.startsWith("/")) {
             uri = uri.substring(1);
         }
 

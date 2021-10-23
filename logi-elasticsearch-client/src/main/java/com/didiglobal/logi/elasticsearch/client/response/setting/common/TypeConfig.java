@@ -10,7 +10,7 @@ import java.util.Map;
 public class TypeConfig {
     private Map<String, Object> notUsedMap = new HashMap<>();
 
-    private TypeProperties      properties = null;
+    private TypeProperties properties = null;
 
     private static final String ENABLED = "enabled";
     private static final String SOURCE = "_source";
@@ -61,7 +61,6 @@ public class TypeConfig {
     }
 
 
-
     public void deleteField(String fieldName) {
         if (properties != null) {
             properties.deleteField(fieldName);
@@ -100,11 +99,11 @@ public class TypeConfig {
 
         for (String key : notUsedMap.keySet()) {
             boolean highVersionDiscard = (ESVersion.ES651.equals(version)
-                        || ESVersion.ES760.equals(version))
+                    || ESVersion.ES760.equals(version))
                     && ("dynamic_templates".equalsIgnoreCase(key)
-                        || "dynamic_date_formats".equalsIgnoreCase(key)
-                        || "_ttl".equalsIgnoreCase(key)
-                        || "_all".equalsIgnoreCase(key));
+                    || "dynamic_date_formats".equalsIgnoreCase(key)
+                    || "_ttl".equalsIgnoreCase(key)
+                    || "_all".equalsIgnoreCase(key));
             if (highVersionDiscard) {
                 // 高版本不再需要以上字段
                 continue;
@@ -143,7 +142,7 @@ public class TypeConfig {
     /**
      * 获取原生类型定义
      *
-     * @return
+     * @return Map
      */
     public Map<String, TypeDefine> getTypeDefineRaw() {
         if (properties != null) {
@@ -193,7 +192,7 @@ public class TypeConfig {
                 this.notUsedMap.containsKey(SOURCE) &&
                 this.notUsedMap.get(SOURCE) instanceof JSONObject
         ) {
-            JSONObject source = (JSONObject)this.notUsedMap.get(SOURCE);
+            JSONObject source = (JSONObject) this.notUsedMap.get(SOURCE);
             // 有enabled不存在的情况 默认为true,例如"_source" : {"excludes" : ["geo_term"]}
             if (source.containsKey(ENABLED)) {
                 return source.getBoolean(ENABLED);

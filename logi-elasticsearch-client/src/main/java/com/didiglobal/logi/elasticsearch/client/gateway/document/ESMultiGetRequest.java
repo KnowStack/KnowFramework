@@ -31,7 +31,9 @@ import java.util.*;
 public class ESMultiGetRequest extends ESActionRequest<ESMultiGetRequest> {
     private Map<String, String> params = new HashMap<>();
 
-
+    /**
+     * A single get item.
+     */
     public static class Item {
         private String index;
         private String type;
@@ -48,7 +50,13 @@ public class ESMultiGetRequest extends ESActionRequest<ESMultiGetRequest> {
 
         }
 
-
+        /**
+         * Constructs a single get item.
+         *
+         * @param index The index name
+         * @param type  The type (can be null)
+         * @param id    The id
+         */
         public Item(String index, @Nullable String type, String id) {
             this.index = index;
             this.type = type;
@@ -77,7 +85,11 @@ public class ESMultiGetRequest extends ESActionRequest<ESMultiGetRequest> {
             return this.id;
         }
 
-
+        /**
+         * The routing associated with this document.
+         * @param routing r
+         * @return ESMultiGetRequest.Item
+         */
         public ESMultiGetRequest.Item routing(String routing) {
             this.routing = routing;
             return this;
@@ -134,7 +146,9 @@ public class ESMultiGetRequest extends ESActionRequest<ESMultiGetRequest> {
             return this.fetchSourceContext;
         }
 
-
+        /**
+         * Allows setting the {@link FetchSourceContext} for this request, controlling if and how _source should be returned.
+         */
         public ESMultiGetRequest.Item fetchSourceContext(FetchSourceContext fetchSourceContext) {
             this.fetchSourceContext = fetchSourceContext;
             return this;
@@ -315,7 +329,11 @@ public class ESMultiGetRequest extends ESActionRequest<ESMultiGetRequest> {
         return validationException;
     }
 
-
+    /**
+     * Sets the preference to execute the search. Defaults to randomize across shards. Can be set to
+     * <tt>_local</tt> to prefer local shards, <tt>_primary</tt> to execute only on primary shards, or
+     * a custom value, which guarantees that the same order will be used across different requests.
+     */
     public ESMultiGetRequest preference(String preference) {
         this.preference = preference;
         return this;

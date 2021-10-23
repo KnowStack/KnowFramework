@@ -50,23 +50,23 @@ public class FormatVisitor extends OutputVisitor {
 
     @Override
     public void visit(QueryString node) {
-
+        // 内部使用LinkedHashMap<String, Object>
         JSONObject root = new JSONObject(true);
         Map<String, Object> sortedMap = new TreeMap<>();
 
-
+        // QueryString 中定义的node是NodeMap
         if (node.n instanceof NodeMap) {
             Node valueNode = null;
-            NodeMap nodeMap = (NodeMap)node.n;
+            NodeMap nodeMap = (NodeMap) node.n;
 
             for (KeyNode n : nodeMap.m.keySet()) {
                 n.accept(this);
                 String key = (String) ret;
                 valueNode = nodeMap.m.get(n);
 
-
+                // 如果query string解析失败，就使用原来的解析方式，结果是StringListNode类型
                 if ("query".equalsIgnoreCase(key) && valueNode instanceof StringListNode) {
-
+                    // 对query中的查询条件，简单用？替换
                     sortedMap.put(key, "?");
 
                 } else if ("fields".equalsIgnoreCase(key)) {
@@ -94,10 +94,14 @@ public class FormatVisitor extends OutputVisitor {
         ret = formatVisitor.output();
     }
 
-
+    /**
+     * node map 排序
+     *
+     * @param node node
+     */
     @Override
     public void visit(NodeMap node) {
-
+        // 内部使用LinkedHashMap<String, Object>
         JSONObject root = new JSONObject(true);
 
         Map<String, Object> sortedMap = new TreeMap<>();
@@ -114,7 +118,11 @@ public class FormatVisitor extends OutputVisitor {
         this.ret = root;
     }
 
-
+    /**
+     * node 集合格式化并排序
+     *
+     * @param node node
+     */
     @Override
     public void visit(NodeList node) {
         List<Object> l = new ArrayList<>();
@@ -131,7 +139,7 @@ public class FormatVisitor extends OutputVisitor {
             l.add(ret);
         }
 
-
+        // 对list中完全相同的项去重
         List<Object> tmp = new ArrayList<>();
         Set<String> exist = new HashSet<>();
         for (Object obj : l) {
@@ -229,7 +237,7 @@ public class FormatVisitor extends OutputVisitor {
             l.add(o);
         }
 
-
+        // 排序
         Collections.sort(l, new Comparator<Object>() {
 
             @Override

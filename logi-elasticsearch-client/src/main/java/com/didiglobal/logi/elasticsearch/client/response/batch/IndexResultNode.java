@@ -107,7 +107,10 @@ public class IndexResultNode {
         this.status = status;
     }
 
-
+    /**
+     * The failure message, <tt>null</tt> if it did not fail.
+     * @return String
+     */
     public String getFailureMessage() {
         if (error != null) {
             return error.getReason();

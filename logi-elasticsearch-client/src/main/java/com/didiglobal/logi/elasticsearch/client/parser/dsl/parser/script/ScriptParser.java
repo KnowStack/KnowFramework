@@ -20,7 +20,7 @@ public class ScriptParser extends DslParser {
     public KeyWord parse(String name, Object obj) throws Exception {
         Script node = new Script(name);
 
-        if(!(obj instanceof JSON)) {
+        if (!(obj instanceof JSON)) {
             node.n = ValueNode.getValueNode(obj);
             return node;
         }

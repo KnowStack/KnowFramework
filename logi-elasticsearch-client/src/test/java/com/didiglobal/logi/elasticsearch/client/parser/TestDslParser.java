@@ -40,7 +40,7 @@ public class TestDslParser {
         List<String> lines = Files.readAllLines(Paths.get(fileName));
 
         int count = 0;
-        for(String l : lines) {
+        for (String l : lines) {
 //            System.out.println("##########################" + count++);
 //            System.out.println(l);
             parser(l);
@@ -108,7 +108,7 @@ public class TestDslParser {
     }
 
     @Test
-    public  void testQueryString() throws Exception {
+    public void testQueryString() throws Exception {
         String str = "{\"fuzziness\":\"AUTO\",\"phrase_slop\":0,\"query\":\"\\\"notify\\\"\",\"analyze_wildcard\":true,\"tie_breaker\":0.0,\"use_dis_max\":true,\"fuzzy_prefix_length\":0,\"default_operator\":\"or\",\"fuzzy_max_expansions\":50,\"auto_generate_phrase_queries\":false,\"boost\":1.0,\"fields\":[\"message^1.0\", \"helloworld^1.0\"],\"escape\":false}\n";
         str = "{\"default_field\":\"Actions.Response\",\"query\":\"\\\"\\\\\\\"receive_level\\\\\\\":\\\\\\\"1100\\\\\\\"\\\"\"}";
 
@@ -117,12 +117,11 @@ public class TestDslParser {
 
         OutputVisitor ov = new OutputVisitor();
         node.accept(ov);
-        if(!JSON.parseObject(str).toString().equals(ov.ret.toString())) {
+        if (!JSON.parseObject(str).toString().equals(ov.ret.toString())) {
             System.out.println(ov.ret);
             System.out.println(JSON.parseObject(str));
             System.out.println("not equal");
         }
-
 
 
         GetInfoVisitor giv = new GetInfoVisitor();
@@ -136,7 +135,7 @@ public class TestDslParser {
 
         String fileName = TestDslParser.class.getClassLoader().getResource("query").getFile();
         List<String> lines = Files.readAllLines(Paths.get(fileName));
-        for(String l : lines) {
+        for (String l : lines) {
             KeyWord node = queryStringParser.parse("query_string", JSON.parseObject(l));
 
             OutputVisitor ov = new OutputVisitor();
@@ -244,13 +243,13 @@ public class TestDslParser {
     public void parser(String dsl) throws Exception {
         List<JSONObject> l = new ArrayList<>();
 
-        while(true) {
+        while (true) {
             DefaultJSONParser parser = new DefaultJSONParser(dsl, ParserConfig.getGlobalInstance(), 989);
             Object obj = parser.parse();
 
             l.add((JSONObject) obj);
 
-            if(parser.getLexer().pos()==0) {
+            if (parser.getLexer().pos() == 0) {
                 break;
             }
 
@@ -258,7 +257,7 @@ public class TestDslParser {
             parser.getLexer().close();
         }
 
-        for(JSONObject obj : l) {
+        for (JSONObject obj : l) {
             parser(obj);
         }
 
@@ -273,7 +272,7 @@ public class TestDslParser {
         node.accept(visitor);
         System.out.println("src:" + jsonObject);
 
-        if(!visitor.ret.toString().equals(jsonObject.toJSONString())) {
+        if (!visitor.ret.toString().equals(jsonObject.toJSONString())) {
             System.out.println("dst:" + visitor.ret);
             throw new Exception("not equal");
         }
@@ -294,7 +293,7 @@ public class TestDslParser {
 
         OutputJsonVisitor outputJsonVisitor = new OutputJsonVisitor();
         node.accept(outputJsonVisitor);
-        if(outputJsonVisitor.haveJson) {
+        if (outputJsonVisitor.haveJson) {
             System.out.println(jsonObject.toJSONString());
             System.out.println();
         }

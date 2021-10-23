@@ -31,6 +31,9 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
+/**
+ * 查询模板提取工具
+ */
 public class DslExtractionUtilV2 {
 
     private static final ILog LOGGER = LogFactory.getLog(DslExtractionUtilV2.class);
@@ -43,8 +46,8 @@ public class DslExtractionUtilV2 {
     /**
      * 提取dsl语句成查询模板
      *
-     * @param dslContent
-     * @return
+     * @param dslContent dslContent
+     * @return ExtractResult
      */
     public static ExtractResult extractDsl(String dslContent) {
         String dslTemplate = "";
@@ -82,10 +85,11 @@ public class DslExtractionUtilV2 {
 
     /**
      * 提取sql语句成查询模板
-     *  查询语句，查询模板,索引名称,selectFields,whereFields,groupByFields,sortByFields
-     *  6个元素
-     * @param sql
-     * @return
+     * 查询语句，查询模板,索引名称,selectFields,whereFields,groupByFields,sortByFields
+     * 6个元素
+     *
+     * @param sql sql
+     * @return ExtractResult
      */
     private static ExtractResult formatSql(String sql) {
         ExtractResult extractResult = new ExtractResult();
@@ -146,8 +150,8 @@ public class DslExtractionUtilV2 {
     /**
      * 提取dsl语句成查询模板
      *
-     * @param dsl
-     * @return
+     * @param dsl dsl
+     * @return ExtractResult
      */
     private static ExtractResult formatDsl(String dsl) {
         ExtractResult extractResult = new ExtractResult();
@@ -172,7 +176,7 @@ public class DslExtractionUtilV2 {
             Object obj = null;
 
             // 解析多个json，直到pos为0
-            for (;;) {
+            for (; ; ) {
                 try {
                     // 这里需要Feature.OrderedField.getMask()保持有序
                     parser = new DefaultJSONParser(dsl, ParserConfig.getGlobalInstance(), JSON.DEFAULT_PARSER_FEATURE | Feature.OrderedField.getMask());

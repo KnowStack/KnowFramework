@@ -37,12 +37,12 @@ public class ESClusterGetSettingsResponse extends ESActionResponse {
     private JSONObject persistentObj;
 
 
-    @JSONField(serialize=false)
+    @JSONField(serialize = false)
     public Map<String, String> getFlatTransient() {
         return JsonUtils.flat(transientObj);
     }
 
-    @JSONField(serialize=false)
+    @JSONField(serialize = false)
     public Map<String, String> getFlatPersistent() {
         return JsonUtils.flat(persistentObj);
     }

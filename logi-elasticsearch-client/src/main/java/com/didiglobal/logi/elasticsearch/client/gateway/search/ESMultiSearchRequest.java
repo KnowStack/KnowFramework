@@ -31,7 +31,10 @@ public class ESMultiSearchRequest extends ESActionRequest<ESMultiSearchRequest> 
 
     private boolean isTemplateRequest;
 
-
+    /**
+     * Add a search request to execute. Note, the order is important, the search response will be returned in the
+     * same order as the search requests.
+     */
     public ESMultiSearchRequest add(ESSearchRequest request) {
         requests.add(request);
         return this;
@@ -47,7 +50,7 @@ public class ESMultiSearchRequest extends ESActionRequest<ESMultiSearchRequest> 
             if (nextMarker == -1) {
                 break;
             }
-
+            // support first line with \n
             if (nextMarker == 0) {
                 from = nextMarker + 1;
                 continue;
@@ -71,7 +74,7 @@ public class ESMultiSearchRequest extends ESActionRequest<ESMultiSearchRequest> 
             IndicesOptions defaultOptions = IndicesOptions.strictExpandOpenAndForbidClosed();
 
 
-
+            // now parse the action
             if (nextMarker - from > 0) {
                 try (XContentParser parser = xContent.createParser(data.slice(from, nextMarker - from))) {
                     Map<String, Object> source = parser.map();
@@ -99,9 +102,9 @@ public class ESMultiSearchRequest extends ESActionRequest<ESMultiSearchRequest> 
             }
             esSearchRequest.indicesOptions(defaultOptions);
 
-
+            // move pointers
             from = nextMarker + 1;
-
+            // now for the body
             nextMarker = findNextMarker(marker, from, data, length);
             if (nextMarker == -1) {
                 break;
@@ -109,7 +112,7 @@ public class ESMultiSearchRequest extends ESActionRequest<ESMultiSearchRequest> 
 
             esSearchRequest.source(data.slice(from, nextMarker - from));
 
-
+            // move pointers
             from = nextMarker + 1;
 
             add(esSearchRequest);

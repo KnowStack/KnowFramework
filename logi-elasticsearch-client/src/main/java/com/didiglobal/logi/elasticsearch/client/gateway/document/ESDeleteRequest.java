@@ -22,40 +22,65 @@ public class ESDeleteRequest extends ESBaseReplicationRequest<ESDeleteRequest> {
     private long version = Versions.MATCH_ANY;
     private VersionType versionType = VersionType.INTERNAL;
 
-
+    /**
+     * The type of the document to delete.
+     * @return String
+     */
     public String type() {
         return type;
     }
 
-
+    /**
+     * Sets the type of the document to delete.
+     * @param type t
+     * @return ESDeleteRequest
+     */
     public ESDeleteRequest type(String type) {
         this.type = type;
         return this;
     }
 
-
+    /**
+     * The id of the document to delete.
+     * @return String
+     */
     public String id() {
         return id;
     }
 
-
+    /**
+     * Sets the id of the document to delete.
+     * @return ESDeleteRequest
+     */
     public ESDeleteRequest id(String id) {
         this.id = id;
         return this;
     }
 
-
+    /**
+     * @return The parent for this request.
+     * @return String
+     */
     public String parent() {
         return parent;
     }
 
-
+    /**
+     * Sets the parent id of this document.
+     * @param parent p
+     * @return ESDeleteRequest
+     */
     public ESDeleteRequest parent(String parent) {
         this.parent = parent;
         return this;
     }
 
-
+    /**
+     * Controls the shard routing of the request. Using this value to hash the shard
+     * and not the id.
+     * @param routing routing
+     * @return ESDeleteRequest
+     */
     public ESDeleteRequest routing(String routing) {
         if (routing != null && routing.length() == 0) {
             this.routing = null;
@@ -65,7 +90,11 @@ public class ESDeleteRequest extends ESBaseReplicationRequest<ESDeleteRequest> {
         return this;
     }
 
-
+    /**
+     * Controls the shard routing of the delete request. Using this value to hash the shard
+     * and not the id.
+     * @return String
+     */
     public String routing() {
         return this.routing;
     }

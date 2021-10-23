@@ -113,7 +113,7 @@ public class Shards implements ToXContent {
                     total = parser.intValue();
                 } else if (Fields.SUCCESSFUL.equals(currentFieldName)) {
                     successful = parser.intValue();
-                } else if (Fields.FAILED.equals(currentFieldName)){
+                } else if (Fields.FAILED.equals(currentFieldName)) {
                     failed = parser.intValue();
                 } else {
                     parser.skipChildren();

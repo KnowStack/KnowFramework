@@ -8,18 +8,17 @@ import com.didiglobal.logi.elasticsearch.client.parser.dsl.parser.DslParser;
 import com.didiglobal.logi.elasticsearch.client.parser.dsl.parser.ParserType;
 
 /**
- *
  * 解析common子查询
-{
-    "query": {
-        "common": {
-            "body": {
-                "query": "this is bonsai cool",
-                "cutoff_frequency": 0.001
-            }
-        }
-    }
-}
+ * {
+ * "query": {
+ * "common": {
+ * "body": {
+ * "query": "this is bonsai cool",
+ * "cutoff_frequency": 0.001
+ * }
+ * }
+ * }
+ * }
  */
 public class CommonParser extends DslParser {
 

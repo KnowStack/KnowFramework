@@ -22,8 +22,8 @@ public class QueryTest {
     @Test
     public void queryScrollId() throws Exception {
         ESQueryResponse response = client.prepareQueryScroll("11")
-                        .execute()
-                        .actionGet();
+                .execute()
+                .actionGet();
 
         System.out.println(response);
     }

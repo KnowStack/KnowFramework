@@ -11,7 +11,10 @@ public class IndexResultItemNode {
         this.index = index;
     }
 
-
+    /**
+     * Is this a failed execution of an operation.
+     * @return boolean
+     */
     public boolean isFailed() {
         return index.getError() != null;
     }

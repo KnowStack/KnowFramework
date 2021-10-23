@@ -1,5 +1,8 @@
 package com.didiglobal.logi.elasticsearch.client.parser.constant;
 
+/**
+ * 查询节点类型
+ */
 public enum SqlItemType {
     SELECT,
     WHERE,

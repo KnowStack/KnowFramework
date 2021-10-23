@@ -21,14 +21,14 @@ public class TopHitsParser extends DslParser {
         TopHits node = new TopHits(name);
 
 
-        if(!(obj instanceof JSONObject)) {
+        if (!(obj instanceof JSONObject)) {
             throw new Exception("not json object, obj:" + obj);
         }
 
         JSONObject jsonObject = (JSONObject) obj;
 
-        for(String key : jsonObject.keySet()) {
-            if(key.equalsIgnoreCase(TopHits.SORT_STR)) {
+        for (String key : jsonObject.keySet()) {
+            if (key.equalsIgnoreCase(TopHits.SORT_STR)) {
                 Node n = ParserRegister.parse(parserType, key, jsonObject.get(key));
                 node.m.m.put(new StringNode(key), n);
 

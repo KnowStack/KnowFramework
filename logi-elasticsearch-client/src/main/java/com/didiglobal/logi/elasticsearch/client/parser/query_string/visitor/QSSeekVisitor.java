@@ -13,10 +13,12 @@ import com.didiglobal.logi.elasticsearch.client.parser.query_string.ast.op.logic
 
 public class QSSeekVisitor implements QSVisitor {
     @Override
-    public void visit(QSValueNode node) { }
+    public void visit(QSValueNode node) {
+    }
 
     @Override
-    public void visit(QSFieldNode node) { }
+    public void visit(QSFieldNode node) {
+    }
 
     @Override
     public void visit(QSParenNode node) {

@@ -103,7 +103,6 @@ public interface Visitor {
     public void visit(StringListNode node);
 
 
-
     /*---- logic -----*/
     public void visit(Bool node);
 
@@ -120,7 +119,6 @@ public interface Visitor {
     public void visit(And node);
 
     public void visit(Or node);
-
 
 
     /*---- aggs -----*/

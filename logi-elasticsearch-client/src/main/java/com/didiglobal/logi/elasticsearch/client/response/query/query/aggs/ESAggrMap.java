@@ -9,13 +9,13 @@ public class ESAggrMap {
     private Map<String, ESAggr> esAggrMap = new HashMap<>();
 
     public ESAggrMap(JSONObject root) {
-       if(root==null) {
-           return;
-       }
+        if (root == null) {
+            return;
+        }
 
-        for(String key : root.keySet()) {
+        for (String key : root.keySet()) {
 
-           esAggrMap.put(key, new ESAggr((JSONObject) root.get(key)));
+            esAggrMap.put(key, new ESAggr((JSONObject) root.get(key)));
         }
     }
 
@@ -32,10 +32,11 @@ public class ESAggrMap {
     public String toString() {
         return toJson().toJSONString();
     }
+
     public JSONObject toJson() {
         JSONObject root = new JSONObject();
 
-        for(String key : esAggrMap.keySet()) {
+        for (String key : esAggrMap.keySet()) {
             root.put(key, esAggrMap.get(key).toJson());
         }
 

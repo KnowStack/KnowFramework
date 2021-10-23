@@ -68,13 +68,11 @@ public interface ESClusterAdminClient extends ElasticsearchClient {
     ESClusterNodesStatsRequestBuilder prepareNodeStats();
 
 
-
     public ActionFuture<ESClusterNodesResponse> nodes(final ESClusterNodesRequest request);
 
     public void nodes(final ESClusterNodesRequest request, final ActionListener<ESClusterNodesResponse> listener);
 
     public ESClusterNodesRequestBuilder prepareNodes();
-
 
 
     ActionFuture<ESClusterNodesSettingResponse> nodesSetting(final ESClusterNodesSettingRequest request);

@@ -26,7 +26,7 @@ import org.elasticsearch.client.ElasticsearchClient;
 public class ESIndicesOpenIndexAction extends Action<ESIndicesOpenIndexRequest, ESIndicesOpenIndexResponse, ESIndicesOpenIndexRequestBuilder> {
 
     public static final ESIndicesOpenIndexAction INSTANCE = new ESIndicesOpenIndexAction();
-    public static final String                    NAME     = "indices:open/index";
+    public static final String NAME = "indices:open/index";
 
     private ESIndicesOpenIndexAction() {
         super(NAME);

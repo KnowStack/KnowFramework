@@ -65,11 +65,11 @@ public class ESIndicesPutTemplateRequest extends ESActionRequest<ESIndicesPutTem
 
     @Override
     public RestRequest toRequest() throws Exception {
-        if(template==null || template.length()==0) {
+        if (template == null || template.length() == 0) {
             throw new Exception("template is null");
         }
 
-        if(templateConfig==null || templateConfig.length()==0) {
+        if (templateConfig == null || templateConfig.length() == 0) {
             throw new Exception("template config is null");
         }
 
@@ -78,7 +78,7 @@ public class ESIndicesPutTemplateRequest extends ESActionRequest<ESIndicesPutTem
         RestRequest rr = new RestRequest("PUT", endPoint, null);
         rr.setBody(templateConfig);
 
-        if(include_type_name) {
+        if (include_type_name) {
             rr.addParam("include_type_name", "true");
         }
 

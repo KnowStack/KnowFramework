@@ -34,9 +34,10 @@ import java.util.concurrent.TimeUnit;
  * Request for an update cluster settings action
  */
 public class ESClusterGetSettingsRequest extends ESActionRequest<ESClusterGetSettingsRequest> {
-    private static final TimeValue DEFAULT_ACK_TIMEOUT =  new TimeValue(30 , TimeUnit.SECONDS);
+    private static final TimeValue DEFAULT_ACK_TIMEOUT = new TimeValue(30, TimeUnit.SECONDS);
 
-    public ESClusterGetSettingsRequest() {}
+    public ESClusterGetSettingsRequest() {
+    }
 
     @Override
     public ActionRequestValidationException validate() {

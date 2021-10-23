@@ -30,13 +30,13 @@ public class FunctionScoreParser extends DslParser {
         NodeMap nm = new NodeMap();
 
         JSONObject jsonObject = (JSONObject) obj;
-        for(String key : jsonObject.keySet()) {
+        for (String key : jsonObject.keySet()) {
             StringNode kn = new StringNode(key);
             Node vn;
 
-            if(key.equalsIgnoreCase("query")) {
+            if (key.equalsIgnoreCase("query")) {
                 vn = ParserRegister.parse(parserType, key, jsonObject.get(key));
-            } else if(key.equalsIgnoreCase("functions")) {
+            } else if (key.equalsIgnoreCase("functions")) {
                 vn = parserFunctions((JSON) jsonObject.get(key));
             } else {
                 vn = parserKey(key, jsonObject.get(key));
@@ -50,13 +50,13 @@ public class FunctionScoreParser extends DslParser {
     }
 
     private Node parserFunctions(JSON root) throws Exception {
-        if(root instanceof  JSONObject) {
+        if (root instanceof JSONObject) {
             return parserFuncObj((JSONObject) root);
         }
 
         NodeList nl = new NodeList();
         JSONArray array = (JSONArray) root;
-        for(Object obj : array) {
+        for (Object obj : array) {
             nl.l.add(parserFuncObj((JSONObject) obj));
         }
         return nl;
@@ -65,14 +65,14 @@ public class FunctionScoreParser extends DslParser {
     private Node parserFuncObj(JSONObject root) throws Exception {
         NodeMap nm = new NodeMap();
 
-        for(String key : root.keySet()) {
+        for (String key : root.keySet()) {
             nm.m.put(new StringNode(key), parserKey(key, root.get(key)));
         }
 
         return nm;
     }
 
-    private Node parserKey(String key , Object obj) throws Exception {
+    private Node parserKey(String key, Object obj) throws Exception {
         if (key.equalsIgnoreCase(FILTER_STR)) {
             return parseFilter((JSONObject) obj);
 
@@ -98,30 +98,34 @@ public class FunctionScoreParser extends DslParser {
 
 
     private static final String FILTER_STR = "filter";
+
     private Node parseFilter(JSONObject obj) throws Exception {
         return ParserRegister.parse(ParserType.QUERY, FILTER_STR, obj);
     }
 
     private static final String WEIGHT_STR = "weight";
+
     private Node parseWeight(Object obj) {
         return ValueNode.getValueNode(obj);
     }
 
     private static final String RANDOM_SCORE_STR = "random_score";
+
     private Node parseRandomScore(Object obj) {
         return ValueNode.getValueNode(obj);
     }
 
     private static final String SCRIPT_SCORE_STR = "script_socre";
+
     private Node parseScriptScore(Object obj) throws Exception {
         NodeMap nm = new NodeMap();
 
         JSONObject jsonObject = (JSONObject) obj;
-        for(String key : jsonObject.keySet()) {
+        for (String key : jsonObject.keySet()) {
             StringNode keyNode = new StringNode(key);
             Object o = jsonObject.get(key);
 
-            if(key.equalsIgnoreCase("script")) {
+            if (key.equalsIgnoreCase("script")) {
                 nm.m.put(keyNode, ParserRegister.parse(ParserType.QUERY, key, o));
             } else {
                 nm.m.put(keyNode, ValueNode.getValueNode(o));
@@ -132,6 +136,7 @@ public class FunctionScoreParser extends DslParser {
     }
 
     private static final String FIELD_VALUE_FACTOR_str = "field_value_factor";
+
     private Node parseFieldValueFactor(JSONObject obj) {
         NodeMap nm = new NodeMap();
         for (String k : obj.keySet()) {
@@ -146,16 +151,18 @@ public class FunctionScoreParser extends DslParser {
     }
 
     private static final Set<String> funcNames = new HashSet<>();
+
     static {
         funcNames.add("gauss");
         funcNames.add("exp");
         funcNames.add("linear");
     }
+
     private Node parseFunc(JSONObject obj) {
         NodeMap nm = new NodeMap();
-        for(String key : obj.keySet()) {
+        for (String key : obj.keySet()) {
             Object o = obj.get(key);
-            if(o instanceof JSONObject) {
+            if (o instanceof JSONObject) {
                 nm.m.put(new FieldNode(key), ValueNode.getValueNode(o));
             } else {
                 nm.m.put(new StringNode(key), ValueNode.getValueNode(o));

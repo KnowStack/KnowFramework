@@ -31,6 +31,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
+ *
  */
 public class ESIndicesSearchShardsResponse extends ESActionResponse {
     @JSONField(name = "nodes")
@@ -57,18 +58,17 @@ public class ESIndicesSearchShardsResponse extends ESActionResponse {
     }
 
 
-
-    @JSONField(serialize=false)
+    @JSONField(serialize = false)
     public Map<String, List<List<ESShard>>> getIndexMap() {
         Map<String, List<List<ESShard>>> ret = new HashMap<>();
 
-        for(List<ESShard> les : shards) {
-            if(les==null || les.size()==0 | les.get(0)==null) {
+        for (List<ESShard> les : shards) {
+            if (les == null || les.size() == 0 | les.get(0) == null) {
                 continue;
             }
 
             String index = les.get(0).getIndex();
-            if(!ret.containsKey(index)) {
+            if (!ret.containsKey(index)) {
                 ret.put(index, new ArrayList<>());
             }
 
@@ -79,13 +79,12 @@ public class ESIndicesSearchShardsResponse extends ESActionResponse {
     }
 
 
-
     @Override
     public String toString() {
         return toJson().toJSONString();
     }
 
-    public JSONObject toJson()  {
+    public JSONObject toJson() {
         return (JSONObject) JSONObject.toJSON(this);
     }
 }

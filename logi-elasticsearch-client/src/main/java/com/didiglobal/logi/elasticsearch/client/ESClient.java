@@ -45,7 +45,7 @@ public class ESClient extends ESAbstractClient {
 
     public static final String DEFAULT_ES_VERSION = "2.3.3";
 
-    private static final String DEFAULT_ES_CLUSTER_NAME= "elasticsearch";
+    private static final String DEFAULT_ES_CLUSTER_NAME = "elasticsearch";
 
     private String esVersion;
 
@@ -75,7 +75,7 @@ public class ESClient extends ESAbstractClient {
     }
 
     public ESClient addTransportAddresses(TransportAddress... transportAddress) {
-        for(TransportAddress ta : transportAddress) {
+        for (TransportAddress ta : transportAddress) {
             addTransportAddress(ta);
         }
         return this;
@@ -83,6 +83,7 @@ public class ESClient extends ESAbstractClient {
 
     /**
      * String的格式必须是 ip:port,ip:port
+     *
      * @param addresses **.**.**.**:port,**.**.**.**:port  格式
      * @return 链接
      */
@@ -92,7 +93,7 @@ public class ESClient extends ESAbstractClient {
             for (String addr : addresses.split(",")) {
                 String[] addrArr = addr.split(":");
                 addTransportAddress(
-                    new InetSocketTransportAddress(new InetSocketAddress(addrArr[0], Integer.valueOf(addrArr[1]))));
+                        new InetSocketTransportAddress(new InetSocketAddress(addrArr[0], Integer.valueOf(addrArr[1]))));
             }
 
         } catch (Exception e) {
@@ -132,7 +133,7 @@ public class ESClient extends ESAbstractClient {
 
         // 获取连接集群的版本信息
         try {
-            if(!"gateway".equals(clusterName)) {
+            if (!"gateway".equals(clusterName)) {
                 ESClusterVersionResponse versionResponse = this.admin().cluster().prepareVersion().execute().actionGet(10,
                         TimeUnit.SECONDS);
                 esVersion = versionResponse.getVersion().getNumber();
@@ -146,7 +147,7 @@ public class ESClient extends ESAbstractClient {
 
     private void reset() {
         LOGGER.info("reset client, cluster=" + clusterName);
-        
+
         ArrayList<HttpHost> hosts = Lists.newArrayList();
 
         for (TransportAddress ta : tas) {
@@ -179,8 +180,8 @@ public class ESClient extends ESAbstractClient {
 
     @Override
     protected <Request extends ActionRequest,
-               Response extends ActionResponse,
-               RequestBuilder extends ActionRequestBuilder<Request, Response, RequestBuilder>>
+            Response extends ActionResponse,
+            RequestBuilder extends ActionRequestBuilder<Request, Response, RequestBuilder>>
     void doExecute(Action<Request, Response, RequestBuilder> action, Request request, ActionListener<Response> listener) {
 
         try {

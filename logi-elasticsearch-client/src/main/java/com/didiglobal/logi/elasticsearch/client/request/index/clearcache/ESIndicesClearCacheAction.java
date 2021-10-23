@@ -26,7 +26,7 @@ import org.elasticsearch.client.ElasticsearchClient;
 public class ESIndicesClearCacheAction extends Action<ESIndicesClearCacheRequest, ESIndicesClearCacheResponse, ESIndicesClearCacheRequestBuilder> {
 
     public static final ESIndicesClearCacheAction INSTANCE = new ESIndicesClearCacheAction();
-    public static final String                    NAME     = "indices:clear/cache";
+    public static final String NAME = "indices:clear/cache";
 
     private ESIndicesClearCacheAction() {
         super(NAME);

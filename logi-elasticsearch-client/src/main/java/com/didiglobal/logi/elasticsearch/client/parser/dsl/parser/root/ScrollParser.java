@@ -8,7 +8,6 @@ import com.didiglobal.logi.elasticsearch.client.parser.dsl.parser.ParserType;
 
 /**
  * 解析scroll关键字
- *
  * {"scroll":"60s","scroll_id":"cXVlcnlBbmRGZXRjaDsxOzEyNjEzOTpXYW9YS2dlQVM1YU9hZFJXVFNZa2x3OzA7"}
  */
 public class ScrollParser extends DslParser {

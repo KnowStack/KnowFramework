@@ -4,6 +4,9 @@ import com.didiglobal.logi.elasticsearch.client.parser.bean.ExtractResult;
 import com.didiglobal.logi.log.ILog;
 import com.didiglobal.logi.log.LogFactory;
 
+/**
+ * 查询模板提取工具
+ */
 public class DslExtractionUtil {
 
     private static final ILog LOGGER = LogFactory.getLog(DslExtractionUtil.class);
@@ -11,8 +14,8 @@ public class DslExtractionUtil {
     /**
      * 提取dsl语句成查询模板，包含多个版本号的MD5
      *
-     * @param dslContent
-     * @return
+     * @param dslContent dslContent
+     * @return ExtractResult
      */
     public static ExtractResult extractDsl(String dslContent) {
         // 使用第一版本查询模板提取
@@ -26,9 +29,9 @@ public class DslExtractionUtil {
     /**
      * 合并不同查询模板提取sdk版本的结果
      *
-     * @param extractResultV1
-     * @param extractResultV2
-     * @return
+     * @param extractResultV1 extractResultV1
+     * @param extractResultV2 extractResultV2
+     * @return ExtractResult
      */
     private static ExtractResult mergeExtractResult(String dslContent, ExtractResult extractResultV1, ExtractResult extractResultV2) {
         ExtractResult extractResult = null;

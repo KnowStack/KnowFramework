@@ -17,7 +17,7 @@ public class DCDRIndexStats {
     private Map<String, List<DCDRStats>> dcdrStats = new HashMap<>();
 
     public DCDRIndexStats(JSONObject stats) {
-        for(String key : stats.keySet()) {
+        for (String key : stats.keySet()) {
             JSONArray array = stats.getJSONArray(key);
             List<DCDRStats> dcdrStatsList = new ArrayList<>(array.size());
             array.forEach(v -> {

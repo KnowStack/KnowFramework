@@ -58,7 +58,7 @@ public class AggTermsParser extends DslParser {
 
     private NodeMap processOneOrder(JSONObject root) {
         NodeMap nm = new NodeMap();
-        for(String key : root.keySet()) {
+        for (String key : root.keySet()) {
             nm.m.put(new FieldNode(key), ValueNode.getValueNode(root.get(key)));
         }
 

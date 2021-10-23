@@ -17,7 +17,6 @@ import com.didiglobal.logi.elasticsearch.client.parser.dsl.parser.script.ScriptP
 import com.didiglobal.logi.log.ILog;
 import com.didiglobal.logi.log.LogFactory;
 
-
 public abstract class DslParser {
     protected ParserType parserType;
 

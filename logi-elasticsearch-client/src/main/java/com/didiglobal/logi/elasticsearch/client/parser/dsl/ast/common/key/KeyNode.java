@@ -24,16 +24,16 @@ public abstract class KeyNode extends Node {
 
     @Override
     public boolean equals(Object obj) {
-        if(obj==null) {
+        if (obj == null) {
             return false;
         }
 
-        if(!(obj instanceof KeyNode)) {
+        if (!(obj instanceof KeyNode)) {
             return false;
         }
 
         KeyNode n = (KeyNode) obj;
-        if(n.value.equals(value)) {
+        if (n.value.equals(value)) {
             return true;
         } else {
             return false;

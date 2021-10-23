@@ -21,8 +21,8 @@ public class ConstantScoreParser extends DslParser {
 
         NodeMap nm = new NodeMap();
         JSONObject jsonObj = (JSONObject) obj;
-        for(String key : jsonObj.keySet()) {
-            if(key.equalsIgnoreCase("filter")) {
+        for (String key : jsonObj.keySet()) {
+            if (key.equalsIgnoreCase("filter")) {
                 nm.m.put(new StringNode(key), ParserRegister.parse(parserType, key, jsonObj.get(key)));
             } else {
                 nm.m.put(new StringNode(key), ValueNode.getValueNode(jsonObj.get(key)));

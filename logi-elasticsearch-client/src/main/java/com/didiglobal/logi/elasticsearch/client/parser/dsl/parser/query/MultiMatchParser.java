@@ -18,7 +18,7 @@ public class MultiMatchParser extends DslParser {
         MultiMatch node = new MultiMatch(name);
         NodeMap nm = new NodeMap();
 
-        NodeMap.toString2ValueWithField(parserType, (JSONObject) obj, nm,"fields");
+        NodeMap.toString2ValueWithField(parserType, (JSONObject) obj, nm, "fields");
 
         node.n = nm;
         return node;

@@ -25,7 +25,7 @@ import org.elasticsearch.client.ElasticsearchClient;
 import com.didiglobal.logi.elasticsearch.client.response.cluster.ESClusterVersionResponse;
 
 public class ESClusterVersionRequestBuilder extends
-                                            ActionRequestBuilder<ESClusterVersionRequest, ESClusterVersionResponse, ESClusterVersionRequestBuilder> {
+        ActionRequestBuilder<ESClusterVersionRequest, ESClusterVersionResponse, ESClusterVersionRequestBuilder> {
     public ESClusterVersionRequestBuilder(ElasticsearchClient client, ESClusterVersionAction action) {
         super(client, action, new ESClusterVersionRequest());
     }

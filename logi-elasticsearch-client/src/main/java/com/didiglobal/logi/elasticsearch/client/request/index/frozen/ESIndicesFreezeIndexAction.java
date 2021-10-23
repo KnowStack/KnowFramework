@@ -26,7 +26,7 @@ import org.elasticsearch.client.ElasticsearchClient;
 public class ESIndicesFreezeIndexAction extends Action<ESIndicesFreezeIndexRequest, ESIndicesFreezeIndexResponse, ESIndicesFreezeIndexRequestBuilder> {
 
     public static final ESIndicesFreezeIndexAction INSTANCE = new ESIndicesFreezeIndexAction();
-    public static final String                    NAME     = "indices:open/index";
+    public static final String NAME = "indices:open/index";
 
     private ESIndicesFreezeIndexAction() {
         super(NAME);

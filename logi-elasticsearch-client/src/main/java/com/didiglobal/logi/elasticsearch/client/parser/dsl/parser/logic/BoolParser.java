@@ -15,7 +15,7 @@ public class BoolParser extends DslParser {
     @Override
     public KeyWord parse(String name, Object obj) throws Exception {
         Bool node = new Bool(name);
-        NodeMap.toString2Node(parserType, (JSONObject)obj, node.m);
+        NodeMap.toString2Node(parserType, (JSONObject) obj, node.m);
         return node;
     }
 }

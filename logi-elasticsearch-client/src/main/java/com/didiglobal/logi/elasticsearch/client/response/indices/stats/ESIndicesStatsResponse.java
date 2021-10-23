@@ -29,6 +29,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
+ *
  */
 public class ESIndicesStatsResponse extends ESActionResponse {
 

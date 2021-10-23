@@ -112,7 +112,7 @@ public class ESIndicesGetIndexRequest extends ESActionRequest<ESIndicesGetIndexR
         }
 
         RestRequest rr = new RestRequest("GET", endPoint, null);
-        if(include_type_name) {
+        if (include_type_name) {
             rr.addParam("include_type_name", "true");
         }
 

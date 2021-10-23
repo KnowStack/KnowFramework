@@ -36,10 +36,9 @@ public class ESIndicesDeleteTemplateRequest extends ESActionRequest<ESIndicesDel
     }
 
 
-
     @Override
     public RestRequest toRequest() throws Exception {
-        if(template==null || template.length()==0) {
+        if (template == null || template.length() == 0) {
             throw new Exception("template is null");
         }
 

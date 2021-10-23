@@ -30,7 +30,7 @@ import java.util.TreeMap;
  * @Description:
  * @Date: Create on 2018/5/29 下午4:41
  * @Modified By
- *
+ * <p>
  * 从测试文件中读取查询语句，格式化结果，字段提取结果
  */
 public class TestExtractionUtil {
@@ -52,10 +52,8 @@ public class TestExtractionUtil {
     }
 
 
-
     /**
      * 保存dsl提取结果到文件
-     *
      */
     @Test
     public void saveDslExtractResultToFile() throws IOException {
@@ -102,7 +100,6 @@ public class TestExtractionUtil {
 
     /**
      * 加载dsl文件，并比较结果
-     *
      */
     @Test
     public void loadDslFileCompareResult() throws IOException {
@@ -237,12 +234,12 @@ public class TestExtractionUtil {
     public static List<String> parseJsonString(String dslContent) {
         List<String> dslLists = Lists.newArrayList();
 
-        for (;;) {
+        for (; ; ) {
 
             DefaultJSONParser parser = new DefaultJSONParser(dslContent, ParserConfig.getGlobalInstance(), JSON.DEFAULT_PARSER_FEATURE);
             Object object = parser.parse();
             if (object instanceof JSONObject) {
-                dslLists.add(((JSONObject)object).toJSONString());
+                dslLists.add(((JSONObject) object).toJSONString());
                 int pos = parser.getLexer().pos();
                 if (pos <= 0) {
                     break;
@@ -261,7 +258,7 @@ public class TestExtractionUtil {
 
     @Test
     public void testGetGroupByFields() {
-        String[] dsls = new String[] {
+        String[] dsls = new String[]{
                 "{\"query\":{\"term\":{\"user\":\"kimchy\"}}}",
                 "{\"from\":0,\"size\":10,\"query\":{\"bool\":{\"must\":[{\"terms\":{\"order_base.passenger_phone\":[\"13121390067\"]}},{\"terms\":{\"order_status.order_status\":[\"5\"]}}]}},\"fields\":[\"order_base.order_id\",\"order_base.district\",\"order_base.product_id\",\"order_base._create_time\"],\"sort\":[{\"order_base._create_time\":{\"order\":\"desc\"}}]}"
 
@@ -274,7 +271,7 @@ public class TestExtractionUtil {
 
     @Test
     public void testGetWhereFields() {
-        String[] dsls = new String[] {
+        String[] dsls = new String[]{
                 "{\"query\":{\"bool\":{\"must\":[{\"match\":{\"McompanyId\":{\"query\":\"35855\",\"type\":\"phrase\"}}},{\"range\":{\"Date\":{\"gte\":\"2018-07-26\",\"lte\":\"2018-07-26\"}}},null,{\"bool\":{\"should\":[{\"match\":{\"Department\":{\"query\":\"136927\",\"type\":\"phrase\"}}}]}}]}},\"sort\":[{\"SuccAssignOrders\":{\"order\":\"desc\"}}],\"from\":0,\"size\":\"10\"}"
 
                 //"{\"query\":{\"match\":{\"message\":\"this is a test\"}}}",
@@ -289,9 +286,6 @@ public class TestExtractionUtil {
 
         //System.out.println(DslExtractionUtilV2.tokenWords("{\"query\":{\"term\":{\"user\":\"kimchy\"}}}"));
     }
-
-
-
 
 
     @Test
@@ -331,10 +325,10 @@ public class TestExtractionUtil {
 //        }
 
         Map<String, String> map = new TreeMap<>();
-        map.put("123","a");
-        map.put("456","b");
-        map.put("457","c");
-        map.put("789","a");
+        map.put("123", "a");
+        map.put("456", "b");
+        map.put("457", "c");
+        map.put("789", "a");
         System.out.println(map);
     }
 
@@ -347,7 +341,7 @@ public class TestExtractionUtil {
 
     @Test
     public void testFormatDsl() {
-        String[] dsls = new String[] {
+        String[] dsls = new String[]{
 //                "{\"size\":0,\"query\":{\"match\":{\"$reff\":\"@\"}},\"aggs\":{\"ip\":{\"terms\":{\"field\":\"ipsrc\"}}}}",
 //                "{\"query\":{\"filtered\":{\"filter\":{\"bool\":{\"must\":[{\"terms\":{\"driver_id\":[564838915185658,563667491627009,564074212229120,564605878545470,563725635035136]}}]}}}},\"_source\":[\"driver_id\",\"driver_grade\"],\"from\":0,\"size\":5}",
 //                "{\"from\":0,\"size\":1,\"query\":{\"bool\":{\"must\":{\"bool\":{\"must\":[{\"match\":{\"order_status.driver_phone\":{\"query\":\"13331889036\",\"type\":\"phrase\"}}},{\"range\":{\"order_base._birth_time\":{\"from\":\"2018-05-08T00:13:47+0800\",\"to\":\"2018-05-23T00:13:47+0800\",\"include_lower\":true,\"include_upper\":true}}}]}}}},\"sort\":[{\"order_base._birth_time\":{\"order\":\"desc\"}}]}",
@@ -360,7 +354,7 @@ public class TestExtractionUtil {
 //                    "{}\n{\"query\":{\"match_all\":{}}}\n{}\n{\"query\":{\"match_all\":{}}}\n",
 //                    "{\"index\":[\".marvel-es*\"],\"ignore_unavailable\":true}{\"size\":500,\"sort\":[{\"_score\":{\"order\":\"desc\",\"unmapped_type\":\"boolean\"}}],\"highlight\":{\"pre_tags\":[\"@kibana-highlighted-field@\"],\"post_tags\":[\"@/kibana-highlighted-field@\"],\"fields\":{\"*\":{}},\"require_field_match\":false,\"fragment_size\":2147483647},\"query\":{\"query_string\":{\"query\":\"*\",\"analyze_wildcard\":true}},\"fields\":[\"*\",\"_source\"],\"script_fields\":{},\"fielddata_fields\":[]}"
 //
-        "{\"size\":10,\"query\":{\"match\":{\"title\":\"elasticsearch\"}},\"search_after\":[1463538857,\"tweet#654323\"],\"sort\":[{\"date\":\"asc\"},{\"_uid\":\"desc\"}]}",
+                "{\"size\":10,\"query\":{\"match\":{\"title\":\"elasticsearch\"}},\"search_after\":[1463538857,\"tweet#654323\"],\"sort\":[{\"date\":\"asc\"},{\"_uid\":\"desc\"}]}",
                 "{\"min_score\":0.5,\"query\":{\"term\":{\"user\":\"kimchy\"}}}",
                 "{\"query\":{\"bool\":{\"should\":[{\"match\":{\"name.first\":{\"query\":\"shay\",\"_name\":\"first\"}}},{\"match\":{\"name.last\":{\"query\":\"banon\",\"_name\":\"last\"}}}],\"filter\":{\"terms\":{\"name.last\":[\"banon\",\"kimchy\"],\"_name\":\"test\"}}}}}",
                 "{\"size\":10,\"query\":{\"match\":{\"title\":\"elasticsearch\"}},\"sort\":[{\"date\":\"asc\"},{\"_uid\":\"desc\"}]}"
@@ -409,7 +403,7 @@ public class TestExtractionUtil {
 
     @Test
     public void formatBetchMark() {
-        String[] dsls = new String[] {
+        String[] dsls = new String[]{
 //                "select /*! ROUTINGS(/swan/bizlog/bigdata/DP_FE_SNAPSHOT_COLLECTOR) */ * from dquality_metrics_20* where datasourceId = 1 and topic=\"/swan/bizlog/bigdata/DP_FE_SNAPSHOT_COLLECTOR\" and type=2 and sinkTime >= 1522250100000 order by timestamp asc limit 1",
 //                "select client.app_version from endpoint_security_da* where client.id.raw='VjFfMTAwMDAwMV9QMFBLQTNES0czQlNMMTBNMVA4TUM4MFMzQg' order by eventtime desc limit 1",
 //                "SELECT status, COUNT(1) FROM mysql_market_order_*/order_info WHERE order_type=2 AND order_time>=1522249396 AND order_time<1522249996 GROUP BY status",
@@ -435,13 +429,13 @@ public class TestExtractionUtil {
             }
         }
         long cost = System.currentTimeMillis() - tick;
-        double eachCost = cost / (float)recordCount;
+        double eachCost = cost / (float) recordCount;
         System.out.println("cost " + cost + "ms, recordCount: " + recordCount + ", eachCost: " + eachCost);
     }
 
     @Test
     public void queryBetchMark() {
-        String[] dsls = new String[] {
+        String[] dsls = new String[]{
                 "select /*! ROUTINGS(/swan/bizlog/bigdata/DP_FE_SNAPSHOT_COLLECTOR) */ * from dquality_metrics_20* where datasourceId = 1 and topic=\"/swan/bizlog/bigdata/DP_FE_SNAPSHOT_COLLECTOR\" and type=2 and sinkTime >= 1522250100000 order by timestamp asc limit 1",
                 "select client.app_version from endpoint_security_da* where client.id.raw='VjFfMTAwMDAwMV9QMFBLQTNES0czQlNMMTBNMVA4TUM4MFMzQg' order by eventtime desc limit 1",
                 "SELECT status, COUNT(1) FROM mysql_market_order_*/order_info WHERE order_type=2 AND order_time>=1522249396 AND order_time<1522249996 GROUP BY status",
@@ -476,7 +470,7 @@ public class TestExtractionUtil {
             }
         }
         long cost = System.currentTimeMillis() - tick;
-        double eachCost = cost / (float)recordCount;
+        double eachCost = cost / (float) recordCount;
         System.out.println("cost " + cost + "ms, recordCount: " + recordCount + ", eachCost: " + eachCost + "ms");
 
         // 新版本提取
@@ -489,7 +483,7 @@ public class TestExtractionUtil {
             }
         }
         cost = System.currentTimeMillis() - tick;
-        eachCost = cost / (float)recordCount;
+        eachCost = cost / (float) recordCount;
         System.out.println("cost " + cost + "ms, recordCount: " + recordCount + ", eachCost: " + eachCost + "ms");
     }
 

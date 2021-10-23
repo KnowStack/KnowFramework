@@ -26,7 +26,7 @@ import org.elasticsearch.client.ElasticsearchClient;
 public class ESIndicesCloseIndexAction extends Action<ESIndicesCloseIndexRequest, ESIndicesCloseIndexResponse, ESIndicesCloseIndexRequestBuilder> {
 
     public static final ESIndicesCloseIndexAction INSTANCE = new ESIndicesCloseIndexAction();
-    public static final String                    NAME     = "indices:close/index";
+    public static final String NAME = "indices:close/index";
 
     private ESIndicesCloseIndexAction() {
         super(NAME);

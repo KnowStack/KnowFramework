@@ -9,12 +9,12 @@ import com.didiglobal.logi.elasticsearch.client.parser.dsl.parser.ParserRegister
 import com.didiglobal.logi.elasticsearch.client.parser.dsl.parser.ParserType;
 import com.didiglobal.logi.elasticsearch.client.parser.dsl.visitor.basic.Visitor;
 
-public abstract  class Node {
+public abstract class Node {
     abstract public void accept(Visitor vistor);
 
     // 转化一个object,这个object只有一个key
     public static Node toNodeWith1Key(ParserType type, JSONObject root, boolean isMulti) throws Exception {
-        if(root==null) {
+        if (root == null) {
             return new ObjectNode(root);
         }
 
@@ -28,7 +28,7 @@ public abstract  class Node {
 
             Node node = ParserRegister.parse(type, key, obj);
 
-            if(node==null) {
+            if (node == null) {
                 Node tmp = toNodeWith1Key(type, (JSONObject) obj, isMulti);
                 nm.m.put(new IdentityNode(key), tmp);
             } else {

@@ -23,7 +23,7 @@ public class ESMultiSearchResponse extends ESActionResponse implements ToXConten
         static final String ERROR = "error";
     }
 
-    @JSONField(name="responses")
+    @JSONField(name = "responses")
     private List<Item> responses;
 
     public List<Item> getResponses() {
@@ -34,6 +34,9 @@ public class ESMultiSearchResponse extends ESActionResponse implements ToXConten
         this.responses = responses;
     }
 
+    /**
+     * A search response item, holding the actual search response, or an error message if it failed.
+     */
     public static class Item {
         private ESSearchResponse response;
         private Map<String, Object> exception;
@@ -48,10 +51,16 @@ public class ESMultiSearchResponse extends ESActionResponse implements ToXConten
             this.exception = exception;
         }
 
+        /**
+         * Is it a failed search?
+         */
         public boolean isFailure() {
             return exception != null;
         }
 
+        /**
+         * The actual search response, null if its a failure.
+         */
         @Nullable
         public ESSearchResponse getResponse() {
             return this.response;
@@ -91,6 +100,12 @@ public class ESMultiSearchResponse extends ESActionResponse implements ToXConten
     }
 
     private static Item itemFromXContent(XContentParser parser) throws IOException {
+        // This parsing logic is a bit tricky here, because the multi search response itself is tricky:
+        // 1) The json objects inside the responses array are either a search response or a serialized exception
+        // 2) Each response json object gets a status field injected that ElasticsearchException.failureFromXContent(...) does not parse,
+        //    but SearchResponse.innerFromXContent(...) parses and then ignores. The status field is not needed to parse
+        //    the response item. However in both cases this method does need to parse the 'status' field otherwise the parsing of
+        //    the response item in the next json array element will fail due to parsing errors.
 
         Item item = null;
         String fieldName = null;
@@ -98,7 +113,8 @@ public class ESMultiSearchResponse extends ESActionResponse implements ToXConten
         Token token = parser.nextToken();
         assert token == Token.FIELD_NAME;
 
-        outer: for (; token != Token.END_OBJECT; token = parser.nextToken()) {
+        outer:
+        for (; token != Token.END_OBJECT; token = parser.nextToken()) {
             switch (token) {
                 case FIELD_NAME:
                     fieldName = parser.currentName();

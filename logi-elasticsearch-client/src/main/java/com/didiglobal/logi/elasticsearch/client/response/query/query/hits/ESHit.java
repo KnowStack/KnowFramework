@@ -12,15 +12,17 @@ public class ESHit {
     private static final String SOURCE_STR = "_source";
     private Object source;
 
-    public ESHit() { }
+    public ESHit() {
+    }
+
     public ESHit(JSONObject root, Class clazz) {
-        if(root==null) {
+        if (root == null) {
             return;
         }
 
-        for(String key : root.keySet()) {
-            if(SOURCE_STR.equalsIgnoreCase(key)) {
-                if(clazz==null) {
+        for (String key : root.keySet()) {
+            if (SOURCE_STR.equalsIgnoreCase(key)) {
+                if (clazz == null) {
                     source = root.get(key);
                 } else {
                     source = JSON.toJavaObject((JSON) root.get(key), clazz);
@@ -57,11 +59,11 @@ public class ESHit {
 
     public JSONObject toJson() {
         JSONObject root = new JSONObject();
-        for(String key : unusedMap.keySet()) {
+        for (String key : unusedMap.keySet()) {
             root.put(key, unusedMap.get(key));
         }
 
-        if(source instanceof  JSON) {
+        if (source instanceof JSON) {
             root.put(SOURCE_STR, source);
         } else {
             root.put(SOURCE_STR, JSONObject.parseObject(JSONObject.toJSONString(source)));

@@ -39,18 +39,18 @@ public class ESIndicesGetAliasRequest extends ESBroadcastRequest<ESIndicesGetAli
     @Override
     public RestRequest toRequest() throws Exception {
         String indicesStr = null;
-        if(indices!=null) {
+        if (indices != null) {
             indicesStr = StringUtils.join(indices, ",");
         }
-        if(indicesStr!=null && indicesStr.length()==0) {
+        if (indicesStr != null && indicesStr.length() == 0) {
             indicesStr = null;
         }
 
         String endPoint;
-        if(indicesStr==null) {
+        if (indicesStr == null) {
             endPoint = "/_alias";
         } else {
-            endPoint = indicesStr.trim()+"/_alias";
+            endPoint = indicesStr.trim() + "/_alias";
         }
 
         return new RestRequest("GET", endPoint, null);

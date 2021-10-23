@@ -23,7 +23,7 @@ public class TemplateConfig {
     private static final String TEMPLATE_STR = "template";
     private static final String INDEX_PATTERNS_STR = "index_patterns";
 
-    private ESVersion           version            = ESVersion.ES233;
+    private ESVersion version = ESVersion.ES233;
 
     private Set<String> template = new HashSet<>();
     private Long order;
@@ -32,36 +32,38 @@ public class TemplateConfig {
     private MappingConfig mappings = null;
     private Map<String, Object> notUsedMap = new HashMap<>();
 
-    public TemplateConfig() {}
+    public TemplateConfig() {
+    }
+
     public TemplateConfig(JSONObject root) throws Exception {
-        if(root==null) {
+        if (root == null) {
             throw new Exception("root is null");
         }
 
-        for(String key : root.keySet()) {
-            if(key.equalsIgnoreCase(TEMPLATE_STR)) {
+        for (String key : root.keySet()) {
+            if (key.equalsIgnoreCase(TEMPLATE_STR)) {
                 template.add((String) root.get(key));
 
-            } else if(key.equalsIgnoreCase(INDEX_PATTERNS_STR)) {
+            } else if (key.equalsIgnoreCase(INDEX_PATTERNS_STR)) {
                 Object obj = root.get(key);
-                if(obj instanceof JSONArray) {
-                    for(Object o : (JSONArray)obj) {
+                if (obj instanceof JSONArray) {
+                    for (Object o : (JSONArray) obj) {
                         template.add(o.toString());
                     }
                 } else {
                     template.add(obj.toString());
                 }
 
-            } else if(key.equalsIgnoreCase(ORDER_STR)) {
+            } else if (key.equalsIgnoreCase(ORDER_STR)) {
                 order = root.getLong(key);
 
-            } else if(key.equalsIgnoreCase(SETTINGS_STR)) {
+            } else if (key.equalsIgnoreCase(SETTINGS_STR)) {
                 setttings = root.getJSONObject(key);
 
-            } else if(key.equalsIgnoreCase(ALIASES_STR)) {
+            } else if (key.equalsIgnoreCase(ALIASES_STR)) {
                 aliases = root.getJSONObject(key);
 
-            } else if(key.equalsIgnoreCase(MAPPINGS_STR)) {
+            } else if (key.equalsIgnoreCase(MAPPINGS_STR)) {
                 mappings = new MappingConfig(root.getJSONObject(key));
 
             } else {
@@ -69,13 +71,13 @@ public class TemplateConfig {
             }
         }
 
-        if(mappings==null) {
+        if (mappings == null) {
             throw new Exception("not have mapping, config:" + root.toJSONString());
         }
     }
 
     public String getTemplate() {
-        for(String k : template) {
+        for (String k : template) {
             return k;
         }
 
@@ -168,9 +170,9 @@ public class TemplateConfig {
 
         JSONObject root = new JSONObject();
 
-        if(template!=null && template.size()>0) {
+        if (template != null && template.size() > 0) {
             if (toVersion == ESVersion.ES233
-                || toVersion == ESVersion.ES501) {
+                    || toVersion == ESVersion.ES501) {
                 root.put(TEMPLATE_STR, getTemplate());
             } else {
                 JSONArray array = new JSONArray();
@@ -181,23 +183,23 @@ public class TemplateConfig {
             }
         }
 
-        if(order!=null) {
+        if (order != null) {
             root.put(ORDER_STR, order);
         }
 
-        if(setttings!=null) {
+        if (setttings != null) {
             root.put(SETTINGS_STR, setttings);
         }
 
-        if(aliases!=null) {
+        if (aliases != null) {
             root.put(ALIASES_STR, aliases);
         }
 
-        if(mappings!=null && !mappings.isEmpty()) {
+        if (mappings != null && !mappings.isEmpty()) {
             root.put(MAPPINGS_STR, mappings.toJson(toVersion));
         }
 
-        for(String key : notUsedMap.keySet()) {
+        for (String key : notUsedMap.keySet()) {
             root.put(key, notUsedMap.get(key));
         }
 
@@ -212,9 +214,9 @@ public class TemplateConfig {
         Map<String, Map<String, TypeDefine>> tm = getTypeDefines();
 
         Map<String, List<TypeDefine>> ret = new HashMap<>();
-        for(String key : tm.keySet()) {
-            for(String field : tm.get(key).keySet()) {
-                if(!ret.containsKey(field)) {
+        for (String key : tm.keySet()) {
+            for (String field : tm.get(key).keySet()) {
+                if (!ret.containsKey(field)) {
                     ret.put(field, new ArrayList<>());
                 }
 
@@ -227,7 +229,8 @@ public class TemplateConfig {
 
     /**
      * 获取mapping中所有字段名 fieldName,不包含type这层，由于不同type的类型必须一致
-     * @return
+     *
+     * @return Set
      */
     public Set<String> getFieldNames() {
         Set<String> fieldNameSet = Sets.newLinkedHashSet();

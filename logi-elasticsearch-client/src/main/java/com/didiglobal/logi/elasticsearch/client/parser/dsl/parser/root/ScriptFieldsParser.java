@@ -24,7 +24,7 @@ public class ScriptFieldsParser extends DslParser {
         NodeMap nm = new NodeMap();
 
         JSONObject jsonObject = (JSONObject) obj;
-        for(String key : jsonObject.keySet()) {
+        for (String key : jsonObject.keySet()) {
             nm.m.put(new IdentityNode(key), parserOne((JSONObject) jsonObject.get(key)));
         }
 
@@ -35,9 +35,9 @@ public class ScriptFieldsParser extends DslParser {
     private Node parserOne(JSONObject root) throws Exception {
         NodeMap nm = new NodeMap();
 
-        for(String key : root.keySet()) {
+        for (String key : root.keySet()) {
             Node valueNode = ParserRegister.parse(parserType, key, root.get(key));
-            if(valueNode==null) {
+            if (valueNode == null) {
                 valueNode = ValueNode.getValueNode(root.get(key));
             }
             nm.m.put(new StringNode(key), valueNode);

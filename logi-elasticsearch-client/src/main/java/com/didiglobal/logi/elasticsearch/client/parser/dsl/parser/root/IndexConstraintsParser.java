@@ -10,7 +10,6 @@ import com.didiglobal.logi.elasticsearch.client.parser.dsl.parser.DslParser;
 import com.didiglobal.logi.elasticsearch.client.parser.dsl.parser.ParserType;
 
 /**
- *
  * fields 解析器
  */
 public class IndexConstraintsParser extends DslParser {
@@ -25,7 +24,7 @@ public class IndexConstraintsParser extends DslParser {
         NodeMap nm = new NodeMap();
 
         JSONObject jsonObject = (JSONObject) root;
-        for(String key : jsonObject.keySet()) {
+        for (String key : jsonObject.keySet()) {
             FieldNode fieldNode = new FieldNode(key);
             nm.m.put(fieldNode, ValueNode.getValueNode(jsonObject.get(key)));
         }

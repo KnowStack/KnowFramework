@@ -24,6 +24,7 @@ import org.elasticsearch.action.Action;
 import org.elasticsearch.client.ElasticsearchClient;
 
 /**
+ *
  */
 public class ESIndicesGetTemplateAction extends Action<ESIndicesGetTemplateRequest, ESIndicesGetTemplateResponse, ESIndicesGetTemplateRequestBuilder> {
 

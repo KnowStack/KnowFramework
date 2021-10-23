@@ -9,7 +9,6 @@ import com.didiglobal.logi.elasticsearch.client.parser.dsl.parser.ParserRegister
 import com.didiglobal.logi.elasticsearch.client.parser.dsl.parser.ParserType;
 
 /**
- *
  * 解析boosting子查询中negative子句
  */
 public class NegativeParser extends DslParser {
@@ -23,7 +22,7 @@ public class NegativeParser extends DslParser {
         Negative node = new Negative(name);
 
         JSONObject jsonObj = (JSONObject) obj;
-        for(String key : jsonObj.keySet()) {
+        for (String key : jsonObj.keySet()) {
             node.m.m.put(new StringNode(key), ParserRegister.parse(parserType, key, jsonObj.get(key)));
         }
 

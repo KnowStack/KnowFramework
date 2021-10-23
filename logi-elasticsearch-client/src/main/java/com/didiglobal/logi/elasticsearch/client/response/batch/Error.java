@@ -2,7 +2,16 @@ package com.didiglobal.logi.elasticsearch.client.response.batch;
 
 import com.alibaba.fastjson.annotation.JSONField;
 
-
+/**
+ * "error": {
+ * "type": "mapper_parsing_exception",
+ * "reason": "failed to parse [date]",
+ * "caused_by": {
+ * "type": "illegal_argument_exception",
+ * "reason": "Invalid format: \"exception_test\""
+ * }
+ * }
+ */
 public class Error {
 
     @JSONField(name = "type")

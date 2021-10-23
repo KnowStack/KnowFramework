@@ -37,7 +37,8 @@ public class ESClearScrollRequest extends ESActionRequest<ESClearScrollRequest> 
 
     private List<String> scrollIds = new ArrayList<>();
 
-    public ESClearScrollRequest() { }
+    public ESClearScrollRequest() {
+    }
 
     @Override
     public ActionRequestValidationException validate() {
