@@ -28,6 +28,10 @@ public class SimpleJobFactory implements JobFactory {
 
     @Override
     public LogIJob newJob(LogITask logITask) {
+        if(null == jobMap.get(logITask.getClassName())){
+            return null;
+        }
+
         LogIJob logIJob = new LogIJob();
         logIJob.setJobCode(IdWorker.getIdStr());
         logIJob.setTaskCode(logITask.getTaskCode());
