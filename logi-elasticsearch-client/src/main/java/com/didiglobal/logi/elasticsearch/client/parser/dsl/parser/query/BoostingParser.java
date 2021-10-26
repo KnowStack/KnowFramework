@@ -11,25 +11,24 @@ import com.didiglobal.logi.elasticsearch.client.parser.dsl.parser.ParserRegister
 import com.didiglobal.logi.elasticsearch.client.parser.dsl.parser.ParserType;
 
 /**
- *
  * 解析boosting查询子句，例如
-{
-    "query": {
-        "boosting" : {
-            "positive" : {
-                "term" : {
-                    "field1" : "value1"
-                 }
-            },
-            "negative" : {
-                "term" : {
-                    "field2" : "value2"
-                  }
-            },
-            "negative_boost" : 0.2
-        }
-    }
-}
+ * {
+ * "query": {
+ * "boosting" : {
+ * "positive" : {
+ * "term" : {
+ * "field1" : "value1"
+ * }
+ * },
+ * "negative" : {
+ * "term" : {
+ * "field2" : "value2"
+ * }
+ * },
+ * "negative_boost" : 0.2
+ * }
+ * }
+ * }
  */
 public class BoostingParser extends DslParser {
 
@@ -45,7 +44,7 @@ public class BoostingParser extends DslParser {
         node.n = nm;
 
         JSONObject jsonObj = (JSONObject) obj;
-        for(String key : jsonObj.keySet()) {
+        for (String key : jsonObj.keySet()) {
             if ("positive".equalsIgnoreCase(key) || "negative".equalsIgnoreCase(key)) {
                 nm.m.put(new StringNode(key), ParserRegister.parse(parserType, key, jsonObj.get(key)));
 

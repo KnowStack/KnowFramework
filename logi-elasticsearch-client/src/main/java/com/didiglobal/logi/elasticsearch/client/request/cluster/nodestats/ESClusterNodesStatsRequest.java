@@ -49,7 +49,7 @@ public class ESClusterNodesStatsRequest extends ESActionRequest<ESClusterNodesSt
     private String level = null;
 
 
-    public final ESClusterNodesStatsRequest  nodesIds(String... nodesIds) {
+    public final ESClusterNodesStatsRequest nodesIds(String... nodesIds) {
         this.nodesIds = nodesIds;
         return this;
     }
@@ -80,7 +80,7 @@ public class ESClusterNodesStatsRequest extends ESActionRequest<ESClusterNodesSt
 
 
     public ESClusterNodesStatsRequest flag(String name, boolean isSet) {
-        if(isSet) {
+        if (isSet) {
             flags.add(name);
         } else {
             flags.remove(name);
@@ -102,7 +102,7 @@ public class ESClusterNodesStatsRequest extends ESActionRequest<ESClusterNodesSt
         String endpoint = buildEndPoint();
         RestRequest restRequest = new RestRequest("GET", endpoint, null);
 
-        if(level!=null) {
+        if (level != null) {
             restRequest.getParams().put("level", level);
         }
 
@@ -121,34 +121,34 @@ public class ESClusterNodesStatsRequest extends ESActionRequest<ESClusterNodesSt
 
     private String buildEndPoint() {
         String nodes = null;
-        if(nodesIds!=null) {
+        if (nodesIds != null) {
             nodes = StringUtils.join(nodesIds, ",");
         }
-        if(nodes!=null && nodes.trim().length()==0) {
+        if (nodes != null && nodes.trim().length() == 0) {
             nodes = null;
         }
 
         String flagStr = null;
-        if(flags.size()<10) {
+        if (flags.size() < 10) {
             flagStr = StringUtils.join(flags, ",");
         }
-        if(flagStr!=null && flagStr.trim().length()==0) {
+        if (flagStr != null && flagStr.trim().length() == 0) {
             flagStr = null;
         }
 
 
-        if(nodes==null) {
-           if(flagStr==null) {
-               return "_nodes/stats";
-           } else {
-               return "_nodes/stats/" + flagStr.trim();
-           }
+        if (nodes == null) {
+            if (flagStr == null) {
+                return "_nodes/stats";
+            } else {
+                return "_nodes/stats/" + flagStr.trim();
+            }
         } else {
-           if(flagStr==null) {
-               return "_nodes/" +nodes.trim()+ "/stats";
-           } else {
-               return "_nodes/" +nodes.trim()+ "/stats/" + flagStr.trim();
-           }
+            if (flagStr == null) {
+                return "_nodes/" + nodes.trim() + "/stats";
+            } else {
+                return "_nodes/" + nodes.trim() + "/stats/" + flagStr.trim();
+            }
         }
     }
 }

@@ -50,7 +50,7 @@ public class ESIndicesFlushIndexRequest extends ESActionRequest<ESIndicesFlushIn
             indicesStr = StringUtils.join(indices, ",");
         }
 
-        if(StringUtils.isBlank(indicesStr)) {
+        if (StringUtils.isBlank(indicesStr)) {
             throw new Exception("not set indices");
         }
 

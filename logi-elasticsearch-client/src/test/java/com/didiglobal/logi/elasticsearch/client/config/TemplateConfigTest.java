@@ -22,7 +22,7 @@ public class TemplateConfigTest {
     }
 
     private void check(JSONObject o1, JSONObject o2) {
-        if(o1.toJSONString().equals(o2.toJSONString())) {
+        if (o1.toJSONString().equals(o2.toJSONString())) {
             System.out.println("ok");
         } else {
             System.out.println("in:" + o1.toJSONString());

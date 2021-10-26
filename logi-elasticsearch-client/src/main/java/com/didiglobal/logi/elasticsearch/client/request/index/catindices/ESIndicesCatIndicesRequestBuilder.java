@@ -25,7 +25,7 @@ import org.elasticsearch.client.ElasticsearchClient;
 import com.didiglobal.logi.elasticsearch.client.response.indices.catindices.ESIndicesCatIndicesResponse;
 
 public class ESIndicesCatIndicesRequestBuilder extends
-                                               ActionRequestBuilder<ESIndicesCatIndicesRequest, ESIndicesCatIndicesResponse, ESIndicesCatIndicesRequestBuilder> {
+        ActionRequestBuilder<ESIndicesCatIndicesRequest, ESIndicesCatIndicesResponse, ESIndicesCatIndicesRequestBuilder> {
 
     public ESIndicesCatIndicesRequestBuilder(ElasticsearchClient client, ESIndicesCatIndicesAction action) {
         super(client, action, new ESIndicesCatIndicesRequest());

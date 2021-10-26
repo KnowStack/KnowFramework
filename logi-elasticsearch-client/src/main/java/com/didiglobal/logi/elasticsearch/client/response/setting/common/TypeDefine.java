@@ -26,12 +26,20 @@ public class TypeDefine {
         return define;
     }
 
-
+    /**
+     * 是否需要忽略mapping优化
+     *
+     * @return boolean
+     */
     public boolean isNotOptimze() {
         return TypeDefineOperator.isNotOptimze(define);
     }
 
-
+    /**
+     * 获取类型
+     *
+     * @return String
+     */
     public String getType() {
         return TypeDefineOperator.getType(define);
     }
@@ -40,12 +48,16 @@ public class TypeDefine {
         return TypeDefineOperator.isIndexOff(define);
     }
 
-
+    /**
+     * 设置成不检索
+     */
     public void setIndexOff() {
         TypeDefineOperator.setIndexOff(define);
     }
 
-
+    /**
+     * 设置成检索
+     */
     public void setIndexOn() {
         TypeDefineOperator.setIndexOn(define);
     }
@@ -54,12 +66,16 @@ public class TypeDefine {
         return TypeDefineOperator.isDocValuesOff(define);
     }
 
-
+    /**
+     * 设置成不支持排序
+     */
     public void setDocValuesOff() {
         TypeDefineOperator.setDocValuesOff(define);
     }
 
-
+    /**
+     * 设置成支持排序
+     */
     public void setDocValuesOn() {
         TypeDefineOperator.setDocValuesOn(define);
     }

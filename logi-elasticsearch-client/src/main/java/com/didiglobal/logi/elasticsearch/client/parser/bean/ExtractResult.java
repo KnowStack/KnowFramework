@@ -13,38 +13,70 @@ import java.util.Map;
 import java.util.Set;
 import java.util.SortedMap;
 
-
+/**
+ * 提取结果 含有查询，过滤，聚合，排序字段
+ */
 public class ExtractResult {
 
-
+    /**
+     * dsl 查询模板
+     */
     private String dslTemplate;
-
+    /**
+     * 新的dsl 查询模板
+     */
     private String newDslTemplate;
-
+    /**
+     * dsl 查询模板列表
+     */
     private List<String> dslTemplateList;
-
+    /**
+     * 索引名称
+     */
     private String indices;
-
+    /**
+     * 查询类型，dsl,sql
+     */
     private String searchType;
-
+    /**
+     * dsl 查询模板 MD5值
+     */
     private String dslTemplateMd5;
-
+    /**
+     * msearch 查询时查询模板MD5列表
+     */
     private List<String> dslTemplateMd5List;
-
+    /**
+     * 格式化的dsl，去除空格
+     */
     private String dsl;
-
+    /**
+     * msearch 查询时查询列表
+     */
     private List<String> dslList;
-
+    /**
+     * dsl语句类型，aggs,scroll,msearch,get,normal,unknown
+     */
     private String dslType;
-
+    /**
+     * 获取的字段
+     */
     private String selectFields;
-
+    /**
+     * 过滤字段
+     */
     private String whereFields;
-
+    /**
+     * 聚合字段
+     */
     private String groupByFields;
-
+    /**
+     * 排序字段
+     */
     private String sortByFields;
-
+    /**
+     * 查询语句标签
+     */
     private Set<String> tags;
 
     public ExtractResult() {
@@ -74,7 +106,12 @@ public class ExtractResult {
         this.tags = Sets.newHashSet();
     }
 
-
+    /**
+     * 追加文件内容
+     *
+     * @param fileChannel fileChannel
+     * @throws IOException e
+     */
     public void writeToFile(FileChannel fileChannel) throws IOException {
         byte[] enterBytes = "\r\n".getBytes("utf-8");
         byte[] bytes = null;
@@ -120,7 +157,11 @@ public class ExtractResult {
         appendFileContent(fileChannel, enterBytes);
     }
 
-
+    /**
+     * 构建失败结果，填入默认值
+     *
+     * @param version version
+     */
     public void buildFailedResult(String version) {
         this.setDslType("normal");
         this.setDslTemplate("FAILED");
@@ -133,7 +174,12 @@ public class ExtractResult {
         this.setTags(Sets.newHashSet());
     }
 
-
+    /**
+     * 构建scroll查询
+     *
+     * @param dslContent dslContent
+     * @param version    version
+     */
     public void buildScrollResult(String dslContent, String version) {
         this.setSearchType("dsl");
         this.setDslType("normal");
@@ -334,10 +380,16 @@ public class ExtractResult {
         return JSON.toJSONString(this);
     }
 
-
+    /**
+     * 追加文件内容
+     *
+     * @param fileChannel fileChannel
+     * @param bytes bytes
+     * @throws IOException e
+     */
     private void appendFileContent(FileChannel fileChannel, byte[] bytes) throws IOException {
         ByteBuffer bbf = ByteBuffer.wrap(bytes);
-        bbf.put(bytes) ;
+        bbf.put(bytes);
         bbf.flip();
         fileChannel.write(bbf);
     }

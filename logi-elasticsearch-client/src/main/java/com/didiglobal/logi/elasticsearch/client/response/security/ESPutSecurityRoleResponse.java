@@ -12,9 +12,9 @@ public class ESPutSecurityRoleResponse extends ESActionResponse {
 
     /**
      * {
-     *   "role": {
-     *     "created": true    // 如果是更新是false
-     *   }
+     * "role": {
+     * "created": true    // 如果是更新是false
+     * }
      * }
      */
     @JSONField(name = "role")

@@ -8,6 +8,9 @@ import com.didiglobal.logi.elasticsearch.client.parser.dsl.ast.root.Fields;
 import com.didiglobal.logi.elasticsearch.client.parser.dsl.parser.DslParser;
 import com.didiglobal.logi.elasticsearch.client.parser.dsl.parser.ParserType;
 
+/**
+ * fields 解析器
+ */
 public class FieldsParser extends DslParser {
 
     public FieldsParser(ParserType type) {
@@ -18,7 +21,7 @@ public class FieldsParser extends DslParser {
     public KeyWord parse(String name, Object root) throws Exception {
         Fields node = new Fields(name);
 
-        if(root instanceof JSONArray) {
+        if (root instanceof JSONArray) {
             node.n = new NodeList();
             NodeList.toFieldList((JSONArray) root, (NodeList) node.n);
 

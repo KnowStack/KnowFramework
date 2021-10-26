@@ -129,7 +129,6 @@ public class ClientTest {
     }
 
 
-
     @Test
     public void putAlias() throws Exception {
         PutAliasNode putAliasNode = new PutAliasNode();
@@ -150,14 +149,12 @@ public class ClientTest {
     }
 
 
-
     @Test
     public void putIndex() throws Exception {
         ESIndicesPutIndexResponse resp = client.admin().indices().preparePutIndex(index).execute().get();
 
         System.out.println(resp);
     }
-
 
 
     @Test
@@ -182,7 +179,6 @@ public class ClientTest {
         System.out.println(response);
 
 
-
         ESIndicesDeleteTemplateResponse resp = client.admin().indices().prepareDeleteTemplate(index).execute().get();
 
 
@@ -198,7 +194,6 @@ public class ClientTest {
         System.out.println(resp.getFlatTransient().get("cluster.routing.rebalance.enable"));
         System.out.println(JSON.toJSONString(resp));
     }
-
 
 
     @Test
@@ -220,13 +215,10 @@ public class ClientTest {
     }
 
 
-
     @Test
     public void putTemplate() throws Exception {
         ESIndicesGetTemplateResponse response = client.admin().indices().prepareGetTemplate("arius.gateway.join").execute().get();
-        TemplateConfig templateConfig =  response.getMultiTemplatesConfig().getSingleConfig();
-
-
+        TemplateConfig templateConfig = response.getMultiTemplatesConfig().getSingleConfig();
 
 
 //        ESClient client = new ESClient();
@@ -268,8 +260,6 @@ public class ClientTest {
     }
 
 
-
-
     @Test
     public void batch() throws Exception {
 
@@ -278,8 +268,8 @@ public class ClientTest {
         String content = "{\"drop_away_data\":\"\",\"binlogTime\":\"2018-08-14 11:18:34.575 +0800\",\"award_data\":\"\",\"contract_id\":\"3667944655252643863\",\"goods\":{\"province_default_city_id\":892170201172557909,\"sku_id\":2486374730354132029,\"brand_logo_url\":\"//am.didistatic.com/static/am/prod/recharge/10010.png\",\"area_type\":1,\"ssu_id\":2551671462693176595,\"ssu_name\":\"联通200元话费\",\"brand_id\":2410895620415947782},\"task_id\":\"4883486989981321654\",\"order_time\":\"1498282277\",\"real_price\":\"19990\",\"uid\":\"2364899024752099744\",\"pay_type\":\"3\",\"id\":\"4883487045564514386\",\"canada_category_ratio\":\"0.0\",\"division_data\":\"\",\"order_type\":\"10\",\"service_finish_time\":\"1498282416\",\"contract_no\":\"\",\"store_id\":\"3230340008998602851\",\"pop_task_id\":\"4883486994818140604\",\"settle_ratio\":\"1.0\",\"create_time\":\"1498322414\",\"total_price\":\"19990\",\"coupon_data\":\"\",\"pop_id\":\"3230035633657612300\",\"task_date\":\"20170624\",\"biz_data\":\"{\\\"source_type\\\":1,\\\"recharge_mobile\\\":\\\"15555554639\\\",\\\"recharge_mobile_city_id\\\":\\\"892170211373190395\\\",\\\"am_channel\\\":10001,\\\"user_current_city_id\\\":892170201172557909,\\\"user_current_city_name\\\":\\\"合肥市\\\"}\",\"sale_price\":\"20000\",\"settle_time\":\"1498325359\",\"pay_time\":\"1498282290\",\"pop_service_fee\":\"0\",\"settle_price\":\"19880\",\"comment\":\"update_es\",\"order_id\":\"4883318699085545739\",\"pop_market_expense\":\"10\",\"supplier_id\":\"3667500784272564243\",\"city_id\":\"892170199360604217\",\"status\":\"6\"}";
         String index = "batch_test";
         String type = "hehe";
-        for(int i=0;i<4; i++) {
-            BatchNode batchNode = new BatchNode(BatchType.INDEX, index, type, ""+i, content);
+        for (int i = 0; i < 4; i++) {
+            BatchNode batchNode = new BatchNode(BatchType.INDEX, index, type, "" + i, content);
             batchNode.setRouting("routing");
             request.addNode(batchNode);
         }
@@ -326,8 +316,8 @@ public class ClientTest {
 
         ESIndicesStatsResponse response =
                 client.admin()
-                      .indices()
-                      .prepareStats("arius.gateway.join*").setLevel(IndicesStatsLevel.SHARDS).execute().get();
+                        .indices()
+                        .prepareStats("arius.gateway.join*").setLevel(IndicesStatsLevel.SHARDS).execute().get();
 
         System.out.println(response);
 
@@ -341,8 +331,8 @@ public class ClientTest {
 
         ESIndicesSearchShardsResponse response =
                 client.admin()
-                      .indices()
-                      .prepareSearchShards("arius.gateway.join_*").execute().get();
+                        .indices()
+                        .prepareSearchShards("arius.gateway.join_*").execute().get();
 
         System.out.println(response);
 
@@ -355,8 +345,8 @@ public class ClientTest {
     public void healthCluster() throws Exception {
         ESClusterHealthResponse response =
                 client.admin()
-                      .cluster()
-                      .prepareHealth().execute().get();
+                        .cluster()
+                        .prepareHealth().execute().get();
 
         System.out.println(response);
 
@@ -367,7 +357,7 @@ public class ClientTest {
     @Test
     public void clusterNodeStats() throws Exception {
         ESClusterNodesStatsResponse response =
-                client.admin() .cluster() .prepareNodeStats()
+                client.admin().cluster().prepareNodeStats()
                         .execute().get();
 
         System.out.println(response);
@@ -481,9 +471,9 @@ public class ClientTest {
     @Test
     public void multiGetTest() throws UnknownHostException {
         ESMultiGetRequest esMultiGetRequest = new ESMultiGetRequest();
-        esMultiGetRequest.add("dsl_query_limit", "type", "1079_V2_CBE831F865920F5EF6579C7D3F323C57" );
-        esMultiGetRequest.add("dsl_query_limit", "type", "1079_V2_CBE831F865920F5EF6579C7D3F323C" );
-        esMultiGetRequest.add("dsl_query_limi", "type", "1079_V2_CBE831F865920F5EF6579C7D3F323C57" );
+        esMultiGetRequest.add("dsl_query_limit", "type", "1079_V2_CBE831F865920F5EF6579C7D3F323C57");
+        esMultiGetRequest.add("dsl_query_limit", "type", "1079_V2_CBE831F865920F5EF6579C7D3F323C");
+        esMultiGetRequest.add("dsl_query_limi", "type", "1079_V2_CBE831F865920F5EF6579C7D3F323C57");
 
         ESMultiGetResponse esMultiGetResponse = client.multiGet(esMultiGetRequest).actionGet();
         System.out.println(esMultiGetResponse);

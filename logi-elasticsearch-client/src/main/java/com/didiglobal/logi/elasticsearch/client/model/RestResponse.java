@@ -8,7 +8,7 @@ import org.elasticsearch.client.Response;
 
 public class RestResponse {
 
-    private String   esVersion;
+    private String esVersion;
 
     private Response response;
 

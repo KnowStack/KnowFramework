@@ -18,5 +18,4 @@ public class Avg extends KeyWord {
     }
 
 
-
 }

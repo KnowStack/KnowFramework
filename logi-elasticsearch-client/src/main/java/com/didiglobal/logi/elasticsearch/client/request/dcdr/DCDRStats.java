@@ -10,36 +10,36 @@ import com.alibaba.fastjson.annotation.JSONField;
 import java.util.List;
 
 /**
- *       {
- *         "primary_index" : "foundation_fd.data-online.arius.gateway_2020-01-14",
- *         "replica_index" : "foundation_fd.data-online.arius.gateway_2020-01-14",
- *         "replica_cluster" : "ecm-arius-dcdr",
- *         "replication_state" : true,
- *         "shard_id" : 0,
- *         "syncing" : false,
- *         "recovering" : false,
- *         "closed" : false,
- *         "available_send_bulk_number" : 10,
- *         "primary_global_checkpoint" : 34127709,
- *         "primary_max_seq_no" : 34127709,
- *         "replica_global_checkpoint" : -1,
- *         "replica_max_seq_no" : -1,
- *         "time_since_update_replica_checkpoint" : -1,
- *         "total_send_time_millis" : 0,
- *         "successful_send_requests" : 0,
- *         "failed_send_requests" : 0,
- *         "operations_send" : 0,
- *         "bytes_send" : 0,
- *         "time_since_last_send_millis" : 0,
- *         "commit_translog_offset" : "574g/55t/0s",
- *         "current_translog_offset" : "574g/55t/0s",
- *         "in_sync_translog_offset" : [
- *           [ ]
- *         ],
- *         "success_recover_count" : 0,
- *         "failed_recover_count" : 0,
- *         "recover_total_time_millis" : 667437
- *       }
+ * {
+ * "primary_index" : "foundation_fd.data-online.arius.gateway_2020-01-14",
+ * "replica_index" : "foundation_fd.data-online.arius.gateway_2020-01-14",
+ * "replica_cluster" : "ecm-arius-dcdr",
+ * "replication_state" : true,
+ * "shard_id" : 0,
+ * "syncing" : false,
+ * "recovering" : false,
+ * "closed" : false,
+ * "available_send_bulk_number" : 10,
+ * "primary_global_checkpoint" : 34127709,
+ * "primary_max_seq_no" : 34127709,
+ * "replica_global_checkpoint" : -1,
+ * "replica_max_seq_no" : -1,
+ * "time_since_update_replica_checkpoint" : -1,
+ * "total_send_time_millis" : 0,
+ * "successful_send_requests" : 0,
+ * "failed_send_requests" : 0,
+ * "operations_send" : 0,
+ * "bytes_send" : 0,
+ * "time_since_last_send_millis" : 0,
+ * "commit_translog_offset" : "574g/55t/0s",
+ * "current_translog_offset" : "574g/55t/0s",
+ * "in_sync_translog_offset" : [
+ * [ ]
+ * ],
+ * "success_recover_count" : 0,
+ * "failed_recover_count" : 0,
+ * "recover_total_time_millis" : 667437
+ * }
  */
 public class DCDRStats {
 

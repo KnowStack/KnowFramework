@@ -10,16 +10,18 @@ public class ESBucket {
     private Map<String, ESAggr> aggrMap = new HashMap<>();
 
 
-    public ESBucket() {}
+    public ESBucket() {
+    }
+
     public ESBucket(JSONObject root) {
-        if(root==null) {
+        if (root == null) {
             return;
         }
 
-        for(String key : root.keySet()) {
+        for (String key : root.keySet()) {
             Object obj = root.get(key);
 
-            if(obj instanceof JSONObject) {
+            if (obj instanceof JSONObject) {
                 aggrMap.put(key, new ESAggr((JSONObject) obj));
             } else {
                 unusedMap.put(key, obj);
@@ -53,12 +55,12 @@ public class ESBucket {
         JSONObject root = new JSONObject();
 
 
-        for(String key : unusedMap.keySet()) {
+        for (String key : unusedMap.keySet()) {
             root.put(key, unusedMap.get(key));
         }
 
 
-        for(String key : aggrMap.keySet()) {
+        for (String key : aggrMap.keySet()) {
             root.put(key, aggrMap.get(key).toJson());
         }
 

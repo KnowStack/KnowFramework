@@ -23,6 +23,7 @@ import org.elasticsearch.action.Action;
 import org.elasticsearch.client.ElasticsearchClient;
 
 /**
+ *
  */
 public class ESSearchScrollAction extends Action<ESSearchScrollRequest, ESSearchResponse, ESSearchScrollRequestBuilder> {
 

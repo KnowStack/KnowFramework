@@ -69,10 +69,10 @@ public final class RestRequest {
 
     // TODO body 不是json的异常处理
     public void setBody(BytesReference body) throws IOException {
-        if(body != null && body.length() > 0) {
+        if (body != null && body.length() > 0) {
             dsl = XContentHelper.convertToJson(body, false);
         } else {
-            dsl =  "";
+            dsl = "";
         }
 
         entity.setContent(new ByteArrayInputStream(dsl.getBytes("UTF-8")));
@@ -99,27 +99,27 @@ public final class RestRequest {
     }
 
     public void addEndpointPrefix(String prefix) {
-        if(StringUtils.isBlank(prefix)) {
+        if (StringUtils.isBlank(prefix)) {
             return;
         }
 
-        if(prefix.startsWith("/")) {
+        if (prefix.startsWith("/")) {
             prefix = prefix.substring(1);
         }
 
-        if(prefix.endsWith("/")) {
-            prefix = prefix.substring(0, prefix.length()-1);
+        if (prefix.endsWith("/")) {
+            prefix = prefix.substring(0, prefix.length() - 1);
         }
 
-        if(endpoint==null) {
+        if (endpoint == null) {
             endpoint = "";
         }
 
-        if(endpoint.startsWith("/")) {
+        if (endpoint.startsWith("/")) {
             endpoint = endpoint.substring(1);
         }
 
-        if(StringUtils.isBlank(endpoint)) {
+        if (StringUtils.isBlank(endpoint)) {
             this.endpoint = "/" + prefix;
         } else {
             this.endpoint = "/" + prefix + "/" + this.endpoint;
@@ -143,7 +143,7 @@ public final class RestRequest {
         JSONObject obj = new JSONObject();
         obj.put("method", method);
         obj.put("endpoint", endpoint);
-        if(dsl!=null) {
+        if (dsl != null) {
             obj.put("dsl", dsl);
         }
         return obj;
@@ -156,7 +156,7 @@ public final class RestRequest {
         }
 
 
-        if(!method.equalsIgnoreCase(HttpMethod.HEAD.getName())) {
+        if (!method.equalsIgnoreCase(HttpMethod.HEAD.getName())) {
             request.setEntity(entity);
         }
 
@@ -165,7 +165,7 @@ public final class RestRequest {
         builder.addHeader("content-type", "application/json");
         // 高版本
         builder.addHeader("Accept", "application/json");
-        if(headers!=null) {
+        if (headers != null) {
             for (Header header : headers) {
                 builder.addHeader(header.getName(), header.getValue());
             }

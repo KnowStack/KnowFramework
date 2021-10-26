@@ -14,7 +14,8 @@ public class ESUpdateResponse extends DocWriteResponse implements ToXContent {
 
     private ESGetResponse esGetResponse;
 
-    public ESUpdateResponse() {}
+    public ESUpdateResponse() {
+    }
 
     private ESUpdateResponse(String index, String type, String id, long seqNo, long primaryTerm, long version, Result result, boolean found, boolean created) {
         super(index, type, id, seqNo, primaryTerm, version, result, found, created);
@@ -38,7 +39,9 @@ public class ESUpdateResponse extends DocWriteResponse implements ToXContent {
         return context.build();
     }
 
-
+    /**
+     * Parse the current token and update the parsing context appropriately.
+     */
     public static void parseXContentFields(XContentParser parser, Builder context) throws IOException {
         XContentParser.Token token = parser.currentToken();
         String currentFieldName = parser.currentName();

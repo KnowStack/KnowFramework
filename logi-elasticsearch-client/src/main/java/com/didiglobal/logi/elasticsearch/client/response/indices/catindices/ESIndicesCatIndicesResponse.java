@@ -6,7 +6,6 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.didiglobal.logi.elasticsearch.client.model.ESActionResponse;
 
-
 public class ESIndicesCatIndicesResponse extends ESActionResponse {
 
     private List<CatIndexResult> catIndexResults;

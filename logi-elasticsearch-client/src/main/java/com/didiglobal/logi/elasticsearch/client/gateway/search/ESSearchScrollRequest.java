@@ -34,7 +34,8 @@ public class ESSearchScrollRequest extends ESActionRequest<ESSearchScrollRequest
     private String scrollId;
     private TimeValue scrollTime;
 
-    public ESSearchScrollRequest() { }
+    public ESSearchScrollRequest() {
+    }
 
     @Override
     public ActionRequestValidationException validate() {
@@ -56,20 +57,20 @@ public class ESSearchScrollRequest extends ESActionRequest<ESSearchScrollRequest
     }
 
     public ESSearchScrollRequest scroll(String keepAlive) {
-        return scroll( TimeValue.parseTimeValue(keepAlive, null,"scroll"));
+        return scroll(TimeValue.parseTimeValue(keepAlive, null, "scroll"));
     }
 
 
     @Override
     public RestRequest toRequest() throws Exception {
-        if(scrollId == null) {
+        if (scrollId == null) {
             throw new Exception("scroll id is null");
         }
 
         String endPoint = "/_search/scroll";
 
         JSONObject scrollJson = new JSONObject();
-        if(scrollTime!=null) {
+        if (scrollTime != null) {
             scrollJson.put("scroll", scrollTime.toString());
         }
         scrollJson.put("scroll_id", scrollId);

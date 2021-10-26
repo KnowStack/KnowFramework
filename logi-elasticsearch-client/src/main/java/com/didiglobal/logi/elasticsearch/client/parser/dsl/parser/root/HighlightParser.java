@@ -23,17 +23,17 @@ public class HighlightParser extends DslParser {
 
         NodeMap nm = new NodeMap();
         JSONObject jsonObject = (JSONObject) obj;
-        for(String key : jsonObject.keySet()) {
-            if(key.equalsIgnoreCase("fields")) {
+        for (String key : jsonObject.keySet()) {
+            if (key.equalsIgnoreCase("fields")) {
                 Object o = jsonObject.get(key);
-                if(o instanceof JSONObject) {
+                if (o instanceof JSONObject) {
                     NodeMap tmpNM = new NodeMap();
                     NodeMap.toField4Value((JSONObject) o, tmpNM);
                     nm.m.put(new StringNode(key), tmpNM);
                 } else {
                     JSONArray a = (JSONArray) o;
                     NodeList nl = new NodeList();
-                    for(Object oo : a) {
+                    for (Object oo : a) {
                         NodeMap tmpNM = new NodeMap();
                         NodeMap.toField4Value((JSONObject) oo, tmpNM);
                         nl.l.add(tmpNM);

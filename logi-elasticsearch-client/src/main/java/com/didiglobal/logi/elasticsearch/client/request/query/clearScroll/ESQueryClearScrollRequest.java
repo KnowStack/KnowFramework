@@ -35,7 +35,8 @@ public class ESQueryClearScrollRequest extends ESActionRequest<ESQueryClearScrol
 
     private List<String> scrollIds = new ArrayList<>();
 
-    public ESQueryClearScrollRequest() { }
+    public ESQueryClearScrollRequest() {
+    }
 
     @Override
     public ActionRequestValidationException validate() {

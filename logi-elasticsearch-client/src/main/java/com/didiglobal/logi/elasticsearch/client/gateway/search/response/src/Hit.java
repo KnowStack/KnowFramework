@@ -169,7 +169,7 @@ public class Hit implements ToXContent {
         return builder;
     }
 
-    public static Hit fromXContent(XContentParser parser) throws  IOException {
+    public static Hit fromXContent(XContentParser parser) throws IOException {
         if (parser.currentToken() != XContentParser.Token.START_OBJECT) {
             parser.nextToken();
             XContentParserUtils.ensureExpectedToken(XContentParser.Token.START_OBJECT, parser.currentToken(), parser::getTokenLocation);
@@ -205,7 +205,7 @@ public class Hit implements ToXContent {
                     hit.source = parser.map();
                 } else if (Fields.FIELDS.equals(currentFieldName)) {
                     hit.fields = new HashMap<>();
-                    while(parser.nextToken() != XContentParser.Token.END_OBJECT) {
+                    while (parser.nextToken() != XContentParser.Token.END_OBJECT) {
                         String key = parser.currentName();
                         token = parser.nextToken();
                         XContentParserUtils.ensureExpectedToken(XContentParser.Token.START_ARRAY, token, parser::getTokenLocation);

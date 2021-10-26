@@ -24,6 +24,7 @@ import org.elasticsearch.action.Action;
 import org.elasticsearch.client.ElasticsearchClient;
 
 /**
+ *
  */
 public class ESQueryClearScrollAction extends Action<ESQueryClearScrollRequest, ESQueryClearScrollResponse, ESQueryClearScrollRequestBuilder> {
 

@@ -5,10 +5,8 @@ import com.didiglobal.logi.elasticsearch.client.parser.dsl.ast.common.Node;
 import com.didiglobal.logi.elasticsearch.client.parser.dsl.visitor.basic.Visitor;
 
 /**
- *
  * 存储scroll关键字的结果
- *  {"scroll":"60s","scroll_id":"cXVlcnlBbmRGZXRjaDsxOzEyNjEzOTpXYW9YS2dlQVM1YU9hZFJXVFNZa2x3OzA7"}
- *
+ * {"scroll":"60s","scroll_id":"cXVlcnlBbmRGZXRjaDsxOzEyNjEzOTpXYW9YS2dlQVM1YU9hZFJXVFNZa2x3OzA7"}
  */
 public class Scroll extends KeyWord {
     public Node n;

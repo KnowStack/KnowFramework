@@ -24,29 +24,29 @@ import com.didiglobal.logi.elasticsearch.client.model.ESActionResponse;
 
 public class ESClusterVersionResponse extends ESActionResponse {
     @JSONField(name = "cluster_name")
-    private String           clusterName;
+    private String clusterName;
 
     @JSONField(name = "version")
     private ESClusterVersion version;
 
     @JSONField(name = "tagline")
-    private String           tagline;
+    private String tagline;
 
     public static class ESClusterVersion {
         @JSONField(name = "number")
-        private String  number;
+        private String number;
 
         @JSONField(name = "build_hash")
-        private String  buildHash;
+        private String buildHash;
 
         @JSONField(name = "build_timestamp")
-        private String  buildTimestamp;
+        private String buildTimestamp;
 
         @JSONField(name = "build_snapshot")
         private Boolean buildSnapshot;
 
         @JSONField(name = "lucene_version")
-        private String  luceneVersion;
+        private String luceneVersion;
 
         public String getNumber() {
             return number;

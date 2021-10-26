@@ -86,14 +86,11 @@ public interface Client extends ElasticsearchClient, Releasable {
     ESQueryScrollRequestBuilder prepareQueryScroll(String scrollId);
 
 
-
     public ActionFuture<ESCatResponse> cat(final ESCatRequest request);
 
     public void cat(final ESCatRequest request, final ActionListener<ESCatResponse> listener);
 
     public ESCatRequestBuilder prepareCat();
-
-
 
 
     ActionFuture<ESBatchResponse> batch(final ESBatchRequest request);

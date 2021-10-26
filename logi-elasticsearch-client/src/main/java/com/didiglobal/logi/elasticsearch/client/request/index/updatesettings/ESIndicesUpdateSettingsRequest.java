@@ -50,17 +50,17 @@ public class ESIndicesUpdateSettingsRequest extends ESActionRequest<ESIndicesUpd
     }
 
     public void setMasterTimeout(String masterTimeout) {
-        this.masterTimeout =masterTimeout;
+        this.masterTimeout = masterTimeout;
     }
 
     @Override
     public RestRequest toRequest() throws Exception {
-        if(index==null || index.length()==0) {
+        if (index == null || index.length() == 0) {
             throw new Exception("index is null");
         }
 
         String endPoint = "/" + index.trim() + "/_settings";
-        if(masterTimeout!=null) {
+        if (masterTimeout != null) {
             endPoint = endPoint + "?master_timeout=" + masterTimeout;
         }
 

@@ -24,6 +24,7 @@ import org.elasticsearch.action.Action;
 import org.elasticsearch.client.ElasticsearchClient;
 
 /**
+ *
  */
 public class ESQueryAction extends Action<ESQueryRequest, ESQueryResponse, ESQueryRequestBuilder> {
 

@@ -68,7 +68,6 @@ public class ESClusterAdmin implements ESClusterAdminClient {
     }
 
 
-
     @Override
     public ActionFuture<ESClusterHealthResponse> health(final ESClusterHealthRequest request) {
         return execute(ESClusterHealthAction.INSTANCE, request);
@@ -138,7 +137,6 @@ public class ESClusterAdmin implements ESClusterAdminClient {
     }
 
 
-
     @Override
     public ActionFuture<ESClusterGetSettingsResponse> getSetting(final ESClusterGetSettingsRequest request) {
         return execute(ESClusterGetSettingsAction.INSTANCE, request);
@@ -153,7 +151,6 @@ public class ESClusterAdmin implements ESClusterAdminClient {
     public ESClusterGetSettingsRequestBuilder prepareGetSettings() {
         return new ESClusterGetSettingsRequestBuilder(this, ESClusterGetSettingsAction.INSTANCE);
     }
-
 
 
     @Override

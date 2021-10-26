@@ -25,17 +25,19 @@ public class ESQueryResponse extends ESActionResponse {
     private ESAggrMap aggs;
 
 
-    public ESQueryResponse() {}
+    public ESQueryResponse() {
+    }
+
     public ESQueryResponse(JSONObject root, Class clazz) {
-        if(root==null) {
+        if (root == null) {
             return;
         }
 
-        for(String key : root.keySet()) {
-            if(HITS_STR.equalsIgnoreCase(key)) {
+        for (String key : root.keySet()) {
+            if (HITS_STR.equalsIgnoreCase(key)) {
                 hits = new ESHits((JSONObject) root.get(key), clazz);
 
-            } else if(AGGREGATIONS_STR.equalsIgnoreCase(key)) {
+            } else if (AGGREGATIONS_STR.equalsIgnoreCase(key)) {
                 aggs = new ESAggrMap((JSONObject) root.get(key));
 
             } else {
@@ -43,7 +45,6 @@ public class ESQueryResponse extends ESActionResponse {
             }
         }
     }
-
 
 
     public Map<String, Object> getUnusedMap() {
@@ -88,12 +89,12 @@ public class ESQueryResponse extends ESActionResponse {
     }
 
     public List<Object> getSourceList() {
-        if(isEmptyHits()) {
+        if (isEmptyHits()) {
             return null;
         }
 
         List ret = new ArrayList<>();
-        for(ESHit hit : hits.getHits()) {
+        for (ESHit hit : hits.getHits()) {
             ret.add(hit.getSource());
         }
         return ret;
@@ -107,15 +108,15 @@ public class ESQueryResponse extends ESActionResponse {
     public JSONObject toJson() {
         JSONObject root = new JSONObject();
 
-        for(String key : unusedMap.keySet()) {
+        for (String key : unusedMap.keySet()) {
             root.put(key, unusedMap.get(key));
         }
 
-        if(hits!=null) {
+        if (hits != null) {
             root.put(HITS_STR, hits.toJson());
         }
 
-        if(aggs!=null) {
+        if (aggs != null) {
             root.put(AGGREGATIONS_STR, aggs.toJson());
         }
 

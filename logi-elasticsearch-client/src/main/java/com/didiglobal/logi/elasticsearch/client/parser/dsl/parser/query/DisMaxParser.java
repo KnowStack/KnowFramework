@@ -12,29 +12,27 @@ import com.didiglobal.logi.elasticsearch.client.parser.dsl.parser.DslParser;
 import com.didiglobal.logi.elasticsearch.client.parser.dsl.parser.ParserType;
 
 /**
- *
  * 解析dis_max查询子句
- *
-{
-    "query": {
-        "dis_max": {
-            "tie_breaker": 0.7,
-            "boost": 1.2,
-            "queries": [
-            {
-                "term": {
-                    "age": 34
-                    }
-            },
-            {
-                "term": {
-                    "age": 35
-                    }
-            }
-            ]
-        }
-    }
-}
+ * {
+ * "query": {
+ * "dis_max": {
+ * "tie_breaker": 0.7,
+ * "boost": 1.2,
+ * "queries": [
+ * {
+ * "term": {
+ * "age": 34
+ * }
+ * },
+ * {
+ * "term": {
+ * "age": 35
+ * }
+ * }
+ * ]
+ * }
+ * }
+ * }
  */
 public class DisMaxParser extends DslParser {
 
@@ -49,7 +47,7 @@ public class DisMaxParser extends DslParser {
         node.n = nm;
 
         JSONObject jsonObj = (JSONObject) obj;
-        for(String key : jsonObj.keySet()) {
+        for (String key : jsonObj.keySet()) {
             if ("tie_breaker".equalsIgnoreCase(key) || "boost".equalsIgnoreCase(key)) {
                 nm.m.put(new StringNode(key), ValueNode.getValueNode(jsonObj.get(key)));
 

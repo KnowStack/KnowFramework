@@ -26,11 +26,11 @@ public class BatchNode {
 
     public String toMessage() throws Exception {
         String header = null;
-        if(index==null) {
+        if (index == null) {
             throw new Exception("index is null");
         }
 
-        if(content==null) {
+        if (content == null) {
             throw new Exception("content is null");
         }
 

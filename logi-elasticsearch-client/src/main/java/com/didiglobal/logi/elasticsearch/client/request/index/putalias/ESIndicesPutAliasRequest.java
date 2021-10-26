@@ -52,7 +52,7 @@ public class ESIndicesPutAliasRequest extends ESActionRequest<ESIndicesPutAliasR
         RestRequest rr = new RestRequest("POST", "/_aliases", null);
         JSONObject obj = new JSONObject();
         JSONArray array = new JSONArray();
-        for(PutAliasNode node : putAliasNodeList) {
+        for (PutAliasNode node : putAliasNodeList) {
             array.add(node.toJson());
         }
 

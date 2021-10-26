@@ -24,7 +24,7 @@ import org.elasticsearch.action.ActionRequestBuilder;
 import org.elasticsearch.client.ElasticsearchClient;
 
 public class ESIndicesOpenIndexRequestBuilder extends
-                                               ActionRequestBuilder<ESIndicesOpenIndexRequest, ESIndicesOpenIndexResponse, ESIndicesOpenIndexRequestBuilder> {
+        ActionRequestBuilder<ESIndicesOpenIndexRequest, ESIndicesOpenIndexResponse, ESIndicesOpenIndexRequestBuilder> {
 
     public ESIndicesOpenIndexRequestBuilder(ElasticsearchClient client, ESIndicesOpenIndexAction action) {
         super(client, action, new ESIndicesOpenIndexRequest());

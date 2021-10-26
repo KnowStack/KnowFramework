@@ -24,12 +24,12 @@ public class ExtendedStatsParser extends DslParser {
         NodeMap nm = new NodeMap();
 
         JSONObject jsonObject = (JSONObject) obj;
-        for(String key : jsonObject.keySet()) {
+        for (String key : jsonObject.keySet()) {
             Node value;
 
-            if(key.equalsIgnoreCase("field")) {
+            if (key.equalsIgnoreCase("field")) {
                 value = new FieldNode(jsonObject.get(key));
-            } else if(key.equalsIgnoreCase("script")) {
+            } else if (key.equalsIgnoreCase("script")) {
                 value = ParserRegister.parse(parserType, key, jsonObject.get(key));
             } else {
                 value = ValueNode.getValueNode(jsonObject.get(key));

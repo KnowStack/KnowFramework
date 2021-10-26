@@ -27,9 +27,11 @@ import com.didiglobal.logi.elasticsearch.client.model.ESActionResponse;
 public class ESCatResponse extends ESActionResponse {
     private Object response;
 
-    public ESCatResponse() {}
+    public ESCatResponse() {
+    }
+
     public ESCatResponse(String response, Class clazz) {
-        if(clazz==null) {
+        if (clazz == null) {
             this.response = response;
             return;
         }

@@ -22,18 +22,19 @@ package com.didiglobal.logi.elasticsearch.client.model.admin;
 /**
  * Administrative actions/operations against the cluster or the indices.
  *
- *
  * @see org.elasticsearch.client.Client#admin()
  */
 public interface ESAdminClient {
 
     /**
      * A client allowing to perform actions/operations against the cluster.
+     * @return ESClusterAdminClient
      */
     ESClusterAdminClient cluster();
 
     /**
      * A client allowing to perform actions/operations against the indices.
+     * @return ESIndicesAdminClient
      */
     ESIndicesAdminClient indices();
 }

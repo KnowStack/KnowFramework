@@ -13,7 +13,7 @@ import org.elasticsearch.rest.RestChannel;
 import org.elasticsearch.rest.RestStatus;
 
 public abstract class ESActionResponse extends ActionResponse {
-    private RestStatus          restStatus;
+    private RestStatus restStatus;
 
     private Map<String, Object> otherFields = new HashMap<>();
 

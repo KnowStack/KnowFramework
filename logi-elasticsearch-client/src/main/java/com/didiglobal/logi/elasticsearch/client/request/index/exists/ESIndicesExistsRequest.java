@@ -37,7 +37,7 @@ public class ESIndicesExistsRequest extends ESActionRequest<ESIndicesExistsReque
 
     @Override
     public RestRequest toRequest() throws Exception {
-        if(index==null || index.length()==0) {
+        if (index == null || index.length() == 0) {
             throw new Exception("template is null");
         }
 
@@ -50,7 +50,7 @@ public class ESIndicesExistsRequest extends ESActionRequest<ESIndicesExistsReque
     @Override
     public boolean checkResponse(org.elasticsearch.client.Response response) {
         int status = response.getStatusLine().getStatusCode();
-        if(status==404) {
+        if (status == 404) {
             return true;
         }
 
@@ -63,7 +63,7 @@ public class ESIndicesExistsRequest extends ESActionRequest<ESIndicesExistsReque
         int code = response.getStatusCode();
 
         ESIndicesExistsResponse indicesExistsResponse = new ESIndicesExistsResponse();
-        if(code == 404) {
+        if (code == 404) {
             indicesExistsResponse.setExists(false);
         } else {
             indicesExistsResponse.setExists(true);

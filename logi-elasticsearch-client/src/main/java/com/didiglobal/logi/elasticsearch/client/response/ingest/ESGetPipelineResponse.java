@@ -16,7 +16,8 @@ public class ESGetPipelineResponse extends ESActionResponse {
 
     public static ESGetPipelineResponse getResponse(String str, String esVersion) throws Exception {
         ESGetPipelineResponse response = new ESGetPipelineResponse();
-        Map<String, Pipeline> pipelineMap = JSONObject.parseObject(str, new TypeReference<Map<String, Pipeline>>() {});
+        Map<String, Pipeline> pipelineMap = JSONObject.parseObject(str, new TypeReference<Map<String, Pipeline>>() {
+        });
         response.setPipelineMap(pipelineMap);
         return response;
     }

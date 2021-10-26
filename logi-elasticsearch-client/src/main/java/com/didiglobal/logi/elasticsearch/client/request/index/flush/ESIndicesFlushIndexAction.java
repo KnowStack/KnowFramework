@@ -26,7 +26,7 @@ import org.elasticsearch.client.ElasticsearchClient;
 public class ESIndicesFlushIndexAction extends Action<ESIndicesFlushIndexRequest, ESIndicesFlushIndexResponse, ESIndicesFlushIndexRequestBuilder> {
 
     public static final ESIndicesFlushIndexAction INSTANCE = new ESIndicesFlushIndexAction();
-    public static final String                    NAME     = "indices:flush/index";
+    public static final String NAME = "indices:flush/index";
 
     private ESIndicesFlushIndexAction() {
         super(NAME);

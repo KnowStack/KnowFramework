@@ -116,8 +116,7 @@ public class ESQueryRequest extends ESActionRequest<ESQueryRequest> implements I
     }
 
 
-
-                        /* type */
+    /* type */
     public String[] types() {
         return types;
     }
@@ -127,13 +126,13 @@ public class ESQueryRequest extends ESActionRequest<ESQueryRequest> implements I
         return this;
     }
 
-                        /* preference */
+    /* preference */
     public ESQueryRequest preference(String preference) {
         this.preference = preference;
         return this;
     }
 
-                        /* routing */
+    /* routing */
     public String routing() {
         return this.routing;
     }
@@ -180,14 +179,14 @@ public class ESQueryRequest extends ESActionRequest<ESQueryRequest> implements I
     }
 
 
-                        /* scroll */
+    /* scroll */
     public ESQueryRequest scroll(TimeValue keepAlive) {
         this.scrollTime = keepAlive;
         return this;
     }
 
     public ESQueryRequest scroll(String keepAlive) {
-        return scroll( TimeValue.parseTimeValue(keepAlive, null,null));
+        return scroll(TimeValue.parseTimeValue(keepAlive, null, null));
     }
 
 
@@ -204,15 +203,15 @@ public class ESQueryRequest extends ESActionRequest<ESQueryRequest> implements I
         }
 
         RestRequest restRequest = new RestRequest("GET", endpoint, source);
-        if(scrollTime!=null) {
+        if (scrollTime != null) {
             restRequest.addParam("scroll", scrollTime.toString());
         }
 
-        if(preference!=null) {
+        if (preference != null) {
             restRequest.addParam("preference", preference);
         }
 
-        if(routing!=null) {
+        if (routing != null) {
             restRequest.addParam("routing", routing);
         }
 

@@ -7,6 +7,6 @@ public class ConstValue {
     public static final String META = "meta";
 
     public static final String NAME = "_name";
-    public static final String BOOST= "boost";
+    public static final String BOOST = "boost";
     public static final String FIELD = "field";
 }

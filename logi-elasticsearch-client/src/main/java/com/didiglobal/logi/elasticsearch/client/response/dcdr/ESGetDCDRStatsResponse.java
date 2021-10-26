@@ -20,11 +20,11 @@ public class ESGetDCDRStatsResponse extends ESActionResponse {
     }
 
     public ESGetDCDRStatsResponse(JSONObject root) {
-        if(root==null) {
+        if (root == null) {
             return;
         }
 
-        for(String key : root.keySet()) {
+        for (String key : root.keySet()) {
             DCDRIndexStats dcdrIndexStats = new DCDRIndexStats(root.getJSONObject(key));
             indicesStats.put(key, dcdrIndexStats);
         }

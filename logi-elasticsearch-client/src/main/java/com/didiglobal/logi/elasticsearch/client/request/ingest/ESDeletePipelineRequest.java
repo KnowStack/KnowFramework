@@ -12,7 +12,7 @@ import org.elasticsearch.action.ActionRequestValidationException;
  * author weizijun
  * date：2019-07-11
  */
-public class ESDeletePipelineRequest extends ESActionRequest<ESDeletePipelineRequest>  {
+public class ESDeletePipelineRequest extends ESActionRequest<ESDeletePipelineRequest> {
     private String pipelineId;
 
     public ESDeletePipelineRequest setPipelineId(String pipelineId) {
@@ -22,7 +22,7 @@ public class ESDeletePipelineRequest extends ESActionRequest<ESDeletePipelineReq
 
     @Override
     public RestRequest toRequest() throws Exception {
-        if(pipelineId==null || pipelineId.length()==0) {
+        if (pipelineId == null || pipelineId.length() == 0) {
             throw new Exception("pipelineId is null");
         }
 

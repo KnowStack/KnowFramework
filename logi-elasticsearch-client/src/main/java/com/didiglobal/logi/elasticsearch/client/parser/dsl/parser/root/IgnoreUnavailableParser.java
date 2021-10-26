@@ -8,7 +8,6 @@ import com.didiglobal.logi.elasticsearch.client.parser.dsl.parser.ParserType;
 
 /**
  * 解析index关键字
- *
  * {"index":["arius_dsl_log_2018-09-20"],"ignore_unavailable":true}
  */
 public class IgnoreUnavailableParser extends DslParser {

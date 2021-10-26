@@ -46,22 +46,22 @@ public class ESIndicesGetTemplateRequest extends ESActionRequest<ESIndicesGetTem
     @Override
     public RestRequest toRequest() throws Exception {
         String tempalteStr = null;
-        if(templates!=null) {
+        if (templates != null) {
             tempalteStr = StringUtils.join(templates, ",");
         }
-        if(tempalteStr!=null && tempalteStr.length()==0) {
-            tempalteStr= null;
+        if (tempalteStr != null && tempalteStr.length() == 0) {
+            tempalteStr = null;
         }
 
         String endPoint;
-        if(tempalteStr==null) {
+        if (tempalteStr == null) {
             endPoint = "/_template";
         } else {
             endPoint = "/_template/" + tempalteStr.trim();
         }
 
         RestRequest rr = new RestRequest("GET", endPoint, null);
-        if(include_type_name) {
+        if (include_type_name) {
             rr.addParam("include_type_name", "true");
         }
 

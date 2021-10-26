@@ -59,21 +59,21 @@ public class ESIndicesUpdateMappingRequest extends ESActionRequest<ESIndicesUpda
 
     @Override
     public RestRequest toRequest() throws Exception {
-        if(StringUtils.isBlank(index)) {
+        if (StringUtils.isBlank(index)) {
             throw new Exception("index is blank, index:" + index);
         }
 
-        if(StringUtils.isBlank(type)) {
+        if (StringUtils.isBlank(type)) {
             throw new Exception("type is blank, type:" + type);
         }
 
-        if(typeConfig==null) {
+        if (typeConfig == null) {
             throw new Exception("type config is null");
         }
 
-        String endPoint = index+ "/_mapping/" + type;
+        String endPoint = index + "/_mapping/" + type;
         RestRequest rr = new RestRequest("PUT", endPoint, null);
-        if(include_type_name) {
+        if (include_type_name) {
             rr.addParam("include_type_name", "true");
         }
         rr.setBody(typeConfig.toJson().toJSONString());

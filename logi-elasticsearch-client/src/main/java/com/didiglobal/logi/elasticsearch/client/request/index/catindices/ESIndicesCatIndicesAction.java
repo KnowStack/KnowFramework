@@ -25,12 +25,13 @@ import org.elasticsearch.client.ElasticsearchClient;
 import com.didiglobal.logi.elasticsearch.client.response.indices.catindices.ESIndicesCatIndicesResponse;
 
 /**
+ *
  */
 public class ESIndicesCatIndicesAction extends
-                                       Action<ESIndicesCatIndicesRequest, ESIndicesCatIndicesResponse, ESIndicesCatIndicesRequestBuilder> {
+        Action<ESIndicesCatIndicesRequest, ESIndicesCatIndicesResponse, ESIndicesCatIndicesRequestBuilder> {
 
     public static final ESIndicesCatIndicesAction INSTANCE = new ESIndicesCatIndicesAction();
-    public static final String                    NAME     = "indices:cat/indices";
+    public static final String NAME = "indices:cat/indices";
 
     private ESIndicesCatIndicesAction() {
         super(NAME);

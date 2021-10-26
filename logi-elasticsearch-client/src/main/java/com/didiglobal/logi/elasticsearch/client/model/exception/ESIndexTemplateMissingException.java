@@ -17,7 +17,7 @@ public class ESIndexTemplateMissingException extends RuntimeException {
     public static boolean check(Throwable t) {
         String str = t.getMessage();
 
-        if(str!=null && str.contains("index_template_missing_exception")) {
+        if (str != null && str.contains("index_template_missing_exception")) {
             return true;
         } else {
             return false;

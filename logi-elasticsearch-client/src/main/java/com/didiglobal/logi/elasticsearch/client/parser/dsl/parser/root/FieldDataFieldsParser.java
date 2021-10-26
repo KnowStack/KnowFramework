@@ -9,17 +9,13 @@ import com.didiglobal.logi.elasticsearch.client.parser.dsl.parser.DslParser;
 import com.didiglobal.logi.elasticsearch.client.parser.dsl.parser.ParserType;
 
 /**
- *
  * 解析fielddata_fields关键字
- *
-
-"fielddata_fields": [
-"sinkTime",
-"collectTime",
-"logTime",
-"cleanTime"
-]
-
+ * "fielddata_fields": [
+ * "sinkTime",
+ * "collectTime",
+ * "logTime",
+ * "cleanTime"
+ * ]
  */
 public class FieldDataFieldsParser extends DslParser {
 
@@ -31,7 +27,7 @@ public class FieldDataFieldsParser extends DslParser {
     public KeyWord parse(String name, Object root) throws Exception {
         FieldDataFields node = new FieldDataFields(name);
 
-        if(root instanceof JSONArray) {
+        if (root instanceof JSONArray) {
             node.n = new NodeList();
             NodeList.toFieldList((JSONArray) root, (NodeList) node.n);
 

@@ -49,9 +49,9 @@ public class ESIndicesSearchShardsRequest extends ESBroadcastRequest<ESIndicesSe
         }
 
         if (index == null) {
-                return "/_search_shards";
+            return "/_search_shards";
         } else {
-                return "/" + index.trim() + "/_search_shards";
+            return "/" + index.trim() + "/_search_shards";
         }
     }
 }

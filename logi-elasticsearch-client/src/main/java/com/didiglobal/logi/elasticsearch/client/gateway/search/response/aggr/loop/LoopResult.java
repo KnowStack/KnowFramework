@@ -8,6 +8,7 @@ public enum LoopResult {
 //    BREAK_AGGR("退出当前aggr");
 
     private String desc;
+
     private LoopResult(String desc) {
         this.desc = desc;
     }

@@ -8,9 +8,7 @@ import com.didiglobal.logi.elasticsearch.client.parser.dsl.parser.DslParser;
 import com.didiglobal.logi.elasticsearch.client.parser.dsl.parser.ParserType;
 
 /**
- *
  * 解析type关键字
- *
  * {"index":"cll_test_binlog_kafka_2018-09-25","type":"cll_binlog_type"}
  */
 public class TypeParser extends DslParser {

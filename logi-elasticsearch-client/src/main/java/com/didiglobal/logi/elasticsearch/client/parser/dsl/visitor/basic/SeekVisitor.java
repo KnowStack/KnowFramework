@@ -15,19 +15,24 @@ import com.didiglobal.logi.elasticsearch.client.parser.dsl.ast.common.value.Stri
 public class SeekVisitor extends BaseVisitor {
 
     @Override
-    public void visit(FieldNode node) { }
+    public void visit(FieldNode node) {
+    }
 
     @Override
-    public void visit(IdentityNode node) { }
+    public void visit(IdentityNode node) {
+    }
 
     @Override
-    public void visit(StringNode node) { }
+    public void visit(StringNode node) {
+    }
 
     @Override
-    public void visit(JsonNode node) { }
+    public void visit(JsonNode node) {
+    }
 
     @Override
-    public void visit(ObjectNode node) { }
+    public void visit(ObjectNode node) {
+    }
 
     @Override
     public void visit(StringListNode node) {
@@ -36,7 +41,7 @@ public class SeekVisitor extends BaseVisitor {
 
     @Override
     public void visit(NodeMap node) {
-        for(KeyNode key : node.m.keySet()) {
+        for (KeyNode key : node.m.keySet()) {
             key.accept(this);
 
             node.m.get(key).accept(this);
@@ -45,7 +50,7 @@ public class SeekVisitor extends BaseVisitor {
 
     @Override
     public void visit(NodeList node) {
-        for(Node n : node.l) {
+        for (Node n : node.l) {
             n.accept(this);
         }
     }

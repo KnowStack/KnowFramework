@@ -12,59 +12,59 @@ public class OutputJsonVisitor extends SeekVisitor {
 
     public void visit(JsonNode node) {
         String str = node.json.toJSONString();
-        if(str.equalsIgnoreCase("[{\"_term\":\"desc\"}]")) {
+        if (str.equalsIgnoreCase("[{\"_term\":\"desc\"}]")) {
             return;
         }
 
-        if(str.equalsIgnoreCase("[{\"_term\":\"asc\"}]")) {
+        if (str.equalsIgnoreCase("[{\"_term\":\"asc\"}]")) {
             return;
         }
 
-        if(str.contains("shape") && str.contains("coordinates") &&
+        if (str.contains("shape") && str.contains("coordinates") &&
                 str.contains("relation")) {
             return;
         }
 
-        if(str.contains("lon") && str.contains("lat")) {
+        if (str.contains("lon") && str.contains("lat")) {
             return;
         }
 
-        if(str.contains("top_left") && str.contains("bottom_right")) {
+        if (str.contains("top_left") && str.contains("bottom_right")) {
             return;
         }
 
-        if(str.contains("from") && str.contains("to") ) {
+        if (str.contains("from") && str.contains("to")) {
             return;
         }
 
-        if(str.contains("key") && str.contains("to") ) {
+        if (str.contains("key") && str.contains("to")) {
             return;
         }
 
-        if(str.contains("\"query\":[1]")) {
+        if (str.contains("\"query\":[1]")) {
             return;
         }
 
 
         JSON json = node.json;
-        if(json instanceof JSONArray) {
-            for(Object o : (JSONArray)json) {
-                if(o instanceof  JSON) {
+        if (json instanceof JSONArray) {
+            for (Object o : (JSONArray) json) {
+                if (o instanceof JSON) {
                     System.out.println(node.json.toJSONString());
                     haveJson = true;
                     return;
                 }
             }
 
-        }  else {
+        } else {
 
             JSONObject jsonObject = (JSONObject) json;
-            if(((JSONObject) json).containsKey("min_value")) {
+            if (((JSONObject) json).containsKey("min_value")) {
                 return;
             }
 
-            for(String key : jsonObject.keySet()) {
-                if(jsonObject.get(key) instanceof JSON) {
+            for (String key : jsonObject.keySet()) {
+                if (jsonObject.get(key) instanceof JSON) {
                     System.out.println(node.json.toJSONString());
                     haveJson = true;
                     return;

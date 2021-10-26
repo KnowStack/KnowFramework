@@ -25,6 +25,7 @@ import org.elasticsearch.client.ElasticsearchClient;
 
 
 /**
+ *
  */
 public class ESClusterVersionAction extends Action<ESClusterVersionRequest, ESClusterVersionResponse, ESClusterVersionRequestBuilder> {
 

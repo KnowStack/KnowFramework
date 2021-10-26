@@ -56,17 +56,17 @@ public class ESIndicesPutIndexRequest extends ESActionRequest<ESIndicesPutIndexR
 
     @Override
     public RestRequest toRequest() throws Exception {
-        if(index==null || index.length()==0) {
+        if (index == null || index.length() == 0) {
             throw new Exception("index is null");
         }
 
         String endPoint = index;
         RestRequest rr = new RestRequest("PUT", endPoint, null);
-        if(indexConfig!=null) {
+        if (indexConfig != null) {
             rr.setBody(indexConfig);
         }
 
-        if(include_type_name) {
+        if (include_type_name) {
             rr.addParam("include_type_name", "true");
         }
         return rr;

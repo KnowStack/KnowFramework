@@ -26,20 +26,20 @@ public class SortParser extends DslParser {
     public KeyWord parse(String name, Object obj) throws Exception {
         Sort node = new Sort(name);
 
-        if(!(obj instanceof JSONObject) && !(obj instanceof JSONArray)) {
+        if (!(obj instanceof JSONObject) && !(obj instanceof JSONArray)) {
             node.n = new FieldNode(obj);
             return node;
         }
 
-        if(obj instanceof JSONObject) {
+        if (obj instanceof JSONObject) {
             node.n = parserJsonObject((JSONObject) obj);
         }
 
-        if(obj instanceof JSONArray) {
+        if (obj instanceof JSONArray) {
             NodeList l = new NodeList();
             JSONArray array = (JSONArray) obj;
-            for(Object o : array) {
-                if(o instanceof JSONObject) {
+            for (Object o : array) {
+                if (o instanceof JSONObject) {
                     l.l.add(parserJsonObject((JSONObject) o));
                 } else {
                     // eg "sort": ["_doc"]
@@ -57,18 +57,18 @@ public class SortParser extends DslParser {
     private NodeMap parserJsonObject(JSONObject root) throws Exception {
         NodeMap m = new NodeMap();
 
-        for(String key : root.keySet()) {
+        for (String key : root.keySet()) {
             StringNode keyNode = new StringNode(key);
             Object o = root.get(key);
 
-            if(key.equalsIgnoreCase(GEO_DISTANCE)) {
+            if (key.equalsIgnoreCase(GEO_DISTANCE)) {
                 m.m.put(keyNode, parserGEO((JSONObject) o));
 
-            } else if(key.equalsIgnoreCase(SCRIPT)) {
+            } else if (key.equalsIgnoreCase(SCRIPT)) {
                 m.m.put(keyNode, parseScript((JSONObject) o));
 
-            } else if(key.equalsIgnoreCase(SCORE)) {
-                if(o instanceof JSONObject) {
+            } else if (key.equalsIgnoreCase(SCORE)) {
+                if (o instanceof JSONObject) {
                     m.m.put(keyNode, parseScore((JSONObject) o));
                 } else {
                     m.m.put(keyNode, ValueNode.getValueNode(o));
@@ -84,6 +84,7 @@ public class SortParser extends DslParser {
 
     private static final String GEO_DISTANCE = "_geo_distance";
     private static final Set<String> GEOKeyWords = new HashSet<>();
+
     static {
         GEOKeyWords.add("order");
         GEOKeyWords.add("unit");
@@ -93,15 +94,16 @@ public class SortParser extends DslParser {
         GEOKeyWords.add("validation_method");
         GEOKeyWords.add("ignore_unmapped");
     }
+
     private NodeMap parserGEO(JSONObject root) throws Exception {
         NodeMap m = new NodeMap();
 
         boolean haveField = false;
-        for(String key : root.keySet()) {
-            if(GEOKeyWords.contains(key.toLowerCase())) {
+        for (String key : root.keySet()) {
+            if (GEOKeyWords.contains(key.toLowerCase())) {
                 m.m.put(new StringNode(key), ValueNode.getValueNode(root.get(key)));
             } else {
-                if(haveField) {
+                if (haveField) {
                     throw new Exception("wrong geo, json:" + root);
                 }
 
@@ -114,12 +116,13 @@ public class SortParser extends DslParser {
     }
 
     private static final String SCRIPT = "_script";
+
     private NodeMap parseScript(JSONObject root) throws Exception {
         NodeMap nm = new NodeMap();
 
-        for(String key : root.keySet()) {
+        for (String key : root.keySet()) {
             Node valueNode;
-            if(key.equalsIgnoreCase("script")) {
+            if (key.equalsIgnoreCase("script")) {
                 valueNode = ParserRegister.parse(parserType, key, root.get(key));
             } else {
                 valueNode = ValueNode.getValueNode(root.get(key));
@@ -132,10 +135,11 @@ public class SortParser extends DslParser {
     }
 
     private static final String SCORE = "_score";
+
     private NodeMap parseScore(JSONObject root) throws Exception {
         NodeMap nm = new NodeMap();
 
-        for(String key : root.keySet()) {
+        for (String key : root.keySet()) {
             nm.m.put(new FieldNode(key), ValueNode.getValueNode(root.get(key)));
         }
 

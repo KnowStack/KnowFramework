@@ -24,7 +24,7 @@ import org.elasticsearch.action.ActionRequestBuilder;
 import org.elasticsearch.client.ElasticsearchClient;
 
 public class ESIndicesCloseIndexRequestBuilder extends
-                                               ActionRequestBuilder<ESIndicesCloseIndexRequest, ESIndicesCloseIndexResponse, ESIndicesCloseIndexRequestBuilder> {
+        ActionRequestBuilder<ESIndicesCloseIndexRequest, ESIndicesCloseIndexResponse, ESIndicesCloseIndexRequestBuilder> {
 
     public ESIndicesCloseIndexRequestBuilder(ElasticsearchClient client, ESIndicesCloseIndexAction action) {
         super(client, action, new ESIndicesCloseIndexRequest());

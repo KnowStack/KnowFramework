@@ -10,7 +10,11 @@ import org.elasticsearch.rest.RestStatus;
 
 import java.io.IOException;
 
-
+/**
+ * Exception that can be used when parsing queries with a given {@link
+ * org.elasticsearch.common.xcontent.XContentParser}.
+ * Can contain information about location of the error.
+ */
 public class ParsingException extends ElasticsearchException {
 
     protected static final int UNKNOWN_POSITION = -1;
@@ -33,7 +37,14 @@ public class ParsingException extends ElasticsearchException {
         this.lineNumber = lineNumber;
     }
 
-
+    /**
+     * This constructor is provided for use in unit tests where a
+     * {@link org.elasticsearch.common.xcontent.XContentParser} may not be available
+     * @param cause cause
+     * @param col col
+     * @param msg msg
+     * @param line line
+     */
     public ParsingException(int line, int col, String msg, Throwable cause) {
         super(msg, cause);
         this.lineNumber = line;
@@ -46,12 +57,20 @@ public class ParsingException extends ElasticsearchException {
         columnNumber = in.readInt();
     }
 
-
+    /**
+     * Line number of the location of the error
+     *
+     * @return the line number or -1 if unknown
+     */
     public int getLineNumber() {
         return lineNumber;
     }
 
-
+    /**
+     * Column number of the location of the error
+     *
+     * @return the column number or -1 if unknown
+     */
     public int getColumnNumber() {
         return columnNumber;
     }

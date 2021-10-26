@@ -9,14 +9,13 @@ import org.junit.Test;
  * @Description:
  * @Date: Create on 2019/1/8 下午6:24
  * @Modified By
- *
+ * <p>
  * 测试dsl标签遍历器
  */
 public class TestDslTagVisitor {
 
     /**
      * 测试DSL查询语句 query中带了Wildcard，且前缀*号
-     *
      */
     @Test
     public void testDslWildcardTagNotMatch() {
@@ -31,7 +30,6 @@ public class TestDslTagVisitor {
 
     /**
      * 测试DSL查询语句 query中带了Wildcard，且前缀*号
-     *
      */
     @Test
     public void testDslWildcardTagMatch() {
@@ -49,7 +47,6 @@ public class TestDslTagVisitor {
 
     /**
      * 测试DSL查询语句 aggs嵌套层数过深 大于等于3层
-     *
      */
     @Test
     public void testDslAggsDeepNestNotMatch() {
@@ -63,7 +60,6 @@ public class TestDslTagVisitor {
 
     /**
      * 测试DSL查询语句 aggs嵌套层数过深 大于等于3层
-     *
      */
     @Test
     public void testDslAggsDeepNestMatch() {
@@ -78,7 +74,6 @@ public class TestDslTagVisitor {
 
     /**
      * 测试DSL查询语句 aggs中带了significant_terms
-     *
      */
     @Test
     public void testDslAggsSignificantTermsMatch() {
@@ -93,7 +88,6 @@ public class TestDslTagVisitor {
 
     /**
      * 测试DSL查询语句 query中带了script
-     *
      */
     @Test
     public void testDslScriptMatch() {
@@ -108,7 +102,6 @@ public class TestDslTagVisitor {
 
     /**
      * 测试DSL查询语句 query中带了regexp
-     *
      */
     @Test
     public void testDslRegexpMatch() {
@@ -123,7 +116,6 @@ public class TestDslTagVisitor {
 
     /**
      * 测试DSL查询语句 aggs中带了cardinality，且不在第一层嵌套
-     *
      */
     @Test
     public void testDslAggsCardinalityNotMatch() {
@@ -137,7 +129,6 @@ public class TestDslTagVisitor {
 
     /**
      * 测试DSL查询语句 aggs中带了cardinality，且不在第一层嵌套
-     *
      */
     @Test
     public void testDslAggsCardinalityMatch() {
@@ -152,7 +143,6 @@ public class TestDslTagVisitor {
 
     /**
      * 测试DSL查询语句 查询语句超过5k
-     *
      */
     @Test
     public void testDslDslLengthTooLargeMatch() {
@@ -174,7 +164,6 @@ public class TestDslTagVisitor {
 
     /**
      * 测试SQL查询语句 query中带了Wildcard，且前缀*号
-     *
      */
     @Test
     public void testSQLWildcardTagNotMatch() {
@@ -188,7 +177,6 @@ public class TestDslTagVisitor {
 
     /**
      * 测试DSL查询语句 query中带了Wildcard，且前缀*号
-     *
      */
     @Test
     public void testSQLWildcardTagMatch() {
@@ -203,7 +191,6 @@ public class TestDslTagVisitor {
 
     /**
      * 测试DSL查询语句 aggs嵌套层数过深 大于等于3层
-     *
      */
     @Test
     public void testSQLAggsDeepNestNotMatch() {
@@ -217,7 +204,6 @@ public class TestDslTagVisitor {
 
     /**
      * 测试DSL查询语句 aggs嵌套层数过深 大于等于3层
-     *
      */
     @Test
     public void testSQLAggsDeepNestMatch() {
@@ -232,7 +218,6 @@ public class TestDslTagVisitor {
 
     /**
      * 测试DSL查询语句 aggs中带了significant_terms
-     *
      */
     @Test
     public void testSQLAggsSignificantTermsMatch() {
@@ -241,7 +226,6 @@ public class TestDslTagVisitor {
 
     /**
      * 测试DSL查询语句 query中带了script
-     *
      */
     @Test
     public void testSQLScriptMatch() {
@@ -256,7 +240,6 @@ public class TestDslTagVisitor {
 
     /**
      * 测试DSL查询语句 query中带了regexp
-     *
      */
     @Test
     public void testSQLRegexpMatch() {
@@ -272,7 +255,6 @@ public class TestDslTagVisitor {
 
     /**
      * 测试DSL查询语句 aggs中带了cardinality，且不在第一层嵌套
-     *
      */
     @Test
     public void testSQLAggsCardinalityMatch() {
@@ -287,7 +269,6 @@ public class TestDslTagVisitor {
 
     /**
      * 测试DSL查询语句 查询语句超过5k
-     *
      */
     @Test
     public void testSQLDslLengthTooLargeMatch() {

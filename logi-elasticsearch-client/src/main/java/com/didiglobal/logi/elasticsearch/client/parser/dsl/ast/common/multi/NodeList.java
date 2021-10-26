@@ -23,8 +23,8 @@ public class NodeList extends Node {
 
 
     public static void toValueList(JSONArray array, NodeList node) throws Exception {
-        for(Object obj : array) {
-            if(obj instanceof JSON) {
+        for (Object obj : array) {
+            if (obj instanceof JSON) {
                 throw new Exception("wrong json, json:" + array);
             }
 
@@ -32,28 +32,28 @@ public class NodeList extends Node {
         }
     }
 
-    public static  void toList(JSONArray array, NodeList node) {
-        for(Object obj : array) {
+    public static void toList(JSONArray array, NodeList node) {
+        for (Object obj : array) {
             node.l.add(ValueNode.getValueNode(obj));
         }
     }
 
     public static Node toNodeList(ParserType type, JSON root, boolean isMultiKey) throws Exception {
-        if(root == null || !(root instanceof JSON) ) {
+        if (root == null || !(root instanceof JSON)) {
             return new ObjectNode(root);
         }
 
-        if(root instanceof JSONObject) {
+        if (root instanceof JSONObject) {
             return Node.toNodeWith1Key(type, (JSONObject) root, isMultiKey);
         }
 
         NodeList nl = new NodeList();
         JSONArray array = (JSONArray) root;
-        for(Object obj : array) {
-            if(obj instanceof JSONArray) {
+        for (Object obj : array) {
+            if (obj instanceof JSONArray) {
                 NodeList tmpnl = new NodeList();
-                for(Object o : (JSONArray)obj) {
-                    tmpnl.l.add(Node.toNodeWith1Key(type, (JSONObject)o, isMultiKey));
+                for (Object o : (JSONArray) obj) {
+                    tmpnl.l.add(Node.toNodeWith1Key(type, (JSONObject) o, isMultiKey));
                 }
                 nl.l.add(tmpnl);
 
@@ -66,8 +66,8 @@ public class NodeList extends Node {
 
 
     public static void toFieldList(JSONArray array, NodeList node) throws Exception {
-        for(Object obj : array) {
-            if(obj instanceof JSON) {
+        for (Object obj : array) {
+            if (obj instanceof JSON) {
                 throw new Exception("wrong json, json:" + array);
             }
 

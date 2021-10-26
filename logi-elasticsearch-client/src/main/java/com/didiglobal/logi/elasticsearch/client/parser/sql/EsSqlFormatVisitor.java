@@ -52,6 +52,12 @@ public class EsSqlFormatVisitor extends MySqlOutputVisitor {
     }
 
 
+    /**
+     * 查询注释语法树 / * a, b * /
+     *
+     * @param x x
+     * @return boolean
+     */
     @Override
     public boolean visit(SQLCommentHint x) {
         print("/*");
@@ -73,6 +79,11 @@ public class EsSqlFormatVisitor extends MySqlOutputVisitor {
         return false;
     }
 
+    /**
+     * select a,b 语法树
+     *
+     * @param selectList selectList
+     */
     @Override
     protected void printSelectList(List<SQLSelectItem> selectList) {
         incrementIndent();
@@ -114,6 +125,12 @@ public class EsSqlFormatVisitor extends MySqlOutputVisitor {
         decrementIndent();
     }
 
+    /**
+     * table 语法树
+     *
+     * @param x x
+     * @return boolean
+     */
     @Override
     public boolean visit(SQLExprTableSource x) {
         print("?");
@@ -121,6 +138,12 @@ public class EsSqlFormatVisitor extends MySqlOutputVisitor {
         return false;
     }
 
+    /**
+     * table 语法树
+     *
+     * @param x x
+     * @return boolean
+     */
     @Override
     public boolean visit(SQLJoinTableSource x) {
         print("?");
@@ -128,6 +151,12 @@ public class EsSqlFormatVisitor extends MySqlOutputVisitor {
         return false;
     }
 
+    /**
+     * between a and b 语法树
+     *
+     * @param x x
+     * @return boolean
+     */
     @Override
     public boolean visit(SQLBetweenExpr x) {
         x.getTestExpr().accept(this);
@@ -151,6 +180,12 @@ public class EsSqlFormatVisitor extends MySqlOutputVisitor {
 
     private static final String STR = "str";
 
+    /**
+     * where 语法树
+     *
+     * @param x x
+     * @return boolean
+     */
     @Override
     public boolean visit(SQLBinaryOpExpr x) {
 
@@ -246,8 +281,8 @@ public class EsSqlFormatVisitor extends MySqlOutputVisitor {
     }
 
     /**
-     * @param x
-     * @return
+     * @param x x
+     * @return boolean
      */
     @Override
     public boolean visit(SQLVariantRefExpr x) {
@@ -256,6 +291,12 @@ public class EsSqlFormatVisitor extends MySqlOutputVisitor {
         return false;
     }
 
+    /**
+     * in (a, b) / not in (a, b) 语法树
+     *
+     * @param x x
+     * @return boolean
+     */
     @Override
     public boolean visit(SQLInListExpr x) {
         x.getExpr().accept(this);
@@ -269,6 +310,12 @@ public class EsSqlFormatVisitor extends MySqlOutputVisitor {
         return false;
     }
 
+    /**
+     * 整数 语法树
+     *
+     * @param x x
+     * @return boolean
+     */
     @Override
     public boolean visit(SQLIntegerExpr x) {
         print("?");
@@ -276,6 +323,12 @@ public class EsSqlFormatVisitor extends MySqlOutputVisitor {
         return false;
     }
 
+    /**
+     * 数值 语法树
+     *
+     * @param x x
+     * @return boolean
+     */
     @Override
     public boolean visit(SQLNumberExpr x) {
         print("?");
@@ -283,6 +336,12 @@ public class EsSqlFormatVisitor extends MySqlOutputVisitor {
         return false;
     }
 
+    /**
+     * char 语法树
+     *
+     * @param x x
+     * @return boolean
+     */
     @Override
     public boolean visit(SQLCharExpr x) {
         print('?');
@@ -290,6 +349,12 @@ public class EsSqlFormatVisitor extends MySqlOutputVisitor {
         return false;
     }
 
+    /**
+     * 子节点(字段名)语法树
+     *
+     * @param x x
+     * @return boolean
+     */
     @Override
     public boolean visit(SQLIdentifierExpr x) {
         if (ignoreIdentifier) {
@@ -301,7 +366,25 @@ public class EsSqlFormatVisitor extends MySqlOutputVisitor {
         return false;
     }
 
+    /**
+     * limit 语法树
+     *
+     * @param x x
+     * @return boolean
+     */
+//    @Override
+//    public boolean visit(MySqlSelectQueryBlock.Limit x) {
+//        print("LIMIT ?");
+//
+//        return false;
+//    }
 
+    /**
+     * limit 语法树
+     *
+     * @param x x
+     * @return boolean
+     */
     @Override
     public boolean visit(SQLLimit x) {
         print("LIMIT ?");
@@ -309,6 +392,13 @@ public class EsSqlFormatVisitor extends MySqlOutputVisitor {
         return false;
     }
 
+    /**
+     * 输出一个node的内容
+     *
+     * @param node node
+     * @param parentOp parentOp
+     * @param isLeft isLeft
+     */
     private void visitNode(SQLExpr node, SQLBinaryOperator parentOp, boolean isLeft) {
         if (node instanceof SQLBinaryOpExpr) {
             SQLBinaryOpExpr binaryNode = (SQLBinaryOpExpr) node;

@@ -21,13 +21,13 @@ public class HasParentParser extends DslParser {
         HasParent node = new HasParent(name);
 
         JSONObject jsonObject = (JSONObject) obj;
-        for(String key : jsonObject.keySet()) {
+        for (String key : jsonObject.keySet()) {
             Object o = jsonObject.get(key);
 
             KeyNode keyNode = new StringNode(key);
 
             Node valueNode = ParserRegister.parse(parserType, key, o);
-            if(valueNode==null) {
+            if (valueNode == null) {
                 valueNode = ValueNode.getValueNode(o);
             }
             node.m.m.put(keyNode, valueNode);

@@ -131,7 +131,7 @@ public class ESGetResponse extends ESActionResponse implements ToXContent {
                     esGetResponse.type = parser.text();
                 } else if (_ID.equals(currentFieldName)) {
                     esGetResponse.id = parser.text();
-                }  else if (_VERSION.equals(currentFieldName)) {
+                } else if (_VERSION.equals(currentFieldName)) {
                     esGetResponse.version = parser.longValue();
                 } else if (FOUND.equals(currentFieldName)) {
                     esGetResponse.exists = parser.booleanValue();
@@ -143,7 +143,7 @@ public class ESGetResponse extends ESActionResponse implements ToXContent {
                     esGetResponse.source = parser.map();
                 } else if (FIELDS.equals(currentFieldName)) {
                     esGetResponse.fields = new HashMap<>();
-                    while(parser.nextToken() != XContentParser.Token.END_OBJECT) {
+                    while (parser.nextToken() != XContentParser.Token.END_OBJECT) {
                         String key = parser.currentName();
                         token = parser.nextToken();
                         XContentParserUtils.ensureExpectedToken(XContentParser.Token.START_ARRAY, token, parser::getTokenLocation);

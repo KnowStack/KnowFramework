@@ -28,7 +28,11 @@ public class ESClearScrollResponse extends ESActionResponse implements ToXConten
         return builder;
     }
 
-
+    /**
+     * Parse the clear scroll response body into a new {@link ClearScrollResponse} object
+     * @param parser p
+     * @return ESClearScrollResponse
+     */
     public static ESClearScrollResponse fromXContent(XContentParser parser) throws IOException {
         XContentParserUtils.ensureExpectedToken(XContentParser.Token.START_OBJECT, parser.nextToken(), parser::getTokenLocation);
         String currentFieldName = parser.currentName();
@@ -50,7 +54,7 @@ public class ESClearScrollResponse extends ESActionResponse implements ToXConten
             }
         }
 
-        return  esClearScrollResponse;
+        return esClearScrollResponse;
     }
 
     @Override

@@ -22,14 +22,14 @@ public class HasChildParser extends DslParser {
         NodeMap nm = new NodeMap();
 
         JSONObject jsonObject = (JSONObject) obj;
-        for(String key : jsonObject.keySet()) {
+        for (String key : jsonObject.keySet()) {
             Object o = jsonObject.get(key);
 
             KeyNode keyNode = new StringNode(key);
 
-            if(key.equalsIgnoreCase(HasParent.QUERY_STR)) {
+            if (key.equalsIgnoreCase(HasParent.QUERY_STR)) {
                 NodeMap tmp = new NodeMap();
-                NodeMap.toString2Node(parserType, (JSONObject)o, tmp);
+                NodeMap.toString2Node(parserType, (JSONObject) o, tmp);
                 nm.m.put(keyNode, tmp);
             } else {
                 nm.m.put(keyNode, ValueNode.getValueNode(jsonObject.get(key)));

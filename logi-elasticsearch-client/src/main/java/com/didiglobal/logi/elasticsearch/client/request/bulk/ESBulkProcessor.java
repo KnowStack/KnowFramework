@@ -21,23 +21,45 @@ import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;
 
-
+/**
+ * A bulk processor is a thread safe bulk processing class, allowing to easily set when to "flush" a new bulk request
+ * (either based on number of actions, based on the size, or time), and to easily control the number of concurrent bulk
+ * requests allowed to be executed in parallel.
+ * <p>
+ * In order to create a new bulk processor, use the {@link ESBulkProcessor.Builder}.
+ */
 public class ESBulkProcessor implements Closeable {
 
-
+    /**
+     * A listener for the execution.
+     */
     public interface Listener {
 
-
+        /**
+         * Callback before the bulk is executed.
+         */
         void beforeBulk(long executionId, ESBatchRequest request);
 
-
+        /**
+         * Callback after a successful execution of bulk request.
+         */
         void afterBulk(long executionId, ESBatchRequest request, ESBatchResponse response);
 
-
+        /**
+         * Callback after a failed execution of bulk request.
+         * <p>
+         * Note that in case an instance of <code>InterruptedException</code> is passed, which means that request processing has been
+         * cancelled externally, the thread's interruption status has been restored prior to calling this method.
+         * @param failure failure
+         * @param executionId executionId
+         * @param request request
+         */
         void afterBulk(long executionId, ESBatchRequest request, Throwable failure);
     }
 
-
+    /**
+     * A builder used to create a build an instance of a bulk processor.
+     */
     public static class Builder {
 
         private final ESClient client;
@@ -50,43 +72,83 @@ public class ESBulkProcessor implements Closeable {
         private TimeValue flushInterval = null;
         private BackoffPolicy backoffPolicy = BackoffPolicy.exponentialBackoff();
 
-
+        /**
+         * Creates a builder of bulk processor with the client to use and the listener that will be used
+         * to be notified on the completion of bulk requests.
+         * @param client client
+         * @param listener listener
+         */
         public Builder(ESClient client, Listener listener) {
             this.client = client;
             this.listener = listener;
         }
 
-
+        /**
+         * Sets an optional name to identify this bulk processor.
+         */
         public ESBulkProcessor.Builder setName(String name) {
             this.name = name;
             return this;
         }
 
-
+        /**
+         * Sets the number of concurrent requests allowed to be executed. A value of 0 means that only a single
+         * request will be allowed to be executed. A value of 1 means 1 concurrent request is allowed to be executed
+         * while accumulating new bulk requests. Defaults to <tt>1</tt>.
+         * @param concurrentRequests concurrentRequests
+         * @return ESBulkProcessor.Builder
+         */
         public ESBulkProcessor.Builder setConcurrentRequests(int concurrentRequests) {
             this.concurrentRequests = concurrentRequests;
             return this;
         }
 
-
+        /**
+         * Sets when to flush a new bulk request based on the number of actions currently added. Defaults to
+         * <tt>1000</tt>. Can be set to <tt>-1</tt> to disable it.
+         * @param bulkActions bulkActions
+         * @return ESBulkProcessor.Builder
+         */
         public ESBulkProcessor.Builder setBulkActions(int bulkActions) {
             this.bulkActions = bulkActions;
             return this;
         }
 
-
+        /**
+         * Sets when to flush a new bulk request based on the size of actions currently added. Defaults to
+         * <tt>5mb</tt>. Can be set to <tt>-1</tt> to disable it.
+         * @param bulkSize bulkSize
+         * @return ESBulkProcessor.Builder
+         *
+         */
         public ESBulkProcessor.Builder setBulkSize(ByteSizeValue bulkSize) {
             this.bulkSize = bulkSize;
             return this;
         }
 
-
+        /**
+         * Sets a flush interval flushing *any* bulk actions pending if the interval passes. Defaults to not set.
+         * <p>
+         * Note, both {@link #setBulkActions(int)} and {@link #setBulkSize(org.elasticsearch.common.unit.ByteSizeValue)}
+         * can be set to <tt>-1</tt> with the flush interval set allowing for complete async processing of bulk actions.
+         * @param flushInterval flushInterval
+         * @return ESBulkProcessor.Builder
+         */
         public ESBulkProcessor.Builder setFlushInterval(TimeValue flushInterval) {
             this.flushInterval = flushInterval;
             return this;
         }
 
-
+        /**
+         * Sets a custom backoff policy. The backoff policy defines how the bulk processor should handle retries of bulk requests internally
+         * in case they have failed due to resource constraints (i.e. a thread pool was full).
+         * <p>
+         * The default is to back off exponentially.
+         *
+         * @see org.elasticsearch.action.bulk.BackoffPolicy#exponentialBackoff()
+         * @param backoffPolicy backoffPolicy
+         * @return ESBulkProcessor.Builder
+         */
         public ESBulkProcessor.Builder setBackoffPolicy(BackoffPolicy backoffPolicy) {
             if (backoffPolicy == null) {
                 throw new NullPointerException("'backoffPolicy' must not be null. To disable backoff, pass BackoffPolicy.noBackoff()");
@@ -95,7 +157,9 @@ public class ESBulkProcessor implements Closeable {
             return this;
         }
 
-
+        /**
+         * Builds a new bulk processor.
+         */
         public ESBulkProcessor build() {
             return new ESBulkProcessor(client, backoffPolicy, listener, name, concurrentRequests, bulkActions, bulkSize, flushInterval);
         }
@@ -141,17 +205,30 @@ public class ESBulkProcessor implements Closeable {
         }
     }
 
-
+    /**
+     * Closes the processor. If flushing by time is enabled, then it's shutdown. Any remaining bulk actions are flushed.
+     */
     @Override
     public void close() {
         try {
             awaitClose(0, TimeUnit.NANOSECONDS);
-        } catch(InterruptedException exc) {
+        } catch (InterruptedException exc) {
             Thread.currentThread().interrupt();
         }
     }
 
-
+    /**
+     * Closes the processor. If flushing by time is enabled, then it's shutdown. Any remaining bulk actions are flushed.
+     * <p>
+     * If concurrent requests are not enabled, returns {@code true} immediately.
+     * If concurrent requests are enabled, waits for up to the specified timeout for all bulk requests to complete then returns {@code true},
+     * If the specified waiting time elapses before all bulk requests complete, {@code false} is returned.
+     *
+     * @param timeout The maximum time to wait for the bulk requests to complete
+     * @param unit    The time unit of the {@code timeout} argument
+     * @return {@code true} if all bulk requests completed and {@code false} if the waiting time elapsed before all the bulk requests completed
+     * @throws InterruptedException If the current thread is interrupted
+     */
     public synchronized boolean awaitClose(long timeout, TimeUnit unit) throws InterruptedException {
         if (closed) {
             return true;
@@ -209,7 +286,7 @@ public class ESBulkProcessor implements Closeable {
         execute();
     }
 
-
+    // (currently) needs to be executed under a lock
     private void execute() {
         final ESBatchRequest bulkRequest = this.bulkRequest;
         final long executionId = executionIdGen.incrementAndGet();
@@ -228,7 +305,9 @@ public class ESBulkProcessor implements Closeable {
         return false;
     }
 
-
+    /**
+     * Flush pending delete or index requests.
+     */
     public synchronized void flush() {
         ensureOpen();
         if (bulkRequest.numberOfActions() > 0) {

@@ -35,11 +35,12 @@ public class Hits implements ToXContent {
      */
     private float maxScore;
 
-    public Hits() { }
+    public Hits() {
+    }
 
-    @JSONField(serialize=false)
+    @JSONField(serialize = false)
     public boolean isEmpty() {
-        if(hits==null || hits.isEmpty()) {
+        if (hits == null || hits.isEmpty()) {
             return true;
         } else {
             return false;

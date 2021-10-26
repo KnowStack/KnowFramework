@@ -95,7 +95,7 @@ public class SrcResponse<T> {
 
 
     public static SrcResponse parserResponse(String str, Class clazz) {
-       ParameterizedTypeImpl parameterizedType = new ParameterizedTypeImpl(new Type[]{clazz}, null, SrcResponse.class);
-       return JSON.parseObject(str, parameterizedType);
+        ParameterizedTypeImpl parameterizedType = new ParameterizedTypeImpl(new Type[]{clazz}, null, SrcResponse.class);
+        return JSON.parseObject(str, parameterizedType);
     }
 }

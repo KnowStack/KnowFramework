@@ -13,11 +13,11 @@ public interface Aggr {
     LoopResult loop(List<String> keys, AggrLooper looper) throws Exception;
 
     static Aggr getAggr(JSONObject root) {
-        if(root==null) {
+        if (root == null) {
             return null;
         }
         // 这里为什么
-        if(root.containsKey(DocCountAggr.BUCKETS_STR)) {
+        if (root.containsKey(DocCountAggr.BUCKETS_STR)) {
             return new DocCountAggr(root);
         } else {
             return new JsonAggr(root);

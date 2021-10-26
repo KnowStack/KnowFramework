@@ -22,12 +22,12 @@ public class RescoreParser extends DslParser {
     public KeyWord parse(String name, Object root) throws Exception {
         Rescore node = new Rescore(name);
 
-        if(root instanceof JSONObject) {
+        if (root instanceof JSONObject) {
             node.n = parserObj((JSONObject) root);
         } else {
             JSONArray array = (JSONArray) root;
             NodeList nl = new NodeList();
-            for(Object obj : array) {
+            for (Object obj : array) {
                 nl.l.add(parserObj((JSONObject) obj));
             }
             node.n = nl;
@@ -38,11 +38,11 @@ public class RescoreParser extends DslParser {
 
     private Node parserObj(JSONObject root) throws Exception {
         NodeMap nm = new NodeMap();
-        for(String key : root.keySet()) {
+        for (String key : root.keySet()) {
             StringNode keyNode = new StringNode(key);
             Object obj = root.get(key);
 
-            if(key.equalsIgnoreCase("query")) {
+            if (key.equalsIgnoreCase("query")) {
                 nm.m.put(keyNode, parserQuery((JSONObject) obj));
             } else {
                 nm.m.put(keyNode, ValueNode.getValueNode(obj));
@@ -55,11 +55,11 @@ public class RescoreParser extends DslParser {
     private Node parserQuery(JSONObject root) throws Exception {
         NodeMap nm = new NodeMap();
 
-        for(String key : root.keySet()) {
-            StringNode  keyNode = new StringNode(key);
+        for (String key : root.keySet()) {
+            StringNode keyNode = new StringNode(key);
             Object obj = root.get(key);
 
-            if(key.equalsIgnoreCase("rescore_query")) {
+            if (key.equalsIgnoreCase("rescore_query")) {
                 NodeMap tmp = new NodeMap();
                 NodeMap.toString2Node(ParserType.QUERY, (JSONObject) obj, tmp);
                 nm.m.put(keyNode, tmp);

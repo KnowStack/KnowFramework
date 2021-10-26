@@ -14,11 +14,11 @@ public class JsonUtils {
     public static Map<String, String> flat(JSONObject obj) {
         Map<String, String> ret = new HashMap<>();
 
-        if(obj==null) {
+        if (obj == null) {
             return ret;
         }
 
-        for(String key : obj.keySet()) {
+        for (String key : obj.keySet()) {
             Object o = obj.get(key);
 
             if (o instanceof JSONObject) {
@@ -37,11 +37,11 @@ public class JsonUtils {
     public static Map<String, Object> flatObject(JSONObject obj) {
         Map<String, Object> ret = new HashMap<>();
 
-        if(obj==null) {
+        if (obj == null) {
             return ret;
         }
 
-        for(String key : obj.keySet()) {
+        for (String key : obj.keySet()) {
             Object o = obj.get(key);
 
             if (o instanceof JSONObject) {
@@ -59,20 +59,20 @@ public class JsonUtils {
 
     public static JSONObject reFlat(Map<String, String> m) {
         JSONObject ret = new JSONObject();
-        for(String key : m.keySet()) {
-
+        for (String key : m.keySet()) {
+            // 增加一个value
             String[] subKeys = key.split("\\.");
-            for(int i=0; i<subKeys.length; i++) {
+            for (int i = 0; i < subKeys.length; i++) {
                 subKeys[i] = subKeys[i].replace("#", ".");
             }
 
             JSONObject obj = ret;
             int i;
-            for(i=0; i<subKeys.length-1; i++) {
+            for (i = 0; i < subKeys.length - 1; i++) {
                 String subKey = subKeys[i];
 
-
-                if(!obj.containsKey(subKey)) {
+                // 逐层增加
+                if (!obj.containsKey(subKey)) {
                     obj.put(subKey, new JSONObject());
                 }
 
@@ -80,11 +80,11 @@ public class JsonUtils {
             }
 
             String value = m.get(key);
-            if(value!=null && value.startsWith("[") && value.endsWith("]")) {
-
+            if (value != null && value.startsWith("[") && value.endsWith("]")) {
+                // 看是否可以转化成jsonarray
 
                 JSONArray array = JSONArray.parseArray(value);
-                if(array==null) {
+                if (array == null) {
                     obj.put(subKeys[i], value);
                 } else {
                     obj.put(subKeys[i], array);
@@ -99,7 +99,24 @@ public class JsonUtils {
     }
 
 
-
+    /**
+     * 将一维的kv对转化为嵌套的kv对
+     * 例如:
+     * a.b.c:"test"
+     * <p>
+     * 转化为:
+     * <p>
+     * {
+     * "a": {
+     * "b": {
+     * "c": "test"
+     * }
+     * }
+     * }
+     *
+     * @param map map
+     * @return Map
+     */
     public static Map<String, Object> formatMap(Map<String, Object> map) {
         Map<String, Object> result = new HashMap<>();
         for (String longKey : map.keySet()) {

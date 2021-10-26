@@ -23,10 +23,10 @@ public class NestedParser extends DslParser {
 
 
         JSONObject obj = (JSONObject) root;
-        for(String key : obj.keySet()) {
+        for (String key : obj.keySet()) {
             Node valueNode;
 
-            if(key.equalsIgnoreCase("query")) {
+            if (key.equalsIgnoreCase("query")) {
                 valueNode = ParserRegister.parse(parserType, key, obj.get(key));
             } else {
                 valueNode = ValueNode.getValueNode(obj.get(key));

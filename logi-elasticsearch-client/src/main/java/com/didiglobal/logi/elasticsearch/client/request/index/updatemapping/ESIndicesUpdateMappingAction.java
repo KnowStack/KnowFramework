@@ -26,7 +26,7 @@ import org.elasticsearch.client.ElasticsearchClient;
 public class ESIndicesUpdateMappingAction extends Action<ESIndicesUpdateMappingRequest, ESIndicesUpdateMappingResponse, ESIndicesUpdateMappingRequestBuilder> {
 
     public static final ESIndicesUpdateMappingAction INSTANCE = new ESIndicesUpdateMappingAction();
-    public static final String                    NAME     = "indices:close/index";
+    public static final String NAME = "indices:close/index";
 
     private ESIndicesUpdateMappingAction() {
         super(NAME);

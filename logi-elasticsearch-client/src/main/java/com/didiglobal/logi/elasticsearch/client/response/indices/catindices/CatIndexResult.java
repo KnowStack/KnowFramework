@@ -2,7 +2,10 @@ package com.didiglobal.logi.elasticsearch.client.response.indices.catindices;
 
 import com.alibaba.fastjson.annotation.JSONField;
 
-
+/**
+ * cat/indices接口的返回结构
+ *
+ */
 public class CatIndexResult {
 
     @JSONField(name = "health")

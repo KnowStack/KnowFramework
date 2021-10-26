@@ -1,4 +1,21 @@
-
+/*
+ * Licensed to Elasticsearch under one or more contributor
+ * license agreements. See the NOTICE file distributed with
+ * this work for additional information regarding copyright
+ * ownership. Elasticsearch licenses this file to you under
+ * the Apache License, Version 2.0 (the "License"); you may
+ * not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
 
 package com.didiglobal.logi.elasticsearch.client.request.index.stats;
 
@@ -8,26 +25,46 @@ import org.elasticsearch.client.ElasticsearchClient;
 
 import static com.didiglobal.logi.elasticsearch.client.request.index.stats.ESIndicesStatsRequest.*;
 
-
+/**
+ * A request to get indices level nodestats. Allow to enable different nodestats to be returned.
+ * <p>
+ * By default, the {@link #setDocs(boolean)}, {@link #setStore(boolean)}, {@link #setIndexing(boolean)}
+ * are enabled. Other nodestats can be enabled as well.
+ * <p>
+ * All the nodestats to be returned can be cleared using {@link #clear()}, at which point, specific
+ * nodestats can be enabled.
+ */
 public class ESIndicesStatsRequestBuilder extends ESBroadcastOperationRequestBuilder<ESIndicesStatsRequest, ESIndicesStatsResponse, ESIndicesStatsRequestBuilder> {
 
     public ESIndicesStatsRequestBuilder(ElasticsearchClient client, ESIndicesStatsAction action) {
         super(client, action, new ESIndicesStatsRequest());
     }
 
-
+    /**
+     * Sets all flags to return all nodestats.
+     * @return ESIndicesStatsRequestBuilder
+     */
     public ESIndicesStatsRequestBuilder all() {
         request.all();
         return this;
     }
 
-
+    /**
+     * Clears all nodestats.
+     * @return ESIndicesStatsRequestBuilder
+     */
     public ESIndicesStatsRequestBuilder clear() {
         request.clear();
         return this;
     }
 
-
+    /**
+     * Document types to return nodestats for. Mainly affects {@link #setIndexing(boolean)} when
+     * enabled, returning specific indexing nodestats for those types.
+     * @param types types
+     * @return ESIndicesStatsRequestBuilder
+     *
+     */
     public ESIndicesStatsRequestBuilder setTypes(String... types) {
         request.types(types);
         return this;
@@ -90,11 +127,11 @@ public class ESIndicesStatsRequestBuilder extends ESBroadcastOperationRequestBui
     }
 
 
-
-
-
-
-
+    // 6.x版本不支持
+//    public ESIndicesStatsRequestBuilder setPercolate(boolean percolate) {
+//        request.percolate(percolate);
+//        return this;
+//    }
 
     public ESIndicesStatsRequestBuilder setSegments(boolean segments) {
         request.flag(SEGMENTS, segments);

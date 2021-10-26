@@ -62,19 +62,19 @@ public class ESIndicesDeleteByQueryRequest extends ESActionRequest<ESIndicesDele
 
     @Override
     public RestRequest toRequest() throws Exception {
-        if(index==null || index.length()==0) {
+        if (index == null || index.length() == 0) {
             throw new Exception("index is null");
         }
 
-        if(query==null || query.length()==0) {
+        if (query == null || query.length() == 0) {
             throw new Exception("query is null");
         }
 
         String method;
         String endPoint;
-        if(isHighES) {
+        if (isHighES) {
             method = "POST";
-            if(StringUtils.isBlank(type)) {
+            if (StringUtils.isBlank(type)) {
                 endPoint = String.format("/%s/_delete_by_query", index);
             } else {
                 endPoint = String.format("/%s/%s/_delete_by_query", index, type);

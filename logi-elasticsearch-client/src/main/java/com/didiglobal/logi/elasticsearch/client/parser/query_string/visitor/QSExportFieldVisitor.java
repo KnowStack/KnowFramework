@@ -6,10 +6,13 @@ import org.apache.commons.lang3.StringUtils;
 import java.util.Set;
 import java.util.TreeSet;
 
+/**
+ * 导出query string中的字段信息
+ */
 public class QSExportFieldVisitor extends QSSeekVisitor {
 
     /**
-     *  字段名集合
+     * 字段名集合
      */
     private Set<String> fieldNameSet = new TreeSet<>();
 
@@ -29,11 +32,11 @@ public class QSExportFieldVisitor extends QSSeekVisitor {
     /**
      * 格式化字段，去除"，\
      *
-     * @param field
-     * @return
+     * @param field field
+     * @return String
      */
     private String formatField(String field) {
-        if(StringUtils.isBlank(field)) {
+        if (StringUtils.isBlank(field)) {
             return field;
         }
 
