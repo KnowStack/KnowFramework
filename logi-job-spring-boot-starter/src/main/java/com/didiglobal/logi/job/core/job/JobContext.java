@@ -1,5 +1,7 @@
 package com.didiglobal.logi.job.core.job;
 
+import lombok.Data;
+
 import java.util.List;
 
 /**
@@ -7,6 +9,7 @@ import java.util.List;
  *
  * @author ds
  */
+@Data
 public class JobContext {
     private String          params;
     private List<String>    allWorkerCodes;
