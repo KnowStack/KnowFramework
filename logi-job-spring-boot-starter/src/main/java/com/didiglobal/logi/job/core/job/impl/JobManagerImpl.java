@@ -6,10 +6,7 @@ import com.didiglobal.logi.job.common.domain.LogIJob;
 import com.didiglobal.logi.job.common.domain.LogITask;
 import com.didiglobal.logi.job.common.enums.JobStatusEnum;
 import com.didiglobal.logi.job.common.enums.TaskWorkerStatusEnum;
-import com.didiglobal.logi.job.common.po.LogIJobLogPO;
-import com.didiglobal.logi.job.common.po.LogIJobPO;
-import com.didiglobal.logi.job.common.po.LogITaskLockPO;
-import com.didiglobal.logi.job.common.po.LogITaskPO;
+import com.didiglobal.logi.job.common.po.*;
 import com.didiglobal.logi.job.core.WorkerSingleton;
 import com.didiglobal.logi.job.core.job.JobContext;
 import com.didiglobal.logi.job.core.job.JobExecutor;
@@ -215,8 +212,16 @@ public class JobManagerImpl implements JobManager {
                 LogIJobLogPO logIJobLogPO = logIJob.getAuvJobLog();
                 logIJobLogMapper.updateByCode(logIJobLogPO);
 
-                int totalWorker = logIWorkerMapper.countByAppName(logIJobProperties.getAppName());
-                JobContext jobContext = new JobContext(logITask.getParams(), totalWorker);
+                List<LogIWorkerPO>  logIWorkerPOS = logIWorkerMapper.selectByAppName(logIJobProperties.getAppName());
+                List<String>        workCodes     = new ArrayList<>();
+
+                if(CollectionUtils.isEmpty(logIWorkerPOS)){
+                    workCodes.add(logIJob.getWorkerIp());
+                }else {
+                    workCodes.addAll(logIWorkerPOS.stream().map(LogIWorkerPO::getWorkerCode).collect(Collectors.toList()));
+                }
+
+                JobContext jobContext = new JobContext(logITask.getParams(), workCodes, logIJob.getWorkerCode());
 
                 object = logIJob.getJob().execute(jobContext);
 

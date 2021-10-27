@@ -1,17 +1,21 @@
 package com.didiglobal.logi.job.core.job;
 
+import java.util.List;
+
 /**
  * job context.
  *
  * @author ds
  */
 public class JobContext {
-    private String params;
-    private int    totalWorker;
+    private String          params;
+    private List<String>    allWorkerCodes;
+    private String          currentWorkerCode;
 
     public JobContext(){}
-    public JobContext(String params, int totalWorker){
-        this.params         = params;
-        this.totalWorker    = totalWorker;
+    public JobContext(String params,  List<String> allWorkerCodes, String currentWorkerCode){
+        this.params             = params;
+        this.allWorkerCodes     = allWorkerCodes;
+        this.currentWorkerCode  = currentWorkerCode;
     }
 }
