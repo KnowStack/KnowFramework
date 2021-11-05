@@ -5,18 +5,18 @@ import com.alibaba.fastjson.annotation.JSONField;
 public class LoadAverage {
 
     @JSONField(name = "1m")
-    private int OneM;
+    private int oneM;
     @JSONField(name = "5m")
     private int fiveM;
     @JSONField(name = "15m")
     private int fifteenM;
 
     public int getOneM() {
-        return OneM;
+        return oneM;
     }
 
     public void setOneM(int oneM) {
-        OneM = oneM;
+        this.oneM = oneM;
     }
 
     public int getFiveM() {
