@@ -6,7 +6,7 @@ public class OsNode {
     @JSONField(name = "timestamp")
     private long timestamp;
     @JSONField(name = "cpu")
-    private OsCpu OsCpu;
+    private OsCpu cpu;
     @JSONField(name = "mem")
     private OsMem mem;
     @JSONField(name = "swap")
@@ -20,12 +20,12 @@ public class OsNode {
         this.timestamp = timestamp;
     }
 
-    public OsCpu getOsCpu() {
-        return OsCpu;
+    public OsCpu getCpu() {
+        return cpu;
     }
 
-    public void setOsCpu(OsCpu osCpu) {
-        OsCpu = osCpu;
+    public void setCpu(OsCpu cpu) {
+        this.cpu = cpu;
     }
 
     public OsMem getMem() {
