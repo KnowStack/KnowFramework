@@ -53,6 +53,10 @@ public class TaskBeanPostProcessor implements BeanPostProcessor {
             logger.info("class=TaskBeanPostProcessor||method=postProcessAfterInitialization||beanName={}||canonicaName={}",
                     beanName, bean.getClass().getCanonicalName());
 
+            if(!logIJobProperties.getEnable()){
+                return bean;
+            }
+
             Class<?> beanClass = bean.getClass();
             // add job to jobFactory
             if (bean instanceof Job) {

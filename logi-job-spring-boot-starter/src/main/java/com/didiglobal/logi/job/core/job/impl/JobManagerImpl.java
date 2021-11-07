@@ -375,7 +375,7 @@ public class JobManagerImpl implements JobManager {
                         for (LogITaskLockPO logITaskLockPO : logITaskLockPOS) {
                             boolean matched = jobFutureMap.keySet().stream().anyMatch(jobInfo ->
                                     Objects.equals(logITaskLockPO.getTaskCode(), jobInfo.getTaskCode()));
-                            if (matched) {
+//                            if (matched) {
                                 long current = System.currentTimeMillis() / 1000;
                                 long exTime = (logITaskLockPO.getCreateTime().getTime() / 1000)
                                         + logITaskLockPO.getExpireTime();
@@ -392,7 +392,7 @@ public class JobManagerImpl implements JobManager {
                                     }
                                     continue;
                                 }
-                            }
+//                            }
 
                             // 否则，删除无效的锁、过期的锁
                             logger.info("class=TaskLockServiceImpl||method=run||url=||msg=lock clean "

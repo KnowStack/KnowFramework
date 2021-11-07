@@ -6,6 +6,7 @@ import com.didiglobal.logi.job.common.po.LogIWorkerPO;
 import com.didiglobal.logi.job.core.WorkerSingleton;
 import com.didiglobal.logi.job.core.job.JobManager;
 import com.didiglobal.logi.job.core.monitor.SimpleBeatMonitor;
+import com.didiglobal.logi.job.mapper.LogITaskLockMapper;
 import com.didiglobal.logi.job.mapper.LogIWorkerMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,6 +22,7 @@ public class BeatManagerImpl implements BeatManager {
 
     private JobManager jobManager;
     private LogIWorkerMapper logIWorkerMapper;
+    private LogITaskLockMapper logITaskLockMapper;
     private LogIJobProperties logIJobProperties;
 
     /**
@@ -31,10 +33,13 @@ public class BeatManagerImpl implements BeatManager {
      * @param logIJobProperties job 配置信息
      */
     @Autowired
-    public BeatManagerImpl(JobManager jobManager, LogIWorkerMapper logIWorkerMapper,
+    public BeatManagerImpl(JobManager jobManager,
+                           LogIWorkerMapper logIWorkerMapper,
+                           LogITaskLockMapper logITaskLockMapper,
                            LogIJobProperties logIJobProperties) {
         this.jobManager = jobManager;
         this.logIWorkerMapper = logIWorkerMapper;
+        this.logITaskLockMapper = logITaskLockMapper;
         this.logIJobProperties = logIJobProperties;
     }
 
@@ -57,6 +62,7 @@ public class BeatManagerImpl implements BeatManager {
         WorkerSingleton workerSingleton = WorkerSingleton.getInstance();
         LogIWorker logIWorker = workerSingleton.getLogIWorker();
         logIWorkerMapper.deleteByCode(logIWorker.getWorkerCode());
+        logITaskLockMapper.deleteByWorkerCodeAndAppName(logIWorker.getWorkerCode(), logIJobProperties.getAppName());
         return true;
     }
 
@@ -69,6 +75,7 @@ public class BeatManagerImpl implements BeatManager {
         for (LogIWorkerPO logIWorkerPO : logIWorkerPOS) {
             if (logIWorkerPO.getHeartbeat().getTime() + 3 * SimpleBeatMonitor.INTERVAL * 1000 < currentTime) {
                 logIWorkerMapper.deleteByCode(logIWorkerPO.getWorkerCode());
+                logITaskLockMapper.deleteByWorkerCodeAndAppName(logIWorkerPO.getWorkerCode(), logIJobProperties.getAppName());
             }
         }
     }
