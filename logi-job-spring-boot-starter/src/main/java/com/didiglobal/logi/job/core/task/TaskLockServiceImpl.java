@@ -54,14 +54,35 @@ public class TaskLockServiceImpl implements TaskLockService {
         List<LogITaskLockPO> logITaskLockPOList =
                 logITaskLockMapper.selectByTaskCode(taskCode, logIJobProperties.getAppName());
 
-        boolean hasLock;
+        boolean hasLock = false;
+        //1、taskCode没有任何worker占有
         if (CollectionUtils.isEmpty(logITaskLockPOList)) {
             hasLock = false;
         } else {
+            //2、taskCode有被worker占有
             long current = System.currentTimeMillis() / 1000;
-            Long inLockSize = logITaskLockPOList.stream().filter(logITaskLockPO -> logITaskLockPO.getCreateTime()
-                    .getTime() / 1000 + expireTime > current).collect(Collectors.counting());
-            hasLock = inLockSize > 0 ? true : false;
+
+            //3、taskCode的worker是否有没有过期
+            List<LogITaskLockPO> noExpireTaskLock = logITaskLockPOList.stream().filter(logITaskLockPO -> logITaskLockPO.getCreateTime()
+                    .getTime() / 1000 + expireTime >= current).collect(Collectors.toList());
+
+            if(!CollectionUtils.isEmpty(noExpireTaskLock)){
+                for(LogITaskLockPO logITaskLockPO : noExpireTaskLock){
+                    if(workerCode.equals(logITaskLockPO.getWorkerCode())){
+                        hasLock = true;
+                    }
+                }
+            }
+
+            //4、taskCode的worker是否有过期
+            List<LogITaskLockPO> expireTaskLock = logITaskLockPOList.stream().filter(logITaskLockPO -> logITaskLockPO.getCreateTime()
+                    .getTime() / 1000 + expireTime < current).collect(Collectors.toList());
+
+            if(!CollectionUtils.isEmpty(expireTaskLock)){
+                for(LogITaskLockPO logITaskLockPO : expireTaskLock){
+                    logITaskLockMapper.deleteByWorkerCodeAndAppName(logITaskLockPO.getWorkerCode(), logIJobProperties.getAppName());
+                }
+            }
         }
 
         if (!hasLock) {
@@ -82,9 +103,10 @@ public class TaskLockServiceImpl implements TaskLockService {
                             "class=TaskLockServiceImpl||method=tryAcquire||taskCode=||msg=", taskCode, e.getMessage()
                     );
                 }
+                return false;
             }
         }
-        return false;
+        return hasLock;
     }
 
     @Override

@@ -121,7 +121,9 @@ public class TaskManagerImpl implements TaskManager {
                 logger.error("class=TaskManagerImpl||method=nextTriggers||url=||msg=", e);
                 return false;
             }
-            return (new Timestamp(fromTime + interval * 1000)).after(taskInfo.getNextFireTime());
+
+            Timestamp timestamp = new Timestamp(fromTime + interval * 1000);
+            return timestamp.after(taskInfo.getNextFireTime());
         }).collect(Collectors.toList());
 
         // sort
@@ -309,6 +311,7 @@ public class TaskManagerImpl implements TaskManager {
         if (logITaskPO == null) {
             return false;
         }
+
         List<LogITask.TaskWorker> taskWorkers = BeanUtil.convertToList(logITaskPO.getTaskWorkerStr(),
                 LogITask.TaskWorker.class);
         boolean needUpdate = false;
@@ -321,9 +324,10 @@ public class TaskManagerImpl implements TaskManager {
                 }
             }
         }
+
         if (needUpdate) {
             logITaskPO.setTaskWorkerStr(BeanUtil.convertToJson(taskWorkers));
-            int updateResult = logITaskMapper.updateByCode(logITaskPO);
+            int updateResult = logITaskMapper.updateTaskWorkStrByCode(logITaskPO);
             if (updateResult <= 0) {
                 return false;
             }

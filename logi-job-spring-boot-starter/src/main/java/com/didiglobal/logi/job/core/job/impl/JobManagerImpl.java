@@ -348,7 +348,7 @@ public class JobManagerImpl implements JobManager {
             }
         }
         logITaskPO.setTaskWorkerStr(BeanUtil.convertToJson(taskWorkers));
-        logITaskMapper.updateByCode(logITaskPO);
+        logITaskMapper.updateTaskWorkStrByCode(logITaskPO);
     }
 
     /**
@@ -372,32 +372,35 @@ public class JobManagerImpl implements JobManager {
                             .getInstance().getLogIWorker().getWorkerCode(), logIJobProperties.getAppName());
 
                     if (!CollectionUtils.isEmpty(logITaskLockPOS)) {
+                        long current = System.currentTimeMillis() / 1000;
+
                         for (LogITaskLockPO logITaskLockPO : logITaskLockPOS) {
                             boolean matched = jobFutureMap.keySet().stream().anyMatch(jobInfo ->
                                     Objects.equals(logITaskLockPO.getTaskCode(), jobInfo.getTaskCode()));
-                            if (matched) {
-                                long current = System.currentTimeMillis() / 1000;
-                                long exTime = (logITaskLockPO.getCreateTime().getTime() / 1000)
-                                        + logITaskLockPO.getExpireTime();
 
-                                if (current < exTime) {
-                                    // 续约
-                                    if (current > exTime - CHECK_BEFORE_INTERVAL) {
-                                        logger.info("class=TaskLockServiceImpl||method=run||url=||msg=update lock "
-                                                        + "expireTime id={}, expireTime={}", logITaskLockPO.getId(),
-                                                logITaskLockPO.getExpireTime());
-                                        logITaskLockMapper.update(
-                                                logITaskLockPO.getId(),
-                                                logITaskLockPO.getExpireTime() + RENEW_INTERVAL);
-                                    }
-                                    continue;
+                            long exTime = (logITaskLockPO.getCreateTime().getTime() / 1000)
+                                    + logITaskLockPO.getExpireTime();
+
+                            if (matched) {
+                                // 续约
+                                if (current < exTime && current > exTime - CHECK_BEFORE_INTERVAL) {
+                                    logger.info("class=TaskLockServiceImpl||method=run||url=||msg=update lock "
+                                                    + "expireTime id={}, expireTime={}", logITaskLockPO.getId(),
+                                            logITaskLockPO.getExpireTime());
+                                    logITaskLockMapper.update(
+                                            logITaskLockPO.getId(),
+                                            logITaskLockPO.getExpireTime() + RENEW_INTERVAL);
                                 }
+                                continue;
                             }
 
                             // 否则，删除无效的锁、过期的锁
-                            logger.info("class=TaskLockServiceImpl||method=run||url=||msg=lock clean "
-                                    + "lockInfo={}", BeanUtil.convertToJson(logITaskLockPO));
-                            logITaskLockMapper.deleteById(logITaskLockPO.getId());
+                            if(current > exTime){
+                                logger.info("class=TaskLockServiceImpl||method=run||url=||msg=lock clean "
+                                        + "lockInfo={}", BeanUtil.convertToJson(logITaskLockPO));
+                                logITaskLockMapper.deleteById(logITaskLockPO.getId());
+                            }
+
 
                             // 更新当前worker任务状态
                             LogITaskPO logITaskPO = logITaskMapper
@@ -419,11 +422,10 @@ public class JobManagerImpl implements JobManager {
                                 logger.info("class=TaskLockServiceImpl||method=run||url=||msg=update task workers "
                                         + "status taskInfo={}", BeanUtil.convertToJson(logITaskPO));
 
-                                logITaskMapper.updateByCode(logITaskPO);
+                                logITaskMapper.updateTaskWorkStrByCode(logITaskPO);
                             }
                         }
                     }
-
                 } catch (Exception e) {
                     logger.error("class=LockRenewHandler||method=run||url=||msg=", e);
                 }

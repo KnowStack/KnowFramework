@@ -33,6 +33,9 @@ public interface LogITaskMapper {
             + " consensual=#{consensual}, task_worker_str=#{taskWorkerStr}, owner=#{owner} where task_code=#{taskCode}")
     int updateByCode(LogITaskPO logITaskPO);
 
+    @Update("update logi_task set task_worker_str=#{taskWorkerStr} where task_code=#{taskCode}")
+    int updateTaskWorkStrByCode(LogITaskPO logITaskPO);
+
     @Select("select id, task_code, task_name, task_desc, cron, class_name, params, retry_times, "
             + "last_fire_time, timeout, status, sub_task_codes, consensual"
             + ", task_worker_str, create_time, update_time, app_name, owner "

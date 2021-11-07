@@ -60,8 +60,8 @@ public class SimpleTaskMonitor implements TaskMonitor {
     }
 
     class TaskMonitorExecutor implements Runnable {
-        private static final long SCAN_INTERVAL_SLEEP_SECONDS = 1;
-        private static final long INTERVAL_SECONDS = 10;
+        private static final long SCAN_INTERVAL_SLEEP_SECONDS = 10;
+        private static final long INTERVAL_SECONDS = 3;
 
         @Override
         public void run() {
@@ -69,8 +69,6 @@ public class SimpleTaskMonitor implements TaskMonitor {
                 try {
                     logger.info("class=TaskMonitorExecutor||method=run||url=||msg=fetch tasks at regular {}",
                             SCAN_INTERVAL_SLEEP_SECONDS);
-                    // 每次扫描，间隔1s。为了线程终端创造条件
-                    ThreadUtil.sleep(SCAN_INTERVAL_SLEEP_SECONDS, TimeUnit.SECONDS);
 
                     List<LogITask> logITaskList = taskManager.nextTriggers(INTERVAL_SECONDS);
 
@@ -89,6 +87,7 @@ public class SimpleTaskMonitor implements TaskMonitor {
                         Long between = firstFireTime - nowTime;
                         ThreadUtil.sleep(between + 1, TimeUnit.MILLISECONDS);
                     }
+
                     logger.info("class=TaskMonitorExecutor||method=run||url=||msg=start tasks={}, "
                                     + "firstFireTime={}, nowTime={}",
                             logITaskList.stream().map(LogITask::getTaskName).collect(Collectors.toList()),
@@ -99,6 +98,9 @@ public class SimpleTaskMonitor implements TaskMonitor {
                 } catch (Exception e) {
                     logger.error("class=TaskMonitorExecutor||method=run||url=||msg=", e);
                 }
+
+                // 每次扫描，间隔1s。为了线程终端创造条件
+                ThreadUtil.sleep(SCAN_INTERVAL_SLEEP_SECONDS, TimeUnit.SECONDS);
             }
         }
     }
