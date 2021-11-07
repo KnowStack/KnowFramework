@@ -65,7 +65,7 @@ public class ClientTest {
     private static ESClient gatewayClient;
 
     private static String oldIp = "10.179.100.148";
-    private static String newIp = "10.179.101.239";
+    private static String newIp = "10.96.64.13";
 
     static {
         try {
@@ -76,7 +76,7 @@ public class ClientTest {
             oldClient.start();
 
             newClient = new ESClient();
-            newClient.addTransportAddress(new InetSocketTransportAddress(InetAddress.getByName(newIp), 9200));
+            newClient.addTransportAddress(new InetSocketTransportAddress(InetAddress.getByName(newIp), 8061));
             newClient.start();
 
             Header header = new BasicHeader("Authorization", "Basic " + Base64.getEncoder().encodeToString(String.format("%s:%s", "1079", "admin").getBytes()));

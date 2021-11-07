@@ -39,47 +39,6 @@ logi.security.driver-class-name=com.mysql.jdbc.Driver
 - resource-extend-bean-name：resourceExtend的实现类在spring容器bean的名称，logi-security 中资源权限管理模块，需要获取具体资源的信息，所以用户需实现 ResourceExtend 接口并指定实现类在spring容器中bean的名称；
 #### 1.3.3 需要实现接口
 用户可选的实现 ResourceExtend 接口，如果不实现，则资源权限管理模块的功能不能完整使用。接口详情见代码
-```java
-package com.didiglobal.logi.security.extend;
-
-import com.didiglobal.logi.security.common.PagingData;
-import com.didiglobal.logi.security.common.dto.resource.ResourceDTO;
-
-import java.util.List;
-
-/**
- * 资源扩展接口
- */
-public interface ResourceExtend {
-
-    /**
-     * 获取资源信息List，资源id指的是该资源所在服务对该资源的标识
-     * @param projectId 项目id（可为null）
-     * @param resourceTypeId 资源类型id（可为null，不为null则projectId必不为null）
-     * @param resourceName 资源名称（可为null，模糊查询条件）
-     * @param page 当前页（分页条件）
-     * @param size 页大小（分页条件）
-     * @return 资源信息List
-     */
-    PagingData<ResourceDTO> getResourcePage(Integer projectId, Integer resourceTypeId, String resourceName, int page, int size);
-
-    /**
-     * 获取资源信息List，资源id指的是该资源所在服务对该资源的标识
-     * @param projectId 项目id（可为null）
-     * @param resourceTypeId 资源类型id（可为null，不为null则projectId必不为null）
-     * @return 资源信息List
-     */
-    List<ResourceDTO> getResourceList(Integer projectId, Integer resourceTypeId);
-
-    /**
-     * 获取具体资源个数，资源id指的是该资源所在服务对该资源的标识
-     * @param projectId 项目id（可为null）
-     * @param resourceTypeId 资源类型id（可为null，不为null则projectId必不为null）
-     * @return 资源信息List
-     */
-    int getResourceCnt(Integer projectId, Integer resourceTypeId);
-}
-```
 #### 1.3.4 导入数据
 logi-security相关界面并没提供【角色权限元数据、资源类别数据、部门信息数据、操作日志相关（操作页面、操作对象、对象分类）】的创建功能，logi-security提供了数据导入的接口。
 建议全部都导入，简单的数据也行。
@@ -97,7 +56,7 @@ logi-security相关界面并没提供【角色权限元数据、资源类别数�
 <dependency>
     <groupId>io.github.zqrferrari</groupId>
     <artifactId>logi-job-spring-boot-starter</artifactId>
-    <version>1.0.5</version>
+    <version>1.0.10</version>
 </dependency>
 ```
 #### 2.3.2 配置信息
@@ -180,7 +139,7 @@ Trace功能，是为了根据一个flag，把单个请求的日志关联起来�
   <img src="picture/106.png" alt="106.png" style="zoom: 50%;" />
 
 2. 日志采样
-  <img src="picture/107.png" alt="107.png" style="zoom:50%;" />
+    <img src="picture/107.png" alt="107.png" style="zoom:50%;" />
 
 3. 聚合结果
 
@@ -259,6 +218,16 @@ Arius内部指标采集和计算的工具包。
 <dependency>
     <groupId>io.github.zqrferrari</groupId>
     <artifactId>logi-elasticsearch-client</artifactId>
-    <version>1.0.0</version>
+    <version>1.0.1</version>
 </dependency>
 ```
+## 7.logi-elasticsearch-sql
+### 7.1 添加Maven
+```xml
+<dependency>
+    <groupId>io.github.zqrferrari</groupId>
+    <artifactId>logi-elasticsearch-sql</artifactId>
+    <version>1.0.1</version>
+</dependency>
+```
+

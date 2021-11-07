@@ -5,10 +5,8 @@ import com.alibaba.fastjson.annotation.JSONField;
 public class OsNode {
     @JSONField(name = "timestamp")
     private long timestamp;
-    @JSONField(name = "cpu_percent")
-    private long cpuPercent;
-    @JSONField(name = "load_average")
-    private double loadAverage;
+    @JSONField(name = "cpu")
+    private OsCpu cpu;
     @JSONField(name = "mem")
     private OsMem mem;
     @JSONField(name = "swap")
@@ -22,20 +20,12 @@ public class OsNode {
         this.timestamp = timestamp;
     }
 
-    public long getCpuPercent() {
-        return cpuPercent;
+    public OsCpu getCpu() {
+        return cpu;
     }
 
-    public void setCpuPercent(long cpuPercent) {
-        this.cpuPercent = cpuPercent;
-    }
-
-    public double getLoadAverage() {
-        return loadAverage;
-    }
-
-    public void setLoadAverage(double loadAverage) {
-        this.loadAverage = loadAverage;
+    public void setCpu(OsCpu cpu) {
+        this.cpu = cpu;
     }
 
     public OsMem getMem() {
