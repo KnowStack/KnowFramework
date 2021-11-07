@@ -27,7 +27,7 @@ import org.springframework.util.CollectionUtils;
 public class TaskLockServiceImpl implements TaskLockService {
     private static final Logger logger = LoggerFactory.getLogger(TaskLockServiceImpl.class);
     // 每次申请锁的默认过期时间
-    private static final Long EXPIRE_TIME_SECONDS = 120L;
+    private static final Long EXPIRE_TIME_SECONDS = 300L;
 
     private LogITaskLockMapper logITaskLockMapper;
     private LogIJobProperties logIJobProperties;
