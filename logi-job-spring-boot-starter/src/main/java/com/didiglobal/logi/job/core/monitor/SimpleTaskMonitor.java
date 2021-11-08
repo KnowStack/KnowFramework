@@ -61,7 +61,7 @@ public class SimpleTaskMonitor implements TaskMonitor {
 
     class TaskMonitorExecutor implements Runnable {
         private static final long SCAN_INTERVAL_SLEEP_SECONDS = 10;
-        private static final long INTERVAL_SECONDS = 3;
+        private static final long INTERVAL_SECONDS = 1;
 
         @Override
         public void run() {

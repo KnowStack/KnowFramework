@@ -97,7 +97,7 @@ public class TaskManagerImpl implements TaskManager {
 
         logITaskList = logITaskList.stream().filter(taskInfo -> {
             try {
-                Timestamp lastFireTime = new Timestamp(0L);
+                Timestamp lastFireTime = taskInfo.getLastFireTime();
                 List<LogITask.TaskWorker> taskWorkers = taskInfo.getTaskWorkers();
                 for (LogITask.TaskWorker taskWorker : taskWorkers) {
                     // 取到当前worker做进一步判断，如果没有找到证明没有执行过
@@ -110,7 +110,6 @@ public class TaskManagerImpl implements TaskManager {
                                     taskWorker.getWorkerCode());
                             return false;
                         }
-                        lastFireTime = taskWorker.getLastFireTime();
                         break;
                     }
                 }

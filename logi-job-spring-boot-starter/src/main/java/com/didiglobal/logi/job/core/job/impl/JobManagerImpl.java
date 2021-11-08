@@ -16,6 +16,8 @@ import com.didiglobal.logi.job.core.task.TaskLockService;
 import com.didiglobal.logi.job.mapper.*;
 import com.didiglobal.logi.job.utils.BeanUtil;
 import com.didiglobal.logi.job.utils.ThreadUtil;
+import com.google.common.cache.Cache;
+import com.google.common.cache.CacheBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -68,6 +70,9 @@ public class JobManagerImpl implements JobManager {
     private LogIJobProperties logIJobProperties;
 
     private ConcurrentHashMap<LogIJob, Future> jobFutureMap = new ConcurrentHashMap<>();
+
+    private final Cache<String, String> execuedJob = CacheBuilder.newBuilder()
+            .expireAfterWrite(5, TimeUnit.MINUTES).maximumSize(1000).build();
 
     /**
      * construct
@@ -313,6 +318,8 @@ public class JobManagerImpl implements JobManager {
         // 移除记录
         jobFutureMap.remove(logIJob);
 
+        execuedJob.put(logIJob.getTaskCode(), logIJob.getTaskCode());
+
         if (JobStatusEnum.CANCELED.getValue().equals(logIJob.getStatus())) {
             logIJob.setResult(new TaskResult(FAIL_CODE, "task job be canceld!"));
             logIJob.setError("task job be canceld!");
@@ -375,13 +382,10 @@ public class JobManagerImpl implements JobManager {
                         long current = System.currentTimeMillis() / 1000;
 
                         for (LogITaskLockPO logITaskLockPO : logITaskLockPOS) {
-                            boolean matched = jobFutureMap.keySet().stream().anyMatch(jobInfo ->
-                                    Objects.equals(logITaskLockPO.getTaskCode(), jobInfo.getTaskCode()));
-
                             long exTime = (logITaskLockPO.getCreateTime().getTime() / 1000)
                                     + logITaskLockPO.getExpireTime();
 
-                            if (matched) {
+                            if (null != execuedJob.getIfPresent(logITaskLockPO.getTaskCode())) {
                                 // 续约
                                 if (current < exTime && current > exTime - CHECK_BEFORE_INTERVAL) {
                                     logger.info("class=TaskLockServiceImpl||method=run||url=||msg=update lock "
