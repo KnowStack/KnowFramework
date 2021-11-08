@@ -105,7 +105,7 @@ public class TaskManagerImpl implements TaskManager {
                             taskWorker.getWorkerCode())) {
                         // 判断是否在当前worker可执行状态
                         if (!Objects.equals(taskWorker.getStatus(), TaskWorkerStatusEnum.WAITING.getValue())) {
-                            logger.info("class=TaskManagerImpl||method=nextTriggers||url=||msg=has task running! "
+                            logger.info("class=TaskManagerImpl||method=nextTriggers||msg=has task running! "
                                             + "taskCode={}, workerCode={}", taskInfo.getTaskCode(),
                                     taskWorker.getWorkerCode());
                             return false;
@@ -117,7 +117,7 @@ public class TaskManagerImpl implements TaskManager {
                 long nextTime = cronExpression.getNextValidTimeAfter(lastFireTime).getTime();
                 taskInfo.setNextFireTime(new Timestamp(nextTime));
             } catch (Exception e) {
-                logger.error("class=TaskManagerImpl||method=nextTriggers||url=||msg=", e);
+                logger.error("class=TaskManagerImpl||method=nextTriggers||msg=exception!", e);
                 return false;
             }
 

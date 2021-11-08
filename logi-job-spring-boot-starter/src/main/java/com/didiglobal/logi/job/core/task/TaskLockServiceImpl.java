@@ -64,7 +64,7 @@ public class TaskLockServiceImpl implements TaskLockService {
 
             //3、taskCode的worker是否有没有过期
             List<LogITaskLockPO> noExpireTaskLock = logITaskLockPOList.stream().filter(logITaskLockPO -> logITaskLockPO.getCreateTime()
-                    .getTime() / 1000 + expireTime >= current).collect(Collectors.toList());
+                    .getTime() / 1000 + logITaskLockPO.getExpireTime() >= current).collect(Collectors.toList());
 
             if(!CollectionUtils.isEmpty(noExpireTaskLock)){
                 for(LogITaskLockPO logITaskLockPO : noExpireTaskLock){
@@ -76,7 +76,7 @@ public class TaskLockServiceImpl implements TaskLockService {
 
             //4、taskCode的worker是否有过期
             List<LogITaskLockPO> expireTaskLock = logITaskLockPOList.stream().filter(logITaskLockPO -> logITaskLockPO.getCreateTime()
-                    .getTime() / 1000 + expireTime < current).collect(Collectors.toList());
+                    .getTime() / 1000 + logITaskLockPO.getExpireTime() < current).collect(Collectors.toList());
 
             if(!CollectionUtils.isEmpty(expireTaskLock)){
                 for(LogITaskLockPO logITaskLockPO : expireTaskLock){
@@ -97,10 +97,10 @@ public class TaskLockServiceImpl implements TaskLockService {
                 return logITaskLockMapper.insert(taskLock) > 0 ? true : false;
             } catch (Exception e) {
                 if (e instanceof SQLException && e.getMessage().contains("Duplicate entry")) {
-                    logger.info("class=TaskLockServiceImpl||method=tryAcquire||taskCode=||msg=duplicate key", taskCode);
+                    logger.info("class=TaskLockServiceImpl||method=tryAcquire||taskCode={}||msg=duplicate key", taskCode);
                 } else {
                     logger.error(
-                            "class=TaskLockServiceImpl||method=tryAcquire||taskCode=||msg=", taskCode, e.getMessage()
+                            "class=TaskLockServiceImpl||method=tryAcquire||taskCode={}||msg={}", taskCode, e.getMessage()
                     );
                 }
                 return false;
@@ -119,7 +119,7 @@ public class TaskLockServiceImpl implements TaskLockService {
         List<LogITaskLockPO> logITaskLockPOList = logITaskLockMapper.selectByTaskCodeAndWorkerCode(taskCode,
                 workerCode, logIJobProperties.getAppName());
         if (CollectionUtils.isEmpty(logITaskLockPOList)) {
-            logger.error("class=TaskLockServiceImpl||method=tryRelease||url=||msg=taskCode={}, "
+            logger.error("class=TaskLockServiceImpl||method=tryRelease||msg=taskCode={}, "
                     + "workerCode={}", taskCode, workerCode);
             return false;
         }

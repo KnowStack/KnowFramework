@@ -278,7 +278,7 @@ public class JobManagerImpl implements JobManager {
                     // 间隔一段时间执行一次
                     ThreadUtil.sleep(JOB_FUTURE_CLEAN_INTERVAL, TimeUnit.SECONDS);
 
-                    logger.info("class=JobFutureHandler||method=run||url=||msg=check running jobs at regular "
+                    logger.info("class=JobFutureHandler||method=run||msg=check running jobs at regular "
                             + "time {}", JOB_FUTURE_CLEAN_INTERVAL);
 
                     // 定时轮询任务，检查状态并处理
@@ -302,7 +302,7 @@ public class JobManagerImpl implements JobManager {
                         }
                     }));
                 } catch (Exception e) {
-                    logger.error("class=JobFutureHandler||method=run||url=||msg=", e);
+                    logger.error("class=JobFutureHandler||method=run||msg=exception!", e);
                 }
             }
         }
@@ -371,7 +371,7 @@ public class JobManagerImpl implements JobManager {
         public void run() {
             while (true) {
                 try {
-                    logger.info("class=LockRenewHandler||method=run||url=||msg=check need renew lock at "
+                    logger.info("class=LockRenewHandler||method=run||msg=check need renew lock at "
                             + "regular time {}", JOB_INTERVAL);
 
                     // 锁续约
@@ -388,7 +388,7 @@ public class JobManagerImpl implements JobManager {
                             if (null != execuedJob.getIfPresent(logITaskLockPO.getTaskCode())) {
                                 // 续约
                                 if (current < exTime && current > exTime - CHECK_BEFORE_INTERVAL) {
-                                    logger.info("class=TaskLockServiceImpl||method=run||url=||msg=update lock "
+                                    logger.info("class=TaskLockServiceImpl||method=run||msg=update lock "
                                                     + "expireTime id={}, expireTime={}", logITaskLockPO.getId(),
                                             logITaskLockPO.getExpireTime());
                                     logITaskLockMapper.update(
@@ -400,7 +400,7 @@ public class JobManagerImpl implements JobManager {
 
                             // 否则，删除无效的锁、过期的锁
                             if(current > exTime){
-                                logger.info("class=TaskLockServiceImpl||method=run||url=||msg=lock clean "
+                                logger.info("class=TaskLockServiceImpl||method=run||msg=lock clean "
                                         + "lockInfo={}", BeanUtil.convertToJson(logITaskLockPO));
                                 logITaskLockMapper.deleteById(logITaskLockPO.getId());
                             }
@@ -423,7 +423,7 @@ public class JobManagerImpl implements JobManager {
                                 }
                                 logITaskPO.setTaskWorkerStr(BeanUtil.convertToJson(taskWorkers));
 
-                                logger.info("class=TaskLockServiceImpl||method=run||url=||msg=update task workers "
+                                logger.info("class=TaskLockServiceImpl||method=run||msg=update task workers "
                                         + "status taskInfo={}", BeanUtil.convertToJson(logITaskPO));
 
                                 logITaskMapper.updateTaskWorkStrByCode(logITaskPO);
@@ -431,7 +431,7 @@ public class JobManagerImpl implements JobManager {
                         }
                     }
                 } catch (Exception e) {
-                    logger.error("class=LockRenewHandler||method=run||url=||msg=", e);
+                    logger.error("class=LockRenewHandler||method=run||msg=exception!", e);
                 }
 
                 ThreadUtil.sleep(JOB_INTERVAL, TimeUnit.SECONDS);
@@ -461,7 +461,7 @@ public class JobManagerImpl implements JobManager {
                     // 间隔一段时间执行一次
                     ThreadUtil.sleep(JOB_INTERVAL, TimeUnit.SECONDS);
 
-                    logger.info("class=LogCleanHandler||method=run||url=||msg=clean auv_job_log regular"
+                    logger.info("class=LogCleanHandler||method=run||msg=clean auv_job_log regular"
                             + " time {}", JOB_INTERVAL);
 
                     // 删除日志
@@ -471,9 +471,9 @@ public class JobManagerImpl implements JobManager {
                             new Timestamp(calendar.getTimeInMillis()), logIJobProperties.getAppName()
                     );
 
-                    logger.info("class=LogCleanHandler||method=run||url=||msg=clean log count={}", count);
+                    logger.info("class=LogCleanHandler||method=run||msg=clean log count={}", count);
                 } catch (Exception e) {
-                    logger.error("class=LogCleanHandler||method=run||url=||msg=", e);
+                    logger.error("class=LogCleanHandler||method=run||msg=exception", e);
                 }
             }
         }
