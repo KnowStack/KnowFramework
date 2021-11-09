@@ -3,7 +3,6 @@ package com.didiglobal.logi.job;
 import com.didiglobal.logi.job.annotation.Task;
 import com.didiglobal.logi.job.common.enums.TaskStatusEnum;
 import com.didiglobal.logi.job.common.po.LogITaskPO;
-import com.didiglobal.logi.job.common.enums.TaskWorkerStatusEnum;
 import com.didiglobal.logi.job.core.job.Job;
 import com.didiglobal.logi.job.core.job.JobFactory;
 import com.didiglobal.logi.job.mapper.LogITaskMapper;
@@ -79,12 +78,16 @@ public class TaskBeanPostProcessor implements BeanPostProcessor {
                 logger.error("class=TaskBeanPostProcessor||method=blacklist||url=||msg=invalid schedule {}",
                         taskAnnotation.toString());
             }
-            // not exists register
-            LogITaskPO task = getAuvTask(beanClass, taskAnnotation);
-            task.setTaskCode(IdWorker.getIdStr());
-            if (!contains(task)) {
+
+            if(!contains(beanClass.getCanonicalName())){
+                LogITaskPO task = getNewLogTask(beanClass, taskAnnotation);
+                task.setTaskCode(IdWorker.getIdStr());
                 task.setStatus(TaskStatusEnum.RUNNING.getValue());
                 logITaskMapper.insert(task);
+            }else {
+                LogITaskPO task = taskMap.get(beanClass.getCanonicalName());
+                task = updateLogTask(task, beanClass, taskAnnotation);
+                logITaskMapper.updateByCode(task);
             }
         }catch (Exception e){
             logger.error("class=TaskBeanPostProcessor||method=postProcessAfterInitialization||beanName={}||msg=exception",
@@ -99,7 +102,7 @@ public class TaskBeanPostProcessor implements BeanPostProcessor {
         return CronExpression.isValidExpression(schedule.cron());
     }
 
-    private LogITaskPO getAuvTask(Class<?> beanClass, Task schedule) {
+    private LogITaskPO getNewLogTask(Class<?> beanClass, Task schedule) {
         LogITaskPO logITaskPO = new LogITaskPO();
         logITaskPO.setTaskName(schedule.name());
         logITaskPO.setTaskDesc(schedule.description());
@@ -117,12 +120,26 @@ public class TaskBeanPostProcessor implements BeanPostProcessor {
         return logITaskPO;
     }
 
-    private boolean contains(LogITaskPO task) {
+    private LogITaskPO updateLogTask(LogITaskPO logITaskPO, Class<?> beanClass, Task schedule){
+        logITaskPO.setTaskName(schedule.name());
+        logITaskPO.setTaskDesc(schedule.description());
+        logITaskPO.setCron(schedule.cron());
+        logITaskPO.setClassName(beanClass.getCanonicalName());
+        logITaskPO.setParams("");
+        logITaskPO.setRetryTimes(schedule.retryTimes());
+        logITaskPO.setTimeout(schedule.timeout());
+        logITaskPO.setConsensual(schedule.consensual().name());
+        logITaskPO.setAppName(logIJobProperties.getAppName());
+        logITaskPO.setOwner(schedule.owner());
+        return logITaskPO;
+    }
+
+    private boolean contains(String className) {
         if (taskMap.isEmpty()) {
             List<LogITaskPO> logITaskPOS = logITaskMapper.selectByAppName(logIJobProperties.getAppName());
             taskMap = logITaskPOS.stream().collect(Collectors.toMap(LogITaskPO::getClassName,
                     Function.identity()));
         }
-        return taskMap.containsKey(task.getClassName());
+        return taskMap.containsKey(className);
     }
 }

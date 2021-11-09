@@ -286,6 +286,7 @@ public class JobManagerImpl implements JobManager {
                         // job完成，信息整理
                         if (future.isDone()) {
                             reorganizeFinishedJob(jobInfo);
+                            return;
                         }
 
                         // 超时处理
@@ -293,11 +294,13 @@ public class JobManagerImpl implements JobManager {
                         if (timeout <= 0) {
                             return;
                         }
+
                         Long startTime = jobInfo.getStartTime().getTime();
                         Long now = System.currentTimeMillis();
                         Long between = (now - startTime) / 1000;
 
                         if (between > timeout && !future.isDone()) {
+                            jobInfo.setStatus(JobStatusEnum.CANCELED.getValue());
                             future.cancel(true);
                         }
                     }));

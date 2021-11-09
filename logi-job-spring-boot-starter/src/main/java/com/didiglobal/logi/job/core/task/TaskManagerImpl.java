@@ -10,6 +10,7 @@ import com.didiglobal.logi.job.common.dto.LogITaskDTO;
 import com.didiglobal.logi.job.common.enums.TaskWorkerStatusEnum;
 import com.didiglobal.logi.job.core.WorkerSingleton;
 import com.didiglobal.logi.job.core.consensual.Consensual;
+import com.didiglobal.logi.job.core.consensual.ConsensualEnum;
 import com.didiglobal.logi.job.core.consensual.ConsensualFactory;
 import com.didiglobal.logi.job.core.job.JobManager;
 import com.didiglobal.logi.job.mapper.LogITaskMapper;
@@ -98,31 +99,35 @@ public class TaskManagerImpl implements TaskManager {
         logITaskList = logITaskList.stream().filter(taskInfo -> {
             try {
                 Timestamp lastFireTime = taskInfo.getLastFireTime();
-                List<LogITask.TaskWorker> taskWorkers = taskInfo.getTaskWorkers();
-                for (LogITask.TaskWorker taskWorker : taskWorkers) {
-                    // 取到当前worker做进一步判断，如果没有找到证明没有执行过
-                    if (Objects.equals(WorkerSingleton.getInstance().getLogIWorker().getWorkerCode(),
-                            taskWorker.getWorkerCode())) {
-                        // 判断是否在当前worker可执行状态
-                        if (!Objects.equals(taskWorker.getStatus(), TaskWorkerStatusEnum.WAITING.getValue())) {
-                            logger.info("class=TaskManagerImpl||method=nextTriggers||msg=has task running! "
-                                            + "taskCode={}, workerCode={}", taskInfo.getTaskCode(),
-                                    taskWorker.getWorkerCode());
-                            return false;
+
+                if(ConsensualEnum.RANDOM.name().equals(taskInfo.getConsensual())){
+                    List<LogITask.TaskWorker> taskWorkers = taskInfo.getTaskWorkers();
+                    for (LogITask.TaskWorker taskWorker : taskWorkers) {
+                        // 取到当前worker做进一步判断，如果没有找到证明没有执行过
+                        if (Objects.equals(WorkerSingleton.getInstance().getLogIWorker().getWorkerCode(),
+                                taskWorker.getWorkerCode())) {
+                            // 判断是否在当前worker可执行状态
+                            if (!Objects.equals(taskWorker.getStatus(), TaskWorkerStatusEnum.WAITING.getValue())) {
+                                logger.info("class=TaskManagerImpl||method=nextTriggers||msg=has task running! "
+                                                + "taskCode={}, workerCode={}", taskInfo.getTaskCode(),
+                                        taskWorker.getWorkerCode());
+                                return false;
+                            }
+                            break;
                         }
-                        break;
                     }
                 }
+
                 CronExpression cronExpression = new CronExpression(taskInfo.getCron());
                 long nextTime = cronExpression.getNextValidTimeAfter(lastFireTime).getTime();
                 taskInfo.setNextFireTime(new Timestamp(nextTime));
+
+                Timestamp timestamp = new Timestamp(fromTime + interval * 1000);
+                return timestamp.after(taskInfo.getNextFireTime());
             } catch (Exception e) {
                 logger.error("class=TaskManagerImpl||method=nextTriggers||msg=exception!", e);
                 return false;
             }
-
-            Timestamp timestamp = new Timestamp(fromTime + interval * 1000);
-            return timestamp.after(taskInfo.getNextFireTime());
         }).collect(Collectors.toList());
 
         // sort
