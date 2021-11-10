@@ -98,9 +98,9 @@ public class TaskManagerImpl implements TaskManager {
 
         logITaskList = logITaskList.stream().filter(taskInfo -> {
             try {
-                Timestamp lastFireTime = taskInfo.getLastFireTime();
-
                 if(ConsensualEnum.RANDOM.name().equals(taskInfo.getConsensual())){
+                    Timestamp lastFireTime = taskInfo.getLastFireTime();
+
                     List<LogITask.TaskWorker> taskWorkers = taskInfo.getTaskWorkers();
                     for (LogITask.TaskWorker taskWorker : taskWorkers) {
                         // 取到当前worker做进一步判断，如果没有找到证明没有执行过
@@ -116,14 +116,35 @@ public class TaskManagerImpl implements TaskManager {
                             break;
                         }
                     }
+
+                    CronExpression cronExpression = new CronExpression(taskInfo.getCron());
+                    long nextTime = cronExpression.getNextValidTimeAfter(lastFireTime).getTime();
+                    taskInfo.setNextFireTime(new Timestamp(nextTime));
+
+                    Timestamp timestamp = new Timestamp(fromTime + interval * 1000);
+                    return timestamp.after(taskInfo.getNextFireTime());
+                }else if(ConsensualEnum.BROADCAST.name().equals(taskInfo.getConsensual())){
+                    List<LogITask.TaskWorker> taskWorkers = taskInfo.getTaskWorkers();
+                    Timestamp lastFireTime = new Timestamp(0L);
+
+                    for (LogITask.TaskWorker taskWorker : taskWorkers) {
+                        // 取到当前worker做进一步判断，如果没有找到证明没有执行过
+                        if (Objects.equals(WorkerSingleton.getInstance().getLogIWorker().getWorkerCode(),
+                                taskWorker.getWorkerCode())) {
+
+                            lastFireTime = taskWorker.getLastFireTime();
+                        }
+                    }
+
+                    CronExpression cronExpression = new CronExpression(taskInfo.getCron());
+                    long nextTime = cronExpression.getNextValidTimeAfter(lastFireTime).getTime();
+                    taskInfo.setNextFireTime(new Timestamp(nextTime));
+
+                    Timestamp timestamp = new Timestamp(fromTime + interval * 1000);
+                    return timestamp.after(taskInfo.getNextFireTime());
                 }
 
-                CronExpression cronExpression = new CronExpression(taskInfo.getCron());
-                long nextTime = cronExpression.getNextValidTimeAfter(lastFireTime).getTime();
-                taskInfo.setNextFireTime(new Timestamp(nextTime));
-
-                Timestamp timestamp = new Timestamp(fromTime + interval * 1000);
-                return timestamp.after(taskInfo.getNextFireTime());
+                return false;
             } catch (Exception e) {
                 logger.error("class=TaskManagerImpl||method=nextTriggers||msg=exception!", e);
                 return false;
