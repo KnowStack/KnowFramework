@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component;
 import java.util.concurrent.TimeUnit;
 
 @Component
-@Task(name = "cc broad", description = "hello broad", cron = "0 0/1 * * * ? *", autoRegister = true, timeout = 300)
+@Task(name = "cc broad", description = "hello broad", cron = "0 0/1 * * * ? *", autoRegister = true, timeout = 300, consensual = ConsensualEnum.BROADCAST)
 public class JobBroadcastTest implements Job {
     private static final Logger logger = LoggerFactory.getLogger(JobBroadcastTest.class);
 
@@ -22,9 +22,9 @@ public class JobBroadcastTest implements Job {
         logger.info("**************************************** hihi broad broad start" + System.currentTimeMillis());
 
 
-        for (long i = 0; i < 30000000L; i++) {
+        for (long i = 0; i < 3000L; i++) {
 //      logger.info("hihi broad broad");
-//      System.out.println("hello world broad broad" + i);
+      System.out.println("hello world broad broad" + i);
         }
 
         logger.info("**************************************** hihi broad broad end" + System.currentTimeMillis());

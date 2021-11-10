@@ -149,17 +149,21 @@ public class TaskManagerImpl implements TaskManager {
                                     nextTime, fromTime);
 
                             for (LogITask.TaskWorker taskWorker : taskWorkers) {
-                                // 取到当前worker做进一步判断，如果没有找到证明没有执行过
                                 if (Objects.equals(WorkerSingleton.getInstance().getLogIWorker().getWorkerCode(),
                                         taskWorker.getWorkerCode())) {
 
-                                    taskWorker.setLastFireTime(new Timestamp(fromTime - SCAN_INTERVAL_SLEEP_SECONDS * 1000));
+                                    CronExpression cronExpressionTemp = new CronExpression(taskInfo.getCron());
+                                    long nextTimeTemp = cronExpressionTemp.getNextValidTimeAfter(new Timestamp(fromTime)).getTime();
+
+                                    taskWorker.setLastFireTime(new Timestamp(nextTimeTemp));
+
+                                    LogITaskPO logITaskPO = BeanUtil.convertTo(taskInfo, LogITaskPO.class);
+                                    logITaskPO.setTaskWorkerStr(BeanUtil.convertToJson(taskWorkers));
+
+                                    logITaskMapper.updateTaskWorkStrByCode(logITaskPO);
+                                    return false;
                                 }
                             }
-
-                            logITaskMapper.updateTaskWorkStrByCode(BeanUtil.convertTo(taskInfo, LogITaskPO.class));
-
-                            return false;
                         }
 
                         return true;
