@@ -35,6 +35,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
+import static com.didiglobal.logi.job.core.monitor.SimpleTaskMonitor.SCAN_INTERVAL_SLEEP_SECONDS;
+
 /**
  * task manager impl.
  *
@@ -140,8 +142,18 @@ public class TaskManagerImpl implements TaskManager {
                     long nextTime = cronExpression.getNextValidTimeAfter(lastFireTime).getTime();
                     taskInfo.setNextFireTime(new Timestamp(nextTime));
 
-                    Timestamp timestamp = new Timestamp(fromTime + interval * 1000);
-                    return timestamp.after(taskInfo.getNextFireTime());
+                    if(fromTime + interval * 1000 > nextTime){
+                        if((nextTime + SCAN_INTERVAL_SLEEP_SECONDS * 1000) < fromTime
+                                && fromTime < (nextTime + 2 * SCAN_INTERVAL_SLEEP_SECONDS * 1000)){
+                            logger.info("class=TaskManagerImpl||method=nextTriggers||nextTime={}||fromTime={}||msg=skip broadcast duplicate trigger!",
+                                    nextTime, fromTime);
+                            return false;
+                        }
+
+                        return true;
+                    }
+
+                    return false;
                 }
 
                 return false;

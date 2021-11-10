@@ -23,6 +23,9 @@ public class SimpleTaskMonitor implements TaskMonitor {
 
     private static final Logger logger = LoggerFactory.getLogger(SimpleTaskMonitor.class);
 
+    public static final long SCAN_INTERVAL_SLEEP_SECONDS = 10;
+    public static final long INTERVAL_SECONDS = 1;
+
     /*
      * 任务管理器
      */
@@ -60,8 +63,6 @@ public class SimpleTaskMonitor implements TaskMonitor {
     }
 
     class TaskMonitorExecutor implements Runnable {
-        private static final long SCAN_INTERVAL_SLEEP_SECONDS = 10;
-        private static final long INTERVAL_SECONDS = 1;
 
         @Override
         public void run() {
