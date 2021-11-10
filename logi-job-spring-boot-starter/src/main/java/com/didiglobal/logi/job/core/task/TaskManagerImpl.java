@@ -147,6 +147,18 @@ public class TaskManagerImpl implements TaskManager {
                                 && fromTime < (nextTime + 2 * SCAN_INTERVAL_SLEEP_SECONDS * 1000)){
                             logger.info("class=TaskManagerImpl||method=nextTriggers||nextTime={}||fromTime={}||msg=skip broadcast duplicate trigger!",
                                     nextTime, fromTime);
+
+                            for (LogITask.TaskWorker taskWorker : taskWorkers) {
+                                // 取到当前worker做进一步判断，如果没有找到证明没有执行过
+                                if (Objects.equals(WorkerSingleton.getInstance().getLogIWorker().getWorkerCode(),
+                                        taskWorker.getWorkerCode())) {
+
+                                    taskWorker.setLastFireTime(new Timestamp(fromTime - SCAN_INTERVAL_SLEEP_SECONDS * 1000));
+                                }
+                            }
+
+                            logITaskMapper.updateTaskWorkStrByCode(BeanUtil.convertTo(taskInfo, LogITaskPO.class));
+
                             return false;
                         }
 
