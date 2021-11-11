@@ -154,13 +154,7 @@ public class TaskManagerImpl implements TaskManager {
                                 if (Objects.equals(WorkerSingleton.getInstance().getLogIWorker().getWorkerCode(),
                                         taskWorker.getWorkerCode())) {
 
-                                    //被上上次的触发时间覆盖
-                                    Timestamp lastLastFireTime = taskInfo.getLastFireTime();
-
-                                    CronExpression cronExpressionTemp = new CronExpression(taskInfo.getCron());
-                                    long lastTimeTemp = cronExpressionTemp.getNextValidTimeAfter(lastLastFireTime).getTime();
-
-                                    taskWorker.setLastFireTime(new Timestamp(lastTimeTemp));
+                                    taskWorker.setLastFireTime(new Timestamp(nextTime));
 
                                     LogITaskPO logITaskPO = BeanUtil.convertTo(taskInfo, LogITaskPO.class);
                                     logITaskPO.setTaskWorkerStr(BeanUtil.convertToJson(taskWorkers));
