@@ -123,43 +123,43 @@ Trace功能，是为了根据一个flag，把单个请求的日志关联起来�
 1. 入口设置flag
 
   ```java
-  		@Override
-      public void doFilter(ServletRequest req, ServletResponse resp, FilterChain chain) throws IOException, ServletException {
-          try {
-              // 入口请求，设置flag，后续的日志都会带上同一个flag，用户trace
-              LogFactory.setUniqueFlag();
-          } finally {
-              // 请求结束，要清理flag
-              LogFactory.removeFlag();
-          }
+  @Override
+  public void doFilter(ServletRequest req, ServletResponse resp, FilterChain chain) throws IOException, ServletException {
+      try {
+          // 入口请求，设置flag，后续的日志都会带上同一个flag，用户trace
+          LogFactory.setUniqueFlag();
+      } finally {
+          // 请求结束，要清理flag
+          LogFactory.removeFlag();
       }
+  }
   ```
 
 2. Logger对象
 
   ```java
-      /**
-       * 获取ILog对象
-       */
-      private static final ILog LOGGER = LogFactory.getLog(MyLogTest.class);
+  /**
+   * 获取ILog对象
+   */
+  private static final ILog LOGGER = LogFactory.getLog(MyLogTest.class);
   ```
 
 3. 打印日志
 
   ```java
-      @Override
-      public void doFilter(ServletRequest req, ServletResponse resp, FilterChain chain) throws IOException, ServletException {
-          try {
-              // 入口请求，设置flag，后续的日志都会带上同一个flag，用户trace
-              LogFactory.setUniqueFlag();
-          } finally {
-              // 打印日志
-              LOGGER.info("测试info：{}", req);
-              LOGGER.warn("测试warn：{}", resp);
-              // 请求结束，要清理flag
-              LogFactory.removeFlag();
-          }
+  @Override
+  public void doFilter(ServletRequest req, ServletResponse resp, FilterChain chain) throws IOException, ServletException {
+      try {
+        	// 入口请求，设置flag，后续的日志都会带上同一个flag，用户trace
+        	LogFactory.setUniqueFlag();
+      } finally {
+          // 打印日志
+          LOGGER.info("测试info：{}", req);
+          LOGGER.warn("测试warn：{}", resp);
+          // 请求结束，要清理flag
+          LogFactory.removeFlag();
       }
+  }
   ```
 
 4. 新建的线程里打印日志，是不会自动带上flag的，如果需要，可以将flag传入runnable对象
