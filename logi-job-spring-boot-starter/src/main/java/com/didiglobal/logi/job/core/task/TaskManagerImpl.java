@@ -142,7 +142,9 @@ public class TaskManagerImpl implements TaskManager {
                     long nextTime = cronExpression.getNextValidTimeAfter(lastFireTime).getTime();
                     taskInfo.setNextFireTime(new Timestamp(nextTime));
 
-                    if(fromTime + interval * 1000 > nextTime){
+                    Timestamp timestamp = new Timestamp(fromTime + interval * 1000);
+
+                    if(timestamp.after(new Timestamp(nextTime))){
                         if((nextTime + SCAN_INTERVAL_SLEEP_SECONDS * 1000) < fromTime
                                 && fromTime < (nextTime + 2 * SCAN_INTERVAL_SLEEP_SECONDS * 1000)){
                             logger.info("class=TaskManagerImpl||method=nextTriggers||nextTime={}||fromTime={}||msg=skip broadcast duplicate trigger!",
@@ -152,10 +154,13 @@ public class TaskManagerImpl implements TaskManager {
                                 if (Objects.equals(WorkerSingleton.getInstance().getLogIWorker().getWorkerCode(),
                                         taskWorker.getWorkerCode())) {
 
-                                    CronExpression cronExpressionTemp = new CronExpression(taskInfo.getCron());
-                                    long nextTimeTemp = cronExpressionTemp.getNextValidTimeAfter(new Timestamp(fromTime)).getTime();
+                                    //被上上次的触发时间覆盖
+                                    Timestamp lastLastFireTime = taskInfo.getLastFireTime();
 
-                                    taskWorker.setLastFireTime(new Timestamp(nextTimeTemp));
+                                    CronExpression cronExpressionTemp = new CronExpression(taskInfo.getCron());
+                                    long lastTimeTemp = cronExpressionTemp.getNextValidTimeAfter(lastLastFireTime).getTime();
+
+                                    taskWorker.setLastFireTime(new Timestamp(lastTimeTemp));
 
                                     LogITaskPO logITaskPO = BeanUtil.convertTo(taskInfo, LogITaskPO.class);
                                     logITaskPO.setTaskWorkerStr(BeanUtil.convertToJson(taskWorkers));
@@ -167,6 +172,9 @@ public class TaskManagerImpl implements TaskManager {
                         }
 
                         return true;
+                    }else {
+                        logger.info("class=TaskManagerImpl||method=nextTriggers||nextTime={}||fromTime={}||msg=no trigger!",
+                                nextTime, fromTime);
                     }
 
                     return false;
