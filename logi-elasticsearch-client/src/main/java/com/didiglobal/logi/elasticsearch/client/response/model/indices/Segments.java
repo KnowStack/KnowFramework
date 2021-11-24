@@ -37,6 +37,17 @@ public class Segments {
     @JSONField(name = "fixed_bit_set_memory_in_bytes")
     private long fixedBitSetMemoryInBytes;
 
+    @JSONField(name = "points_memory_in_bytes")
+    private long pointsMemoryInBytes;
+
+    public long getPointsMemoryInBytes() {
+        return pointsMemoryInBytes;
+    }
+
+    public void setPointsMemoryInBytes(long pointsMemoryInBytes) {
+        this.pointsMemoryInBytes = pointsMemoryInBytes;
+    }
+
     public long getCount() {
         return count;
     }
