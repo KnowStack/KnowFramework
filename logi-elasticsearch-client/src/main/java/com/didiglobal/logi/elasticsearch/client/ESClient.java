@@ -19,6 +19,7 @@ import com.didiglobal.logi.log.LogFactory;
 import com.google.common.collect.Lists;
 import org.apache.http.Header;
 import org.apache.http.HttpHost;
+import org.apache.http.impl.nio.reactor.IOReactorConfig;
 import org.apache.http.message.BasicHeader;
 import org.elasticsearch.action.*;
 import org.elasticsearch.client.*;
@@ -50,6 +51,8 @@ public class ESClient extends ESAbstractClient {
     private String esVersion;
 
     private String clusterName;
+
+    private Integer ioThreadCount;
     /**
      * REST请求配置文件
      */
@@ -123,6 +126,11 @@ public class ESClient extends ESAbstractClient {
         return this;
     }
 
+    public ESClient setIoThreadCount(Integer ioThreadCount) {
+        this.ioThreadCount = ioThreadCount;
+        return this;
+    }
+
     public ESClient setRequestConfigCallback(RestClientBuilder.RequestConfigCallback requestConfigCallback) {
         this.requestConfigCallback = requestConfigCallback;
         return this;
@@ -162,18 +170,20 @@ public class ESClient extends ESAbstractClient {
             defaultHeaders.add(header);
         }
 
+        RestClientBuilder restClientBuilder = RestClient.builder(hosts.toArray(hostArr)).setDefaultHeaders(defaultHeaders);
+
         // 如果配置了HTTP客户端超时配置
-        if (requestConfigCallback != null) {
-            restClient = RestClient.builder(hosts.toArray(hostArr))
-                    .setRequestConfigCallback(requestConfigCallback)
-                    .setMaxRetryTimeoutMillis(120000)
-                    .setDefaultHeaders(defaultHeaders)
-                    .build();
-        } else {
-            restClient = RestClient.builder(hosts.toArray(hostArr))
-                    .setDefaultHeaders(defaultHeaders)
-                    .build();
+        if (null != requestConfigCallback ) {
+            restClientBuilder.setRequestConfigCallback(requestConfigCallback).setMaxRetryTimeoutMillis(120000);
         }
+
+        // 如果配置了ioThreadCount
+        if (null != ioThreadCount) {
+            restClientBuilder.setHttpClientConfigCallback(httpAsyncClientBuilder ->
+                httpAsyncClientBuilder.setDefaultIOReactorConfig(IOReactorConfig.custom().setIoThreadCount(ioThreadCount).build()));
+        }
+
+        restClient = restClientBuilder.build();
 
         running.set(true);
     }
