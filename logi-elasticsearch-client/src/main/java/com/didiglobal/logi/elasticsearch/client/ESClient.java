@@ -29,9 +29,7 @@ import org.elasticsearch.common.transport.TransportAddress;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.Base64;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -170,7 +168,9 @@ public class ESClient extends ESAbstractClient {
             defaultHeaders.add(header);
         }
 
-        RestClientBuilder restClientBuilder = RestClient.builder(hosts.toArray(hostArr)).setDefaultHeaders(defaultHeaders);
+        Header[] headers = new Header[defaultHeaders.size()];
+        defaultHeaders.toArray(headers);
+        RestClientBuilder restClientBuilder = RestClient.builder(hosts.toArray(hostArr)).setDefaultHeaders(headers);
 
         // 如果配置了HTTP客户端超时配置
         if (null != requestConfigCallback ) {
@@ -209,7 +209,7 @@ public class ESClient extends ESAbstractClient {
                 sendRequest(req, clientRequest, listener);
             } catch (Throwable t) {
                 boolean isReset = false;
-                if (restClient != null && !restClient.isRunning()) {
+                if (restClient != null) {
                     if (running.compareAndSet(true, false)) {
                         restClient.close();
                         reset();

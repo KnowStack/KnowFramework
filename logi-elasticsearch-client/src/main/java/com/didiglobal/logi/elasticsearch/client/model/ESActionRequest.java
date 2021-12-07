@@ -51,7 +51,11 @@ public abstract class ESActionRequest<T extends ESActionRequest> extends ActionR
 
     public ESActionResponse buildResponse(RestResponse response) throws Exception {
         ESActionResponse esActionResponse = toResponse(response);
-        esActionResponse.setRestStatus(RestStatus.fromCode(response.getStatusCode()));
+        for (RestStatus restStatus : RestStatus.values()) {
+            if (restStatus.getStatus() == response.getStatusCode()) {
+                esActionResponse.setRestStatus(restStatus);
+            }
+        }
         return esActionResponse;
     }
 

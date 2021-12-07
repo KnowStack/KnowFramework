@@ -7,7 +7,7 @@
 
     <groupId>io.github.zqrferrari</groupId>
     <artifactId>logi-elasticsearch-client</artifactId>
-    <version>1.0.7</version>
+    <version>1.0.8</version>
 
     <packaging>jar</packaging>
     <name>${project.groupId}:${project.artifactId}</name>
@@ -50,7 +50,7 @@
     <dependencies>
         <dependency>
             <groupId>org.elasticsearch</groupId>
-            <artifactId>elasticsearch-didi</artifactId>
+            <artifactId>elasticsearch</artifactId>
             <version>2.3.3-SNAPSHOT</version>
         </dependency>
         <dependency>
@@ -63,7 +63,7 @@
         <dependency>
             <groupId>org.nlpcn</groupId>
             <artifactId>elasticsearch-sql</artifactId>
-            <version>2.3.3.0</version>
+            <version>2.3.5.0</version>
             <exclusions>
                 <exclusion>
                     <groupId>org.elasticsearch</groupId>
@@ -78,8 +78,8 @@
 
         <dependency>
             <groupId>org.elasticsearch.client</groupId>
-            <artifactId>elasticsearch-rest-client-didi</artifactId>
-            <version>6.6.1.802</version>
+            <artifactId>elasticsearch-rest-client</artifactId>
+            <version>6.6.2</version>
         </dependency>
         <dependency>
             <groupId>com.alibaba</groupId>
