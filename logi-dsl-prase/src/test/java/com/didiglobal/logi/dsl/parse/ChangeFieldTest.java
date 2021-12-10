@@ -9,7 +9,7 @@ import com.didiglobal.logi.dsl.parse.dsl.visitor.FormatVisitor;
 import com.didiglobal.logi.dsl.parse.dsl.visitor.basic.OutputVisitor;
 import org.junit.Test;
 
-public class ChangeField {
+public class ChangeFieldTest {
     @Test
     public void testMatch() throws Exception {
         String dslContent = "{\"highlight\":{\"highlight_query\":{\"bool\":{\"must\":{\"bool\":{\"should\":{\"match\":{\"question\":{\"query\":\"route\",\"type\":\"boolean\"}}}}},\"filter\":[{\"term\":{\"channel_id\":\"2\"}},{\"term\":{\"canonical_country_code\":\"BR\"}},{\"term\":{\"organization_id\":\"1\"}}]}},\"fields\":{\"question\":{}}}}";
