@@ -7,6 +7,7 @@ import com.didiglobal.logi.dsl.parse.dsl.parser.DslParser;
 import com.didiglobal.logi.dsl.parse.dsl.visitor.EsDslExportParameterVisitor;
 import com.didiglobal.logi.dsl.parse.dsl.visitor.FormatVisitor;
 import com.didiglobal.logi.dsl.parse.dsl.visitor.basic.OutputVisitor;
+import com.vividsolutions.jts.util.Assert;
 import org.junit.Test;
 
 public class ChangeFieldTest {
@@ -29,5 +30,15 @@ public class ChangeFieldTest {
 
         String dslTemplate = formatVisitor.ret.toString();
         System.out.println(dslTemplate);
+    }
+
+    @Test
+    public void testFun() throws Exception {
+        Assert.isTrue(false);
+    }
+
+    @Test
+    public void testFun2() throws Exception {
+        Assert.isTrue(true);
     }
 }
