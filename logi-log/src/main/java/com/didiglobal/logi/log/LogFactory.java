@@ -60,7 +60,7 @@ public class LogFactory {
     }
 
     /**
-     * Setter method for property <tt>flag</tt>.
+     * Setter method for property flag.
      * 
      * @param value  value to be assigned to property flag
      */
@@ -80,7 +80,7 @@ public class LogFactory {
     }
 
     /**
-     * get method for property <tt>flag</tt>.
+     * get method for property flag.
      * @return String
      */
     public static String getFlag() {

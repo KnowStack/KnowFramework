@@ -6,7 +6,6 @@ import com.didiglobal.logi.metrics.MetricsRecordBuilder;
  * 周期性的性能指标，每次快照后都会重新设置
  * 
  * @author liujianhui
- * @version:2015年11月11日 上午10:57:59
  */
 public abstract class MetricMutablePeriodGauge<T extends Number> extends MetricMutable {
 

@@ -9,7 +9,6 @@ import com.didiglobal.logi.metrics.MetricsRecordBuilder;
 /**
  * 
  * @author liujianhui
- * @version:2015年11月11日 上午11:04:06
  */
 public class MetricMutablePeriodGaugeLong extends MetricMutablePeriodGauge<Long> {
     private volatile long value;

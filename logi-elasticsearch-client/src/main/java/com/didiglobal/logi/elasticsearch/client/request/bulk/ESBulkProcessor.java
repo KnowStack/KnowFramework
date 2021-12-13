@@ -94,7 +94,7 @@ public class ESBulkProcessor implements Closeable {
         /**
          * Sets the number of concurrent requests allowed to be executed. A value of 0 means that only a single
          * request will be allowed to be executed. A value of 1 means 1 concurrent request is allowed to be executed
-         * while accumulating new bulk requests. Defaults to <tt>1</tt>.
+         * while accumulating new bulk requests. Defaults to 1.
          * @param concurrentRequests concurrentRequests
          * @return ESBulkProcessor.Builder
          */
@@ -105,7 +105,7 @@ public class ESBulkProcessor implements Closeable {
 
         /**
          * Sets when to flush a new bulk request based on the number of actions currently added. Defaults to
-         * <tt>1000</tt>. Can be set to <tt>-1</tt> to disable it.
+         * 1000. Can be set to -1 to disable it.
          * @param bulkActions bulkActions
          * @return ESBulkProcessor.Builder
          */
@@ -116,7 +116,7 @@ public class ESBulkProcessor implements Closeable {
 
         /**
          * Sets when to flush a new bulk request based on the size of actions currently added. Defaults to
-         * <tt>5mb</tt>. Can be set to <tt>-1</tt> to disable it.
+         * 5mb. Can be set to -1 to disable it.
          * @param bulkSize bulkSize
          * @return ESBulkProcessor.Builder
          *
@@ -130,7 +130,7 @@ public class ESBulkProcessor implements Closeable {
          * Sets a flush interval flushing *any* bulk actions pending if the interval passes. Defaults to not set.
          * <p>
          * Note, both {@link #setBulkActions(int)} and {@link #setBulkSize(org.elasticsearch.common.unit.ByteSizeValue)}
-         * can be set to <tt>-1</tt> with the flush interval set allowing for complete async processing of bulk actions.
+         * can be set to -1 with the flush interval set allowing for complete async processing of bulk actions.
          * @param flushInterval flushInterval
          * @return ESBulkProcessor.Builder
          */

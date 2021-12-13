@@ -24,7 +24,6 @@ import com.didiglobal.logi.metrics.util.ClassUtils;
  * 类型转换服务的简单实现
  * 
  * @author liujianhui
- * @version:2015年12月5日 下午4:37:41
  */
 public class SimpleConversionService implements ConversionService, ConverterRegistry {
 

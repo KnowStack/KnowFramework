@@ -113,7 +113,7 @@ public class ESMonitorJobTask implements Job {
 <dependency>
     <groupId>io.github.zqrferrari</groupId>
     <artifactId>logi-log-log</artifactId>
-    <version>1.0.4</version>
+    <version>1.0.5</version>
 </dependency>
 ```
 ### 3.2 logi-log-log
@@ -262,7 +262,7 @@ Arius内部指标采集和计算的工具包。
 <dependency>
     <groupId>io.github.zqrferrari</groupId>
     <artifactId>logi-dsl-prase</artifactId>
-    <version>1.0.4</version>
+    <version>1.0.7</version>
 </dependency>
 ```
 ## 6.logi-elasticsearch-client
@@ -280,7 +280,7 @@ Arius内部指标采集和计算的工具包。
 <dependency>
     <groupId>io.github.zqrferrari</groupId>
     <artifactId>logi-elasticsearch-sql</artifactId>
-    <version>1.0.1</version>
+    <version>1.0.4</version>
 </dependency>
 ```
 

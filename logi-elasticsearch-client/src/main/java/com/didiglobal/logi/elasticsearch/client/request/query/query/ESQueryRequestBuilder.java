@@ -403,7 +403,7 @@ public class ESQueryRequestBuilder extends ActionRequestBuilder<ESQueryRequest, 
     }
 
     /**
-     * From index to start the search from. Defaults to <tt>0</tt>.
+     * From index to start the search from. Defaults to 0.
      * @param from from
      * @return ESQueryRequestBuilder
      */
@@ -413,7 +413,7 @@ public class ESQueryRequestBuilder extends ActionRequestBuilder<ESQueryRequest, 
     }
 
     /**
-     * The number of search hits to return. Defaults to <tt>10</tt>.
+     * The number of search hits to return. Defaults to 10.
      * @param size size
      * @return ESQueryRequestBuilder
      */
@@ -574,7 +574,7 @@ public class ESQueryRequestBuilder extends ActionRequestBuilder<ESQueryRequest, 
 
     /**
      * Applies when sorting, and controls if scores will be tracked as well. Defaults to
-     * <tt>false</tt>.
+     * false.
      * @param trackScores trackScores
      * @return ESQueryRequestBuilder
      */
@@ -724,7 +724,7 @@ public class ESQueryRequestBuilder extends ActionRequestBuilder<ESQueryRequest, 
 
     /**
      * Set a tag scheme that encapsulates a built in pre and post tags. The allows schemes
-     * are <tt>styled</tt> and <tt>default</tt>.
+     * are styled and default.
      *
      * @param schemaName The tag scheme name
      * @return ESQueryRequestBuilder
@@ -779,7 +779,7 @@ public class ESQueryRequestBuilder extends ActionRequestBuilder<ESQueryRequest, 
 
     /**
      * The order of fragments per field. By default, ordered by the order in the
-     * highlighted text. Can be <tt>score</tt>, which then it will be ordered
+     * highlighted text. Can be score, which then it will be ordered
      * by score of the fragments.
      * @param order o
      * @return ESQueryRequestBuilder

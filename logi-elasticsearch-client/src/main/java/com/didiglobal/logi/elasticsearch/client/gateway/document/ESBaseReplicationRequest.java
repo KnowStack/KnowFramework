@@ -15,7 +15,7 @@ public abstract class ESBaseReplicationRequest<T extends ESBaseReplicationReques
     protected String refresh;
 
     /**
-     * A timeout to wait if the index operation can't be performed immediately. Defaults to <tt>1m</tt>.
+     * A timeout to wait if the index operation can't be performed immediately. Defaults to 1m.
      */
     @SuppressWarnings("unchecked")
     public final T timeout(TimeValue timeout) {
@@ -24,7 +24,7 @@ public abstract class ESBaseReplicationRequest<T extends ESBaseReplicationReques
     }
 
     /**
-     * A timeout to wait if the index operation can't be performed immediately. Defaults to <tt>1m</tt>.
+     * A timeout to wait if the index operation can't be performed immediately. Defaults to 1m.
      */
     public final T timeout(String timeout) {
         return timeout(TimeValue.parseTimeValue(timeout, null, getClass().getSimpleName() + ".timeout"));
