@@ -3,6 +3,7 @@ package com.didiglobal.logi.elasticsearch.client.utils;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.alibaba.fastjson.JSONException;
 import org.apache.commons.lang3.StringUtils;
 
 import com.alibaba.fastjson.JSON;
@@ -81,9 +82,14 @@ public class JsonUtils {
 
             String value = m.get(key);
             if (value != null && value.startsWith("[") && value.endsWith("]")) {
-                // 看是否可以转化成jsonarray
-
-                JSONArray array = JSONArray.parseArray(value);
+                // 看是否可以转化成jsonArray
+                //这里应该进行try catch否则会导致解析json中的正则失败
+                JSONArray array = null;
+                try {
+                    array = JSONArray.parseArray(value);
+                } catch (JSONException e) {
+                    //pass
+                }
                 if (array == null) {
                     obj.put(subKeys[i], value);
                 } else {

@@ -100,8 +100,7 @@ public class TypeConfig {
         for (String key : notUsedMap.keySet()) {
             boolean highVersionDiscard = (ESVersion.ES651.equals(version)
                     || ESVersion.ES760.equals(version))
-                    && ("dynamic_templates".equalsIgnoreCase(key)
-                    || "dynamic_date_formats".equalsIgnoreCase(key)
+                    && ("dynamic_date_formats".equalsIgnoreCase(key)
                     || "_ttl".equalsIgnoreCase(key)
                     || "_all".equalsIgnoreCase(key));
             if (highVersionDiscard) {
