@@ -61,7 +61,15 @@ public class BeatManagerImpl implements BeatManager {
         LogIWorker logIWorker = workerSingleton.getLogIWorker();
         logIWorker.setJobNum(jobManager.runningJobSize());
         logIWorker.setAppName(logIJobProperties.getAppName());
-        return logIWorkerMapper.saveOrUpdateById(logIWorker.getWorker()) > 0 ? true : false;
+
+        int ret;
+        if(null == logIWorkerMapper.selectByCode(logIWorker.getWorkerCode(), logIWorker.getAppName())){
+            ret = logIWorkerMapper.insert(logIWorker.getWorker());
+        }else {
+            ret = logIWorkerMapper.updateByCode(logIWorker.getWorker());
+        }
+
+        return ret > 0 ? true : false;
     }
 
     @Override
