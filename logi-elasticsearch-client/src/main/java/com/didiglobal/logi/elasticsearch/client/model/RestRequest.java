@@ -150,7 +150,11 @@ public final class RestRequest {
     }
 
     public Request buildRequest() {
-        Request request = new Request(method, endpoint);
+        String uri = endpoint;
+        if (StringUtils.isNotBlank(endpoint) && !endpoint.startsWith("/")) {
+            uri = "/" + endpoint;
+        }
+        Request request = new Request(method, uri);
         for (Map.Entry<String, String> entry : params.entrySet()) {
             request.addParameter(entry.getKey(), entry.getValue());
         }
