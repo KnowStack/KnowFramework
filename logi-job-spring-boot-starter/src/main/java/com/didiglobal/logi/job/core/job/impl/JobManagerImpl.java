@@ -468,10 +468,8 @@ public class JobManagerImpl implements JobManager {
                             + " time {}", JOB_INTERVAL);
 
                     // 删除日志
-                    Calendar calendar = Calendar.getInstance();
-                    calendar.add(Calendar.DATE, -1 * logExpire);
                     int count = logIJobLogMapper.deleteByCreateTime(
-                            new Timestamp(calendar.getTimeInMillis()), logIJobProperties.getAppName()
+                            new Timestamp(System.currentTimeMillis() - logExpire * 24 * 3600 * 1000), logIJobProperties.getAppName()
                     );
 
                     logger.info("class=LogCleanHandler||method=run||msg=clean log count={}", count);
