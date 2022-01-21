@@ -24,10 +24,12 @@ import com.didiglobal.logi.elasticsearch.client.model.ESActionRequest;
 import com.didiglobal.logi.elasticsearch.client.model.ESActionResponse;
 import com.didiglobal.logi.elasticsearch.client.model.RestRequest;
 import com.didiglobal.logi.elasticsearch.client.model.RestResponse;
+import com.didiglobal.logi.elasticsearch.client.request.index.stats.IndicesStatsLevel;
 import com.didiglobal.logi.elasticsearch.client.response.cluster.ESClusterHealthResponse;
 import org.elasticsearch.action.ActionRequestValidationException;
 
 public class ESClusterHealthRequest extends ESActionRequest<ESClusterHealthRequest> {
+    private IndicesStatsLevel level = null;
     @Override
     public ActionRequestValidationException validate() {
         return null;
@@ -36,7 +38,11 @@ public class ESClusterHealthRequest extends ESActionRequest<ESClusterHealthReque
     @Override
     public RestRequest toRequest() throws Exception {
         String endpoint = buildEndPoint();
-        return new RestRequest("GET", endpoint, null);
+        RestRequest rr = new RestRequest("GET", endpoint, null);
+        if (null != level) {
+            rr.addParam("level", level.getStr());
+        }
+        return rr;
     }
 
     @Override
@@ -44,6 +50,11 @@ public class ESClusterHealthRequest extends ESActionRequest<ESClusterHealthReque
         String respStr = response.getResponseContent();
 
         return JSON.parseObject(respStr, ESClusterHealthResponse.class);
+    }
+
+    public ESClusterHealthRequest setLevel(IndicesStatsLevel level) {
+        this.level = level;
+        return this;
     }
 
     private String buildEndPoint() {
