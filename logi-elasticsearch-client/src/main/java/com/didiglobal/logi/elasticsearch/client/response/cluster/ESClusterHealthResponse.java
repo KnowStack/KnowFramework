@@ -19,9 +19,13 @@
 
 package com.didiglobal.logi.elasticsearch.client.response.cluster;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.annotation.JSONField;
 import com.didiglobal.logi.elasticsearch.client.model.ESActionResponse;
+import com.didiglobal.logi.elasticsearch.client.response.indices.clusterindex.IndexStatusResult;
 
 public class ESClusterHealthResponse extends ESActionResponse {
     @JSONField(name = "cluster_name")
@@ -68,6 +72,9 @@ public class ESClusterHealthResponse extends ESActionResponse {
 
     @JSONField(name = "active_shards_percent_as_number")
     private long activeShardsPercentAsNumber;
+
+    @JSONField(name = "indices")
+    private Map<String, IndexStatusResult> indices = new HashMap<>();
 
     public String getClusterName() {
         return clusterName;
@@ -189,6 +196,13 @@ public class ESClusterHealthResponse extends ESActionResponse {
         this.activeShardsPercentAsNumber = activeShardsPercentAsNumber;
     }
 
+    public Map<String, IndexStatusResult> getIndices() {
+        return indices;
+    }
+
+    public void setIndices(Map<String, IndexStatusResult> indices) {
+        this.indices = indices;
+    }
 
     @Override
     public String toString() {

@@ -19,6 +19,7 @@
 
 package com.didiglobal.logi.elasticsearch.client.request.cluster.health;
 
+import com.didiglobal.logi.elasticsearch.client.request.index.stats.IndicesStatsLevel;
 import com.didiglobal.logi.elasticsearch.client.response.cluster.ESClusterHealthResponse;
 import org.elasticsearch.action.ActionRequestBuilder;
 import org.elasticsearch.client.ElasticsearchClient;
@@ -26,5 +27,10 @@ import org.elasticsearch.client.ElasticsearchClient;
 public class ESClusterHealthRequestBuilder extends ActionRequestBuilder<ESClusterHealthRequest, ESClusterHealthResponse, ESClusterHealthRequestBuilder> {
     public ESClusterHealthRequestBuilder(ElasticsearchClient client, ESClusterHealthAction action) {
         super(client, action, new ESClusterHealthRequest());
+    }
+
+    public ESClusterHealthRequestBuilder setLevel(IndicesStatsLevel level) {
+        request.setLevel(level);
+        return this;
     }
 }
