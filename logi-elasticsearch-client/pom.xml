@@ -66,10 +66,6 @@
             <version>2.3.3.0</version>
             <exclusions>
                 <exclusion>
-                    <groupId>org.elasticsearch</groupId>
-                    <artifactId>elasticsearch</artifactId>
-                </exclusion>
-                <exclusion>
                     <groupId>com.alibaba</groupId>
                     <artifactId>druid</artifactId>
                 </exclusion>
