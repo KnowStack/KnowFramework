@@ -177,7 +177,7 @@ public class ESGetRequest extends ESActionRequest<ESGetRequest> {
 
     /**
      * Sets the preference to execute the search. Defaults to randomize across shards. Can be set to
-     * <tt>_local</tt> to prefer local shards, <tt>_primary</tt> to execute only on primary shards, or
+     * _local to prefer local shards, _primary to execute only on primary shards, or
      * a custom value, which guarantees that the same order will be used across different requests.
      * @param preference p
      * @return ESGetRequest
@@ -216,7 +216,7 @@ public class ESGetRequest extends ESActionRequest<ESGetRequest> {
     }
 
     /**
-     * Explicitly specify the fields that will be returned. By default, the <tt>_source</tt>
+     * Explicitly specify the fields that will be returned. By default, the _source
      * field will be returned.
      * @param fields f
      * @return ESGetRequest
@@ -227,7 +227,7 @@ public class ESGetRequest extends ESActionRequest<ESGetRequest> {
     }
 
     /**
-     * Explicitly specify the fields that will be returned. By default, the <tt>_source</tt>
+     * Explicitly specify the fields that will be returned. By default, the _source
      * field will be returned.
      * @return String[]
      */

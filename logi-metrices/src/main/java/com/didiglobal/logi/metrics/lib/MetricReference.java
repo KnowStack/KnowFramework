@@ -7,7 +7,6 @@ import com.didiglobal.logi.metrics.MetricsVisitor;
  * 
  * 
  * @author liujianhui
- * @version:2015年12月3日 下午5:20:35
  */
 public class MetricReference<T> extends Metric {
 

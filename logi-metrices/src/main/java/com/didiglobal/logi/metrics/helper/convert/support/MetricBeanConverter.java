@@ -8,7 +8,6 @@ import com.didiglobal.logi.metrics.helper.convert.Converter;
  * 
  * 
  * @author liujianhui
- * @version:2015年12月22日 下午7:16:17
  */
 public class MetricBeanConverter implements Converter<Metric, MetricBean> {
 

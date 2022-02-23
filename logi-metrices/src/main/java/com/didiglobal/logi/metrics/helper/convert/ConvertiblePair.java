@@ -4,7 +4,6 @@ package com.didiglobal.logi.metrics.helper.convert;
  * 
  * 
  * @author liujianhui
- * @version:2015年12月22日 下午7:16:07
  */
 public final class ConvertiblePair {
 

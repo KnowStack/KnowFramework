@@ -21,7 +21,6 @@ import com.didiglobal.logi.metrics.util.TimeUtils;
 /**
  * 
  * @author liujianhui
- * @version:2015年11月11日 上午10:34:42
  */
 public class RemoteFileSink implements MetricsSink {
     private static final Log    LOG              = LogFactory.getLog(RemoteFileSink.class);

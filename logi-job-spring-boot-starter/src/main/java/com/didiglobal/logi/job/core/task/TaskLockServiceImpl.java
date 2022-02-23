@@ -27,7 +27,7 @@ import org.springframework.util.CollectionUtils;
 public class TaskLockServiceImpl implements TaskLockService {
     private static final Logger logger = LoggerFactory.getLogger(TaskLockServiceImpl.class);
     // 每次申请锁的默认过期时间
-    private static final Long EXPIRE_TIME_SECONDS = 120L;
+    private static final Long EXPIRE_TIME_SECONDS = 300L;
 
     private LogITaskLockMapper logITaskLockMapper;
     private LogIJobProperties logIJobProperties;
@@ -54,14 +54,35 @@ public class TaskLockServiceImpl implements TaskLockService {
         List<LogITaskLockPO> logITaskLockPOList =
                 logITaskLockMapper.selectByTaskCode(taskCode, logIJobProperties.getAppName());
 
-        boolean hasLock;
+        boolean hasLock = false;
+        //1、taskCode没有任何worker占有
         if (CollectionUtils.isEmpty(logITaskLockPOList)) {
             hasLock = false;
         } else {
+            //2、taskCode有被worker占有
             long current = System.currentTimeMillis() / 1000;
-            Long inLockSize = logITaskLockPOList.stream().filter(logITaskLockPO -> logITaskLockPO.getCreateTime()
-                    .getTime() / 1000 + expireTime > current).collect(Collectors.counting());
-            hasLock = inLockSize > 0 ? true : false;
+
+            //3、taskCode的worker是否有没有过期
+            List<LogITaskLockPO> noExpireTaskLock = logITaskLockPOList.stream().filter(logITaskLockPO -> logITaskLockPO.getCreateTime()
+                    .getTime() / 1000 + logITaskLockPO.getExpireTime() >= current).collect(Collectors.toList());
+
+            if(!CollectionUtils.isEmpty(noExpireTaskLock)){
+                for(LogITaskLockPO logITaskLockPO : noExpireTaskLock){
+                    if(workerCode.equals(logITaskLockPO.getWorkerCode())){
+                        hasLock = true;
+                    }
+                }
+            }
+
+            //4、taskCode的worker是否有过期
+            List<LogITaskLockPO> expireTaskLock = logITaskLockPOList.stream().filter(logITaskLockPO -> logITaskLockPO.getCreateTime()
+                    .getTime() / 1000 + logITaskLockPO.getExpireTime() < current).collect(Collectors.toList());
+
+            if(!CollectionUtils.isEmpty(expireTaskLock)){
+                for(LogITaskLockPO logITaskLockPO : expireTaskLock){
+                    logITaskLockMapper.deleteByWorkerCodeAndAppName(logITaskLockPO.getWorkerCode(), logIJobProperties.getAppName());
+                }
+            }
         }
 
         if (!hasLock) {
@@ -76,15 +97,16 @@ public class TaskLockServiceImpl implements TaskLockService {
                 return logITaskLockMapper.insert(taskLock) > 0 ? true : false;
             } catch (Exception e) {
                 if (e instanceof SQLException && e.getMessage().contains("Duplicate entry")) {
-                    logger.info("class=TaskLockServiceImpl||method=tryAcquire||taskCode=||msg=duplicate key", taskCode);
+                    logger.info("class=TaskLockServiceImpl||method=tryAcquire||taskCode={}||msg=duplicate key", taskCode);
                 } else {
                     logger.error(
-                            "class=TaskLockServiceImpl||method=tryAcquire||taskCode=||msg=", taskCode, e.getMessage()
+                            "class=TaskLockServiceImpl||method=tryAcquire||taskCode={}||msg={}", taskCode, e.getMessage()
                     );
                 }
+                return false;
             }
         }
-        return false;
+        return hasLock;
     }
 
     @Override
@@ -97,7 +119,7 @@ public class TaskLockServiceImpl implements TaskLockService {
         List<LogITaskLockPO> logITaskLockPOList = logITaskLockMapper.selectByTaskCodeAndWorkerCode(taskCode,
                 workerCode, logIJobProperties.getAppName());
         if (CollectionUtils.isEmpty(logITaskLockPOList)) {
-            logger.error("class=TaskLockServiceImpl||method=tryRelease||url=||msg=taskCode={}, "
+            logger.error("class=TaskLockServiceImpl||method=tryRelease||msg=taskCode={}, "
                     + "workerCode={}", taskCode, workerCode);
             return false;
         }

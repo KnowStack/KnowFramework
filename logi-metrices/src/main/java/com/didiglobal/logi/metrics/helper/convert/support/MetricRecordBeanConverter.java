@@ -16,7 +16,6 @@ import com.didiglobal.logi.metrics.helper.convert.Converter;
  * 
  * 
  * @author liujianhui
- * @version:2015年12月22日 下午7:16:22
  */
 public class MetricRecordBeanConverter implements Converter<MetricsRecord, MetricRecordBean> {
     private ConversionService conversionService;

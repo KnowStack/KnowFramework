@@ -108,7 +108,7 @@ public class IndexResultNode {
     }
 
     /**
-     * The failure message, <tt>null</tt> if it did not fail.
+     * The failure message, null if it did not fail.
      * @return String
      */
     public String getFailureMessage() {

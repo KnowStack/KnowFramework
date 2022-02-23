@@ -4,7 +4,6 @@ package com.didiglobal.logi.metrics.helper.convert;
  * 
  * 
  * @author liujianhui
- * @version:2015年12月4日 上午11:28:16
  */
 public interface Converter<S, T> {
 

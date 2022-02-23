@@ -9,6 +9,9 @@ public class Translog {
     @JSONField(name = "size_in_bytes")
     private long sizeInBytes;
 
+    @JSONField(name = "uncommitted_size_in_bytes")
+    private long uncommittedSizeInBytes;
+
     public long getOperations() {
         return operations;
     }
@@ -23,5 +26,13 @@ public class Translog {
 
     public void setSizeInBytes(long sizeInBytes) {
         this.sizeInBytes = sizeInBytes;
+    }
+
+    public long getUncommittedSizeInBytes() {
+        return uncommittedSizeInBytes;
+    }
+
+    public void setUncommittedSizeInBytes(long uncommittedSizeInBytes) {
+        this.uncommittedSizeInBytes = uncommittedSizeInBytes;
     }
 }

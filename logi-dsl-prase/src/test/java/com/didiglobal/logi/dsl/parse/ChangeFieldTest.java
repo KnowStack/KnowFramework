@@ -7,9 +7,10 @@ import com.didiglobal.logi.dsl.parse.dsl.parser.DslParser;
 import com.didiglobal.logi.dsl.parse.dsl.visitor.EsDslExportParameterVisitor;
 import com.didiglobal.logi.dsl.parse.dsl.visitor.FormatVisitor;
 import com.didiglobal.logi.dsl.parse.dsl.visitor.basic.OutputVisitor;
+import com.vividsolutions.jts.util.Assert;
 import org.junit.Test;
 
-public class ChangeField {
+public class ChangeFieldTest {
     @Test
     public void testMatch() throws Exception {
         String dslContent = "{\"highlight\":{\"highlight_query\":{\"bool\":{\"must\":{\"bool\":{\"should\":{\"match\":{\"question\":{\"query\":\"route\",\"type\":\"boolean\"}}}}},\"filter\":[{\"term\":{\"channel_id\":\"2\"}},{\"term\":{\"canonical_country_code\":\"BR\"}},{\"term\":{\"organization_id\":\"1\"}}]}},\"fields\":{\"question\":{}}}}";
@@ -29,5 +30,15 @@ public class ChangeField {
 
         String dslTemplate = formatVisitor.ret.toString();
         System.out.println(dslTemplate);
+    }
+
+    @Test
+    public void testFun() throws Exception {
+        Assert.isTrue(false);
+    }
+
+    @Test
+    public void testFun2() throws Exception {
+        Assert.isTrue(true);
     }
 }

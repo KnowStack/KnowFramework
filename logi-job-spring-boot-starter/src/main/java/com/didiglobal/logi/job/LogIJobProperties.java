@@ -21,4 +21,5 @@ public class LogIJobProperties {
     private Integer maxThreadNum;
     private Integer logExpire;
     private String appName;
+    private Boolean enable = true;
 }

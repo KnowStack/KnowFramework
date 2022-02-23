@@ -70,12 +70,6 @@
     <dependencyManagement>
         <dependencies>
 
-            <dependency>
-                <groupId>io.github.zqrferrari</groupId>
-                <artifactId>logi-job-spring-boot-starter</artifactId>
-                <version>1.0.0</version>
-            </dependency>
-
             <!-- =====spring boot parent====== -->
             <dependency>
                 <groupId>org.springframework.boot</groupId>
