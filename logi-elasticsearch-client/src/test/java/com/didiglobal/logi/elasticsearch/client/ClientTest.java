@@ -57,26 +57,26 @@ import static org.junit.Assert.assertNull;
 
 public class ClientTest {
 
-    private String index = "zhonghua_test";
+    private String index = "dc-test06";
 
     private static ESClient oldClient;
     private static ESClient newClient;
     private static ESClient client;
     private static ESClient gatewayClient;
 
-    private static String oldIp = "10.179.100.148";
-    private static String newIp = "10.96.64.13";
+    private static String oldIp = "10.190.47.131";
+    private static String newIp = "10.190.11.77";
 
     static {
         try {
             oldClient = new ESClient();
-            oldClient.addTransportAddress(new InetSocketTransportAddress(InetAddress.getByName(oldIp), 9200));
+            oldClient.addTransportAddress(new InetSocketTransportAddress(InetAddress.getByName(oldIp), 8060));
 //            oldClient.addTransportAddress(new InetSocketTransportAddress(InetAddress.getByName("10.179.28.230"), 9200));
 //            oldClient.addTransportAddress(new InetSocketTransportAddress(InetAddress.getByName("10.179.51.136"), 9200));
             oldClient.start();
 
             newClient = new ESClient();
-            newClient.addTransportAddress(new InetSocketTransportAddress(InetAddress.getByName(newIp), 8061));
+            newClient.addTransportAddress(new InetSocketTransportAddress(InetAddress.getByName(newIp), 8060));
             newClient.start();
 
             Header header = new BasicHeader("Authorization", "Basic " + Base64.getEncoder().encodeToString(String.format("%s:%s", "1079", "admin").getBytes()));
