@@ -69,6 +69,10 @@
                     <groupId>com.alibaba</groupId>
                     <artifactId>druid</artifactId>
                 </exclusion>
+                <exclusion>
+                    <groupId>org.elasticsearch</groupId>
+                    <artifactId>elasticsearch</artifactId>
+                </exclusion>
             </exclusions>
         </dependency>
 
