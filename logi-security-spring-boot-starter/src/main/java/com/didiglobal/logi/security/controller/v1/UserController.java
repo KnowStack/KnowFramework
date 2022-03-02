@@ -22,7 +22,7 @@ import java.util.List;
  * @author cjm
  */
 @RestController
-@Api(value = "user相关API接口", tags = "用户相关API接口")
+@Api(value = "logi-security-user相关API接口", tags = "logi-security-用户相关API接口")
 @RequestMapping(Constants.V1 + "/logi-security/user")
 public class UserController {
 

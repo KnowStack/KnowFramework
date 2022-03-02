@@ -22,7 +22,7 @@ import java.util.List;
  * @author cjm
  */
 @RestController
-@Api(value = "oplog相关API接口", tags = "操作日志相关API接口")
+@Api(value = "logi-security-oplog相关API接口", tags = "logi-security-操作日志相关API接口")
 @RequestMapping(Constants.V1 + "/logi-security/oplog")
 public class OplogController {
 

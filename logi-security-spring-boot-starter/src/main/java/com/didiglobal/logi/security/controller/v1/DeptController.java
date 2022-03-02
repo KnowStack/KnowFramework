@@ -17,7 +17,7 @@ import java.util.List;
  * @author cjm
  */
 @RestController
-@Api(value = "dept相关API接口", tags = "部门相关API接口")
+@Api(value = "logi-security-dept相关API接口", tags = "logi-security-部门相关API接口")
 @RequestMapping(Constants.V1 + "/logi-security/dept")
 public class DeptController {
 

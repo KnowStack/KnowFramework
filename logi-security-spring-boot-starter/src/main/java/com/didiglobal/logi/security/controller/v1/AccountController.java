@@ -17,7 +17,7 @@ import javax.servlet.http.HttpServletRequest;
  * @author cjm
  */
 @RestController
-@Api(value = "account相关API接口", tags = "账户相关API接口")
+@Api(value = "logi-security-account相关API接口", tags = "logi-security-账户相关API接口")
 @RequestMapping(Constants.V1 + "/logi-security/account")
 public class AccountController {
 

@@ -19,7 +19,7 @@ import java.util.List;
  * @author cjm
  */
 @RestController
-@Api(value = "message相关API接口", tags = "消息相关API接口")
+@Api(value = "logi-security-message相关API接口", tags = "logi-security-消息相关API接口")
 @RequestMapping(Constants.V1 + "/logi-security/message")
 public class MessageController {
 

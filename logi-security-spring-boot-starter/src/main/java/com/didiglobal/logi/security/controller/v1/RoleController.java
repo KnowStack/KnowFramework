@@ -24,7 +24,7 @@ import java.util.List;
  * @author cjm
  */
 @RestController
-@Api(value = "role相关API接口", tags = "角色相关API接口")
+@Api(value = "logi-security-role相关API接口", tags = "logi-security-角色相关API接口")
 @RequestMapping(Constants.V1 + "/logi-security/role")
 public class RoleController {
 

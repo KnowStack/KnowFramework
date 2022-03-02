@@ -21,7 +21,7 @@ import java.util.List;
  * @author cjm
  */
 @RestController
-@Api(value = "resource相关API接口", tags = "资源相关API接口")
+@Api(value = "logi-security-resource相关API接口", tags = "logi-security-资源相关API接口")
 @RequestMapping(Constants.V1 + "/logi-security/resource")
 public class ResourceController {
 
