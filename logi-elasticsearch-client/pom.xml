@@ -7,7 +7,7 @@
 
     <groupId>io.github.zqrferrari</groupId>
     <artifactId>logi-elasticsearch-client</artifactId>
-    <version>1.0.14</version>
+    <version>1.0.17</version>
 
     <packaging>jar</packaging>
     <name>${project.groupId}:${project.artifactId}</name>
@@ -66,12 +66,12 @@
             <version>2.3.5.0</version>
             <exclusions>
                 <exclusion>
-                    <groupId>org.elasticsearch</groupId>
-                    <artifactId>elasticsearch</artifactId>
-                </exclusion>
-                <exclusion>
                     <groupId>com.alibaba</groupId>
                     <artifactId>druid</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.elasticsearch</groupId>
+                    <artifactId>elasticsearch</artifactId>
                 </exclusion>
             </exclusions>
         </dependency>
