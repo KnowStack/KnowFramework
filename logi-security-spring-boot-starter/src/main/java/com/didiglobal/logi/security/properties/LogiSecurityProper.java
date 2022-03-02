@@ -13,7 +13,7 @@ import javax.validation.constraints.NotEmpty;
  */
 @Data
 @Validated
-@ConfigurationProperties(prefix = "logi.security")
+@ConfigurationProperties("spring.logi-security")
 public class LogiSecurityProper {
 
     /**
@@ -44,7 +44,7 @@ public class LogiSecurityProper {
      * 数据库信息
      */
     @NotEmpty(message = "配置文件配置必须要配置[logi.security.url]属性")
-    private String url;
+    private String jdbcUrl;
 
     /**
      * 数据库信息
