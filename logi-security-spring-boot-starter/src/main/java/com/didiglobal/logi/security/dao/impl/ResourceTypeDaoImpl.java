@@ -3,6 +3,7 @@ package com.didiglobal.logi.security.dao.impl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.didiglobal.logi.security.common.constant.FieldConstant;
 import com.didiglobal.logi.security.common.dto.resource.type.ResourceTypeQueryDTO;
 import com.didiglobal.logi.security.common.entity.ResourceType;
 import com.didiglobal.logi.security.common.po.ResourceTypePO;

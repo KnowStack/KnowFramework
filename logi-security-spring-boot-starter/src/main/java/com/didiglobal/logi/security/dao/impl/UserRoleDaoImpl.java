@@ -1,6 +1,7 @@
 package com.didiglobal.logi.security.dao.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.didiglobal.logi.security.common.constant.FieldConstant;
 import com.didiglobal.logi.security.common.entity.UserRole;
 import com.didiglobal.logi.security.common.po.UserRolePO;
 import com.didiglobal.logi.security.dao.UserRoleDao;
@@ -29,7 +30,7 @@ public class UserRoleDaoImpl extends BaseDaoImpl<UserRolePO> implements UserRole
             return new ArrayList<>();
         }
         QueryWrapper<UserRolePO> queryWrapper = getQueryWrapper();
-        queryWrapper.select(FieldConstant.USER_ID).eq(FieldConstant.ROLE_ID, roleId);
+        queryWrapper.select( FieldConstant.USER_ID).eq(FieldConstant.ROLE_ID, roleId);
         List<Object> userIdList = userRoleMapper.selectObjs(queryWrapper);
         return userIdList.stream().map(Integer.class::cast).collect(Collectors.toList());
     }

@@ -21,6 +21,18 @@ public class Result<T> extends BaseResult {
     @ApiModelProperty(value = "返回数据")
     protected T data;
 
+    public boolean successed() {
+        return getCode() != null && ResultCode.SUCCESS.getCode().equals(getCode());
+    }
+
+    public boolean duplicate() {
+        return getCode() != null && ResultCode.RESOURCE_DUPLICATION.getCode().equals(getCode());
+    }
+
+    public boolean failed() {
+        return !successed();
+    }
+
     public Result() {}
 
     private Result(Integer code) {
@@ -30,6 +42,13 @@ public class Result<T> extends BaseResult {
     private Result(Integer code, String msg) {
         this.code = code;
         this.message = msg;
+    }
+
+    public static <T> Result<T> build(boolean succ) {
+        if (succ) {
+            return success();
+        }
+        return fail();
     }
 
     public static <T> Result<T> success(T data) {
@@ -61,8 +80,51 @@ public class Result<T> extends BaseResult {
         return ret;
     }
 
+    public static <T> Result<T> fail() {
+        Result<T> result = new Result<>();
+        result.setCode(ResultCode.COMMON_FAIL.getCode());
+        result.setMessage(ResultCode.COMMON_FAIL.getMessage());
+        return result;
+    }
+
     public static <T> Result<T> fail(LogiSecurityException e) {
         String[] s = e.getMessage().split("-", 2);
         return Result.fail(Integer.parseInt(s[0]), s[1]);
+    }
+
+    public static <T> Result<T> buildSucc(T data) {
+        Result<T> result = new Result<>();
+        result.setCode(ResultCode.SUCCESS.getCode());
+        result.setMessage(ResultCode.SUCCESS.getMessage());
+        result.setData(data);
+        return result;
+    }
+
+    public static <T> Result<T> buildFrom(Result<? extends Object> result) {
+        Result<T> resultT = new Result<>();
+        resultT.setCode(result.getCode());
+        resultT.setMessage(result.getMessage());
+        return resultT;
+    }
+
+    public static <T> Result<T> buildParamIllegal(String msg) {
+        Result<T> result = new Result<>();
+        result.setCode(ResultCode.PARAM_NOT_VALID.getCode());
+        result.setMessage(ResultCode.PARAM_NOT_VALID.getMessage() + ":" + msg + "，请检查后再提交！");
+        return result;
+    }
+
+    public static <T> Result<T> buildNotExist(String msg) {
+        Result<T> result = new Result<>();
+        result.setCode(ResultCode.RESOURCE_TYPE_NOT_EXISTS.getCode());
+        result.setMessage(msg);
+        return result;
+    }
+
+    public static <T> Result<T> buildDuplicate(String msg) {
+        Result<T> result = new Result<>();
+        result.setCode(ResultCode.RESOURCE_DUPLICATION.getCode());
+        result.setMessage(msg);
+        return result;
     }
 }

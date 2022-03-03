@@ -230,7 +230,7 @@ public class UserServiceImpl implements UserService {
         HttpSession session = request.getSession();
         // 设置过期时间（秒）
         session.setMaxInactiveInterval(60 * 60);
-        session.setAttribute(HttpRequestUtil.USER, loginDTO.getUsername());
+        session.setAttribute(HttpRequestUtil.USER_ID, loginDTO.getUsername());
 
         return CopyBeanUtil.copy(user, UserBriefVO.class);
     }

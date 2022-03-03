@@ -1,6 +1,7 @@
 package com.didiglobal.logi.security.dao.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.didiglobal.logi.security.common.constant.FieldConstant;
 import com.didiglobal.logi.security.common.entity.Permission;
 import com.didiglobal.logi.security.common.po.PermissionPO;
 import com.didiglobal.logi.security.dao.PermissionDao;
@@ -24,7 +25,7 @@ public class PermissionDaoImpl extends BaseDaoImpl<PermissionPO> implements Perm
     @Override
     public List<Permission> selectAllAndAscOrderByLevel() {
         QueryWrapper<PermissionPO> queryWrapper = getQueryWrapper();
-        queryWrapper.orderByAsc(FieldConstant.LEVEL);
+        queryWrapper.orderByAsc( FieldConstant.LEVEL);
         return CopyBeanUtil.copyList(permissionMapper.selectList(queryWrapper), Permission.class);
     }
 

@@ -1,6 +1,7 @@
 package com.didiglobal.logi.security.dao.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.didiglobal.logi.security.common.constant.FieldConstant;
 import com.didiglobal.logi.security.common.entity.OplogExtra;
 import com.didiglobal.logi.security.common.po.OplogExtraPO;
 import com.didiglobal.logi.security.dao.OplogExtraDao;
@@ -24,7 +25,7 @@ public class OplogExtraDaoImpl extends BaseDaoImpl<OplogExtraPO> implements Oplo
     @Override
     public List<OplogExtra> selectListByType(Integer type) {
         QueryWrapper<OplogExtraPO> queryWrapper = getQueryWrapper();
-        queryWrapper.eq(FieldConstant.TYPE, type);
+        queryWrapper.eq( FieldConstant.TYPE, type);
         return CopyBeanUtil.copyList(oplogExtraMapper.selectList(queryWrapper), OplogExtra.class);
     }
 

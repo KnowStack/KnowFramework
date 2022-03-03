@@ -1,6 +1,7 @@
 package com.didiglobal.logi.security.dao.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.didiglobal.logi.security.common.constant.FieldConstant;
 import com.didiglobal.logi.security.common.entity.RolePermission;
 import com.didiglobal.logi.security.common.po.RolePermissionPO;
 import com.didiglobal.logi.security.dao.RolePermissionDao;
@@ -41,7 +42,7 @@ public class RolePermissionDaoImpl extends BaseDaoImpl<RolePermissionPO> impleme
             return;
         }
         QueryWrapper<RolePermissionPO> queryWrapper = getQueryWrapper();
-        queryWrapper.eq(FieldConstant.ROLE_ID, roleId);
+        queryWrapper.eq( FieldConstant.ROLE_ID, roleId);
         rolePermissionMapper.delete(queryWrapper);
     }
 

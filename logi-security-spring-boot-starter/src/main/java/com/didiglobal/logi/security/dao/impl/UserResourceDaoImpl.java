@@ -1,6 +1,7 @@
 package com.didiglobal.logi.security.dao.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.didiglobal.logi.security.common.constant.FieldConstant;
 import com.didiglobal.logi.security.common.dto.resource.ControlLevelQueryDTO;
 import com.didiglobal.logi.security.common.dto.resource.UserResourceQueryDTO;
 import com.didiglobal.logi.security.common.entity.UserResource;
@@ -35,7 +36,7 @@ public class UserResourceDaoImpl extends BaseDaoImpl<UserResourcePO> implements 
         QueryWrapper<UserResourcePO> queryWrapper = getQueryWrapper();
         Integer resourceTypeId = queryDTO.getResourceTypeId();
         queryWrapper
-                .eq(FieldConstant.CONTROL_LEVEL, queryDTO.getControlLevel())
+                .eq( FieldConstant.CONTROL_LEVEL, queryDTO.getControlLevel())
                 .eq(userId != null, FieldConstant.USER_ID, userId)
                 .eq(queryDTO.getProjectId() != null, FieldConstant.PROJECT_ID, queryDTO.getProjectId())
                 .eq(resourceTypeId != null, FieldConstant.RESOURCE_TYPE_ID, resourceTypeId)

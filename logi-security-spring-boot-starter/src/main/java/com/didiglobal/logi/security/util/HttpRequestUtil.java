@@ -12,7 +12,9 @@ import javax.servlet.http.HttpSession;
  */
 public class HttpRequestUtil {
 
-    public static final String USER = "X-SSO-USER";
+    public static final String USER_ID = "X-SSO-USER-ID";
+
+    public static final String USER     = "X-SSO-USER";
 
     public static final String APPID = "X-LOGI-SECURITY-APP-ID";
 
@@ -27,15 +29,24 @@ public class HttpRequestUtil {
 
     public static Integer getOperatorId(HttpServletRequest request) {
         HttpSession session = request.getSession();
-        Integer id = (Integer) session.getAttribute(HttpRequestUtil.USER);
+        Integer id = (Integer) session.getAttribute(HttpRequestUtil.USER_ID );
         if(id == null) {
             return 1;
         }
         return id;
     }
 
+    public static String getOperator(HttpServletRequest request) {
+        HttpSession session = request.getSession();
+        String operator = (String) session.getAttribute(HttpRequestUtil.USER);
+        if(StringUtils.isEmpty(operator)) {
+            return "";
+        }
+        return operator;
+    }
+
     public static String getOperatorFromHeader(HttpServletRequest request) {
-        return request.getHeader(USER);
+        return request.getHeader( USER_ID );
     }
 
     public static Integer getAppId(HttpServletRequest request, int defaultAppid) {

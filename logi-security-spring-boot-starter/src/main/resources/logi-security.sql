@@ -1,8 +1,7 @@
 #-----------------------创建表-----------------------
 create table if not exists logi_dept
 (
-    id          int auto_increment
-    primary key,
+    id          int auto_increment  primary key,
     dept_name   varchar(10) not null comment '部门名',
     parent_id   int         not null comment '父部门id',
     leaf        tinyint(1)  not null comment '是否叶子部门',
@@ -14,8 +13,7 @@ create table if not exists logi_dept
 
 create table if not exists logi_message
 (
-    id          int auto_increment
-    primary key,
+    id          int auto_increment primary key,
     title       varchar(60)                          not null comment '标题',
     content     varchar(256)                         null comment '内容',
     read_tag    tinyint(1) default 0                 null comment '是否已读',
@@ -30,8 +28,7 @@ create table if not exists logi_message
 
 create table if not exists logi_oplog
 (
-    id                int auto_increment
-    primary key,
+    id                int auto_increment primary key,
     operator_ip       varchar(20)                          not null comment '操作者ip',
     operator_username varchar(20)                          null comment '操作者账号',
     operate_page      varchar(16)                          not null comment '操作页面',
@@ -48,8 +45,7 @@ create table if not exists logi_oplog
 
 create table if not exists logi_oplog_extra
 (
-    id       int auto_increment
-    primary key,
+    id       int auto_increment primary key,
     info     varchar(16) null comment '信息',
     type     tinyint     not null comment '哪种信息：
 1：操作页面
@@ -61,8 +57,7 @@ create table if not exists logi_oplog_extra
 
 create table if not exists logi_permission
 (
-    id              int auto_increment
-    primary key,
+    id              int auto_increment primary key,
     permission_name varchar(40) not null comment '权限名字',
     parent_id       int         not null comment '父权限id',
     leaf            tinyint(1)  not null comment '是否叶子权限点（具体的操作）',
@@ -74,8 +69,7 @@ create table if not exists logi_permission
 
 create table if not exists logi_project
 (
-    id           int auto_increment comment '项目id'
-    primary key,
+    id           int auto_increment comment '项目id'     primary key,
     project_code varchar(128)                           not null comment '项目编号',
     project_name varchar(128)                           not null comment '项目名',
     description  varchar(512) default ''                not null comment '项目描述',
@@ -89,8 +83,7 @@ create table if not exists logi_project
 
 create table if not exists logi_resource_type
 (
-    id        int auto_increment
-    primary key,
+    id        int auto_increment primary key,
     type_name varchar(16) null comment '资源类型名',
     app_name  varchar(16) null comment '应用名称'
     )
@@ -98,8 +91,7 @@ create table if not exists logi_resource_type
 
 create table if not exists logi_role
 (
-    id           int auto_increment
-    primary key,
+    id           int auto_increment primary key,
     role_code    varchar(128)                         not null comment '角色编号',
     role_name    varchar(128)                         not null comment '名称',
     description  varchar(128)                         null comment '角色描述',
@@ -123,8 +115,7 @@ create table if not exists logi_role_permission
 
 create table if not exists logi_user
 (
-    id          int auto_increment
-    primary key,
+    id          int auto_increment primary key,
     username    varchar(64)                            not null comment '用户账号',
     password    char(32)                               not null comment '用户密码',
     salt        char(5)                                not null comment '密码盐',
@@ -169,3 +160,25 @@ create table if not exists logi_user_role
     app_name varchar(16) null comment '应用名称'
     )
     comment '用户角色表';
+
+-- ----------------------------
+-- Table structure for logi_config
+-- ----------------------------
+DROP TABLE IF EXISTS `logi_config`;
+CREATE TABLE `logi_config`
+(
+   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT COMMENT '主键自增',
+   `value_group` varchar(100) NOT NULL DEFAULT '' COMMENT '配置项组',
+   `value_name` varchar(100) NOT NULL DEFAULT '' COMMENT '配置项名字',
+   `value` text COMMENT '配置项的值',
+   `edit` int(4) NOT NULL DEFAULT '1' COMMENT '是否可以编辑 1 不可编辑（程序获取） 2 可编辑',
+   `status` int(4) NOT NULL DEFAULT '1' COMMENT '1 正常 2 禁用 -1 删除',
+   `memo` varchar(1000) NOT NULL DEFAULT '' COMMENT '备注',
+   `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+   `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '修改时间',
+   `is_delete` tinyint(1) NOT NULL DEFAULT '0' COMMENT '逻辑删除',
+   `app_name` varchar(16) COLLATE utf8_bin DEFAULT NULL COMMENT '应用名称',
+   `operator` varchar(16) COLLATE utf8_bin DEFAULT NULL COMMENT '操作者',
+   PRIMARY KEY (`id`),
+   KEY `idx_group_name` (`value_group`,`value_name`)
+) ENGINE=InnoDB AUTO_INCREMENT=1592 DEFAULT CHARSET=utf8 COMMENT='logi配置项';

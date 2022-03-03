@@ -3,6 +3,7 @@ package com.didiglobal.logi.security.dao.impl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.didiglobal.logi.security.common.constant.FieldConstant;
 import com.didiglobal.logi.security.common.dto.project.ProjectBriefQueryDTO;
 import com.didiglobal.logi.security.common.dto.project.ProjectQueryDTO;
 import com.didiglobal.logi.security.common.entity.project.Project;
@@ -29,7 +30,7 @@ public class ProjectDaoImpl extends BaseDaoImpl<ProjectPO> implements ProjectDao
     @Override
     public Project selectByProjectId(Integer projectId) {
         QueryWrapper<ProjectPO> queryWrapper = getQueryWrapper();
-        queryWrapper.eq(FieldConstant.ID, projectId);
+        queryWrapper.eq( FieldConstant.ID, projectId);
         return CopyBeanUtil.copy(projectMapper.selectOne(queryWrapper), Project.class);
     }
 

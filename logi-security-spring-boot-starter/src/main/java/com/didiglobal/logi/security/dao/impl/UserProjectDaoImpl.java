@@ -1,6 +1,7 @@
 package com.didiglobal.logi.security.dao.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.didiglobal.logi.security.common.constant.FieldConstant;
 import com.didiglobal.logi.security.common.entity.UserProject;
 import com.didiglobal.logi.security.common.po.UserProjectPO;
 import com.didiglobal.logi.security.dao.UserProjectDao;
@@ -29,7 +30,7 @@ public class UserProjectDaoImpl extends BaseDaoImpl<UserProjectPO> implements Us
             return new ArrayList<>();
         }
         QueryWrapper<UserProjectPO> queryWrapper = getQueryWrapper();
-        queryWrapper.select(FieldConstant.USER_ID).eq(FieldConstant.PROJECT_ID, projectId);
+        queryWrapper.select( FieldConstant.USER_ID).eq(FieldConstant.PROJECT_ID, projectId);
         List<Object> userIdList = userProjectMapper.selectObjs(queryWrapper);
         return userIdList.stream().map(Integer.class::cast).collect(Collectors.toList());
     }

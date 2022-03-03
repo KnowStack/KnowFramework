@@ -1,6 +1,7 @@
 package com.didiglobal.logi.security.dao.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.didiglobal.logi.security.common.constant.FieldConstant;
 import com.didiglobal.logi.security.common.entity.Message;
 import com.didiglobal.logi.security.common.po.MessagePO;
 import com.didiglobal.logi.security.dao.MessageDao;

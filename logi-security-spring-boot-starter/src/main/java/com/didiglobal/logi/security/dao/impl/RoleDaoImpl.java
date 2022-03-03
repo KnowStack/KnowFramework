@@ -3,6 +3,7 @@ package com.didiglobal.logi.security.dao.impl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.didiglobal.logi.security.common.constant.FieldConstant;
 import com.didiglobal.logi.security.common.dto.role.RoleQueryDTO;
 import com.didiglobal.logi.security.common.entity.role.Role;
 import com.didiglobal.logi.security.common.entity.role.RoleBrief;
@@ -30,7 +31,7 @@ public class RoleDaoImpl extends BaseDaoImpl<RolePO> implements RoleDao {
     @Override
     public Role selectByRoleId(Integer roleId) {
         QueryWrapper<RolePO> queryWrapper = getQueryWrapper();
-        queryWrapper.eq(FieldConstant.ID, roleId);
+        queryWrapper.eq( FieldConstant.ID, roleId);
         return CopyBeanUtil.copy(roleMapper.selectOne(queryWrapper), Role.class);
     }
 
