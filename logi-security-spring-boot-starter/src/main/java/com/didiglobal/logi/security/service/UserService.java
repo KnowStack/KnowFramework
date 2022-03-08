@@ -3,6 +3,7 @@ package com.didiglobal.logi.security.service;
 import com.didiglobal.logi.security.common.PagingData;
 import com.didiglobal.logi.security.common.dto.account.AccountLoginDTO;
 import com.didiglobal.logi.security.common.dto.user.UserBriefQueryDTO;
+import com.didiglobal.logi.security.common.dto.user.UserDTO;
 import com.didiglobal.logi.security.common.vo.role.AssignInfoVO;
 import com.didiglobal.logi.security.common.dto.user.UserQueryDTO;
 import com.didiglobal.logi.security.common.vo.user.UserBriefVO;
@@ -109,4 +110,20 @@ public interface UserService {
      * @throws LogiSecurityException 登录错误
      */
     UserBriefVO verifyLogin(AccountLoginDTO loginDTO, HttpServletRequest request) throws LogiSecurityException;
+
+    /**
+     * 增加一个用户
+     * @param userDTO
+     * @param operator
+     * @return
+     */
+    Boolean addUser(UserDTO userDTO, String operator);
+
+    /**
+     * 编辑一个用户
+     * @param userDTO
+     * @param operator
+     * @return
+     */
+    Boolean editUser(UserDTO userDTO, String operator);
 }

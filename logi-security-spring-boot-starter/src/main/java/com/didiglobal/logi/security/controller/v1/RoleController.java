@@ -46,7 +46,6 @@ public class RoleController {
             roleService.updateRole(saveDTO, request);
             return Result.success();
         } catch (LogiSecurityException e) {
-            e.printStackTrace();
             return Result.fail(e);
         }
     }
@@ -58,7 +57,6 @@ public class RoleController {
             roleService.createRole(saveDTO, request);
             return Result.success();
         } catch (LogiSecurityException e) {
-            e.printStackTrace();
             return Result.fail(e);
         }
     }
@@ -78,7 +76,6 @@ public class RoleController {
         try {
             roleService.deleteRoleByRoleId(id, request);
         } catch (LogiSecurityException e) {
-            e.printStackTrace();
             return Result.fail(e);
         }
         return Result.success();
@@ -98,7 +95,6 @@ public class RoleController {
             roleService.assignRoles(assignDTO, request);
             return Result.success();
         } catch (LogiSecurityException e) {
-            e.printStackTrace();
             return Result.fail(e);
         }
     }

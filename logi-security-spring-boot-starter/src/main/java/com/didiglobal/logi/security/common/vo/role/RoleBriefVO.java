@@ -14,9 +14,6 @@ public class RoleBriefVO {
     @ApiModelProperty(value = "角色id", dataType = "Integer", required = false)
     private Integer id;
 
-    /**
-     * 角色
-     */
     @ApiModelProperty(value = "角色名", dataType = "String", required = false)
     private String roleName;
 }

@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.didiglobal.logi.security.common.PagingData;
 import com.didiglobal.logi.security.common.dto.account.AccountLoginDTO;
 import com.didiglobal.logi.security.common.dto.user.UserBriefQueryDTO;
+import com.didiglobal.logi.security.common.dto.user.UserDTO;
 import com.didiglobal.logi.security.common.entity.dept.Dept;
 import com.didiglobal.logi.security.common.entity.user.User;
 import com.didiglobal.logi.security.common.entity.user.UserBrief;
@@ -230,8 +231,18 @@ public class UserServiceImpl implements UserService {
         HttpSession session = request.getSession();
         // 设置过期时间（秒）
         session.setMaxInactiveInterval(60 * 60);
-        session.setAttribute(HttpRequestUtil.USER_ID, loginDTO.getUsername());
+        session.setAttribute(HttpRequestUtil.USER, loginDTO.getUsername());
 
         return CopyBeanUtil.copy(user, UserBriefVO.class);
+    }
+
+    @Override
+    public Boolean addUser(UserDTO userDTO, String operator) {
+        return Boolean.FALSE;
+    }
+
+    @Override
+    public Boolean editUser(UserDTO userDTO, String operator) {
+        return Boolean.FALSE;
     }
 }

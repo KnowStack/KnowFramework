@@ -4,18 +4,22 @@ import com.didiglobal.logi.security.common.constant.Constants;
 import com.didiglobal.logi.security.common.PagingData;
 import com.didiglobal.logi.security.common.PagingResult;
 import com.didiglobal.logi.security.common.Result;
+import com.didiglobal.logi.security.common.dto.config.ConfigDTO;
+import com.didiglobal.logi.security.common.dto.user.UserDTO;
 import com.didiglobal.logi.security.common.vo.role.AssignInfoVO;
 import com.didiglobal.logi.security.common.dto.user.UserQueryDTO;
 import com.didiglobal.logi.security.common.vo.user.UserBriefVO;
 import com.didiglobal.logi.security.common.vo.user.UserVO;
 import com.didiglobal.logi.security.exception.LogiSecurityException;
 import com.didiglobal.logi.security.service.UserService;
+import com.didiglobal.logi.security.util.HttpRequestUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 /**
@@ -83,6 +87,20 @@ public class UserController {
     public Result<List<UserBriefVO>> listByName(@PathVariable(required = false) String name) {
         List<UserBriefVO> userBriefVOList = userService.getUserBriefListByUsernameOrRealName(name);
         return Result.success(userBriefVOList);
+    }
+
+    @PutMapping("/add")
+    @ResponseBody
+    @ApiOperation(value = "用户新增接口，暂时没有考虑权限", notes = "")
+    public Result<Boolean> add(HttpServletRequest request, @RequestBody UserDTO param) {
+        return Result.success(userService.addUser(param, HttpRequestUtil.getOperator(request)));
+    }
+
+    @PostMapping("/edit")
+    @ResponseBody
+    @ApiOperation(value = "编辑用户接口，暂时没有考虑权限", notes = "")
+    public Result<Boolean> edit(HttpServletRequest request, @RequestBody UserDTO param) {
+        return Result.success(userService.editUser(param, HttpRequestUtil.getOperator(request)));
     }
 }
 
