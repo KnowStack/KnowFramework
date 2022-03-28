@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 public class BaseDaoImpl<T> {
 
     @Autowired
-    private LogiSecurityProper logiSecurityProper;
+    protected LogiSecurityProper logiSecurityProper;
 
     protected QueryWrapper<T> getQueryWrapper() {
         QueryWrapper<T> queryWrapper = new QueryWrapper<>();

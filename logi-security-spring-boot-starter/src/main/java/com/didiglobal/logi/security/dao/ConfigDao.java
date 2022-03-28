@@ -15,6 +15,10 @@ public interface ConfigDao {
 
     List<ConfigPO> listByCondition(ConfigPO condt);
 
+    List<ConfigPO> listConfigByGroup(String groupName);
+
+    List<String>  listDistinctGroup();
+
     ConfigPO getbyId(Integer configId);
 
     ConfigPO getByGroupAndName(String valueGroup, String valueName);

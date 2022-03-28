@@ -8,6 +8,7 @@ import com.didiglobal.logi.security.common.dto.user.UserDTO;
 import com.didiglobal.logi.security.common.entity.dept.Dept;
 import com.didiglobal.logi.security.common.entity.user.User;
 import com.didiglobal.logi.security.common.entity.user.UserBrief;
+import com.didiglobal.logi.security.common.po.UserPO;
 import com.didiglobal.logi.security.common.vo.role.AssignInfoVO;
 import com.didiglobal.logi.security.common.vo.role.RoleBriefVO;
 import com.didiglobal.logi.security.common.dto.user.UserQueryDTO;
@@ -23,6 +24,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import com.didiglobal.logi.security.util.HttpRequestUtil;
+import com.didiglobal.logi.security.util.PWEncryptUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
@@ -219,10 +221,7 @@ public class UserServiceImpl implements UserService {
             throw new LogiSecurityException(ResultCode.USER_NOT_EXISTS);
         }
 
-        // 解密密码
-        String saltPassword = user.getSalt() + loginDTO.getPassword();
-        String md5Password = DigestUtils.md5DigestAsHex(saltPassword.getBytes());
-        if(!user.getPassword().equals(md5Password)) {
+        if(!user.getPassword().equals(loginDTO.getPassword())) {
             // 密码错误
             throw new LogiSecurityException(ResultCode.USER_CREDENTIALS_ERROR);
         }
@@ -238,11 +237,13 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Boolean addUser(UserDTO userDTO, String operator) {
-        return Boolean.FALSE;
+        UserPO userPO = CopyBeanUtil.copy(userDTO, UserPO.class);
+        return userDao.addUser(userPO) > 0;
     }
 
     @Override
     public Boolean editUser(UserDTO userDTO, String operator) {
-        return Boolean.FALSE;
+        UserPO userPO = CopyBeanUtil.copy(userDTO, UserPO.class);
+        return userDao.editUser(userPO) > 0;
     }
 }

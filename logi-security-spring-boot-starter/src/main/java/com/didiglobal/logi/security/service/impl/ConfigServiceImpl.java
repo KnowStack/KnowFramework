@@ -147,6 +147,19 @@ public class ConfigServiceImpl implements ConfigService {
         return CopyBeanUtil.copyList(configInfoPOs, ConfigVO.class);
     }
 
+    @Override
+    public List<String> listGroups(){
+        return configDao.listDistinctGroup();
+    }
+
+    @Override
+    public List<ConfigVO> listConfigByGroup(String group) {
+        List<ConfigPO> configInfoPOs = configDao
+                .listConfigByGroup(group);
+
+        return CopyBeanUtil.copyList(configInfoPOs, ConfigVO.class);
+    }
+
     /**
      * 查询指定配置
      * @param configId 配置id

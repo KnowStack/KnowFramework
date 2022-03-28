@@ -5,6 +5,7 @@ import com.didiglobal.logi.security.common.dto.user.UserBriefQueryDTO;
 import com.didiglobal.logi.security.common.dto.user.UserQueryDTO;
 import com.didiglobal.logi.security.common.entity.user.User;
 import com.didiglobal.logi.security.common.entity.user.UserBrief;
+import com.didiglobal.logi.security.common.po.UserPO;
 
 import java.util.List;
 
@@ -12,6 +13,10 @@ import java.util.List;
  * @author cjm
  */
 public interface UserDao {
+
+    int addUser(UserPO userPO);
+
+    int editUser(UserPO userPO);
 
     /**
      * 根据指定条件分页查询

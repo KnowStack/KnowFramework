@@ -36,6 +36,13 @@ public class ConfigController {
                 .buildSucc(CopyBeanUtil.copyList(configService.queryByCondt(param), ConfigVO.class));
     }
 
+    @GetMapping("/group/list")
+    @ResponseBody
+    @ApiOperation(value = "获取配置的模块列表", notes = "")
+    public Result<List<String>> groups() {
+        return Result.buildSucc(configService.listGroups());
+    }
+
     @GetMapping("/get")
     @ResponseBody
     @ApiOperation(value = "获取指定配置接口", notes = "")

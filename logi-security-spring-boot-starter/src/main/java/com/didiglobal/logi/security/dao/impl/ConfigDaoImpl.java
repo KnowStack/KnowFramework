@@ -7,8 +7,11 @@ import com.didiglobal.logi.security.dao.ConfigDao;
 import com.didiglobal.logi.security.dao.mapper.ConfigMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.util.CollectionUtils;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author cjm
@@ -55,6 +58,27 @@ public class ConfigDaoImpl extends BaseDaoImpl<ConfigPO> implements ConfigDao {
         }
 
         return configMapper.selectList(queryWrapper);
+    }
+
+    @Override
+    public List<ConfigPO> listConfigByGroup(String groupName) {
+        QueryWrapper<ConfigPO> queryWrapper = wrapBriefQuery();
+        queryWrapper.eq(VALUE_GROUP, groupName);
+
+        return configMapper.selectList(queryWrapper);
+    }
+
+    @Override
+    public List<String> listDistinctGroup() {
+        QueryWrapper<ConfigPO> queryWrapper = wrapBriefQuery();
+        queryWrapper.select( "distinct " + VALUE_GROUP);
+        List<ConfigPO> configPOS = configMapper.selectList(queryWrapper);
+
+        if(!CollectionUtils.isEmpty(configPOS)){
+            return configPOS.stream().map(ConfigPO::getValueGroup).collect(Collectors.toList());
+        }
+
+        return new ArrayList<>();
     }
 
     @Override

@@ -12,6 +12,7 @@ import com.didiglobal.logi.security.common.po.UserPO;
 import com.didiglobal.logi.security.dao.UserDao;
 import com.didiglobal.logi.security.dao.mapper.UserMapper;
 import com.didiglobal.logi.security.util.CopyBeanUtil;
+import com.didiglobal.logi.security.util.PWEncryptUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
@@ -31,6 +32,22 @@ public class UserDaoImpl extends BaseDaoImpl<UserPO> implements UserDao {
     private UserMapper userMapper;
 
     @Override
+    public int addUser(UserPO userPO) {
+        try {
+            userPO.setPassword(PWEncryptUtil.encode(userPO.getPassword()));
+        } catch (Exception e) {
+            return -1;
+        }
+
+        return userMapper.insert(userPO);
+    }
+
+    @Override
+    public int editUser(UserPO userPO) {
+        return userMapper.updateById(userPO);
+    }
+
+    @Override
     public IPage<User> selectPageByDeptIdListAndUserIdList(UserQueryDTO queryDTO, List<Integer> deptIdList,
                                                            List<Integer> userIdList) {
         IPage<UserPO> page = new Page<>(queryDTO.getPage(), queryDTO.getSize());
@@ -47,6 +64,8 @@ public class UserDaoImpl extends BaseDaoImpl<UserPO> implements UserDao {
                 .in(deptIdList != null, FieldConstant.DEPT_ID, deptIdList)
                 .in(userIdList != null, FieldConstant.ID, userIdList);
         userMapper.selectPage(page, queryWrapper);
+
+        page.setRecords(decodePW(page.getRecords()));
         return CopyBeanUtil.copyPage(page, User.class);
     }
 
@@ -62,6 +81,8 @@ public class UserDaoImpl extends BaseDaoImpl<UserPO> implements UserDao {
                 .like(!StringUtils.isEmpty(queryDTO.getRealName()), FieldConstant.REAL_NAME, queryDTO.getRealName())
                 .in(deptIdList != null, FieldConstant.DEPT_ID, deptIdList);
         userMapper.selectPage(page, queryWrapper);
+
+        page.setRecords(decodePW(page.getRecords()));
         return CopyBeanUtil.copyPage(page, UserBrief.class);
     }
 
@@ -72,7 +93,7 @@ public class UserDaoImpl extends BaseDaoImpl<UserPO> implements UserDao {
         }
         QueryWrapper<UserPO> queryWrapper = getQueryWrapper();
         queryWrapper.eq("id", userId);
-        return CopyBeanUtil.copy(userMapper.selectOne(queryWrapper), User.class);
+        return CopyBeanUtil.copy(decodePW(userMapper.selectOne(queryWrapper)), User.class);
     }
 
     @Override
@@ -82,7 +103,7 @@ public class UserDaoImpl extends BaseDaoImpl<UserPO> implements UserDao {
         }
         QueryWrapper<UserPO> queryWrapper = wrapBriefQuery();
         queryWrapper.in("id", userIdList);
-        return CopyBeanUtil.copyList(userMapper.selectList(queryWrapper), UserBrief.class);
+        return CopyBeanUtil.copyList(decodePW(userMapper.selectList(queryWrapper)), UserBrief.class);
     }
 
     @Override
@@ -93,7 +114,7 @@ public class UserDaoImpl extends BaseDaoImpl<UserPO> implements UserDao {
                 .or()
                 .like(!StringUtils.isEmpty(name), FieldConstant.REAL_NAME, name)
                 .orderByDesc(FieldConstant.CREATE_TIME);
-        return CopyBeanUtil.copyList(userMapper.selectList(queryWrapper), UserBrief.class);
+        return CopyBeanUtil.copyList(decodePW(userMapper.selectList(queryWrapper)), UserBrief.class);
     }
 
     @Override
@@ -103,7 +124,7 @@ public class UserDaoImpl extends BaseDaoImpl<UserPO> implements UserDao {
         }
         QueryWrapper<UserPO> queryWrapper = wrapBriefQuery();
         queryWrapper.in(deptIdList != null, FieldConstant.DEPT_ID, deptIdList);
-        return CopyBeanUtil.copyList(userMapper.selectList(queryWrapper), UserBrief.class);
+        return CopyBeanUtil.copyList(decodePW(userMapper.selectList(queryWrapper)), UserBrief.class);
     }
 
     @Override
@@ -115,13 +136,13 @@ public class UserDaoImpl extends BaseDaoImpl<UserPO> implements UserDao {
             queryWrapper.orderByDesc(FieldConstant.CREATE_TIME);
         }
         userMapper.selectList(queryWrapper);
-        return CopyBeanUtil.copyList(userMapper.selectList(queryWrapper), UserBrief.class);
+        return CopyBeanUtil.copyList(decodePW(userMapper.selectList(queryWrapper)), UserBrief.class);
     }
 
     @Override
     public List<UserBrief> selectAllBriefList() {
         QueryWrapper<UserPO> queryWrapper = wrapBriefQuery();
-        return CopyBeanUtil.copyList(userMapper.selectList(queryWrapper), UserBrief.class);
+        return CopyBeanUtil.copyList(decodePW(userMapper.selectList(queryWrapper)), UserBrief.class);
     }
 
     @Override
@@ -142,7 +163,7 @@ public class UserDaoImpl extends BaseDaoImpl<UserPO> implements UserDao {
         }
         QueryWrapper<UserPO> queryWrapper = getQueryWrapper();
         queryWrapper.eq(FieldConstant.USERNAME, username);
-        UserPO userPO = userMapper.selectOne(queryWrapper);
+        UserPO userPO = decodePW(userMapper.selectOne(queryWrapper));
         return CopyBeanUtil.copy(userPO, User.class);
     }
 
@@ -150,5 +171,22 @@ public class UserDaoImpl extends BaseDaoImpl<UserPO> implements UserDao {
         QueryWrapper<UserPO> queryWrapper = getQueryWrapper();
         queryWrapper.select(FieldConstant.ID, FieldConstant.USERNAME, FieldConstant.REAL_NAME, FieldConstant.DEPT_ID);
         return queryWrapper;
+    }
+
+    private List<UserPO> decodePW(List<UserPO> userPOS){
+        if(CollectionUtils.isEmpty(userPOS)){return userPOS;}
+
+        return userPOS.stream().map(u -> decodePW(u)).collect(Collectors.toList());
+    }
+
+    private UserPO decodePW(UserPO userPO){
+        if(null != userPO && !StringUtils.isEmpty(userPO.getPassword())){
+            try {
+                userPO.setPassword(PWEncryptUtil.decode(userPO.getPassword()));
+            } catch (Exception e) {
+            }
+        }
+
+        return userPO;
     }
 }

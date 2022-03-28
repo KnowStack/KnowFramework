@@ -16,7 +16,7 @@ public class ConfigVO {
     @ApiModelProperty("配置ID")
     private Integer id;
 
-    @ApiModelProperty("配置组")
+    @ApiModelProperty("配置组/模块")
     private String  valueGroup;
 
     @ApiModelProperty("配置名称")

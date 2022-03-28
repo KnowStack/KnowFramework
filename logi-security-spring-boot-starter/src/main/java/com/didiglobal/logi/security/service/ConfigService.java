@@ -52,6 +52,19 @@ public interface ConfigService {
     List<ConfigVO> queryByCondt(ConfigDTO param);
 
     /**
+     * 获取本appName下的所有组名
+     * @return
+     */
+    List<String> listGroups();
+
+    /**
+     * 根据组名，获取该组名下所有的配置
+     * @param group
+     * @return
+     */
+    List<ConfigVO> listConfigByGroup(String group);
+
+    /**
      * 查询指定配置
      * @param configId 配置id
      * @return 配置信息  不存在返回null
