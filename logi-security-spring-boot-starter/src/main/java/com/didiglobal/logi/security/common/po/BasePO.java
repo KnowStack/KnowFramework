@@ -4,7 +4,7 @@ import com.baomidou.mybatisplus.annotation.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
-import java.sql.Timestamp;
+import java.util.Date;
 
 /**
  * @author cjm
@@ -20,12 +20,12 @@ public class BasePO extends AppBasePO {
     /**
      * 创建时间
      */
-    private Timestamp createTime;
+    private Date createTime;
 
     /**
      * 更新时间
      */
-    private Timestamp updateTime;
+    private Date updateTime;
 
     /**
      * 逻辑删除

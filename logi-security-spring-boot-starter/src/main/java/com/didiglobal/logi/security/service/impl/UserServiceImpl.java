@@ -80,7 +80,7 @@ public class UserServiceImpl implements UserService {
             userVo.setRoleList(roleService.getRoleBriefListByUserId(userVo.getId()));
             // 设置部门信息
             userVo.setDeptList(deptService.getDeptBriefListFromDeptMapByChildId(deptMap, user.getDeptId()));
-            userVo.setUpdateTime(user.getUpdateTime().getTime());
+            userVo.setUpdateTime(user.getUpdateTime());
             // 隐私信息处理
             privacyProcessing(userVo);
             userVOList.add(userVo);
@@ -121,7 +121,7 @@ public class UserServiceImpl implements UserService {
         // 查找用户所在部门信息
         userVo.setDeptList(deptService.getDeptBriefListByChildId(user.getDeptId()));
 
-        userVo.setUpdateTime(user.getUpdateTime().getTime());
+        userVo.setUpdateTime(user.getUpdateTime());
         return userVo;
     }
 

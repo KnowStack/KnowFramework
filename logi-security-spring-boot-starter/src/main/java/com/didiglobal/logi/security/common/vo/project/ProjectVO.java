@@ -6,6 +6,7 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -60,6 +61,6 @@ public class ProjectVO {
     /**
      * 创建时间
      */
-    @ApiModelProperty(value = "创建时间（时间戳ms）", dataType = "Long", required = false)
-    private Long createTime;
+    @ApiModelProperty(value = "创建时间", dataType = "Long", required = false)
+    private Date createTime;
 }

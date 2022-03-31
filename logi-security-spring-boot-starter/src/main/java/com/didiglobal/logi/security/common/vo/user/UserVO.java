@@ -1,5 +1,6 @@
 package com.didiglobal.logi.security.common.vo.user;
 
+import java.util.Date;
 import java.util.List;
 
 import com.didiglobal.logi.security.common.vo.dept.DeptBriefVO;
@@ -32,7 +33,7 @@ public class UserVO {
     private String email;
 
     @ApiModelProperty(value = "更新时间（时间戳ms）", dataType = "Long", required = false)
-    private Long updateTime;
+    private Date updateTime;
 
     @ApiModelProperty(value = "部门信息（数组，父->子（下标0~len））", dataType = "List<DeptBriefVO>", required = false)
     private List<DeptBriefVO> deptList;

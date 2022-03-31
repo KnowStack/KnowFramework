@@ -2,7 +2,7 @@ package com.didiglobal.logi.security.common.entity;
 
 import lombok.Data;
 
-import java.sql.Timestamp;
+import java.util.Date;
 
 /**
  * @author cjm
@@ -15,12 +15,12 @@ public class BaseEntity {
     /**
      * 创建时间
      */
-    private Timestamp createTime;
+    private Date createTime;
 
     /**
      * 更新时间
      */
-    private Timestamp updateTime;
+    private Date updateTime;
 
     private Boolean isDelete = false;
 }

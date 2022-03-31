@@ -35,7 +35,7 @@ public class ConfigVO {
     private Date createTime;
 
     @ApiModelProperty("修改时间")
-    private Date    updateTime;
+    private Date updateTime;
 
     @ApiModelProperty("操作者")
     private String operator;

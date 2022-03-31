@@ -72,7 +72,7 @@ public class ProjectServiceImpl implements ProjectService {
         projectVO.setUserList(userService.getUserBriefListByUserIdList(userIdList));
         // 获取部门信息
         projectVO.setDeptList(deptService.getDeptBriefListByChildId(projectVO.getDeptId()));
-        projectVO.setCreateTime(project.getCreateTime().getTime());
+        projectVO.setCreateTime(project.getCreateTime());
         return projectVO;
     }
 
@@ -124,7 +124,7 @@ public class ProjectServiceImpl implements ProjectService {
             projectVO.setUserList(userService.getUserBriefListByUserIdList(userIdList));
             // 获取部门信息
             projectVO.setDeptList(deptService.getDeptBriefListFromDeptMapByChildId(deptMap, project.getDeptId()));
-            projectVO.setCreateTime(project.getCreateTime().getTime());
+            projectVO.setCreateTime(project.getCreateTime());
             projectVOList.add(projectVO);
         }
         return new PagingData<>(projectVOList, page);
