@@ -32,18 +32,15 @@ public class UserDaoImpl extends BaseDaoImpl<UserPO> implements UserDao {
     private UserMapper userMapper;
 
     @Override
-    public int addUser(UserPO userPO) {
-        try {
-            userPO.setPassword(PWEncryptUtil.encode(userPO.getPassword()));
-        } catch (Exception e) {
-            return -1;
-        }
+    public int addUser(UserPO userPO) throws Exception {
+        userPO.setPw(PWEncryptUtil.encode(userPO.getPw()));
 
         return userMapper.insert(userPO);
     }
 
     @Override
-    public int editUser(UserPO userPO) {
+    public int editUser(UserPO userPO) throws Exception {
+        userPO.setPw(PWEncryptUtil.encode(userPO.getPw()));
         return userMapper.updateById(userPO);
     }
 
@@ -57,9 +54,9 @@ public class UserDaoImpl extends BaseDaoImpl<UserPO> implements UserDao {
         if(userIdList != null && userIdList.isEmpty()) {
             return CopyBeanUtil.copyPage(page, User.class);
         }
-        QueryWrapper<UserPO> queryWrapper = getQueryWrapper();
+        QueryWrapper<UserPO> queryWrapper = getQueryWrapperWithAppName();
         queryWrapper
-                .like(queryDTO.getUsername() != null, FieldConstant.USERNAME, queryDTO.getUsername())
+                .like(queryDTO.getUserName() != null, FieldConstant.USER_NAME, queryDTO.getUserName())
                 .like(queryDTO.getRealName() != null, FieldConstant.REAL_NAME, queryDTO.getRealName())
                 .in(deptIdList != null, FieldConstant.DEPT_ID, deptIdList)
                 .in(userIdList != null, FieldConstant.ID, userIdList);
@@ -77,7 +74,7 @@ public class UserDaoImpl extends BaseDaoImpl<UserPO> implements UserDao {
         }
         QueryWrapper<UserPO> queryWrapper = wrapBriefQuery();
         queryWrapper
-                .like(!StringUtils.isEmpty(queryDTO.getUsername()), FieldConstant.USERNAME, queryDTO.getUsername())
+                .like(!StringUtils.isEmpty(queryDTO.getUserName()), FieldConstant.USER_NAME, queryDTO.getUserName())
                 .like(!StringUtils.isEmpty(queryDTO.getRealName()), FieldConstant.REAL_NAME, queryDTO.getRealName())
                 .in(deptIdList != null, FieldConstant.DEPT_ID, deptIdList);
         userMapper.selectPage(page, queryWrapper);
@@ -91,7 +88,7 @@ public class UserDaoImpl extends BaseDaoImpl<UserPO> implements UserDao {
         if(userId == null) {
             return null;
         }
-        QueryWrapper<UserPO> queryWrapper = getQueryWrapper();
+        QueryWrapper<UserPO> queryWrapper = getQueryWrapperWithAppName();
         queryWrapper.eq("id", userId);
         return CopyBeanUtil.copy(decodePW(userMapper.selectOne(queryWrapper)), User.class);
     }
@@ -110,7 +107,7 @@ public class UserDaoImpl extends BaseDaoImpl<UserPO> implements UserDao {
     public List<UserBrief> selectBriefListByNameAndDescOrderByCreateTime(String name) {
         QueryWrapper<UserPO> queryWrapper = wrapBriefQuery();
         queryWrapper
-                .like(!StringUtils.isEmpty(name), FieldConstant.USERNAME, name)
+                .like(!StringUtils.isEmpty(name), FieldConstant.USER_NAME, name)
                 .or()
                 .like(!StringUtils.isEmpty(name), FieldConstant.REAL_NAME, name)
                 .orderByDesc(FieldConstant.CREATE_TIME);
@@ -147,9 +144,9 @@ public class UserDaoImpl extends BaseDaoImpl<UserPO> implements UserDao {
 
     @Override
     public List<Integer> selectUserIdListByUsernameOrRealName(String name) {
-        QueryWrapper<UserPO> queryWrapper = getQueryWrapper();
+        QueryWrapper<UserPO> queryWrapper = getQueryWrapperWithAppName();
         queryWrapper.select(FieldConstant.ID)
-                .like(!StringUtils.isEmpty(name), FieldConstant.USERNAME, name)
+                .like(!StringUtils.isEmpty(name), FieldConstant.USER_NAME, name)
                 .or()
                 .like(!StringUtils.isEmpty(name), FieldConstant.REAL_NAME, name);
         List<Object> userIdList = userMapper.selectObjs(queryWrapper);
@@ -158,18 +155,20 @@ public class UserDaoImpl extends BaseDaoImpl<UserPO> implements UserDao {
 
     @Override
     public User selectByUsername(String username) {
+        User user = selectByUserId(9);
+
         if(StringUtils.isEmpty(username)) {
             return null;
         }
-        QueryWrapper<UserPO> queryWrapper = getQueryWrapper();
-        queryWrapper.eq(FieldConstant.USERNAME, username);
+        QueryWrapper<UserPO> queryWrapper = getQueryWrapperWithAppName();
+        queryWrapper.eq(FieldConstant.USER_NAME, username);
         UserPO userPO = decodePW(userMapper.selectOne(queryWrapper));
         return CopyBeanUtil.copy(userPO, User.class);
     }
 
     private QueryWrapper<UserPO> wrapBriefQuery() {
-        QueryWrapper<UserPO> queryWrapper = getQueryWrapper();
-        queryWrapper.select(FieldConstant.ID, FieldConstant.USERNAME, FieldConstant.REAL_NAME, FieldConstant.DEPT_ID);
+        QueryWrapper<UserPO> queryWrapper = getQueryWrapperWithAppName();
+        queryWrapper.select(FieldConstant.ID, FieldConstant.USER_NAME, FieldConstant.REAL_NAME, FieldConstant.DEPT_ID);
         return queryWrapper;
     }
 
@@ -180,9 +179,9 @@ public class UserDaoImpl extends BaseDaoImpl<UserPO> implements UserDao {
     }
 
     private UserPO decodePW(UserPO userPO){
-        if(null != userPO && !StringUtils.isEmpty(userPO.getPassword())){
+        if(null != userPO && !StringUtils.isEmpty(userPO.getPw())){
             try {
-                userPO.setPassword(PWEncryptUtil.decode(userPO.getPassword()));
+                userPO.setPw(PWEncryptUtil.decode(userPO.getPw()));
             } catch (Exception e) {
             }
         }

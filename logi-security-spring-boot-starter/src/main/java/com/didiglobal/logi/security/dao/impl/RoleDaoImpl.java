@@ -29,8 +29,15 @@ public class RoleDaoImpl extends BaseDaoImpl<RolePO> implements RoleDao {
     private RoleMapper roleMapper;
 
     @Override
+    public Role selectByRoleName(String roleName) {
+        QueryWrapper<RolePO> queryWrapper = getQueryWrapperWithAppName();
+        queryWrapper.eq( FieldConstant.ROLE_NAME, roleName);
+        return CopyBeanUtil.copy(roleMapper.selectOne(queryWrapper), Role.class);
+    }
+
+    @Override
     public Role selectByRoleId(Integer roleId) {
-        QueryWrapper<RolePO> queryWrapper = getQueryWrapper();
+        QueryWrapper<RolePO> queryWrapper = getQueryWrapperWithAppName();
         queryWrapper.eq( FieldConstant.ID, roleId);
         return CopyBeanUtil.copy(roleMapper.selectOne(queryWrapper), Role.class);
     }
@@ -38,7 +45,7 @@ public class RoleDaoImpl extends BaseDaoImpl<RolePO> implements RoleDao {
     @Override
     public IPage<Role> selectPage(RoleQueryDTO queryDTO) {
         IPage<RolePO> pageInfo = new Page<>(queryDTO.getPage(), queryDTO.getSize());
-        QueryWrapper<RolePO> roleWrapper = getQueryWrapper();
+        QueryWrapper<RolePO> roleWrapper = getQueryWrapperWithAppName();
         String roleName = queryDTO.getRoleName();
         String description = queryDTO.getDescription();
         if(!StringUtils.isEmpty(queryDTO.getRoleCode())) {
@@ -96,7 +103,7 @@ public class RoleDaoImpl extends BaseDaoImpl<RolePO> implements RoleDao {
 
     @Override
     public int selectCountByRoleNameAndNotRoleId(String roleName, Integer roleId) {
-        QueryWrapper<RolePO> queryWrapper = getQueryWrapper();
+        QueryWrapper<RolePO> queryWrapper = getQueryWrapperWithAppName();
         queryWrapper
                 .eq(FieldConstant.ROLE_NAME, roleName)
                 .ne(roleId != null, FieldConstant.ID, roleId);
@@ -104,7 +111,7 @@ public class RoleDaoImpl extends BaseDaoImpl<RolePO> implements RoleDao {
     }
 
     private QueryWrapper<RolePO> wrapBriefQuery() {
-        QueryWrapper<RolePO> queryWrapper = getQueryWrapper();
+        QueryWrapper<RolePO> queryWrapper = getQueryWrapperWithAppName();
         queryWrapper.select(FieldConstant.ID, FieldConstant.ROLE_NAME);
         return queryWrapper;
     }

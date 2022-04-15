@@ -15,16 +15,10 @@ import lombok.Data;
 @Data
 @ApiModel(description = "资源权限管理（按资源管理的列表信息）")
 public class MByRVO {
-
-    /**
-     * 管理权限用户数
-     */
+    
     @ApiModelProperty(value = "管理权限用户数", dataType = "Integer", required = false)
     private Integer adminUserCnt;
 
-    /**
-     * 查看权限用户数
-     */
     @ApiModelProperty(value = "查看权限用户数", dataType = "Integer", required = false)
     private Integer viewUserCnt;
 

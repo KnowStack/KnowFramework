@@ -2,36 +2,35 @@ package com.didiglobal.logi.security.service.impl;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.didiglobal.logi.security.common.PagingData;
+import com.didiglobal.logi.security.common.Result;
 import com.didiglobal.logi.security.common.dto.account.AccountLoginDTO;
 import com.didiglobal.logi.security.common.dto.user.UserBriefQueryDTO;
 import com.didiglobal.logi.security.common.dto.user.UserDTO;
+import com.didiglobal.logi.security.common.dto.user.UserQueryDTO;
 import com.didiglobal.logi.security.common.entity.dept.Dept;
 import com.didiglobal.logi.security.common.entity.user.User;
 import com.didiglobal.logi.security.common.entity.user.UserBrief;
+import com.didiglobal.logi.security.common.enums.ResultCode;
 import com.didiglobal.logi.security.common.po.UserPO;
 import com.didiglobal.logi.security.common.vo.role.AssignInfoVO;
 import com.didiglobal.logi.security.common.vo.role.RoleBriefVO;
-import com.didiglobal.logi.security.common.dto.user.UserQueryDTO;
 import com.didiglobal.logi.security.common.vo.user.UserBriefVO;
 import com.didiglobal.logi.security.common.vo.user.UserVO;
-import com.didiglobal.logi.security.common.enums.ResultCode;
 import com.didiglobal.logi.security.dao.UserDao;
 import com.didiglobal.logi.security.exception.LogiSecurityException;
 import com.didiglobal.logi.security.service.*;
 import com.didiglobal.logi.security.util.CopyBeanUtil;
-
-import java.util.*;
-import java.util.stream.Collectors;
-
 import com.didiglobal.logi.security.util.HttpRequestUtil;
-import com.didiglobal.logi.security.util.PWEncryptUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
-import org.springframework.util.DigestUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.util.*;
+import java.util.stream.Collectors;
+
+import static com.didiglobal.logi.security.common.enums.ResultCode.*;
 
 /**
  * @author cjm
@@ -216,12 +215,12 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserBriefVO verifyLogin(AccountLoginDTO loginDTO,
                                    HttpServletRequest request) throws LogiSecurityException {
-        User user = userDao.selectByUsername(loginDTO.getUsername());
+        User user = userDao.selectByUsername(loginDTO.getUserName());
         if(user == null) {
             throw new LogiSecurityException(ResultCode.USER_NOT_EXISTS);
         }
 
-        if(!user.getPassword().equals(loginDTO.getPassword())) {
+        if(!user.getPw().equals(loginDTO.getPw())) {
             // 密码错误
             throw new LogiSecurityException(ResultCode.USER_CREDENTIALS_ERROR);
         }
@@ -230,20 +229,41 @@ public class UserServiceImpl implements UserService {
         HttpSession session = request.getSession();
         // 设置过期时间（秒）
         session.setMaxInactiveInterval(60 * 60);
-        session.setAttribute(HttpRequestUtil.USER, loginDTO.getUsername());
+        session.setAttribute(HttpRequestUtil.USER, loginDTO.getUserName());
+        session.setAttribute(HttpRequestUtil.USER_ID, user.getId());
 
         return CopyBeanUtil.copy(user, UserBriefVO.class);
     }
 
     @Override
-    public Boolean addUser(UserDTO userDTO, String operator) {
-        UserPO userPO = CopyBeanUtil.copy(userDTO, UserPO.class);
-        return userDao.addUser(userPO) > 0;
+    public Result<Void> addUser(UserDTO userDTO, String operator) {
+        if(null != userDao.selectByUsername(userDTO.getUserName())){
+            return Result.fail(USER_ACCOUNT_ALREADY_EXIST);
+        }
+
+        try {
+            UserPO userPO = CopyBeanUtil.copy(userDTO, UserPO.class);
+            userDao.addUser(userPO);
+        } catch (Exception e) {
+            return Result.fail(USER_PASSWORD_ENCODE_ERROR);
+        }
+
+        return Result.success();
     }
 
     @Override
-    public Boolean editUser(UserDTO userDTO, String operator) {
-        UserPO userPO = CopyBeanUtil.copy(userDTO, UserPO.class);
-        return userDao.editUser(userPO) > 0;
+    public Result<Void> editUser(UserDTO userDTO, String operator) {
+        if(null == userDao.selectByUsername(userDTO.getUserName())){
+            return Result.fail(USER_ACCOUNT_NOT_EXIST);
+        }
+
+        try {
+            UserPO userPO = CopyBeanUtil.copy(userDTO, UserPO.class);
+            userDao.editUser(userPO);
+        } catch (Exception e) {
+            return Result.fail(USER_PASSWORD_ENCODE_ERROR);
+        }
+
+        return Result.success();
     }
 }

@@ -29,7 +29,7 @@ public class UserRoleDaoImpl extends BaseDaoImpl<UserRolePO> implements UserRole
         if(roleId == null) {
             return new ArrayList<>();
         }
-        QueryWrapper<UserRolePO> queryWrapper = getQueryWrapper();
+        QueryWrapper<UserRolePO> queryWrapper = getQueryWrapperWithAppName();
         queryWrapper.select( FieldConstant.USER_ID).eq(FieldConstant.ROLE_ID, roleId);
         List<Object> userIdList = userRoleMapper.selectObjs(queryWrapper);
         return userIdList.stream().map(Integer.class::cast).collect(Collectors.toList());
@@ -40,7 +40,7 @@ public class UserRoleDaoImpl extends BaseDaoImpl<UserRolePO> implements UserRole
         if(userId == null) {
             return new ArrayList<>();
         }
-        QueryWrapper<UserRolePO> userRoleWrapper = getQueryWrapper();
+        QueryWrapper<UserRolePO> userRoleWrapper = getQueryWrapperWithAppName();
         userRoleWrapper.select(FieldConstant.ROLE_ID).eq(FieldConstant.USER_ID, userId);
         List<Object> roleIdList = userRoleMapper.selectObjs(userRoleWrapper);
         return roleIdList.stream().map(Integer.class::cast).collect(Collectors.toList());
@@ -61,7 +61,7 @@ public class UserRoleDaoImpl extends BaseDaoImpl<UserRolePO> implements UserRole
         if(userId == null && roleId == null) {
             return;
         }
-        QueryWrapper<UserRolePO> queryWrapper = getQueryWrapper();
+        QueryWrapper<UserRolePO> queryWrapper = getQueryWrapperWithAppName();
         queryWrapper
                 .eq(userId != null, FieldConstant.USER_ID, userId)
                 .eq(roleId != null, FieldConstant.ROLE_ID, roleId);
@@ -73,7 +73,7 @@ public class UserRoleDaoImpl extends BaseDaoImpl<UserRolePO> implements UserRole
         if(roleId == null) {
             return 0;
         }
-        QueryWrapper<UserRolePO> queryWrapper = getQueryWrapper();
+        QueryWrapper<UserRolePO> queryWrapper = getQueryWrapperWithAppName();
         queryWrapper.eq(FieldConstant.ROLE_ID, roleId);
         return userRoleMapper.selectCount(queryWrapper);
     }

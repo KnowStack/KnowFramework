@@ -34,7 +34,7 @@ public class ResourceTypeDaoImpl extends BaseDaoImpl<ResourceTypePO> implements 
     @Override
     public IPage<ResourceType> selectPage(ResourceTypeQueryDTO queryDTO) {
         IPage<ResourceTypePO> pageInfo = new Page<>(queryDTO.getPage(), queryDTO.getSize());
-        QueryWrapper<ResourceTypePO> queryWrapper = getQueryWrapper();
+        QueryWrapper<ResourceTypePO> queryWrapper = getQueryWrapperWithAppName();
         String typeName = queryDTO.getTypeName();
         queryWrapper.like(!StringUtils.isEmpty(typeName), FieldConstant.TYPE_NAME, typeName);
         resourceTypeMapper.selectPage(pageInfo, queryWrapper);
@@ -43,7 +43,7 @@ public class ResourceTypeDaoImpl extends BaseDaoImpl<ResourceTypePO> implements 
 
     @Override
     public ResourceType selectByResourceTypeId(Integer resourceTypeId) {
-        QueryWrapper<ResourceTypePO> queryWrapper = getQueryWrapper();
+        QueryWrapper<ResourceTypePO> queryWrapper = getQueryWrapperWithAppName();
         queryWrapper.eq(FieldConstant.ID, resourceTypeId);
         return CopyBeanUtil.copy(resourceTypeMapper.selectOne(queryWrapper), ResourceType.class);
     }

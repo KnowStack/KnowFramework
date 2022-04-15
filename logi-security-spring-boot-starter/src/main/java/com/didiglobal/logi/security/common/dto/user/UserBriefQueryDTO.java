@@ -15,7 +15,7 @@ public class UserBriefQueryDTO extends PageParamDTO {
     /**
      * 账户名
      */
-    private String username;
+    private String userName;
 
     /**
      * 实名
@@ -35,7 +35,7 @@ public class UserBriefQueryDTO extends PageParamDTO {
     public UserBriefQueryDTO(MByUQueryDTO queryDTO) {
         this.setPage(queryDTO.getPage());
         this.setSize(queryDTO.getSize());
-        this.username = queryDTO.getUsername();
+        this.userName = queryDTO.getUserName();
         this.realName = queryDTO.getRealName();
         this.deptId = queryDTO.getDeptId();
         this.deptName = queryDTO.getDeptName();

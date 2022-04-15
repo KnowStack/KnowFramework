@@ -21,11 +21,6 @@ public class MByRDataQueryDTO {
     @ApiModelProperty(value = "具体资源id", dataType = "Integer", required = false)
     private Integer resourceId;
 
-    /**
-     * 资源管理级别：
-     * 1（查看权限）
-     * 2（管理权限）
-     */
     @ApiModelProperty(value = "资源管理级别：1（查看权限）、2（管理权限）", dataType = "Integer", required = true)
     private Integer controlLevel;
 

@@ -29,7 +29,7 @@ public class UserProjectDaoImpl extends BaseDaoImpl<UserProjectPO> implements Us
         if(projectId == null) {
             return new ArrayList<>();
         }
-        QueryWrapper<UserProjectPO> queryWrapper = getQueryWrapper();
+        QueryWrapper<UserProjectPO> queryWrapper = getQueryWrapperWithAppName();
         queryWrapper.select( FieldConstant.USER_ID).eq(FieldConstant.PROJECT_ID, projectId);
         List<Object> userIdList = userProjectMapper.selectObjs(queryWrapper);
         return userIdList.stream().map(Integer.class::cast).collect(Collectors.toList());
@@ -40,7 +40,7 @@ public class UserProjectDaoImpl extends BaseDaoImpl<UserProjectPO> implements Us
         if(CollectionUtils.isEmpty(userIdList)) {
             return new ArrayList<>();
         }
-        QueryWrapper<UserProjectPO> queryWrapper = getQueryWrapper();
+        QueryWrapper<UserProjectPO> queryWrapper = getQueryWrapperWithAppName();
         queryWrapper.select(FieldConstant.PROJECT_ID).in(FieldConstant.USER_ID, userIdList);
         List<Object> projectIdList = userProjectMapper.selectObjs(queryWrapper);
         return projectIdList.stream().map(Integer.class::cast).collect(Collectors.toList());
@@ -59,7 +59,7 @@ public class UserProjectDaoImpl extends BaseDaoImpl<UserProjectPO> implements Us
 
     @Override
     public void deleteByProjectId(Integer projectId) {
-        QueryWrapper<UserProjectPO> queryWrapper = getQueryWrapper();
+        QueryWrapper<UserProjectPO> queryWrapper = getQueryWrapperWithAppName();
         queryWrapper.eq(FieldConstant.PROJECT_ID, projectId);
         userProjectMapper.delete(queryWrapper);
     }

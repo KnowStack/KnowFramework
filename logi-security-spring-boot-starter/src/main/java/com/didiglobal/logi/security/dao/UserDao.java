@@ -14,9 +14,9 @@ import java.util.List;
  */
 public interface UserDao {
 
-    int addUser(UserPO userPO);
+    int addUser(UserPO userPO) throws Exception;
 
-    int editUser(UserPO userPO);
+    int editUser(UserPO userPO) throws Exception;
 
     /**
      * 根据指定条件分页查询

@@ -33,7 +33,7 @@ public class UserResourceDaoImpl extends BaseDaoImpl<UserResourcePO> implements 
      * @return QueryWrapper<UserResourcePO>
      */
     private QueryWrapper<UserResourcePO> wrapQueryCriteria(Integer userId, UserResourceQueryDTO queryDTO) {
-        QueryWrapper<UserResourcePO> queryWrapper = getQueryWrapper();
+        QueryWrapper<UserResourcePO> queryWrapper = getQueryWrapperWithAppName();
         Integer resourceTypeId = queryDTO.getResourceTypeId();
         queryWrapper
                 .eq( FieldConstant.CONTROL_LEVEL, queryDTO.getControlLevel())
@@ -56,7 +56,7 @@ public class UserResourceDaoImpl extends BaseDaoImpl<UserResourcePO> implements 
 
     @Override
     public void deleteByControlLevel(ControlLevelCode controlLevel) {
-        QueryWrapper<UserResourcePO> queryWrapper = getQueryWrapper();
+        QueryWrapper<UserResourcePO> queryWrapper = getQueryWrapperWithAppName();
         queryWrapper.eq(FieldConstant.CONTROL_LEVEL, controlLevel.getType());
         userResourceMapper.delete(queryWrapper);
     }
@@ -108,7 +108,7 @@ public class UserResourceDaoImpl extends BaseDaoImpl<UserResourcePO> implements 
 
     @Override
     public int selectCountByUserIdAndControlLevel(Integer userId, ControlLevelCode controlLevel) {
-        QueryWrapper<UserResourcePO> queryWrapper = getQueryWrapper();
+        QueryWrapper<UserResourcePO> queryWrapper = getQueryWrapperWithAppName();
         queryWrapper
                 .eq(userId != null, FieldConstant.USER_ID, userId)
                 .eq(FieldConstant.CONTROL_LEVEL, controlLevel.getType());

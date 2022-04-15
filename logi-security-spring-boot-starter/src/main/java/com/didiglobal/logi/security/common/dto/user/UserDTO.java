@@ -13,10 +13,10 @@ import java.util.List;
 public class UserDTO {
 
     @ApiModelProperty(value = "用户账号", dataType = "Integer", required = true)
-    private String username;
+    private String userName;
 
     @ApiModelProperty(value = "用户密码", dataType = "Integer", required = false)
-    private String password;
+    private String pw;
 
     @ApiModelProperty(value = "用户真实姓名", dataType = "Integer", required = false)
     private String realName;

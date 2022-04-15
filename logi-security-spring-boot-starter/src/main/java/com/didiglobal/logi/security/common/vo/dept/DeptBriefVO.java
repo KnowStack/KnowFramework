@@ -14,15 +14,9 @@ public class DeptBriefVO {
     @ApiModelProperty(value = "部门id", dataType = "Integer", required = false)
     private Integer id;
 
-    /**
-     * 部门名
-     */
     @ApiModelProperty(value = "部门名", dataType = "String", required = false)
     private String deptName;
 
-    /**
-     * 父部门id（根部门parentId为0）
-     */
     @ApiModelProperty(value = "父部门id（根部门parentId为0）", dataType = "Integer", required = false)
     private Integer parentId;
 }

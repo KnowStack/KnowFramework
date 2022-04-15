@@ -47,10 +47,7 @@ create table if not exists logi_oplog_extra
 (
     id       int auto_increment primary key,
     info     varchar(16) null comment '信息',
-    type     tinyint     not null comment '哪种信息：
-1：操作页面
-2：操作类型
-3：对象分类',
+    type     tinyint     not null comment '哪种信息：1：操作页面;2：操作类型;3：对象分类',
     app_name varchar(16) null comment '应用名称'
     )
     comment '操作日志信息（操作页面、操作类型、对象分类）';
@@ -116,8 +113,8 @@ create table if not exists logi_role_permission
 create table if not exists logi_user
 (
     id          int auto_increment primary key,
-    username    varchar(64)                            not null comment '用户账号',
-    password    char(32)                               not null comment '用户密码',
+    user_name   varchar(64)                            not null comment '用户账号',
+    pw          char(2048)                             not null comment '用户密码',
     salt        char(5)                                not null comment '密码盐',
     real_name   varchar(128) default ''                not null comment '真实姓名',
     phone       char(11)     default ''                not null comment 'mobile',
@@ -128,7 +125,7 @@ create table if not exists logi_user
     update_time timestamp    default CURRENT_TIMESTAMP null on update CURRENT_TIMESTAMP comment '更新时间',
     app_name    varchar(16)                            null comment '应用名称',
     constraint logi_user_username_uindex
-    unique (username)
+    unique (user_name)
     )
     comment '用户信息';
 

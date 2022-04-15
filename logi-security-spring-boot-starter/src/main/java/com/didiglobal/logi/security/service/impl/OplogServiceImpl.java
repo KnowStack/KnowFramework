@@ -8,7 +8,6 @@ import com.didiglobal.logi.security.common.dto.oplog.OplogQueryDTO;
 import com.didiglobal.logi.security.common.vo.oplog.OplogVO;
 import com.didiglobal.logi.security.common.vo.user.UserBriefVO;
 import com.didiglobal.logi.security.dao.OplogDao;
-import com.didiglobal.logi.security.service.OplogExtraService;
 import com.didiglobal.logi.security.service.OplogService;
 import com.didiglobal.logi.security.service.UserService;
 import com.didiglobal.logi.security.util.CopyBeanUtil;
@@ -60,7 +59,7 @@ public class OplogServiceImpl implements OplogService {
         // 获取操作人信息
         UserBriefVO userBriefVO = userService.getUserBriefByUserId(userId);
         if(userBriefVO != null) {
-            oplog.setOperatorUsername(userBriefVO.getUsername());
+            oplog.setOperatorUsername(userBriefVO.getUserName());
         }
         // 获取客户端真实ip地址
         String realIpAddress = NetworkUtil.getRealIpAddress();

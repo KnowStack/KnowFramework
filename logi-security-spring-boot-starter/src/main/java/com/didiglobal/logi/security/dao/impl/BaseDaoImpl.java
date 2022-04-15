@@ -14,7 +14,7 @@ public class BaseDaoImpl<T> {
     @Autowired
     protected LogiSecurityProper logiSecurityProper;
 
-    protected QueryWrapper<T> getQueryWrapper() {
+    protected QueryWrapper<T> getQueryWrapperWithAppName() {
         QueryWrapper<T> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("app_name", logiSecurityProper.getAppName());
         return queryWrapper;

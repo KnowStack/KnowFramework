@@ -41,7 +41,7 @@ public class RolePermissionDaoImpl extends BaseDaoImpl<RolePermissionPO> impleme
         if (roleId == null) {
             return;
         }
-        QueryWrapper<RolePermissionPO> queryWrapper = getQueryWrapper();
+        QueryWrapper<RolePermissionPO> queryWrapper = getQueryWrapperWithAppName();
         queryWrapper.eq( FieldConstant.ROLE_ID, roleId);
         rolePermissionMapper.delete(queryWrapper);
     }
@@ -61,7 +61,7 @@ public class RolePermissionDaoImpl extends BaseDaoImpl<RolePermissionPO> impleme
         if(CollectionUtils.isEmpty(roleIdList)) {
             return new ArrayList<>();
         }
-        QueryWrapper<RolePermissionPO> queryWrapper = getQueryWrapper();
+        QueryWrapper<RolePermissionPO> queryWrapper = getQueryWrapperWithAppName();
         queryWrapper.select(FieldConstant.PERMISSION_ID).in(FieldConstant.ROLE_ID, roleIdList);
         List<Object> permissionIdList = rolePermissionMapper.selectObjs(queryWrapper);
         return permissionIdList.stream().map(Integer.class::cast).collect(Collectors.toList());

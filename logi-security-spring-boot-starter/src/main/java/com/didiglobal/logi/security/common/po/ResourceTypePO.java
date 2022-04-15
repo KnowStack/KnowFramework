@@ -12,7 +12,7 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = true)
 @Data
 @TableName(value = "logi_resource_type")
-public class ResourceTypePO extends BasePO {
+public class ResourceTypePO extends AppBasePO {
 
     /**
      * 资源类型名

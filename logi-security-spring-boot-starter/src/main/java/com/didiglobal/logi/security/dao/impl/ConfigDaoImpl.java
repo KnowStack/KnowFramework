@@ -95,7 +95,7 @@ public class ConfigDaoImpl extends BaseDaoImpl<ConfigPO> implements ConfigDao {
     }
 
     private QueryWrapper<ConfigPO> wrapBriefQuery() {
-        QueryWrapper<ConfigPO> queryWrapper = getQueryWrapper();
+        QueryWrapper<ConfigPO> queryWrapper = getQueryWrapperWithAppName();
         queryWrapper.select(ID, VALUE_GROUP, VALUE_NAME, VALUE, STATUS, MEMO, OPERATOR, CREATE_TIME, UPDATE_TIME);
         return queryWrapper;
     }

@@ -106,7 +106,7 @@ public class RoleServiceImpl implements RoleService {
         // 设置修改人信息
         UserBriefVO userBriefVO = userService.getUserBriefByUserId(userId);
         if(userBriefVO != null) {
-            role.setLastReviser(userBriefVO.getUsername());
+            role.setLastReviser(userBriefVO.getUserName());
         }
         // 设置角色编号
         role.setRoleCode("r" + MathUtil.getRandomNumber(7));
@@ -152,7 +152,7 @@ public class RoleServiceImpl implements RoleService {
         // 设置修改人信息
         UserBriefVO userBriefVO = userService.getUserBriefByUserId(userId);
         if(userBriefVO != null) {
-            role.setLastReviser(userBriefVO.getUsername());
+            role.setLastReviser(userBriefVO.getUserName());
         }
         roleDao.update(role);
         // 更新角色与权限关联信息
@@ -179,7 +179,7 @@ public class RoleServiceImpl implements RoleService {
             // 保存操作日志
             UserBriefVO userBriefVO = userService.getUserBriefByUserId(assignDTO.getId());
             Integer oplogId = oplogService.saveOplogWithUserId(operatorId,
-                    new OplogDTO(OplogConstant.UM, OplogConstant.UM_AR, OplogConstant.UM_U, userBriefVO.getUsername()));
+                    new OplogDTO(OplogConstant.UM, OplogConstant.UM_AR, OplogConstant.UM_U, userBriefVO.getUserName()));
             // 打包和保存角色更新消息
             packAndSaveMessage(oplogId, oldRoleIdList, assignDTO);
         } else {
@@ -216,7 +216,7 @@ public class RoleServiceImpl implements RoleService {
         if(!CollectionUtils.isEmpty(userIdList)) {
             // 获取用户简要信息List
             List<UserBriefVO> list = userService.getUserBriefListByUserIdList(userIdList);
-            List<String> usernameList = list.stream().map(UserBriefVO::getUsername).collect(Collectors.toList());
+            List<String> usernameList = list.stream().map(UserBriefVO::getUserName ).collect(Collectors.toList());
             roleDeleteCheckVO.setUsernameList(usernameList);
         }
         return roleDeleteCheckVO;
@@ -257,7 +257,7 @@ public class RoleServiceImpl implements RoleService {
             AssignInfoVO assignInfoVO = new AssignInfoVO();
             // 判断用户是否拥有该角色
             assignInfoVO.setHas(hasRoleUserIdSet.contains(userBriefVO.getId()));
-            assignInfoVO.setName(userBriefVO.getUsername() + "/" + userBriefVO.getRealName());
+            assignInfoVO.setName(userBriefVO.getUserName() + "/" + userBriefVO.getRealName());
             assignInfoVO.setId(userBriefVO.getId());
             result.add(assignInfoVO);
         }

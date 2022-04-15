@@ -149,7 +149,7 @@ public class UserResourceServiceImpl implements UserResourceService {
         userBriefVOList.parallelStream().forEach(userBriefVO -> {
             MByRDataVO dataVo = new MByRDataVO();
             dataVo.setUserId(userBriefVO.getId());
-            dataVo.setUsername(userBriefVO.getUsername());
+            dataVo.setUserName(userBriefVO.getUserName());
             dataVo.setRealName(userBriefVO.getRealName());
             HasLevelCode hasLevel = getHasLevel(
                     isBatch, controlLevel, userBriefVO.getId(), projectId, resourceTypeId, resourceId

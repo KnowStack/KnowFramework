@@ -25,7 +25,7 @@ public class OplogVO {
      * 操作者用户账号
      */
     @ApiModelProperty(value = "操作者用户账号", dataType = "String", required = false)
-    private String operatorUsername;
+    private String operator;
 
     /**
      * 操作日志页面

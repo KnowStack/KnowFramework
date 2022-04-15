@@ -12,7 +12,7 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = true)
 @Data
 @TableName(value = "logi_oplog_extra")
-public class OplogExtraPO extends BasePO {
+public class OplogExtraPO extends AppBasePO {
 
     /**
      * 操作页面、操作类型、对象分类的信息

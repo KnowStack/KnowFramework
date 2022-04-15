@@ -12,7 +12,7 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = true)
 @Data
 @TableName(value = "logi_permission")
-public class PermissionPO extends BasePO {
+public class PermissionPO extends AppBasePO {
 
     /**
      * 权限名

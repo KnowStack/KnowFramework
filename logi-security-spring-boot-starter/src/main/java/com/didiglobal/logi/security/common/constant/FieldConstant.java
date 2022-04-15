@@ -21,7 +21,7 @@ public class FieldConstant {
 
     public static final String DEPT_ID = "dept_id";
 
-    public static final String USERNAME = "username";
+    public static final String USER_NAME = "user_name";
 
     public static final String REAL_NAME = "real_name";
 

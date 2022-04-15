@@ -92,15 +92,15 @@ public class UserController {
     @PutMapping("/add")
     @ResponseBody
     @ApiOperation(value = "用户新增接口，暂时没有考虑权限", notes = "")
-    public Result<Boolean> add(HttpServletRequest request, @RequestBody UserDTO param) {
-        return Result.success(userService.addUser(param, HttpRequestUtil.getOperator(request)));
+    public Result<Void> add(HttpServletRequest request, @RequestBody UserDTO param) {
+        return userService.addUser(param, HttpRequestUtil.getOperator(request));
     }
 
     @PostMapping("/edit")
     @ResponseBody
     @ApiOperation(value = "编辑用户接口，暂时没有考虑权限", notes = "")
-    public Result<Boolean> edit(HttpServletRequest request, @RequestBody UserDTO param) {
-        return Result.success(userService.editUser(param, HttpRequestUtil.getOperator(request)));
+    public Result<Void> edit(HttpServletRequest request, @RequestBody UserDTO param) {
+        return userService.editUser(param, HttpRequestUtil.getOperator(request));
     }
 }
 

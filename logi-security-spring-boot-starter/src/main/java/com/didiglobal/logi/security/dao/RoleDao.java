@@ -13,6 +13,13 @@ import java.util.List;
 public interface RoleDao {
 
     /**
+     * 根据角色名称，获取角色信息
+     * @param roleName
+     * @return 角色信息
+     */
+    Role selectByRoleName(String roleName);
+
+    /**
      * 根据角色id，获取角色信息
      * @param roleId 角色id
      * @return 角色信息

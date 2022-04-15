@@ -15,7 +15,7 @@ public class MByRDataVO {
     private Integer userId;
 
     @ApiModelProperty(value = "用户账户名", dataType = "String", required = false)
-    private String username;
+    private String userName;
 
     @ApiModelProperty(value = "用户实名", dataType = "String", required = false)
     private String realName;

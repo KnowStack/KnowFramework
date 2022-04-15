@@ -34,20 +34,9 @@ public class BatchAssignDTO {
             dataType = "List<Integer>", required = true)
     private List<Integer> idList;
 
-    /**
-     * 资源管理级别：
-     * 0（不具备任何权限）
-     * 1（默认，查看权限）
-     * 2（管理权限）
-     */
     @ApiModelProperty(value = "资源管理级别：1（查看权限）、2（管理权限）", dataType = "Integer", required = true)
     private Integer controlLevel;
 
-    /**
-     * 分配标记
-     * true（按资源管理下的批量分配用户）
-     * false（按用户管理下的批量分配资源）
-     */
     @ApiModelProperty(value = "分配标记：true（按资源管理下的批量分配用户）、false（按用户管理下的批量分配资源）", dataType = "Boolean", required = true)
     private Boolean assignFlag;
 }

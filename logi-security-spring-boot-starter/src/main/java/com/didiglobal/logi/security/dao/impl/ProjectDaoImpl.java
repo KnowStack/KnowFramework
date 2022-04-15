@@ -29,7 +29,7 @@ public class ProjectDaoImpl extends BaseDaoImpl<ProjectPO> implements ProjectDao
 
     @Override
     public Project selectByProjectId(Integer projectId) {
-        QueryWrapper<ProjectPO> queryWrapper = getQueryWrapper();
+        QueryWrapper<ProjectPO> queryWrapper = getQueryWrapperWithAppName();
         queryWrapper.eq( FieldConstant.ID, projectId);
         return CopyBeanUtil.copy(projectMapper.selectOne(queryWrapper), Project.class);
     }
@@ -53,7 +53,7 @@ public class ProjectDaoImpl extends BaseDaoImpl<ProjectPO> implements ProjectDao
 
     @Override
     public int selectCountByProjectNameAndNotProjectId(String projectName, Integer projectId) {
-        QueryWrapper<ProjectPO> queryWrapper = getQueryWrapper();
+        QueryWrapper<ProjectPO> queryWrapper = getQueryWrapperWithAppName();
         queryWrapper
                 .eq(FieldConstant.PROJECT_NAME, projectName)
                 .ne(projectId != null, FieldConstant.ID, projectId);
@@ -61,7 +61,7 @@ public class ProjectDaoImpl extends BaseDaoImpl<ProjectPO> implements ProjectDao
     }
 
     private QueryWrapper<ProjectPO> wrapBriefQuery() {
-        QueryWrapper<ProjectPO> queryWrapper = getQueryWrapper();
+        QueryWrapper<ProjectPO> queryWrapper = getQueryWrapperWithAppName();
         queryWrapper.select(FieldConstant.ID, FieldConstant.PROJECT_CODE, FieldConstant.PROJECT_NAME);
         return queryWrapper;
     }
@@ -93,7 +93,7 @@ public class ProjectDaoImpl extends BaseDaoImpl<ProjectPO> implements ProjectDao
         if(projectIdList != null && projectIdList.isEmpty()) {
             return CopyBeanUtil.copyPage(page, Project.class);
         }
-        QueryWrapper<ProjectPO> projectWrapper = getQueryWrapper();
+        QueryWrapper<ProjectPO> projectWrapper = getQueryWrapperWithAppName();
         String projectCode = queryDTO.getProjectCode();
         String projectName = queryDTO.getProjectName();
         projectWrapper

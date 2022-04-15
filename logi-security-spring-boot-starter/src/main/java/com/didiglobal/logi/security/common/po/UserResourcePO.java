@@ -16,7 +16,7 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = true)
 @Data
 @TableName(value = "logi_user_resource")
-public class UserResourcePO extends BasePO {
+public class UserResourcePO extends AppBasePO {
 
     /**
      * 用户id

@@ -25,7 +25,7 @@ public class MByUQueryDTO extends PageParamDTO {
     private String deptName;
 
     @ApiModelProperty(value = "用户账号", dataType = "String", required = false)
-    private String username;
+    private String userName;
 
     @ApiModelProperty(value = "用户实名", dataType = "String", required = false)
     private String realName;

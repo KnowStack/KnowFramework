@@ -18,9 +18,6 @@ import lombok.EqualsAndHashCode;
 @ApiModel(description = "资源权限管理（按资源管理的列表查询条件）")
 public class MByRQueryDTO extends PageParamDTO {
 
-    /**
-     * 项目id
-     */
     @ApiModelProperty(value = "项目id（2，3展示级别不可为null）", dataType = "Integer", required = false)
     private Integer projectId;
 

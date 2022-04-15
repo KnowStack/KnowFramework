@@ -1,6 +1,7 @@
 package com.didiglobal.logi.security.service;
 
 import com.didiglobal.logi.security.common.PagingData;
+import com.didiglobal.logi.security.common.Result;
 import com.didiglobal.logi.security.common.dto.account.AccountLoginDTO;
 import com.didiglobal.logi.security.common.dto.user.UserBriefQueryDTO;
 import com.didiglobal.logi.security.common.dto.user.UserDTO;
@@ -117,7 +118,7 @@ public interface UserService {
      * @param operator
      * @return
      */
-    Boolean addUser(UserDTO userDTO, String operator);
+    Result<Void> addUser(UserDTO userDTO, String operator);
 
     /**
      * 编辑一个用户
@@ -125,5 +126,5 @@ public interface UserService {
      * @param operator
      * @return
      */
-    Boolean editUser(UserDTO userDTO, String operator);
+    Result<Void> editUser(UserDTO userDTO, String operator);
 }

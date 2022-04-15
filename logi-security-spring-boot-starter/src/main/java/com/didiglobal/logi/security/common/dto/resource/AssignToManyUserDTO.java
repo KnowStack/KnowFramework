@@ -30,20 +30,12 @@ public class AssignToManyUserDTO {
     @ApiModelProperty(value = "具体资源id（如果为null，则表示该资源类别下的所有具体资源权限都分配给用户list）", dataType = "Integer", required = false)
     private Integer resourceId;
 
-    /**
-     * userIdList数组长度可以为0，但是不可为null，表示移除所有old该资源权限与用户的关联信息
-     */
-    @ApiModelProperty(value = "用户idList（数组长度可以为0，但是不可为null）", dataType = "List<Integer>", required = true)
+    @ApiModelProperty(value = "用户idList，数组长度可以为0，但是不可为null，idList为空表示移除所有old该资源权限与用户的关联信息", dataType = "List<Integer>", required = true)
     private List<Integer> userIdList;
 
     @ApiModelProperty(value = "排除的用户idList（不删除该用户对资源的权限，用于半选状态的用户）", dataType = "List<Integer>", required = false)
     private List<Integer> excludeUserIdList;
 
-    /**
-     * 资源管理级别：
-     * 1（查看权限）
-     * 2（管理权限）
-     */
     @ApiModelProperty(value = "资源管理级别：1（查看权限）、2（管理权限）", dataType = "Integer", required = true)
     private Integer controlLevel;
 }

@@ -16,12 +16,12 @@ public class User extends BaseEntity {
     /**
      * 用户账号
      */
-    private String username;
+    private String userName;
 
     /**
      * 用户密码
      */
-    private String password;
+    private String pw;
 
     /**
      * 密码盐
