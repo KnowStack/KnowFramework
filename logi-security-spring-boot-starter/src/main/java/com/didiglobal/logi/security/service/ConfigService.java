@@ -1,7 +1,9 @@
 package com.didiglobal.logi.security.service;
 
+import com.didiglobal.logi.security.common.PagingData;
 import com.didiglobal.logi.security.common.Result;
 import com.didiglobal.logi.security.common.dto.config.ConfigDTO;
+import com.didiglobal.logi.security.common.dto.config.ConfigQueryDTO;
 import com.didiglobal.logi.security.common.vo.config.ConfigVO;
 
 import java.util.List;
@@ -41,6 +43,13 @@ public interface ConfigService {
      *
      */
     Result<Void> switchConfig(Integer configId, Integer status, String user);
+
+    /**
+     * 分页获取用户信息
+     * @param queryDTO 条件信息
+     * @return 用户信息list
+     */
+    PagingData<ConfigVO> pagingConfig(ConfigQueryDTO queryDTO);
 
     /**
      * 根据查询条件返回ConfigVOVO列表

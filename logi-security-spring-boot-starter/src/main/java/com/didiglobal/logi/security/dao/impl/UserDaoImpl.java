@@ -45,23 +45,18 @@ public class UserDaoImpl extends BaseDaoImpl<UserPO> implements UserDao {
     }
 
     @Override
-    public IPage<User> selectPageByDeptIdListAndUserIdList(UserQueryDTO queryDTO, List<Integer> deptIdList,
-                                                           List<Integer> userIdList) {
+    public IPage<User> selectPageByUserIdList(UserQueryDTO queryDTO,
+                                              List<Integer> userIdList) {
         IPage<UserPO> page = new Page<>(queryDTO.getPage(), queryDTO.getSize());
-        if(deptIdList != null && deptIdList.isEmpty()) {
-            return CopyBeanUtil.copyPage(page, User.class);
-        }
-        if(userIdList != null && userIdList.isEmpty()) {
-            return CopyBeanUtil.copyPage(page, User.class);
-        }
         QueryWrapper<UserPO> queryWrapper = getQueryWrapperWithAppName();
         queryWrapper
+                .eq( queryDTO.getId() != null, FieldConstant.ID, queryDTO.getId() )
                 .like(queryDTO.getUserName() != null, FieldConstant.USER_NAME, queryDTO.getUserName())
                 .like(queryDTO.getRealName() != null, FieldConstant.REAL_NAME, queryDTO.getRealName())
-                .in(deptIdList != null, FieldConstant.DEPT_ID, deptIdList)
-                .in(userIdList != null, FieldConstant.ID, userIdList);
+                .in(!CollectionUtils.isEmpty(userIdList), FieldConstant.ID, userIdList);
         userMapper.selectPage(page, queryWrapper);
 
+        page.setTotal(userMapper.selectCount(queryWrapper));
         page.setRecords(decodePW(page.getRecords()));
         return CopyBeanUtil.copyPage(page, User.class);
     }

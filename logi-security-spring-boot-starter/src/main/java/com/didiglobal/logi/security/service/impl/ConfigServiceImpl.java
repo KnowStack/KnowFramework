@@ -1,8 +1,12 @@
 package com.didiglobal.logi.security.service.impl;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
+import com.didiglobal.logi.security.common.PagingData;
 import com.didiglobal.logi.security.common.Result;
 import com.didiglobal.logi.security.common.dto.config.ConfigDTO;
+import com.didiglobal.logi.security.common.dto.config.ConfigQueryDTO;
+import com.didiglobal.logi.security.common.entity.user.User;
 import com.didiglobal.logi.security.common.enums.ConfigStatusEnum;
 import com.didiglobal.logi.security.common.po.ConfigPO;
 import com.didiglobal.logi.security.common.vo.config.ConfigVO;
@@ -16,6 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -81,7 +86,7 @@ public class ConfigServiceImpl implements ConfigService {
         }
 
         configInfoPO.setOperator(user);
-        configInfoPO.setStatus(ConfigStatusEnum.DELETED.getCode());
+        configInfoPO.setIsDelete(true);
         return Result.build(1 == configDao.update(configInfoPO));
     }
 
@@ -131,6 +136,14 @@ public class ConfigServiceImpl implements ConfigService {
         configInfoPO.setOperator(user);
         configInfoPO.setStatus(status);
         return Result.build(1 == configDao.update(configInfoPO));
+    }
+
+    @Override
+    public PagingData<ConfigVO> pagingConfig(ConfigQueryDTO queryDTO) {
+        IPage<ConfigPO> configPOs = configDao.selectPage(queryDTO);
+        List<ConfigVO> configVOS  = CopyBeanUtil.copyList(configPOs.getRecords(), ConfigVO.class);
+
+        return new PagingData<>(configVOS, configPOs);
     }
 
     /**

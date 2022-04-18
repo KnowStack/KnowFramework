@@ -1,5 +1,7 @@
 package com.didiglobal.logi.security.dao;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.didiglobal.logi.security.common.dto.config.ConfigQueryDTO;
 import com.didiglobal.logi.security.common.po.ConfigPO;
 
 import java.util.List;
@@ -12,6 +14,8 @@ public interface ConfigDao {
     int insert(ConfigPO param);
 
     int update(ConfigPO param);
+
+    IPage<ConfigPO> selectPage(ConfigQueryDTO queryDTO);
 
     List<ConfigPO> listByCondition(ConfigPO condt);
 

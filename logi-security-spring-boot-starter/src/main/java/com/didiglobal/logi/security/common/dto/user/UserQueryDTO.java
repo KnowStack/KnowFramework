@@ -15,6 +15,9 @@ import lombok.EqualsAndHashCode;
 @ApiModel(description = "用户查找条件信息")
 public class UserQueryDTO extends PageParamDTO {
 
+    @ApiModelProperty(value = "根据用户id查询", dataType = "Integer", required = false)
+    private Integer id;
+
     @ApiModelProperty(value = "根据角色id查询", dataType = "Integer", required = false)
     private Integer roleId;
 
@@ -23,7 +26,4 @@ public class UserQueryDTO extends PageParamDTO {
 
     @ApiModelProperty(value = "真实姓名", dataType = "String", required = false)
     private String realName;
-
-    @ApiModelProperty(value = "根据部门id查询", dataType = "Integer", required = false)
-    private Integer deptId;
 }

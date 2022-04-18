@@ -64,21 +64,16 @@ public class UserServiceImpl implements UserService {
             // 根据角色获取用户IdList
             userIdList = userRoleService.getUserIdListByRoleId(queryDTO.getRoleId());
         }
-        // 获取该部门下的所有子部门idList
-        List<Integer> deptIdList = deptService.getDeptIdListByParentId(queryDTO.getDeptId());
 
-        IPage<User> pageInfo = userDao.selectPageByDeptIdListAndUserIdList(queryDTO, deptIdList, userIdList);
+        IPage<User> pageInfo = userDao.selectPageByUserIdList(queryDTO, userIdList);
         List<UserVO> userVOList = new ArrayList<>();
         List<User> userList = pageInfo.getRecords();
 
         // 提前获取所有部门
-        Map<Integer, Dept> deptMap = deptService.getAllDeptMap();
         for (User user : userList) {
             UserVO userVo = CopyBeanUtil.copy(user, UserVO.class);
             // 设置角色信息
             userVo.setRoleList(roleService.getRoleBriefListByUserId(userVo.getId()));
-            // 设置部门信息
-            userVo.setDeptList(deptService.getDeptBriefListFromDeptMapByChildId(deptMap, user.getDeptId()));
             userVo.setUpdateTime(user.getUpdateTime());
             // 隐私信息处理
             privacyProcessing(userVo);
@@ -118,7 +113,7 @@ public class UserServiceImpl implements UserService {
         userVo.setPermissionTreeVO(permissionService.buildPermissionTreeWithHas(hasPermissionIdList));
 
         // 查找用户所在部门信息
-        userVo.setDeptList(deptService.getDeptBriefListByChildId(user.getDeptId()));
+//        userVo.setDeptList(deptService.getDeptBriefListByChildId(user.getDeptId()));
 
         userVo.setUpdateTime(user.getUpdateTime());
         return userVo;

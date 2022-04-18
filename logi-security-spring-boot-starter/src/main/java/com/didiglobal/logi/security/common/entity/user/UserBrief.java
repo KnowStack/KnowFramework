@@ -14,7 +14,7 @@ public class UserBrief {
     /**
      * 用户账号
      */
-    private String username;
+    private String userName;
 
     /**
      * 真实姓名

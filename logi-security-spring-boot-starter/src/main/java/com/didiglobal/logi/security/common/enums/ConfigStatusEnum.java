@@ -5,9 +5,7 @@ public enum ConfigStatusEnum {
     /**正常*/
     NORMAL(1, "正常"),
 
-    DISABLE(2, "禁用"),
-
-    DELETED(-1, "删除");
+    DISABLE(2, "禁用");
 
     ConfigStatusEnum(int code, String desc) {
         this.code = code;

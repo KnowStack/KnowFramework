@@ -1,6 +1,8 @@
 package com.didiglobal.logi.security.config;
 
 import com.baomidou.mybatisplus.annotation.DbType;
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.core.config.GlobalConfig;
 import com.baomidou.mybatisplus.extension.plugins.MybatisPlusInterceptor;
 import com.baomidou.mybatisplus.extension.plugins.inner.PaginationInnerInterceptor;
 import com.didiglobal.logi.security.properties.LogiSecurityProper;
@@ -18,6 +20,16 @@ import javax.sql.DataSource;
 @Configuration("logiSecurityDataSourceConfig")
 @MapperScan("com.didiglobal.logi.security.dao.mapper")
 public class DataSourceConfig {
+
+    @Bean
+    public GlobalConfig globalConfig(){
+        GlobalConfig globalConfig=new GlobalConfig();
+        globalConfig.setBanner(false);
+        GlobalConfig.DbConfig dbConfig=new GlobalConfig.DbConfig();
+        dbConfig.setIdType( IdType.AUTO);
+        globalConfig.setDbConfig(dbConfig);
+        return globalConfig;
+    }
 
     @Bean("logiSecurityDataSource")
     public DataSource dataSource(LogiSecurityProper proper) {

@@ -1,8 +1,11 @@
 package com.didiglobal.logi.security.controller.v1;
 
+import com.didiglobal.logi.security.common.PagingData;
+import com.didiglobal.logi.security.common.PagingResult;
 import com.didiglobal.logi.security.common.Result;
 import com.didiglobal.logi.security.common.constant.Constants;
 import com.didiglobal.logi.security.common.dto.config.ConfigDTO;
+import com.didiglobal.logi.security.common.dto.config.ConfigQueryDTO;
 import com.didiglobal.logi.security.common.vo.config.ConfigVO;
 import com.didiglobal.logi.security.service.ConfigService;
 import com.didiglobal.logi.security.util.CopyBeanUtil;
@@ -34,6 +37,13 @@ public class ConfigController {
     public Result<List<ConfigVO>> list(@RequestBody ConfigDTO param) {
         return Result
                 .buildSucc(CopyBeanUtil.copyList(configService.queryByCondt(param), ConfigVO.class));
+    }
+
+    @PostMapping("/page")
+    @ApiOperation(value = "分页配置列表", notes = "分页和条件查询")
+    public PagingResult<ConfigVO> page(@RequestBody ConfigQueryDTO queryDTO) {
+        PagingData<ConfigVO> configVO = configService.pagingConfig(queryDTO);
+        return PagingResult.success(configVO);
     }
 
     @GetMapping("/group/list")

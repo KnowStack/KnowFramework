@@ -1,10 +1,17 @@
 package com.didiglobal.logi.security.dao.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.didiglobal.logi.security.common.constant.FieldConstant;
+import com.didiglobal.logi.security.common.dto.config.ConfigQueryDTO;
+import com.didiglobal.logi.security.common.entity.user.User;
 import com.didiglobal.logi.security.common.po.ConfigPO;
+import com.didiglobal.logi.security.common.po.UserPO;
 import com.didiglobal.logi.security.dao.ConfigDao;
 import com.didiglobal.logi.security.dao.mapper.ConfigMapper;
+import com.didiglobal.logi.security.util.CopyBeanUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
@@ -41,6 +48,20 @@ public class ConfigDaoImpl extends BaseDaoImpl<ConfigPO> implements ConfigDao {
     @Override
     public int update(ConfigPO param) {
         return configMapper.updateById(param);
+    }
+
+    @Override
+    public IPage<ConfigPO> selectPage(ConfigQueryDTO queryDTO){
+        IPage<ConfigPO> page = new Page<>(queryDTO.getPage(), queryDTO.getSize());
+        QueryWrapper<ConfigPO> queryWrapper = getQueryWrapperWithAppName();
+        queryWrapper
+                .eq( queryDTO.getStatus() != null, STATUS, queryDTO.getStatus() )
+                .like(queryDTO.getMemo() != null, MEMO, queryDTO.getMemo())
+                .like(queryDTO.getValueName() != null, VALUE_NAME, queryDTO.getValueName());
+        configMapper.selectPage(page, queryWrapper);
+
+        page.setTotal(configMapper.selectCount(queryWrapper));
+        return page;
     }
 
     @Override

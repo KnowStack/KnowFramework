@@ -23,10 +23,10 @@ public class ConfigDTO {
     @ApiModelProperty("值")
     private String  value;
 
-    @ApiModelProperty("状态(1 正常；2 禁用；-1 删除)")
+    @ApiModelProperty("状态(1 正常；2 禁用)")
     private Integer status;
 
-    @ApiModelProperty("备注")
+    @ApiModelProperty("备注/描述")
     private String  memo;
 
     @ApiModelProperty("操纵者")

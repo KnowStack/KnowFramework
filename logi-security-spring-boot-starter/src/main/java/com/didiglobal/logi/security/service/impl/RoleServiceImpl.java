@@ -74,7 +74,8 @@ public class RoleServiceImpl implements RoleService {
         PermissionTreeVO permissionTreeVO = permissionService.buildPermissionTreeByRoleId(role.getId());
         RoleVO roleVo = CopyBeanUtil.copy(role, RoleVO.class);
         roleVo.setPermissionTreeVO(permissionTreeVO);
-        roleVo.setCreateTime(role.getCreateTime().getTime());
+        roleVo.setCreateTime(role.getCreateTime());
+        roleVo.setUpdateTime(role.getUpdateTime());
         // 获取授予用户数
         List<Integer> userIdList = userRoleService.getUserIdListByRoleId(roleId);
         roleVo.setAuthedUserCnt(userIdList.size());
@@ -89,7 +90,8 @@ public class RoleServiceImpl implements RoleService {
             RoleVO roleVO = CopyBeanUtil.copy(role, RoleVO.class);
             // 获取该角色已分配给的用户数
             roleVO.setAuthedUserCnt(userRoleService.getUserRoleCountByRoleId(role.getId()));
-            roleVO.setCreateTime(role.getCreateTime().getTime());
+            roleVO.setCreateTime(role.getCreateTime());
+            roleVO.setUpdateTime(role.getUpdateTime());
             roleVOList.add(roleVO);
         }
         return new PagingData<>(roleVOList, pageInfo);
@@ -217,7 +219,7 @@ public class RoleServiceImpl implements RoleService {
             // 获取用户简要信息List
             List<UserBriefVO> list = userService.getUserBriefListByUserIdList(userIdList);
             List<String> usernameList = list.stream().map(UserBriefVO::getUserName ).collect(Collectors.toList());
-            roleDeleteCheckVO.setUsernameList(usernameList);
+            roleDeleteCheckVO.setUserNameList(usernameList);
         }
         return roleDeleteCheckVO;
     }
@@ -257,7 +259,7 @@ public class RoleServiceImpl implements RoleService {
             AssignInfoVO assignInfoVO = new AssignInfoVO();
             // 判断用户是否拥有该角色
             assignInfoVO.setHas(hasRoleUserIdSet.contains(userBriefVO.getId()));
-            assignInfoVO.setName(userBriefVO.getUserName() + "/" + userBriefVO.getRealName());
+            assignInfoVO.setName(userBriefVO.getUserName());
             assignInfoVO.setId(userBriefVO.getId());
             result.add(assignInfoVO);
         }
