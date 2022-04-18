@@ -245,7 +245,7 @@ public class UserServiceImpl implements UserService {
             UserPO userPO = CopyBeanUtil.copy(userDTO, UserPO.class);
             userDao.addUser(userPO);
         } catch (Exception e) {
-            return Result.fail(USER_PASSWORD_ENCODE_ERROR);
+            return Result.fail(USER_ACCOUNT_INSERT_FAIL);
         }
 
         return Result.success();
@@ -261,7 +261,7 @@ public class UserServiceImpl implements UserService {
             UserPO userPO = CopyBeanUtil.copy(userDTO, UserPO.class);
             userDao.editUser(userPO);
         } catch (Exception e) {
-            return Result.fail(USER_PASSWORD_ENCODE_ERROR);
+            return Result.fail(USER_ACCOUNT_UPDATE_FAIL);
         }
 
         return Result.success();

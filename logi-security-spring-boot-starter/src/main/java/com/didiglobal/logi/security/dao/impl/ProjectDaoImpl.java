@@ -37,6 +37,7 @@ public class ProjectDaoImpl extends BaseDaoImpl<ProjectPO> implements ProjectDao
     @Override
     public void insert(Project project) {
         ProjectPO projectPO = CopyBeanUtil.copy(project, ProjectPO.class);
+        projectPO.setAppName(logiSecurityProper.getAppName());
         projectMapper.insert(projectPO);
         project.setId(projectPO.getId());
     }

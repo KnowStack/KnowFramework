@@ -34,7 +34,7 @@ public class UserDaoImpl extends BaseDaoImpl<UserPO> implements UserDao {
     @Override
     public int addUser(UserPO userPO) throws Exception {
         userPO.setPw(PWEncryptUtil.encode(userPO.getPw()));
-
+        userPO.setAppName(logiSecurityProper.getAppName());
         return userMapper.insert(userPO);
     }
 
@@ -155,8 +155,6 @@ public class UserDaoImpl extends BaseDaoImpl<UserPO> implements UserDao {
 
     @Override
     public User selectByUsername(String username) {
-        User user = selectByUserId(9);
-
         if(StringUtils.isEmpty(username)) {
             return null;
         }

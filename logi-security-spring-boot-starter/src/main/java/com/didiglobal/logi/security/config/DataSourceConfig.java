@@ -1,10 +1,8 @@
 package com.didiglobal.logi.security.config;
 
 import com.baomidou.mybatisplus.annotation.DbType;
-import com.baomidou.mybatisplus.core.config.GlobalConfig;
 import com.baomidou.mybatisplus.extension.plugins.MybatisPlusInterceptor;
 import com.baomidou.mybatisplus.extension.plugins.inner.PaginationInnerInterceptor;
-import com.didiglobal.logi.security.handler.MybatisFillHandler;
 import com.didiglobal.logi.security.properties.LogiSecurityProper;
 import com.zaxxer.hikari.HikariDataSource;
 import org.mybatis.spring.annotation.MapperScan;
@@ -38,12 +36,5 @@ public class DataSourceConfig {
         MybatisPlusInterceptor interceptor = new MybatisPlusInterceptor();
         interceptor.addInnerInterceptor(new PaginationInnerInterceptor(DbType.MARIADB));
         return interceptor;
-    }
-
-    @Bean("logiSecurityGlobalConfig")
-    public GlobalConfig globalConfig() {
-        GlobalConfig globalConfig = new GlobalConfig();
-        globalConfig.setMetaObjectHandler(new MybatisFillHandler());
-        return globalConfig;
     }
 }

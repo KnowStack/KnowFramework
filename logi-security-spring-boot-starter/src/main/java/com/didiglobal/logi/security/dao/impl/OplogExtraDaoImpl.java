@@ -36,6 +36,7 @@ public class OplogExtraDaoImpl extends BaseDaoImpl<OplogExtraPO> implements Oplo
         }
         List<OplogExtraPO> oplogExtraPOList = CopyBeanUtil.copyList(oplogExtraList, OplogExtraPO.class);
         for(OplogExtraPO oplogExtraPO : oplogExtraPOList) {
+            oplogExtraPO.setAppName(logiSecurityProper.getAppName());
             oplogExtraMapper.insert(oplogExtraPO);
         }
 

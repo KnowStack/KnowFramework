@@ -5,6 +5,8 @@ package com.didiglobal.logi.security.common.constant;
  */
 public class FieldConstant {
 
+    public static final String APP_NAME = "app_name";
+
     public static final String ID = "id";
 
     public static final String USER_ID = "user_id";

@@ -12,7 +12,7 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = true)
 @Data
 @TableName(value = "logi_dept")
-public class DeptPO extends AppBasePO {
+public class DeptPO extends BasePO {
 
     /**
      * 部门名

@@ -55,6 +55,7 @@ public class ResourceTypeDaoImpl extends BaseDaoImpl<ResourceTypePO> implements 
         }
         List<ResourceTypePO> resourceTypePOList = CopyBeanUtil.copyList(resourceTypeList, ResourceTypePO.class);
         for(ResourceTypePO resourceTypePO : resourceTypePOList) {
+            resourceTypePO.setAppName(logiSecurityProper.getAppName());
             resourceTypeMapper.insert(resourceTypePO);
         }
 

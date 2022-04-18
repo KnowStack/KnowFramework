@@ -13,7 +13,6 @@ import java.util.Date;
 @Data
 public class BasePO extends AppBasePO {
 
-    // 根据数据库类型设置自增，否则只能使用Long类型
     @TableId(type = IdType.AUTO)
     private Integer id;
 

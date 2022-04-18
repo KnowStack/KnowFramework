@@ -51,6 +51,7 @@ public class UserProjectDaoImpl extends BaseDaoImpl<UserProjectPO> implements Us
         if(!CollectionUtils.isEmpty(userProjectList)) {
             List<UserProjectPO> userProjectPOList = CopyBeanUtil.copyList(userProjectList, UserProjectPO.class);
             for(UserProjectPO userProjectPO : userProjectPOList) {
+                userProjectPO.setAppName(logiSecurityProper.getAppName());
                 userProjectMapper.insert(userProjectPO);
             }
 

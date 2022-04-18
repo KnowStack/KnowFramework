@@ -36,6 +36,7 @@ public class PermissionDaoImpl extends BaseDaoImpl<PermissionPO> implements Perm
         }
         List<PermissionPO> permissionPOList = CopyBeanUtil.copyList(permissionList, PermissionPO.class);
         for(PermissionPO permissionPO : permissionPOList) {
+            permissionPO.setAppName(logiSecurityProper.getAppName());
             permissionMapper.insert(permissionPO);
         }
 

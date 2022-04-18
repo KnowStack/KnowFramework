@@ -25,6 +25,7 @@ public class MessageDaoImpl extends BaseDaoImpl<MessagePO> implements MessageDao
     @Override
     public void insert(Message message) {
         MessagePO messagePO = CopyBeanUtil.copy(message, MessagePO.class);
+        messagePO.setAppName(logiSecurityProper.getAppName());
         messageMapper.insert(messagePO);
         message.setId(messagePO.getId());
     }
@@ -41,6 +42,7 @@ public class MessageDaoImpl extends BaseDaoImpl<MessagePO> implements MessageDao
         }
         List<MessagePO> messagePOList = CopyBeanUtil.copyList(messageList, MessagePO.class);
         for(MessagePO messagePO : messagePOList) {
+            messagePO.setAppName(logiSecurityProper.getAppName());
             messageMapper.insert(messagePO);
         }
 

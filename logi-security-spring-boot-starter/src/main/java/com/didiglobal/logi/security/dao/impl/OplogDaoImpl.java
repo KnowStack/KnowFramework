@@ -62,6 +62,7 @@ public class OplogDaoImpl extends BaseDaoImpl<OplogPO> implements OplogDao {
     @Override
     public void insert(Oplog oplog) {
         OplogPO oplogPO = CopyBeanUtil.copy(oplog, OplogPO.class);
+        oplogPO.setAppName(logiSecurityProper.getAppName());
         oplogMapper.insert(oplogPO);
         oplog.setId(oplogPO.getId());
     }
