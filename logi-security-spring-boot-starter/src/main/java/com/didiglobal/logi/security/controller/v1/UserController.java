@@ -102,5 +102,12 @@ public class UserController {
     public Result<Void> edit(HttpServletRequest request, @RequestBody UserDTO param) {
         return userService.editUser(param, HttpRequestUtil.getOperator(request));
     }
+
+    @DeleteMapping("/{id}")
+    @ApiOperation(value = "删除用户", notes = "根据用户id删除用户")
+    @ApiImplicitParam(name = "id", value = "用户id", dataType = "int", required = true)
+    public Result<Void> del(@PathVariable Integer id) {
+        return userService.deleteByUserId(id);
+    }
 }
 

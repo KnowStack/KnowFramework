@@ -32,6 +32,11 @@ public class UserRoleDaoImpl extends BaseDaoImpl<UserRolePO> implements UserRole
         QueryWrapper<UserRolePO> queryWrapper = getQueryWrapperWithAppName();
         queryWrapper.select( FieldConstant.USER_ID).eq(FieldConstant.ROLE_ID, roleId);
         List<Object> userIdList = userRoleMapper.selectObjs(queryWrapper);
+
+        if(CollectionUtils.isEmpty(userIdList)){
+            return new ArrayList<>();
+        }
+
         return userIdList.stream().map(Integer.class::cast).collect(Collectors.toList());
     }
 

@@ -1,6 +1,7 @@
 package com.didiglobal.logi.security.service.impl;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.didiglobal.logi.security.common.PagingData;
 import com.didiglobal.logi.security.common.Result;
 import com.didiglobal.logi.security.common.dto.account.AccountLoginDTO;
@@ -56,6 +57,9 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private UserRoleService userRoleService;
 
+    @Autowired
+    private OplogService oplogService;
+
     @Override
     public PagingData<UserVO> getUserPage(UserQueryDTO queryDTO) {
         List<Integer> userIdList = null;
@@ -63,6 +67,9 @@ public class UserServiceImpl implements UserService {
         if(queryDTO.getRoleId() != null) {
             // 根据角色获取用户IdList
             userIdList = userRoleService.getUserIdListByRoleId(queryDTO.getRoleId());
+            if(CollectionUtils.isEmpty(userIdList)){
+                return new PagingData<>(new Page<>(queryDTO.getPage(), queryDTO.getSize()));
+            }
         }
 
         IPage<User> pageInfo = userDao.selectPageByUserIdList(queryDTO, userIdList);
@@ -75,6 +82,7 @@ public class UserServiceImpl implements UserService {
             // 设置角色信息
             userVo.setRoleList(roleService.getRoleBriefListByUserId(userVo.getId()));
             userVo.setUpdateTime(user.getUpdateTime());
+            userVo.setCreateTime(user.getCreateTime());
             // 隐私信息处理
             privacyProcessing(userVo);
             userVOList.add(userVo);
@@ -112,11 +120,23 @@ public class UserServiceImpl implements UserService {
         // 构建权限树
         userVo.setPermissionTreeVO(permissionService.buildPermissionTreeWithHas(hasPermissionIdList));
 
-        // 查找用户所在部门信息
-//        userVo.setDeptList(deptService.getDeptBriefListByChildId(user.getDeptId()));
-
         userVo.setUpdateTime(user.getUpdateTime());
+        userVo.setCreateTime(user.getCreateTime());
         return userVo;
+    }
+
+    @Override
+    public Result<Void> deleteByUserId(Integer userId) {
+        if(userId == null) {
+            return Result.fail("userId is null!");
+        }
+
+        boolean success = userDao.deleteByUserId(userId);
+        if(success){
+            userRoleService.deleteByUserIdOrRoleId(userId, null);
+        }
+
+        return success ? Result.success() : Result.fail();
     }
 
     @Override
@@ -197,16 +217,6 @@ public class UserServiceImpl implements UserService {
         return CopyBeanUtil.copyList(userBriefList, UserBriefVO.class);
     }
 
-    /**
-     * 隐私处理
-     *
-     * @param userVo 返回给页面的用户信息
-     */
-    private void privacyProcessing(UserVO userVo) {
-        String phone = userVo.getPhone();
-        userVo.setPhone(phone.replaceAll("(\\d{3})\\d{4}(\\d{4})","$1****$2"));
-    }
-
     @Override
     public UserBriefVO verifyLogin(AccountLoginDTO loginDTO,
                                    HttpServletRequest request) throws LogiSecurityException {
@@ -238,7 +248,9 @@ public class UserServiceImpl implements UserService {
 
         try {
             UserPO userPO = CopyBeanUtil.copy(userDTO, UserPO.class);
-            userDao.addUser(userPO);
+            if(userDao.addUser(userPO) > 0){
+                userRoleService.updateUserRoleByUserId(userPO.getId(), userDTO.getRoleIds());
+            }
         } catch (Exception e) {
             return Result.fail(USER_ACCOUNT_INSERT_FAIL);
         }
@@ -248,17 +260,31 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Result<Void> editUser(UserDTO userDTO, String operator) {
-        if(null == userDao.selectByUsername(userDTO.getUserName())){
+        User user = userDao.selectByUsername(userDTO.getUserName());
+        if(null == user){
             return Result.fail(USER_ACCOUNT_NOT_EXIST);
         }
 
         try {
             UserPO userPO = CopyBeanUtil.copy(userDTO, UserPO.class);
-            userDao.editUser(userPO);
+            userPO.setId(user.getId());
+            if(userDao.editUser(userPO) > 0){
+                userRoleService.updateUserRoleByUserId(userPO.getId(), userDTO.getRoleIds());
+            }
         } catch (Exception e) {
             return Result.fail(USER_ACCOUNT_UPDATE_FAIL);
         }
 
         return Result.success();
+    }
+
+    /**
+     * 隐私处理
+     *
+     * @param userVo 返回给页面的用户信息
+     */
+    private void privacyProcessing(UserVO userVo) {
+        String phone = userVo.getPhone();
+        userVo.setPhone(phone.replaceAll("(\\d{3})\\d{4}(\\d{4})","$1****$2"));
     }
 }

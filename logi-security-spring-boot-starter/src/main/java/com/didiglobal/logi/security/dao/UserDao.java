@@ -42,6 +42,13 @@ public interface UserDao {
     User selectByUserId(Integer userId);
 
     /**
+     * 根据用户id删除用户
+     * @param userId 用户id
+     * @return 用户信息
+     */
+    boolean deleteByUserId(Integer userId);
+
+    /**
      * 根据用户idList获取用户简要信息List
      * @param userIdList 用户idList
      * @return 用户简要信息List

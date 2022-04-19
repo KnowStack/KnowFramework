@@ -18,6 +18,11 @@ public interface ConfigService {
     Result<Integer> addConfig(ConfigDTO configInfoDTO, String user);
 
     /**
+     * 新增配置
+     */
+    Result<Integer> addConfig(String  valueGroup, String  valueName, String  value, String user);
+
+    /**
      * 删除配置
      * @param configId 配置id
      * @param user 操作人

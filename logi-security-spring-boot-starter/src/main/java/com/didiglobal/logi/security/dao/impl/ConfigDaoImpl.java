@@ -57,7 +57,8 @@ public class ConfigDaoImpl extends BaseDaoImpl<ConfigPO> implements ConfigDao {
         queryWrapper
                 .eq( queryDTO.getStatus() != null, STATUS, queryDTO.getStatus() )
                 .like(queryDTO.getMemo() != null, MEMO, queryDTO.getMemo())
-                .like(queryDTO.getValueName() != null, VALUE_NAME, queryDTO.getValueName());
+                .like(queryDTO.getValueName() != null, VALUE_NAME, queryDTO.getValueName())
+                .orderByDesc(FieldConstant.CREATE_TIME);
         configMapper.selectPage(page, queryWrapper);
 
         page.setTotal(configMapper.selectCount(queryWrapper));

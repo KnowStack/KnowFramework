@@ -41,4 +41,11 @@ public interface UserRoleService {
      * @return 角色授予用户数
      */
     int getUserRoleCountByRoleId(Integer roleId);
+
+    /**
+     * 根据角色或者用户id，删除用户与角色的关系
+     * @param userId 用户id
+     * @param roleId 角色id
+     */
+    void deleteByUserIdOrRoleId(Integer userId, Integer roleId);
 }

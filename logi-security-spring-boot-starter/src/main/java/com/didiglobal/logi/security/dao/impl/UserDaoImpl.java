@@ -50,10 +50,11 @@ public class UserDaoImpl extends BaseDaoImpl<UserPO> implements UserDao {
         IPage<UserPO> page = new Page<>(queryDTO.getPage(), queryDTO.getSize());
         QueryWrapper<UserPO> queryWrapper = getQueryWrapperWithAppName();
         queryWrapper
-                .eq( queryDTO.getId() != null, FieldConstant.ID, queryDTO.getId() )
+                .eq( queryDTO.getId() != null, FieldConstant.ID, queryDTO.getId())
                 .like(queryDTO.getUserName() != null, FieldConstant.USER_NAME, queryDTO.getUserName())
                 .like(queryDTO.getRealName() != null, FieldConstant.REAL_NAME, queryDTO.getRealName())
-                .in(!CollectionUtils.isEmpty(userIdList), FieldConstant.ID, userIdList);
+                .in(!CollectionUtils.isEmpty(userIdList), FieldConstant.ID, userIdList)
+                .orderByDesc(FieldConstant.CREATE_TIME);
         userMapper.selectPage(page, queryWrapper);
 
         page.setTotal(userMapper.selectCount(queryWrapper));
@@ -80,12 +81,21 @@ public class UserDaoImpl extends BaseDaoImpl<UserPO> implements UserDao {
 
     @Override
     public User selectByUserId(Integer userId) {
-        if(userId == null) {
-            return null;
-        }
+        if(userId == null) {return null;}
+
         QueryWrapper<UserPO> queryWrapper = getQueryWrapperWithAppName();
-        queryWrapper.eq("id", userId);
+        queryWrapper.eq(FieldConstant.ID, userId);
         return CopyBeanUtil.copy(decodePW(userMapper.selectOne(queryWrapper)), User.class);
+    }
+
+    @Override
+    public boolean deleteByUserId(Integer userId) {
+        if(userId == null) {return false;}
+
+        QueryWrapper<UserPO> queryWrapper = getQueryWrapperWithAppName();
+        queryWrapper.eq(FieldConstant.ID, userId);
+
+        return userMapper.delete(queryWrapper) > 0;
     }
 
     @Override

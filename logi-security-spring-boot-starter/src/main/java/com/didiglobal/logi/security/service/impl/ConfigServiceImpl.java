@@ -71,6 +71,17 @@ public class ConfigServiceImpl implements ConfigService {
         return Result.buildSucc(param.getId());
     }
 
+    @Override
+    public Result<Integer> addConfig(String valueGroup, String valueName, String value, String user) {
+        ConfigDTO configInfoDTO = new ConfigDTO();
+        configInfoDTO.setValueGroup( valueGroup );
+        configInfoDTO.setValueName( valueName );
+        configInfoDTO.setValue(value);
+        configInfoDTO.setStatus(ConfigStatusEnum.NORMAL.getCode());
+
+        return addConfig(configInfoDTO, user);
+    }
+
     /**
      * 删除配置
      * @param configId 配置id

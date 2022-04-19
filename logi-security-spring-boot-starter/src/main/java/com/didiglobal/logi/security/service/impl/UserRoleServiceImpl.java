@@ -37,16 +37,12 @@ public class UserRoleServiceImpl implements UserRoleService {
 
     @Override
     public void updateUserRoleByUserId(Integer userId, List<Integer> roleIdList) {
-        if(userId == null) {
+        if(userId == null || CollectionUtils.isEmpty(roleIdList)) {
             return;
         }
 
         // 删除old的全部角色用户关联信息
         userRoleDao.deleteByUserIdOrRoleId(userId, null);
-
-        if(CollectionUtils.isEmpty(roleIdList)) {
-            return;
-        }
 
         // 插入new的角色与用户关联关系
         userRoleDao.insertBatch(getUserRoleList(true, userId, roleIdList));
@@ -75,6 +71,11 @@ public class UserRoleServiceImpl implements UserRoleService {
             return 0;
         }
         return userRoleDao.selectCountByRoleId(roleId);
+    }
+
+    @Override
+    public void deleteByUserIdOrRoleId(Integer userId, Integer roleId){
+        userRoleDao.deleteByUserIdOrRoleId(userId, roleId);
     }
 
     private List<UserRole> getUserRoleList(boolean isUserId, Integer id, List<Integer> idList) {

@@ -53,7 +53,8 @@ public class RoleDaoImpl extends BaseDaoImpl<RolePO> implements RoleDao {
         } else {
             roleWrapper
                     .like(!StringUtils.isEmpty(roleName), FieldConstant.ROLE_NAME, roleName)
-                    .like(!StringUtils.isEmpty(description), FieldConstant.DESCRIPTION, description);
+                    .like(!StringUtils.isEmpty(description), FieldConstant.DESCRIPTION, description)
+                    .orderByDesc(FieldConstant.CREATE_TIME);
         }
         roleMapper.selectPage(pageInfo, roleWrapper);
         return CopyBeanUtil.copyPage(pageInfo, Role.class);

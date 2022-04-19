@@ -39,6 +39,13 @@ public interface UserService {
     UserVO getUserDetailByUserId(Integer userId);
 
     /**
+     * 根据用户id删除用户
+     * @param userId
+     * @return
+     */
+    Result<Void> deleteByUserId(Integer userId);
+
+    /**
      * 获取用户简要信息
      * @param userId 用户id
      * @return 用户简要信息

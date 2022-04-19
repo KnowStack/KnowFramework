@@ -46,6 +46,9 @@ public class OplogDaoImpl extends BaseDaoImpl<OplogPO> implements OplogDao {
         if(queryDTO.getEndTime() != null) {
             queryWrapper.le(FieldConstant.CREATE_TIME, new Timestamp(queryDTO.getEndTime()));
         }
+
+        queryWrapper.orderByDesc(FieldConstant.UPDATE_TIME);
+
         return CopyBeanUtil.copyPage(oplogMapper.selectPage(pageInfo, queryWrapper), Oplog.class);
     }
 
