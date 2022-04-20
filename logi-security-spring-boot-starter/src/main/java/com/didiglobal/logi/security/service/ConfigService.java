@@ -103,4 +103,42 @@ public interface ConfigService {
      * @return 如果查到转换后返回,转换报错或者没有查到则返回默认值
      */
     String stringSetting(String group, String name, String defaultValue);
+
+    /**
+     * 获取bool类型配置
+     * @param group 配置组
+     * @param name 配置项
+     * @param defaultValue 默认值
+     * @return 如果查到转换后返回,转换报错或者没有查到则返回默认值
+     */
+    Boolean booleanSetting(String group, String name, Boolean defaultValue);
+
+    /**
+     * 获取int类型配置
+     * @param group 配置组
+     * @param name 配置项
+     * @param defaultValue 默认值
+     * @return 如果查到转换后返回,转换报错或者没有查到则返回默认值
+     */
+    Integer intSetting(String group, String name, Integer defaultValue);
+
+    /**
+     * 获取long类型配置
+     * @param group 配置组
+     * @param name 配置项
+     * @param defaultValue 默认值
+     * @return 如果查到转换后返回,转换报错或者没有查到则返回默认值
+     */
+    Long longSetting(String group, String name, Long defaultValue);
+
+    /**
+     * 获取double类型配置
+     * @param group 配置组
+     * @param name 配置项
+     * @param defaultValue 默认值
+     * @return 如果查到转换后返回,转换报错或者没有查到则返回默认值
+     */
+    Double doubleSetting(String group, String name, Double defaultValue);
+
+    <T> T objectSetting(String group, String name, T defaultValue, Class<T> clazz);
 }

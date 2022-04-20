@@ -1,5 +1,6 @@
 package com.didiglobal.logi.security.service.impl;
 
+import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.didiglobal.logi.security.common.PagingData;
@@ -16,6 +17,8 @@ import com.didiglobal.logi.security.util.CopyBeanUtil;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -30,6 +33,7 @@ import java.util.concurrent.TimeUnit;
 @Slf4j
 @Service
 public class ConfigServiceImpl implements ConfigService {
+    private static final Logger LOGGER  = LoggerFactory.getLogger(ConfigServiceImpl.class);
 
     private static final String NOT_EXIST   = "配置不存在";
 
@@ -244,6 +248,111 @@ public class ConfigServiceImpl implements ConfigService {
             return configInfoPO.getValue();
         } catch (Exception e) {
             log.warn("class=ConfigVOServiceImpl||method=stringSetting||group={}||name={}||msg=get config error!",
+                    group, name, e);
+        }
+        return defaultValue;
+    }
+
+    /**
+     * 获取int类型配置
+     * @param group        配置组
+     * @param name         配置项
+     * @param defaultValue 默认值
+     * @return 如果查到转换后返回, 转换报错或者没有查到则返回默认值
+     */
+    @Override
+    public Integer intSetting(String group, String name, Integer defaultValue) {
+        try {
+            ConfigPO configInfoPO = getByGroupAndName(group, name);
+            if (configInfoPO == null || StringUtils.isBlank(configInfoPO.getValue())) {
+                return defaultValue;
+            }
+            return Integer.valueOf(configInfoPO.getValue());
+        } catch (NumberFormatException e) {
+            LOGGER.warn("class=ConfigServiceImpl||method=intSetting||group={}||name={}||msg=get config error!",
+                    group, name);
+        }
+        return defaultValue;
+    }
+
+    /**
+     * 获取long类型配置
+     * @param group        配置组
+     * @param name         配置项
+     * @param defaultValue 默认值
+     * @return 如果查到转换后返回, 转换报错或者没有查到则返回默认值
+     */
+    @Override
+    public Long longSetting(String group, String name, Long defaultValue) {
+        try {
+            ConfigPO configInfoPO = getByGroupAndName(group, name);
+            if (configInfoPO == null || StringUtils.isBlank(configInfoPO.getValue())) {
+                return defaultValue;
+            }
+            return Long.valueOf(configInfoPO.getValue());
+        } catch (Exception e) {
+            LOGGER.warn("class=ConfigServiceImpl||method=longSetting||group={}||name={}||msg=get config error!",
+                    group, name);
+        }
+        return defaultValue;
+    }
+
+    /**
+     * 获取double类型配置
+     * @param group        配置组
+     * @param name         配置项
+     * @param defaultValue 默认值
+     * @return 如果查到转换后返回, 转换报错或者没有查到则返回默认值
+     */
+    @Override
+    public Double doubleSetting(String group, String name, Double defaultValue) {
+        try {
+            ConfigPO configInfoPO = getByGroupAndName(group, name);
+            if (configInfoPO == null || StringUtils.isBlank(configInfoPO.getValue())) {
+                return defaultValue;
+            }
+            return Double.valueOf(configInfoPO.getValue());
+        } catch (Exception e) {
+            LOGGER.warn( "class=ConfigServiceImpl||method=doubleSetting||group={}||name={}||msg=get config error!",
+                    group, name, e);
+        }
+        return defaultValue;
+    }
+
+    /**
+     * 获取bool类型配置
+     * @param group        配置组
+     * @param name         配置项
+     * @param defaultValue 默认值
+     * @return 如果查到转换后返回, 转换报错或者没有查到则返回默认值
+     */
+    @Override
+    public Boolean booleanSetting(String group, String name, Boolean defaultValue) {
+        ConfigPO configInfoPO = getByGroupAndName(group, name);
+        if (configInfoPO == null || StringUtils.isBlank(configInfoPO.getValue())) {
+            return defaultValue;
+        }
+        return Boolean.valueOf(configInfoPO.getValue());
+    }
+
+    /**
+     * 获取Object类型配置
+     * @param group        配置组
+     * @param name         配置项
+     * @param defaultValue 默认值
+     * @param clazz        返回类型
+     * @return 如果查到转换后返回, 转换报错或者没有查到则返回默认值
+     */
+    @Override
+    public <T> T objectSetting(String group, String name, T defaultValue, Class<T> clazz) {
+        try {
+            ConfigPO configInfoPO = getByGroupAndName(group, name);
+            if (configInfoPO == null || StringUtils.isBlank(configInfoPO.getValue())) {
+                return defaultValue;
+            }
+            return JSON.parseObject(configInfoPO.getValue(), clazz);
+        } catch (Exception e) {
+            LOGGER.warn( "class=ConfigServiceImpl||method=objectSetting||group={}||name={}||msg=get config error!",
                     group, name, e);
         }
         return defaultValue;
