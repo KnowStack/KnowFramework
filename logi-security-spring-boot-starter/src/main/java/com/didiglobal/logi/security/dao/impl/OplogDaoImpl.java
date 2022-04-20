@@ -27,15 +27,17 @@ public class OplogDaoImpl extends BaseDaoImpl<OplogPO> implements OplogDao {
 
     @Override
     public IPage<Oplog> selectPageWithoutDetail(OplogQueryDTO queryDTO) {
-        QueryWrapper<OplogPO> queryWrapper = getQueryWrapperWithAppName();
         // 分页查询
         IPage<OplogPO> pageInfo = new Page<>(queryDTO.getPage(), queryDTO.getSize());
+
+        QueryWrapper<OplogPO> queryWrapper = getQueryWrapperWithAppName();
         // 不查找detail字段
         queryWrapper.select(OplogPO.class, oplog -> !FieldConstant.DETAIL.equals(oplog.getColumn()));
         String operatorIp = queryDTO.getOperatorIp();
         String operatorUsername = queryDTO.getOperatorUsername();
         queryWrapper
                 .eq(queryDTO.getOperateType() != null, FieldConstant.OPERATE_TYPE, queryDTO.getOperateType())
+                .eq(queryDTO.getTargetType() != null, FieldConstant.TARGET_TYPE, queryDTO.getTargetType())
                 .eq(queryDTO.getTargetType() != null, FieldConstant.TARGET_TYPE, queryDTO.getTargetType())
                 .like(!StringUtils.isEmpty(queryDTO.getTarget()), FieldConstant.TARGET, queryDTO.getTarget())
                 .like(!StringUtils.isEmpty(operatorIp), FieldConstant.OPERATOR_IP, operatorIp)
@@ -49,6 +51,7 @@ public class OplogDaoImpl extends BaseDaoImpl<OplogPO> implements OplogDao {
 
         queryWrapper.orderByDesc(FieldConstant.UPDATE_TIME);
 
+        pageInfo.setTotal(oplogMapper.selectCount(queryWrapper));
         return CopyBeanUtil.copyPage(oplogMapper.selectPage(pageInfo, queryWrapper), Oplog.class);
     }
 

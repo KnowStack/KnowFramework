@@ -12,11 +12,15 @@ import javax.servlet.http.HttpSession;
  */
 public class HttpRequestUtil {
 
-    public static final String USER_ID = "X-SSO-USER-ID";
+    public static final String USER_ID  = "X-SSO-USER-ID";
 
     public static final String USER     = "X-SSO-USER";
 
-    public static final String APPID = "X-LOGI-SECURITY-APP-ID";
+    public static final String APP_ID   = "X-LOGI-SECURITY-APP-ID";
+
+    public static final Integer REDIRECT_CODE                     = 401;
+
+    public static final Integer COOKIE_OR_SESSION_MAX_AGE_UNIT_SEC = 24 * 60 * 60;
 
     private HttpRequestUtil() {
         throw new IllegalStateException("Utility class");
@@ -50,7 +54,7 @@ public class HttpRequestUtil {
     }
 
     public static Integer getAppId(HttpServletRequest request, int defaultAppid) {
-        String appidStr = request.getHeader(APPID);
+        String appidStr = request.getHeader( APP_ID );
 
         if (StringUtils.isEmpty(appidStr)) {
             return defaultAppid;
@@ -60,7 +64,7 @@ public class HttpRequestUtil {
     }
 
     public static Integer getAppId(HttpServletRequest request) {
-        String appidStr = request.getHeader(APPID);
+        String appidStr = request.getHeader( APP_ID );
 
         if (StringUtils.isEmpty(appidStr)) {
             return null;

@@ -37,7 +37,9 @@ public class OplogServiceImpl implements OplogService {
         List<OplogVO> oplogVOList = new ArrayList<>();
         for(Oplog oplog : pageInfo.getRecords()) {
             OplogVO oplogVO = CopyBeanUtil.copy(oplog, OplogVO.class);
-            oplogVO.setCreateTime(oplog.getCreateTime().getTime());
+            oplogVO.setCreateTime(oplog.getCreateTime());
+            oplogVO.setUpdateTime(oplog.getUpdateTime());
+            oplogVOList.add(oplogVO);
         }
         return new PagingData<>(oplogVOList, pageInfo);
     }
@@ -49,7 +51,9 @@ public class OplogServiceImpl implements OplogService {
             return null;
         }
         OplogVO oplogVO = CopyBeanUtil.copy(oplog, OplogVO.class);
-        oplogVO.setCreateTime(oplog.getCreateTime().getTime());
+        oplogVO.setCreateTime(oplog.getCreateTime());
+        oplogVO.setUpdateTime(oplog.getUpdateTime());
+
         return oplogVO;
     }
 

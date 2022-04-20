@@ -38,7 +38,7 @@ public class ConfigPO extends BasePO {
     private String  value;
 
     /**
-     * 1 正常  2 禁用  -1 删除
+     * 1 正常  2 禁用
      */
     private Integer status;
 

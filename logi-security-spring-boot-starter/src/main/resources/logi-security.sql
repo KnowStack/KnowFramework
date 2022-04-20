@@ -196,7 +196,7 @@ CREATE TABLE `logi_config`
    `value_name` varchar(100) NOT NULL DEFAULT '' COMMENT '配置项名字',
    `value` text COMMENT '配置项的值',
    `edit` int(4) NOT NULL DEFAULT '1' COMMENT '是否可以编辑 1 不可编辑（程序获取） 2 可编辑',
-   `status` int(4) NOT NULL DEFAULT '1' COMMENT '1 正常 2 禁用 -1 删除',
+   `status` int(4) NOT NULL DEFAULT '1' COMMENT '1 正常 2 禁用',
    `memo` varchar(1000) NOT NULL DEFAULT '' COMMENT '备注',
    `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
    `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '修改时间',

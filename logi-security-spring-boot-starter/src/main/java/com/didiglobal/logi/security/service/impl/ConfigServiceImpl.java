@@ -114,6 +114,11 @@ public class ConfigServiceImpl implements ConfigService {
             return Result.buildParamIllegal("配置ID为空");
         }
 
+        if(ConfigStatusEnum.NORMAL.getCode() != configInfoDTO.getStatus().intValue()
+            && ConfigStatusEnum.DISABLE.getCode() != configInfoDTO.getStatus().intValue()){
+            return Result.buildParamIllegal("状态只能是1或者2");
+        }
+
         ConfigPO configInfoPO = configDao.getbyId(configInfoDTO.getId());
         if (configInfoPO == null) {
             return Result.buildNotExist(NOT_EXIST);

@@ -4,11 +4,9 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.didiglobal.logi.security.common.PagingData;
 import com.didiglobal.logi.security.common.Result;
-import com.didiglobal.logi.security.common.dto.account.AccountLoginDTO;
 import com.didiglobal.logi.security.common.dto.user.UserBriefQueryDTO;
 import com.didiglobal.logi.security.common.dto.user.UserDTO;
 import com.didiglobal.logi.security.common.dto.user.UserQueryDTO;
-import com.didiglobal.logi.security.common.entity.dept.Dept;
 import com.didiglobal.logi.security.common.entity.user.User;
 import com.didiglobal.logi.security.common.entity.user.UserBrief;
 import com.didiglobal.logi.security.common.enums.ResultCode;
@@ -21,13 +19,10 @@ import com.didiglobal.logi.security.dao.UserDao;
 import com.didiglobal.logi.security.exception.LogiSecurityException;
 import com.didiglobal.logi.security.service.*;
 import com.didiglobal.logi.security.util.CopyBeanUtil;
-import com.didiglobal.logi.security.util.HttpRequestUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -149,6 +144,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public User getUserByUserName(String userName){
+        return userDao.selectByUsername(userName);
+    }
+
+    @Override
     public List<UserBriefVO> getUserBriefListByUserIdList(List<Integer> userIdList) {
         if(CollectionUtils.isEmpty(userIdList)) {
             return new ArrayList<>();
@@ -215,29 +215,6 @@ public class UserServiceImpl implements UserService {
         List<Integer> userIdList = userRoleService.getUserIdListByRoleId(roleId);
         List<UserBrief> userBriefList = userDao.selectBriefListByUserIdList(userIdList);
         return CopyBeanUtil.copyList(userBriefList, UserBriefVO.class);
-    }
-
-    @Override
-    public UserBriefVO verifyLogin(AccountLoginDTO loginDTO,
-                                   HttpServletRequest request) throws LogiSecurityException {
-        User user = userDao.selectByUsername(loginDTO.getUserName());
-        if(user == null) {
-            throw new LogiSecurityException(ResultCode.USER_NOT_EXISTS);
-        }
-
-        if(!user.getPw().equals(loginDTO.getPw())) {
-            // 密码错误
-            throw new LogiSecurityException(ResultCode.USER_CREDENTIALS_ERROR);
-        }
-
-        // 登录成功后
-        HttpSession session = request.getSession();
-        // 设置过期时间（秒）
-        session.setMaxInactiveInterval(60 * 60);
-        session.setAttribute(HttpRequestUtil.USER, loginDTO.getUserName());
-        session.setAttribute(HttpRequestUtil.USER_ID, user.getId());
-
-        return CopyBeanUtil.copy(user, UserBriefVO.class);
     }
 
     @Override

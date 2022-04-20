@@ -71,6 +71,8 @@ public class FieldConstant {
 
     public static final String PERMISSION_ID = "permission_id";
 
+    public static final String IS_DELETE    = "is_delete";
+
     private FieldConstant() {}
 
 }
