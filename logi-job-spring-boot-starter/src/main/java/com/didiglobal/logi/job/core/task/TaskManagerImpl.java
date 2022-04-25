@@ -166,9 +166,6 @@ public class TaskManagerImpl implements TaskManager {
                         }
 
                         return true;
-                    }else {
-                        logger.info("class=TaskManagerImpl||method=nextTriggers||nextTime={}||fromTime={}||msg=no trigger!",
-                                nextTime, fromTime);
                     }
 
                     return false;

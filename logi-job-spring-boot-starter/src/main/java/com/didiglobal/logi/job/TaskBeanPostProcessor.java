@@ -49,9 +49,6 @@ public class TaskBeanPostProcessor implements BeanPostProcessor {
     @Override
     public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {
         try {
-            logger.info("class=TaskBeanPostProcessor||method=postProcessAfterInitialization||beanName={}||canonicaName={}",
-                    beanName, bean.getClass().getCanonicalName());
-
             if(!logIJobProperties.getEnable()){
                 return bean;
             }
@@ -60,9 +57,6 @@ public class TaskBeanPostProcessor implements BeanPostProcessor {
             // add job to jobFactory
             if (bean instanceof Job) {
                 jobFactory.addJob(beanClass.getCanonicalName(), (Job) bean);
-
-                logger.info("class=TaskBeanPostProcessor||method=postProcessAfterInitialization||beanName={}||canonicaName={}||msg job",
-                        beanName, beanClass.getCanonicalName());
             } else {
                 return bean;
             }

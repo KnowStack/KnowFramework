@@ -96,7 +96,7 @@ public class TaskLockServiceImpl implements TaskLockService {
             try {
                 return logITaskLockMapper.insert(taskLock) > 0 ? true : false;
             } catch (Exception e) {
-                if (e instanceof SQLException && e.getMessage().contains("Duplicate entry")) {
+                if (e.getMessage().contains("Duplicate")) {
                     logger.info("class=TaskLockServiceImpl||method=tryAcquire||taskCode={}||msg=duplicate key", taskCode);
                 } else {
                     logger.error(
