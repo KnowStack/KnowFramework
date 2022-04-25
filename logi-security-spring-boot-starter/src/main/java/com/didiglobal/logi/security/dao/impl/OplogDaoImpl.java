@@ -15,6 +15,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
 import java.sql.Timestamp;
+import java.util.List;
 
 /**
  * @author cjm
@@ -32,7 +33,6 @@ public class OplogDaoImpl extends BaseDaoImpl<OplogPO> implements OplogDao {
 
         QueryWrapper<OplogPO> queryWrapper = getQueryWrapperWithAppName();
         // 不查找detail字段
-        queryWrapper.select(OplogPO.class, oplog -> !FieldConstant.DETAIL.equals(oplog.getColumn()));
         String operatorIp = queryDTO.getOperatorIp();
         String operatorUsername = queryDTO.getOperatorUsername();
         queryWrapper
@@ -49,10 +49,14 @@ public class OplogDaoImpl extends BaseDaoImpl<OplogPO> implements OplogDao {
             queryWrapper.le(FieldConstant.CREATE_TIME, new Timestamp(queryDTO.getEndTime()));
         }
 
-        queryWrapper.orderByDesc(FieldConstant.UPDATE_TIME);
-
+        queryWrapper.select(FieldConstant.ID);
         pageInfo.setTotal(oplogMapper.selectCount(queryWrapper));
-        return CopyBeanUtil.copyPage(oplogMapper.selectPage(pageInfo, queryWrapper), Oplog.class);
+
+        queryWrapper.orderByDesc(FieldConstant.UPDATE_TIME);
+        queryWrapper.select(OplogPO.class, oplog -> !FieldConstant.DETAIL.equals(oplog.getColumn()));
+        oplogMapper.selectPage(pageInfo, queryWrapper);
+
+        return CopyBeanUtil.copyPage(pageInfo, Oplog.class);
     }
 
     @Override

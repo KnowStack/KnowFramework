@@ -68,6 +68,7 @@ public class CopyBeanUtil {
         }
         IPage<K> newInstance = copy(source, Page.class);
         if(newInstance != null) {
+            newInstance.setTotal(source.getTotal());
             newInstance.setRecords(copyList(source.getRecords(), target));
         }
         return newInstance;

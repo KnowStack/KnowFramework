@@ -100,9 +100,7 @@ public class ConfigServiceImpl implements ConfigService {
             return Result.buildNotExist(NOT_EXIST);
         }
 
-        configInfoPO.setOperator(user);
-        configInfoPO.setIsDelete(true);
-        return Result.build(1 == configDao.update(configInfoPO));
+        return Result.build(1 == configDao.deleteById(configInfoPO.getId()));
     }
 
     /**

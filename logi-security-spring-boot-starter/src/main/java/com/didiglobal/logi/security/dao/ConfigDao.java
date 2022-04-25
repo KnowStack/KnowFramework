@@ -15,6 +15,8 @@ public interface ConfigDao {
 
     int update(ConfigPO param);
 
+    int deleteById(Integer id);
+
     IPage<ConfigPO> selectPage(ConfigQueryDTO queryDTO);
 
     List<ConfigPO> listByCondition(ConfigPO condt);

@@ -11,7 +11,6 @@ import com.didiglobal.logi.security.common.po.ConfigPO;
 import com.didiglobal.logi.security.common.po.UserPO;
 import com.didiglobal.logi.security.dao.ConfigDao;
 import com.didiglobal.logi.security.dao.mapper.ConfigMapper;
-import com.didiglobal.logi.security.util.CopyBeanUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
@@ -48,6 +47,11 @@ public class ConfigDaoImpl extends BaseDaoImpl<ConfigPO> implements ConfigDao {
     @Override
     public int update(ConfigPO param) {
         return configMapper.updateById(param);
+    }
+
+    @Override
+    public int deleteById(Integer id) {
+        return configMapper.deleteById(id);
     }
 
     @Override
