@@ -55,7 +55,7 @@ public class FieldConstant {
 
     public static final String OPERATOR_IP = "operator_ip";
 
-    public static final String OPERATOR_USERNAME = "operator_username";
+    public static final String OPERATOR = "operator";
 
     public static final String TYPE = "type";
 

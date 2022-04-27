@@ -20,7 +20,7 @@ public class Oplog extends BaseEntity {
     /**
      * 操作者用户账号
      */
-    private String operatorUsername;
+    private String operator;
 
     /**
      * 操作页面

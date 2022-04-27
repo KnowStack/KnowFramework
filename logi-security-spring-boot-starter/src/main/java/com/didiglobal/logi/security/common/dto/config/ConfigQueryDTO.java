@@ -11,12 +11,18 @@ import lombok.EqualsAndHashCode;
 @Data
 @ApiModel(description = "配置查找条件信息")
 public class ConfigQueryDTO extends PageParamDTO {
+    @ApiModelProperty("配置组")
+    private String  valueGroup;
+
     @ApiModelProperty("配置名称")
     private String  valueName;
+
+    @ApiModelProperty("状态(1 正常；2 禁用)")
+    private Integer status;
 
     @ApiModelProperty("备注/描述")
     private String  memo;
 
-    @ApiModelProperty("状态(1 正常；2 禁用)")
-    private Integer status;
+    @ApiModelProperty("操纵者")
+    private String  operator;
 }

@@ -4,6 +4,8 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.didiglobal.logi.security.common.dto.oplog.OplogQueryDTO;
 import com.didiglobal.logi.security.common.entity.Oplog;
 
+import java.util.List;
+
 /**
  * @author cjm
  */
@@ -28,4 +30,10 @@ public interface OplogDao {
      * @param oplog 操作日志
      */
     void insert(Oplog oplog);
+
+    /**
+     * 获取日志组列表
+     * @return
+     */
+    List<String> listOperatorType();
 }

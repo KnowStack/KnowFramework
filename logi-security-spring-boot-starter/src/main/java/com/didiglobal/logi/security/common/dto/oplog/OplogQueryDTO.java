@@ -21,22 +21,16 @@ public class OplogQueryDTO extends PageParamDTO {
     private String operateType;
 
     /**
-     * 对象类型
-     */
-    @ApiModelProperty(value = "对象类型（精确）", dataType = "String", required = false)
-    private String targetType;
-
-    /**
      * 操作者ip
      */
-    @ApiModelProperty(value = "操作者ip（模糊）", dataType = "String", required = false)
-    private String operatorIp;
+    @ApiModelProperty(value = "操作者详情（模糊）", dataType = "String", required = false)
+    private String detail;
 
     /**
      * 操作者用户账号
      */
     @ApiModelProperty(value = "操作者用户账号（模糊）", dataType = "String", required = false)
-    private String operatorUsername;
+    private String operator;
 
     /**
      * 操作对象

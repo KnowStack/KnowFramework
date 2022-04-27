@@ -9,9 +9,9 @@ import lombok.Data;
 public class OplogDTO {
 
     /**
-     * 操作页面
+     * 操作者
      */
-    private String operatePage;
+    private String operator;
 
     /**
      * 操作类型
@@ -35,16 +35,16 @@ public class OplogDTO {
 
     public OplogDTO() {}
 
-    public OplogDTO(String operatePage, String operateType, String targetType, String target, String detail) {
-        this.operatePage = operatePage;
+    public OplogDTO(String operator, String operateType, String targetType, String target, String detail) {
+        this.operator = operator;
         this.operateType = operateType;
         this.targetType = targetType;
         this.target = target;
         this.detail = detail;
     }
 
-    public OplogDTO(String operatePage, String operateType, String targetType, String target) {
-        this.operatePage = operatePage;
+    public OplogDTO(String operator, String operateType, String targetType, String target) {
+        this.operator = operator;
         this.operateType = operateType;
         this.targetType = targetType;
         this.target = target;

@@ -48,9 +48,6 @@ public class UserResourceServiceImpl implements UserResourceService {
     private DeptService deptService;
 
     @Autowired
-    private OplogService oplogService;
-
-    @Autowired
     private UserService userService;
 
     @Autowired
@@ -398,10 +395,6 @@ public class UserResourceServiceImpl implements UserResourceService {
         );
         // 插入new关联信息
         userResourceDao.insertBatch(userResourceList);
-
-        // 保存操作日志
-        oplogService.saveOplogWithUserId(userId,
-                new OplogDTO(OplogConstant.RPM, OplogConstant.RPM_AR, OplogConstant.RPM_U, "用户+资源名称"));
     }
 
     @Override
@@ -434,10 +427,6 @@ public class UserResourceServiceImpl implements UserResourceService {
         }
         // 插入new关联信息
         userResourceDao.insertBatch(buildUserResourceList(controlLevel, userIdList, resourceDTOList));
-
-        // 保存操作日志
-        oplogService.saveOplogWithUserId(HttpRequestUtil.getOperatorId(request),
-                new OplogDTO(OplogConstant.RPM, OplogConstant.RPM_AU, OplogConstant.RPM_R, "资源名称+用户"));
     }
 
     /**
@@ -487,17 +476,6 @@ public class UserResourceServiceImpl implements UserResourceService {
         deleteOldRelationBeforeBatchAssign(projectId, resourceTypeId, assignFlag, controlLevel, idList);
         // 插入新关联信息
         userResourceDao.insertBatch(getUserResourceList(projectId, resourceTypeId, controlLevel, idList, userIdList));
-
-        Integer userId = HttpRequestUtil.getOperatorId(request);
-        if (assignFlag) {
-            // 保存操作日志
-            oplogService.saveOplogWithUserId(userId,
-                    new OplogDTO(OplogConstant.RPM, OplogConstant.RPM_BAU, OplogConstant.RPM_R, "资源名称+用户"));
-        } else {
-            // 保存操作日志
-            oplogService.saveOplogWithUserId(userId,
-                    new OplogDTO(OplogConstant.RPM, OplogConstant.RPM_BAR, OplogConstant.RPM_U, "用户+资源名称"));
-        }
     }
 
     private void checkParam(BatchAssignDTO assignDTO) throws LogiSecurityException {

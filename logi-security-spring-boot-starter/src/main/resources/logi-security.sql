@@ -34,7 +34,7 @@ CREATE TABLE `logi_oplog`
 (
     id                int auto_increment primary key,
     operator_ip       varchar(20)                          not null comment '操作者ip',
-    operator_username varchar(20)                          null comment '操作者账号',
+    operator          varchar(20)                          null comment '操作者账号',
     operate_page      varchar(16)                          not null comment '操作页面',
     operate_type      varchar(16)                          not null comment '操作类型',
     target_type       varchar(16)                          not null comment '对象分类',

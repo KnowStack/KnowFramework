@@ -22,22 +22,12 @@ public class OplogPO extends BasePO {
     /**
      * 操作者用户账号
      */
-    private String operatorUsername;
-
-    /**
-     * 操作页面
-     */
-    private String operatePage;
+    private String operator;
 
     /**
      * 操作类型
      */
     private String operateType;
-
-    /**
-     * 对象分类
-     */
-    private String targetType;
 
     /**
      * 操作对象

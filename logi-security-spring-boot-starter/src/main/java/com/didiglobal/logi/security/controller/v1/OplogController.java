@@ -29,9 +29,6 @@ public class OplogController {
     @Autowired
     private OplogService oplogService;
 
-    @Autowired
-    private OplogExtraService oplogExtraService;
-
     @PostMapping("/page")
     @ApiOperation(value = "查询操作日志列表", notes = "分页和条件查询")
     public PagingResult<OplogVO> page(@RequestBody OplogQueryDTO queryDTO) {
@@ -47,32 +44,10 @@ public class OplogController {
         return Result.success(oplogVO);
     }
 
-    @GetMapping("/extra/{type}")
-    @ApiOperation(value = "获取操作日志列表的查询条件信息", notes = "操作日志列表/查询条件中操作类型、对象类型的下拉信息")
-    @ApiImplicitParam(name = "type", value = "哪种信息：1：操作页面、2：操作类型、3：对象分类", required = true)
-    public Result<List<String>> extra(@PathVariable Integer type) {
-        List<String> oplogExtraList = oplogExtraService.getOplogExtraNameListByType(type);
-        return Result.success(oplogExtraList);
-    }
-
-    @PostMapping("/extra/import/operate/page")
-    @ApiOperation(value = "导入操作日志extra信息（操作页面）", notes = "批量导入操作页面nameList")
-    public Result<String> operatePage(@RequestBody @ApiParam(name = "list", value = "操作页面nameList") List<String> list) {
-        oplogExtraService.saveOplogExtraList(list, OplogCode.OPERATE_PAGE);
-        return Result.success();
-    }
-
-    @PostMapping("/extra/import/operate/type")
-    @ApiOperation(value = "导入操作日志extra信息（操作类型）", notes = "批量导入操作类型nameList")
-    public Result<String> operateType(@RequestBody @ApiParam(name = "list", value = "操作类型nameList") List<String> list) {
-        oplogExtraService.saveOplogExtraList(list, OplogCode.OPERATE_TYPE);
-        return Result.success();
-    }
-
-    @PostMapping("/extra/import/target/type")
-    @ApiOperation(value = "导入操作日志extra信息（对象分类）", notes = "批量导入对象分类nameList")
-    public Result<String> targetType(@RequestBody @ApiParam(name = "list", value = "对象分类nameList") List<String> list) {
-        oplogExtraService.saveOplogExtraList(list, OplogCode.TARGET_TYPE);
-        return Result.success();
+    @GetMapping("/type/list")
+    @ResponseBody
+    @ApiOperation(value = "获取日志的模块列表", notes = "")
+    public Result<List<String>> types() {
+        return Result.buildSucc(oplogService.listOperatorType());
     }
 }

@@ -5,6 +5,8 @@ import com.didiglobal.logi.security.common.dto.oplog.OplogQueryDTO;
 import com.didiglobal.logi.security.common.dto.oplog.OplogDTO;
 import com.didiglobal.logi.security.common.vo.oplog.OplogVO;
 
+import java.util.List;
+
 /**
  * @author cjm
  */
@@ -13,11 +15,10 @@ public interface OplogService {
     /**
      * 保存操作日志，并获取操作日志id
      *
-     * @param userId   操作用户id
      * @param oplogDTO 操作日志
      * @return 操作日志id
      */
-    Integer saveOplogWithUserId(Integer userId, OplogDTO oplogDTO);
+    Integer saveOplog(OplogDTO oplogDTO);
 
     /**
      * 分页查询操作日志
@@ -34,4 +35,10 @@ public interface OplogService {
      * @return OplogVo 详情
      */
     OplogVO getOplogDetailByOplogId(Integer opLogId);
+
+    /**
+     * 获取日志组列表
+     * @return
+     */
+    List<String> listOperatorType();
 }

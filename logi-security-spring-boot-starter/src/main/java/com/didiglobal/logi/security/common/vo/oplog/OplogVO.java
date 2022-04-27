@@ -1,6 +1,5 @@
 package com.didiglobal.logi.security.common.vo.oplog;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -23,9 +22,6 @@ public class OplogVO {
     @ApiModelProperty(value = "操作者用户账号", dataType = "String", required = false)
     private String operator;
 
-    @ApiModelProperty(value = "操作页面", dataType = "String", required = false)
-    private String operatePage;
-
     @ApiModelProperty(value = "操作类型", dataType = "String", required = false)
     private String operateType;
 
@@ -35,7 +31,6 @@ public class OplogVO {
     @ApiModelProperty(value = "对象分类", dataType = "String", required = false)
     private String targetType;
 
-    @JsonInclude(JsonInclude.Include.NON_NULL)
     @ApiModelProperty(value = "操作日志详情", dataType = "String", required = false)
     private String detail;
 

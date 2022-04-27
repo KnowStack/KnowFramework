@@ -96,8 +96,8 @@ public class ProjectServiceImpl implements ProjectService {
         // 插入用户项目关联信息（项目负责人）
         userProjectService.saveUserProject(project.getId(), saveVo.getUserIdList());
         // 保存操作日志
-        oplogService.saveOplogWithUserId(HttpRequestUtil.getOperatorId(request),
-                new OplogDTO(OplogConstant.PM, OplogConstant.PM_A, OplogConstant.PM_P, saveVo.getProjectName()));
+        oplogService.saveOplog(
+                new OplogDTO(HttpRequestUtil.getOperator(request), OplogConstant.PM, OplogConstant.PM_A, OplogConstant.PM_P, saveVo.getProjectName()));
         return CopyBeanUtil.copy(project, ProjectVO.class);
     }
 
@@ -143,8 +143,8 @@ public class ProjectServiceImpl implements ProjectService {
         // 逻辑删除项目（自动）
         projectDao.deleteByProjectId(projectId);
         // 保存操作日志
-        oplogService.saveOplogWithUserId(HttpRequestUtil.getOperatorId(request),
-                new OplogDTO(OplogConstant.PM, OplogConstant.PM_D, OplogConstant.PM_P, project.getProjectName()));
+        oplogService.saveOplog( new OplogDTO(HttpRequestUtil.getOperator(request),
+                OplogConstant.PM, OplogConstant.PM_D, OplogConstant.PM_P, project.getProjectName()));
     }
 
     @Override
@@ -161,8 +161,8 @@ public class ProjectServiceImpl implements ProjectService {
         // 更新项目负责人与项目联系
         userProjectService.updateUserProject(saveDTO.getId(), saveDTO.getUserIdList());
         // 保存操作日志
-        oplogService.saveOplogWithUserId(HttpRequestUtil.getOperatorId(request),
-                new OplogDTO(OplogConstant.PM, OplogConstant.PM_E, OplogConstant.PM_P, saveDTO.getProjectName()));
+        oplogService.saveOplog( new OplogDTO(HttpRequestUtil.getOperator(request),
+                OplogConstant.PM, OplogConstant.PM_E, OplogConstant.PM_P, saveDTO.getProjectName()));
     }
 
     @Override
@@ -177,8 +177,8 @@ public class ProjectServiceImpl implements ProjectService {
         projectDao.update(project);
         // 保存操作日志
         String curRunningTag = Boolean.TRUE.equals(project.getRunning()) ? OplogConstant.PM_U : OplogConstant.PM_S;
-        oplogService.saveOplogWithUserId(HttpRequestUtil.getOperatorId(request),
-                new OplogDTO(OplogConstant.PM, curRunningTag, OplogConstant.PM_P, project.getProjectName()));
+        oplogService.saveOplog( new OplogDTO(HttpRequestUtil.getOperator(request),
+                OplogConstant.PM, curRunningTag, OplogConstant.PM_P, project.getProjectName()));
     }
 
     @Override

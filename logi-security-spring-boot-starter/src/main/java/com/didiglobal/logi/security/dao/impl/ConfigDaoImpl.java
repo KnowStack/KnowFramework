@@ -66,7 +66,9 @@ public class ConfigDaoImpl extends BaseDaoImpl<ConfigPO> implements ConfigDao {
         IPage<ConfigPO> page = new Page<>(queryDTO.getPage(), queryDTO.getSize());
         QueryWrapper<ConfigPO> queryWrapper = getQueryWrapperWithAppName();
         queryWrapper
-                .eq( queryDTO.getStatus() != null, STATUS, queryDTO.getStatus() )
+                .eq( queryDTO.getValueGroup() != null, VALUE_GROUP, queryDTO.getValueGroup())
+                .eq( queryDTO.getStatus() != null, STATUS, queryDTO.getStatus())
+                .eq( queryDTO.getOperator() != null, OPERATOR, queryDTO.getOperator())
                 .like(queryDTO.getMemo() != null, MEMO, queryDTO.getMemo())
                 .like(queryDTO.getValueName() != null, VALUE_NAME, queryDTO.getValueName())
                 .orderByDesc(FieldConstant.CREATE_TIME);

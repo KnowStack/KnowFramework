@@ -116,8 +116,8 @@ public class RoleServiceImpl implements RoleService {
         // 保持角色与权限的关联信息
         rolePermissionService.saveRolePermission(role.getId(), roleSaveDTO.getPermissionIdList());
         // 保存操作日志
-        oplogService.saveOplogWithUserId(userId,
-                new OplogDTO(OplogConstant.RM, OplogConstant.RM_A, OplogConstant.RM_R, roleSaveDTO.getRoleName()));
+        oplogService.saveOplog(new OplogDTO(HttpRequestUtil.getOperator(request),
+                OplogConstant.RM, OplogConstant.RM_A, OplogConstant.RM_R, roleSaveDTO.getRoleName()));
     }
 
     @Override
@@ -137,8 +137,8 @@ public class RoleServiceImpl implements RoleService {
         // 逻辑删除（自动）
         roleDao.deleteByRoleId(roleId);
         // 保存操作日志
-        OplogDTO oplogDTO = new OplogDTO(OplogConstant.RM, OplogConstant.RM_D, OplogConstant.RM_R, role.getRoleName());
-        oplogService.saveOplogWithUserId(HttpRequestUtil.getOperatorId(request), oplogDTO);
+        OplogDTO oplogDTO = new OplogDTO(HttpRequestUtil.getOperator(request), OplogConstant.RM, OplogConstant.RM_D, OplogConstant.RM_R, role.getRoleName());
+        oplogService.saveOplog(oplogDTO);
     }
 
     @Override
@@ -160,8 +160,8 @@ public class RoleServiceImpl implements RoleService {
         // 更新角色与权限关联信息
         rolePermissionService.updateRolePermission(role.getId(), saveDTO.getPermissionIdList());
         // 保存操作日志
-        oplogService.saveOplogWithUserId(userId,
-                new OplogDTO(OplogConstant.RM, OplogConstant.RM_E, OplogConstant.RM_R, saveDTO.getRoleName()));
+        oplogService.saveOplog( new OplogDTO(HttpRequestUtil.getOperator(request),
+                OplogConstant.RM, OplogConstant.RM_E, OplogConstant.RM_R, saveDTO.getRoleName()));
     }
 
     @Override
@@ -180,8 +180,8 @@ public class RoleServiceImpl implements RoleService {
             userRoleService.updateUserRoleByUserId(userId, assignDTO.getIdList());
             // 保存操作日志
             UserBriefVO userBriefVO = userService.getUserBriefByUserId(assignDTO.getId());
-            Integer oplogId = oplogService.saveOplogWithUserId(operatorId,
-                    new OplogDTO(OplogConstant.UM, OplogConstant.UM_AR, OplogConstant.UM_U, userBriefVO.getUserName()));
+            Integer oplogId = oplogService.saveOplog(new OplogDTO(HttpRequestUtil.getOperator(request),
+                    OplogConstant.UM, OplogConstant.UM_AR, OplogConstant.UM_U, userBriefVO.getUserName()));
             // 打包和保存角色更新消息
             packAndSaveMessage(oplogId, oldRoleIdList, assignDTO);
         } else {
@@ -193,8 +193,8 @@ public class RoleServiceImpl implements RoleService {
             userRoleService.updateUserRoleByRoleId(roleId, assignDTO.getIdList());
             // 保存操作日志
             Role role = roleDao.selectByRoleId(assignDTO.getId());
-            Integer oplogId = oplogService.saveOplogWithUserId(operatorId,
-                    new OplogDTO(OplogConstant.RM, OplogConstant.RM_AU, OplogConstant.RM_R, role.getRoleName()));
+            Integer oplogId = oplogService.saveOplog(new OplogDTO(HttpRequestUtil.getOperator(request),
+                    OplogConstant.RM, OplogConstant.RM_AU, OplogConstant.RM_R, role.getRoleName()));
             // 打包和保存角色更新消息
             packAndSaveMessage(oplogId, oldUserIdList, assignDTO);
         }
