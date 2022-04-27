@@ -86,16 +86,6 @@ public interface ConfigService {
     ConfigVO getConfigById(Integer configId);
 
     /**
-     * 修改一个配置项的值
-     * @param group 配置组
-     * @param name 配置名字
-     * @param value 配置内容
-     * @return  成功 true  失败 false
-     *
-     */
-    Result<Void> updateValueByGroupAndName(String group, String name, String value);
-
-    /**
      * 获取String类型配置
      * @param group 配置组
      * @param name 配置项

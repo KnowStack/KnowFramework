@@ -112,8 +112,9 @@ public class ConfigServiceImpl implements ConfigService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public Result<Void> editConfig(ConfigDTO configInfoDTO, String user) {
-        if (null == configInfoDTO.getId()) {
-            return Result.buildParamIllegal("配置ID为空");
+        if (StringUtils.isBlank(configInfoDTO.getValueGroup())
+            || StringUtils.isBlank(configInfoDTO.getValueName())) {
+            return Result.buildParamIllegal("配置组或者配置名为空");
         }
 
         if(ConfigStatusEnum.NORMAL.getCode() != configInfoDTO.getStatus().intValue()
@@ -121,9 +122,10 @@ public class ConfigServiceImpl implements ConfigService {
             return Result.buildParamIllegal("状态只能是1或者2");
         }
 
-        ConfigPO configInfoPO = configDao.getbyId(configInfoDTO.getId());
+        ConfigPO configInfoPO = configDao.getByGroupAndName(configInfoDTO.getValueGroup(), configInfoDTO.getValueName());
         if (configInfoPO == null) {
-            return Result.buildNotExist(NOT_EXIST);
+            Result<Integer> retAdd = addConfig(configInfoDTO, user);
+            return Result.buildFrom(retAdd);
         }
 
         configInfoPO.setOperator(user);
@@ -153,7 +155,7 @@ public class ConfigServiceImpl implements ConfigService {
 
         configInfoPO.setOperator(user);
         configInfoPO.setStatus(status);
-        return Result.build(1 == configDao.update(configInfoPO));
+        return Result.build(1 == configDao.updateById(configInfoPO));
     }
 
     @Override
@@ -199,34 +201,6 @@ public class ConfigServiceImpl implements ConfigService {
     @Override
     public ConfigVO getConfigById(Integer configId) {
         return CopyBeanUtil.copy(configDao.getbyId(configId), ConfigVO.class);
-    }
-
-    /**
-     * 修改一个配置项的值
-     * @param group 配置组
-     * @param name  配置名字
-     * @param value 配置内容
-     * @return 成功 true  失败 false
-     *
-     * NotExistExceptio 配置不存在
-     */
-    @Override
-    @Transactional(rollbackFor = Exception.class)
-    public Result<Void> updateValueByGroupAndName(String group, String name, String value) {
-        if (value == null) {
-            return Result.buildParamIllegal("值为空");
-        }
-
-        ConfigPO configInfoPO = getByGroupAndNameFromDB(group, name);
-        if (configInfoPO == null) {
-            return Result.buildNotExist(NOT_EXIST);
-        }
-
-        ConfigDTO param = new ConfigDTO();
-        param.setId(configInfoPO.getId());
-        param.setValue(value);
-
-        return editConfig(param, SYSTEM);
     }
 
     /**

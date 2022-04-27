@@ -13,6 +13,8 @@ public interface ConfigDao {
 
     int insert(ConfigPO param);
 
+    int updateById(ConfigPO param);
+
     int update(ConfigPO param);
 
     int deleteById(Integer id);

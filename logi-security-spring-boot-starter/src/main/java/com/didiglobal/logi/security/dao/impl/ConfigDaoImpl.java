@@ -6,9 +6,7 @@ import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.didiglobal.logi.security.common.constant.FieldConstant;
 import com.didiglobal.logi.security.common.dto.config.ConfigQueryDTO;
-import com.didiglobal.logi.security.common.entity.user.User;
 import com.didiglobal.logi.security.common.po.ConfigPO;
-import com.didiglobal.logi.security.common.po.UserPO;
 import com.didiglobal.logi.security.dao.ConfigDao;
 import com.didiglobal.logi.security.dao.mapper.ConfigMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,8 +43,17 @@ public class ConfigDaoImpl extends BaseDaoImpl<ConfigPO> implements ConfigDao {
     }
 
     @Override
-    public int update(ConfigPO param) {
+    public int updateById(ConfigPO param) {
         return configMapper.updateById(param);
+    }
+
+    @Override
+    public int update(ConfigPO param) {
+        QueryWrapper<ConfigPO> queryWrapper = wrapBriefQuery();
+        queryWrapper.eq(VALUE_GROUP, param.getValueGroup());
+        queryWrapper.eq(VALUE_NAME, param.getValueName());
+
+        return configMapper.update(param, queryWrapper);
     }
 
     @Override
