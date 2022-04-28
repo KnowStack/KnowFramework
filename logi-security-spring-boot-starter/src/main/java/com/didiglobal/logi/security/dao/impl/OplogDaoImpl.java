@@ -6,7 +6,6 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.didiglobal.logi.security.common.constant.FieldConstant;
 import com.didiglobal.logi.security.common.dto.oplog.OplogQueryDTO;
 import com.didiglobal.logi.security.common.entity.Oplog;
-import com.didiglobal.logi.security.common.po.ConfigPO;
 import com.didiglobal.logi.security.common.po.OplogPO;
 import com.didiglobal.logi.security.dao.OplogDao;
 import com.didiglobal.logi.security.dao.mapper.OplogMapper;
@@ -21,7 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static com.didiglobal.logi.security.common.constant.FieldConstant.OPERATE_TYPE;
+import static com.didiglobal.logi.security.common.constant.FieldConstant.*;
 
 /**
  * @author cjm
@@ -38,24 +37,24 @@ public class OplogDaoImpl extends BaseDaoImpl<OplogPO> implements OplogDao {
         IPage<OplogPO> pageInfo = new Page<>(queryDTO.getPage(), queryDTO.getSize());
 
         QueryWrapper<OplogPO> queryWrapper = getQueryWrapperWithAppName();
-        // 不查找detail字段
-        String operator = queryDTO.getOperator();
         queryWrapper
                 .eq(queryDTO.getOperateType() != null, OPERATE_TYPE, queryDTO.getOperateType())
-                .like(!StringUtils.isEmpty(queryDTO.getDetail()), FieldConstant.DETAIL, queryDTO.getDetail())
-                .like(!StringUtils.isEmpty(queryDTO.getTarget()), FieldConstant.TARGET, queryDTO.getTarget())
-                .like(!StringUtils.isEmpty(operator), FieldConstant.OPERATOR, operator);
+                .eq(queryDTO.getTargetType() != null, TARGET_TYPE, queryDTO.getTargetType())
+                .like(!StringUtils.isEmpty(queryDTO.getDetail()), DETAIL, queryDTO.getDetail())
+                .like(!StringUtils.isEmpty(queryDTO.getTarget()), TARGET, queryDTO.getTarget())
+                .like(!StringUtils.isEmpty(queryDTO.getOperator()), OPERATOR, queryDTO.getOperator());
         if(queryDTO.getStartTime() != null) {
-            queryWrapper.ge(FieldConstant.CREATE_TIME, new Timestamp(queryDTO.getStartTime()));
+            queryWrapper.ge(CREATE_TIME, new Timestamp(queryDTO.getStartTime()));
         }
         if(queryDTO.getEndTime() != null) {
-            queryWrapper.le(FieldConstant.CREATE_TIME, new Timestamp(queryDTO.getEndTime()));
+            queryWrapper.le(CREATE_TIME, new Timestamp(queryDTO.getEndTime()));
         }
 
-        queryWrapper.select(FieldConstant.ID);
+        queryWrapper.select(ID);
         pageInfo.setTotal(oplogMapper.selectCount(queryWrapper));
 
-        queryWrapper.orderByDesc(FieldConstant.UPDATE_TIME);
+        queryWrapper.orderByDesc(UPDATE_TIME);
+        queryWrapper.select(ID, OPERATE_TYPE, DETAIL, TARGET, TARGET_TYPE, OPERATOR_IP, OPERATOR, CREATE_TIME, UPDATE_TIME);
         oplogMapper.selectPage(pageInfo, queryWrapper);
 
         return CopyBeanUtil.copyPage(pageInfo, Oplog.class);
@@ -80,13 +79,13 @@ public class OplogDaoImpl extends BaseDaoImpl<OplogPO> implements OplogDao {
     }
 
     @Override
-    public List<String> listOperatorType() {
+    public List<String> listTargetType() {
         QueryWrapper<OplogPO> queryWrapper = getQueryWrapperWithAppName();
-        queryWrapper.select( "distinct " + OPERATE_TYPE);
+        queryWrapper.select( "distinct " + TARGET_TYPE);
         List<OplogPO> oplogPOS = oplogMapper.selectList(queryWrapper);
 
         if(!CollectionUtils.isEmpty(oplogPOS)){
-            return oplogPOS.stream().map(OplogPO::getOperateType).collect(Collectors.toList());
+            return oplogPOS.stream().map(OplogPO::getTargetType).collect(Collectors.toList());
         }
 
         return new ArrayList<>();

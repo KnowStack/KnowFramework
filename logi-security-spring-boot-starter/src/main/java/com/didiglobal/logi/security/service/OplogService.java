@@ -40,5 +40,5 @@ public interface OplogService {
      * 获取日志组列表
      * @return
      */
-    List<String> listOperatorType();
+    List<String> listTargetType();
 }

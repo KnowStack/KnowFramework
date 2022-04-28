@@ -35,6 +35,11 @@ public class OplogPO extends BasePO {
     private String target;
 
     /**
+     * 操作对象分类
+     */
+    private String targetType;
+
+    /**
      * 详情
      */
     private String detail;

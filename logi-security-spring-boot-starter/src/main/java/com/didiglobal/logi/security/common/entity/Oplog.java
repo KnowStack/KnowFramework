@@ -23,11 +23,6 @@ public class Oplog extends BaseEntity {
     private String operator;
 
     /**
-     * 操作页面
-     */
-    private String operatePage;
-
-    /**
      * 操作类型
      */
     private String operateType;

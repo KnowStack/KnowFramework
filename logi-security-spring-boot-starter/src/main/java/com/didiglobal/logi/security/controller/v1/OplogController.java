@@ -5,14 +5,11 @@ import com.didiglobal.logi.security.common.PagingData;
 import com.didiglobal.logi.security.common.PagingResult;
 import com.didiglobal.logi.security.common.Result;
 import com.didiglobal.logi.security.common.dto.oplog.OplogQueryDTO;
-import com.didiglobal.logi.security.common.enums.oplog.OplogCode;
 import com.didiglobal.logi.security.common.vo.oplog.OplogVO;
-import com.didiglobal.logi.security.service.OplogExtraService;
 import com.didiglobal.logi.security.service.OplogService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -48,6 +45,6 @@ public class OplogController {
     @ResponseBody
     @ApiOperation(value = "获取日志的模块列表", notes = "")
     public Result<List<String>> types() {
-        return Result.buildSucc(oplogService.listOperatorType());
+        return Result.buildSucc(oplogService.listTargetType());
     }
 }

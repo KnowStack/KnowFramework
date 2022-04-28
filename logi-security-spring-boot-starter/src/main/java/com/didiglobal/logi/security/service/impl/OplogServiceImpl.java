@@ -53,8 +53,8 @@ public class OplogServiceImpl implements OplogService {
     }
 
     @Override
-    public List<String> listOperatorType() {
-        return oplogDao.listOperatorType();
+    public List<String> listTargetType() {
+        return oplogDao.listTargetType();
     }
 
     @Override
