@@ -118,6 +118,7 @@ public class PermissionServiceImpl implements PermissionService {
                 permission.setId(0);
                 if(level > 0) {
                     // 设置id
+                    //todo：这里设置id会有问题，导致构建权限的时候父子关系出错
                     permission.setId((int) getPermissionId());
                     permissionList.add(permission);
                 }

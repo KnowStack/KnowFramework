@@ -29,4 +29,11 @@ public class PermissionDTO {
         }
         return childPermissionDTOList;
     }
+
+    public PermissionDTO(){}
+
+    public PermissionDTO(String permissionName, String description){
+        this.permissionName = permissionName;
+        this.description    = description;
+    }
 }
