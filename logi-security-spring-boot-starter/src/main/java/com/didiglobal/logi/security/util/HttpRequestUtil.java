@@ -35,7 +35,7 @@ public class HttpRequestUtil {
         HttpSession session = request.getSession();
         Integer id = (Integer) session.getAttribute(HttpRequestUtil.USER_ID );
         if(id == null) {
-            return 1;
+            return getOperatorIdFromHeader(request);
         }
         return id;
     }
@@ -44,13 +44,23 @@ public class HttpRequestUtil {
         HttpSession session = request.getSession();
         String operator = (String) session.getAttribute(HttpRequestUtil.USER);
         if(StringUtils.isEmpty(operator)) {
-            return "";
+            return getOperatorFromHeader(request);
         }
         return operator;
     }
 
     public static String getOperatorFromHeader(HttpServletRequest request) {
-        return request.getHeader( USER_ID );
+        String operator = request.getHeader(USER);
+        if(StringUtils.isEmpty(operator)) {
+            return "";
+        }
+        return operator;
+    }
+
+    public static Integer getOperatorIdFromHeader(HttpServletRequest request) {
+        Integer id = Integer.valueOf(request.getHeader(USER_ID));
+        if(id == null) {return -1;}
+        return id;
     }
 
     public static Integer getAppId(HttpServletRequest request, int defaultAppid) {
