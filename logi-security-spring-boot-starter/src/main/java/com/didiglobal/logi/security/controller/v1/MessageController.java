@@ -30,9 +30,8 @@ public class MessageController {
     @ApiOperation(value = "获取所有消息", notes = "根据是否读已读获取消息")
     @ApiImplicitParam(name = "readTag", value = "消息状态（true已读，false未读，null全部）", dataType = "Boolean")
     public Result<List<MessageVO>> list(@PathVariable(required = false) Boolean readTag, HttpServletRequest request) {
-        // 获取当前用户id
-        Integer userId = HttpRequestUtil.getOperatorId(request);
-        List<MessageVO> messageVOList = messageService.getMessageListByUserIdAndReadTag(userId, readTag);
+        List<MessageVO> messageVOList = messageService.getMessageListByUserIdAndReadTag(
+                HttpRequestUtil.getOperator(request), readTag);
         return Result.success(messageVOList);
     }
 

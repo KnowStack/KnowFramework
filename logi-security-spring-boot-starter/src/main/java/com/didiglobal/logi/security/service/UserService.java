@@ -49,10 +49,10 @@ public interface UserService {
 
     /**
      * 获取用户简要信息
-     * @param userId 用户id
+     * @param userName
      * @return 用户简要信息
      */
-    UserBriefVO getUserBriefByUserId(Integer userId);
+    UserBriefVO getUserBriefByUserName(String userName);
 
     /**
      * 获取用户简要信息

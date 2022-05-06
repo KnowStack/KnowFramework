@@ -2,9 +2,11 @@ package com.didiglobal.logi.security.service.impl;
 
 import com.didiglobal.logi.security.common.dto.message.MessageDTO;
 import com.didiglobal.logi.security.common.entity.Message;
+import com.didiglobal.logi.security.common.entity.user.User;
 import com.didiglobal.logi.security.common.vo.message.MessageVO;
 import com.didiglobal.logi.security.dao.MessageDao;
 import com.didiglobal.logi.security.service.MessageService;
+import com.didiglobal.logi.security.service.UserService;
 import com.didiglobal.logi.security.util.CopyBeanUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -23,6 +25,9 @@ public class MessageServiceImpl implements MessageService {
     @Autowired
     private MessageDao messageDao;
 
+    @Autowired
+    private UserService userService;
+
     @Override
     public void saveMessage(MessageDTO messageDTO) {
         Message message = CopyBeanUtil.copy(messageDTO, Message.class);
@@ -30,8 +35,10 @@ public class MessageServiceImpl implements MessageService {
     }
 
     @Override
-    public List<MessageVO> getMessageListByUserIdAndReadTag(Integer userId, Boolean readTag) {
-        List<Message> messageList = messageDao.selectListByUserIdAndReadTag(userId, readTag);
+    public List<MessageVO> getMessageListByUserIdAndReadTag(String userName, Boolean readTag) {
+        User user = userService.getUserByUserName(userName);
+
+        List<Message> messageList = messageDao.selectListByUserIdAndReadTag(user.getId(), readTag);
 
         List<MessageVO> result = new ArrayList<>();
         for(Message message : messageList) {

@@ -78,9 +78,12 @@ public class LoginServiceImpl implements LoginService {
         }
 
         String operator = HttpRequestUtil.getOperator(request);
-        Integer userId  = HttpRequestUtil.getOperatorId(request);
+        User user = userService.getUserByUserName(operator);
+        if(user == null) {
+            throw new LogiSecurityException(ResultCode.USER_NOT_EXISTS);
+        }
 
-        initLoginContext(request, response, operator, userId);
+        initLoginContext(request, response, operator, user.getId());
 
         return Boolean.TRUE;
     }

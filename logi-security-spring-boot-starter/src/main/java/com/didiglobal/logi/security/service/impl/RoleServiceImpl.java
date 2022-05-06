@@ -100,13 +100,12 @@ public class RoleServiceImpl implements RoleService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void createRole(RoleSaveDTO roleSaveDTO, HttpServletRequest request) throws LogiSecurityException {
-        Integer userId = HttpRequestUtil.getOperatorId(request);
         // 检查参数
         checkParam(roleSaveDTO, false);
         // 保存角色信息
         Role role = CopyBeanUtil.copy(roleSaveDTO, Role.class);
         // 设置修改人信息
-        UserBriefVO userBriefVO = userService.getUserBriefByUserId(userId);
+        UserBriefVO userBriefVO = userService.getUserBriefByUserName(HttpRequestUtil.getOperator(request));
         if(userBriefVO != null) {
             role.setLastReviser(userBriefVO.getUserName());
         }
@@ -144,7 +143,6 @@ public class RoleServiceImpl implements RoleService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void updateRole(RoleSaveDTO saveDTO, HttpServletRequest request) throws LogiSecurityException {
-        Integer userId = HttpRequestUtil.getOperatorId(request);
         if(roleDao.selectByRoleId(saveDTO.getId()) == null) {
             throw new LogiSecurityException(ResultCode.ROLE_NOT_EXISTS);
         }
@@ -152,7 +150,7 @@ public class RoleServiceImpl implements RoleService {
         // 更新角色基本信息
         Role role = CopyBeanUtil.copy(saveDTO, Role.class);
         // 设置修改人信息
-        UserBriefVO userBriefVO = userService.getUserBriefByUserId(userId);
+        UserBriefVO userBriefVO = userService.getUserBriefByUserName(HttpRequestUtil.getOperator(request));
         if(userBriefVO != null) {
             role.setLastReviser(userBriefVO.getUserName());
         }
@@ -167,7 +165,7 @@ public class RoleServiceImpl implements RoleService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void assignRoles(RoleAssignDTO assignDTO, HttpServletRequest request) throws LogiSecurityException {
-        Integer operatorId = HttpRequestUtil.getOperatorId(request);
+        String operator = HttpRequestUtil.getOperator(request);
         if(assignDTO.getFlag() == null) {
             throw new LogiSecurityException(ResultCode.ROLE_ASSIGN_FLAG_IS_NULL);
         }
@@ -179,8 +177,8 @@ public class RoleServiceImpl implements RoleService {
             // 更新关联信息
             userRoleService.updateUserRoleByUserId(userId, assignDTO.getIdList());
             // 保存操作日志
-            UserBriefVO userBriefVO = userService.getUserBriefByUserId(assignDTO.getId());
-            Integer oplogId = oplogService.saveOplog(new OplogDTO(HttpRequestUtil.getOperator(request),
+            UserBriefVO userBriefVO = userService.getUserBriefByUserName(operator);
+            Integer oplogId = oplogService.saveOplog(new OplogDTO(operator,
                     OplogConstant.UM, OplogConstant.UM_AR, OplogConstant.UM_U, userBriefVO.getUserName()));
             // 打包和保存角色更新消息
             packAndSaveMessage(oplogId, oldRoleIdList, assignDTO);
@@ -193,7 +191,7 @@ public class RoleServiceImpl implements RoleService {
             userRoleService.updateUserRoleByRoleId(roleId, assignDTO.getIdList());
             // 保存操作日志
             Role role = roleDao.selectByRoleId(assignDTO.getId());
-            Integer oplogId = oplogService.saveOplog(new OplogDTO(HttpRequestUtil.getOperator(request),
+            Integer oplogId = oplogService.saveOplog(new OplogDTO(operator,
                     OplogConstant.RM, OplogConstant.RM_AU, OplogConstant.RM_R, role.getRoleName()));
             // 打包和保存角色更新消息
             packAndSaveMessage(oplogId, oldUserIdList, assignDTO);

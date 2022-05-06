@@ -22,6 +22,7 @@ import com.didiglobal.logi.security.util.CopyBeanUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.StringUtils;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -135,11 +136,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserBriefVO getUserBriefByUserId(Integer userId) {
-        if(userId == null) {
+    public UserBriefVO getUserBriefByUserName(String userName) {
+        if(StringUtils.isEmpty(userName)) {
             return null;
         }
-        User user = userDao.selectByUserId(userId);
+        User user = userDao.selectByUsername(userName);
         return CopyBeanUtil.copy(user, UserBriefVO.class);
     }
 

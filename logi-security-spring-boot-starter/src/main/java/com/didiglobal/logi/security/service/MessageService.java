@@ -19,11 +19,11 @@ public interface MessageService {
 
     /**
      * 根据消息状态，获取消息List
-     * @param userId 用户id，如果为null，则获取全部消息
+     * @param userName 用户id，如果为null，则获取全部消息
      * @param readTag true已读、false未读、null则全部读
      * @return 消息List
      */
-    List<MessageVO> getMessageListByUserIdAndReadTag(Integer userId, Boolean readTag);
+    List<MessageVO> getMessageListByUserIdAndReadTag(String userName, Boolean readTag);
 
     /**
      * 更改消息状态，旧状态取反
