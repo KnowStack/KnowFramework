@@ -6,7 +6,6 @@ import com.didiglobal.logi.security.common.dto.account.AccountLoginDTO;
 import com.didiglobal.logi.security.common.vo.user.UserBriefVO;
 import com.didiglobal.logi.security.exception.LogiSecurityException;
 import com.didiglobal.logi.security.service.LoginService;
-import com.didiglobal.logi.security.service.UserService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +19,7 @@ import javax.servlet.http.HttpServletResponse;
  */
 @RestController
 @Api(value = "logi-security-account登录相关API接口", tags = "logi-security-登录相关API接口")
-@RequestMapping(Constants.V1 + "/logi-security/account")
+@RequestMapping(Constants.API_V1_ACCOUNT_LOGIN)
 public class LoginController {
 
     @Autowired

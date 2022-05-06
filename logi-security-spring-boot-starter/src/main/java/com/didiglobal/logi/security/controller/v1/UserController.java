@@ -4,7 +4,6 @@ import com.didiglobal.logi.security.common.constant.Constants;
 import com.didiglobal.logi.security.common.PagingData;
 import com.didiglobal.logi.security.common.PagingResult;
 import com.didiglobal.logi.security.common.Result;
-import com.didiglobal.logi.security.common.dto.config.ConfigDTO;
 import com.didiglobal.logi.security.common.dto.user.UserDTO;
 import com.didiglobal.logi.security.common.vo.role.AssignInfoVO;
 import com.didiglobal.logi.security.common.dto.user.UserQueryDTO;
@@ -27,7 +26,7 @@ import java.util.List;
  */
 @RestController
 @Api(value = "logi-security-user相关API接口", tags = "logi-security-用户相关API接口")
-@RequestMapping(Constants.V1 + "/logi-security/user")
+@RequestMapping(Constants.API_V1 + "/logi-security/user")
 public class UserController {
 
     @Autowired

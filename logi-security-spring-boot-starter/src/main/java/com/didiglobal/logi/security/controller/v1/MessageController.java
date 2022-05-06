@@ -20,7 +20,7 @@ import java.util.List;
  */
 @RestController
 @Api(value = "logi-security-message相关API接口", tags = "logi-security-消息相关API接口")
-@RequestMapping(Constants.V1 + "/logi-security/message")
+@RequestMapping(Constants.API_V1 + "/logi-security/message")
 public class MessageController {
 
     @Autowired

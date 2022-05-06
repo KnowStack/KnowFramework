@@ -23,7 +23,7 @@ import java.util.List;
  */
 @RestController
 @Api(value = "logi-security-project相关API接口", tags = "logi-security-项目相关API接口")
-@RequestMapping(Constants.V1 + "/logi-security/project")
+@RequestMapping(Constants.API_V1 + "/logi-security/project")
 public class ProjectController {
 
     @Autowired

@@ -67,8 +67,10 @@ public class LoginServiceImpl implements LoginService {
         }
 
         // 白名单接口
-        if (whiteMappingValues.contains(requestMappingValue)) {
-            return Boolean.TRUE;
+        for(String mapping : whiteMappingValues){
+            if (requestMappingValue.contains(mapping)){
+                return Boolean.TRUE;
+            }
         }
 
         // 登录权限检查

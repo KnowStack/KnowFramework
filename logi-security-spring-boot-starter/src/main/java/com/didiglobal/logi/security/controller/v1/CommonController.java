@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
  */
 @RestController
 @Api(value = "logi-security-common相关API接口", tags = "logi-security-common相关API接口")
-@RequestMapping(Constants.V1 + "/logi-security/common")
+@RequestMapping(Constants.API_V1 + "/logi-security/common")
 public class CommonController {
 
     @GetMapping("/pubKey")
