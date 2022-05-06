@@ -8,5 +8,5 @@ spring:
   username: didi_Bugf
   password: N1yiyoPz8
   driver-class-name: org.mariadb.jdbc.Driver
-  app-name: ES
+  app-name: know-stream-test
   resource-extend-bean-name: myResourceExtendImpl

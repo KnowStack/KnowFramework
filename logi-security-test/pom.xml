@@ -21,7 +21,7 @@
         <dependency>
             <groupId>io.github.zqrferrari</groupId>
             <artifactId>logi-security-spring-boot-starter</artifactId>
-            <version>1.6.7</version>
+            <version>1.6.14</version>
         </dependency>
 
         <dependency>
