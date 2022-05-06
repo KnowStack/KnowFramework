@@ -43,7 +43,7 @@ public class ConfigServiceImpl implements ConfigService {
     private ConfigDao configDao;
 
     private Cache<String, ConfigPO> configCache = CacheBuilder.newBuilder()
-            .expireAfterWrite(1, TimeUnit.MINUTES).maximumSize(100).build();
+            .expireAfterWrite(10, TimeUnit.MINUTES).maximumSize(100).build();
 
     /**
      * 新增配置
@@ -100,6 +100,7 @@ public class ConfigServiceImpl implements ConfigService {
             return Result.buildNotExist(NOT_EXIST);
         }
 
+        cleanByGroupAndName(configInfoPO.getValueGroup(), configInfoPO.getValueName());
         return Result.build(1 == configDao.deleteById(configInfoPO.getId()));
     }
 
@@ -128,6 +129,8 @@ public class ConfigServiceImpl implements ConfigService {
             return Result.buildFrom(retAdd);
         }
 
+        cleanByGroupAndName(configInfoPO.getValueGroup(), configInfoPO.getValueName());
+
         configInfoPO.setOperator(user);
         boolean succ = (1 == configDao.update(CopyBeanUtil.copy(configInfoDTO, ConfigPO.class)));
         return Result.build(succ);
@@ -152,6 +155,8 @@ public class ConfigServiceImpl implements ConfigService {
         if (statusEnum == null) {
             return Result.buildParamIllegal("状态非法");
         }
+
+        cleanByGroupAndName(configInfoPO.getValueGroup(), configInfoPO.getValueName());
 
         configInfoPO.setOperator(user);
         configInfoPO.setStatus(status);
@@ -356,6 +361,10 @@ public class ConfigServiceImpl implements ConfigService {
         if (configInfoDTO.getMemo() == null) {
             configInfoDTO.setMemo("");
         }
+    }
+
+    private void cleanByGroupAndName(String group, String valueName){
+        configCache.invalidate(group + "@" + valueName);
     }
 
     private ConfigPO getByGroupAndName(String group, String valueName) {
