@@ -42,9 +42,6 @@ public class ConfigServiceImpl implements ConfigService {
     @Autowired
     private ConfigDao configDao;
 
-    private Cache<String, ConfigPO> configCache = CacheBuilder.newBuilder()
-            .expireAfterWrite(10, TimeUnit.MINUTES).maximumSize(100).build();
-
     /**
      * 新增配置
      * @param configInfoDTO 配置信息
@@ -100,7 +97,6 @@ public class ConfigServiceImpl implements ConfigService {
             return Result.buildNotExist(NOT_EXIST);
         }
 
-        cleanByGroupAndName(configInfoPO.getValueGroup(), configInfoPO.getValueName());
         return Result.build(1 == configDao.deleteById(configInfoPO.getId()));
     }
 
@@ -129,8 +125,6 @@ public class ConfigServiceImpl implements ConfigService {
             return Result.buildFrom(retAdd);
         }
 
-        cleanByGroupAndName(configInfoPO.getValueGroup(), configInfoPO.getValueName());
-
         configInfoPO.setOperator(user);
         boolean succ = (1 == configDao.update(CopyBeanUtil.copy(configInfoDTO, ConfigPO.class)));
         return Result.build(succ);
@@ -155,8 +149,6 @@ public class ConfigServiceImpl implements ConfigService {
         if (statusEnum == null) {
             return Result.buildParamIllegal("状态非法");
         }
-
-        cleanByGroupAndName(configInfoPO.getValueGroup(), configInfoPO.getValueName());
 
         configInfoPO.setOperator(user);
         configInfoPO.setStatus(status);
@@ -218,7 +210,7 @@ public class ConfigServiceImpl implements ConfigService {
     @Override
     public String stringSetting(String group, String name, String defaultValue) {
         try {
-            ConfigPO configInfoPO = getByGroupAndName(group, name);
+            ConfigPO configInfoPO = getByGroupAndNameFromDB(group, name);
             if (configInfoPO == null || StringUtils.isBlank(configInfoPO.getValue())) {
                 return defaultValue;
             }
@@ -240,7 +232,7 @@ public class ConfigServiceImpl implements ConfigService {
     @Override
     public Integer intSetting(String group, String name, Integer defaultValue) {
         try {
-            ConfigPO configInfoPO = getByGroupAndName(group, name);
+            ConfigPO configInfoPO = getByGroupAndNameFromDB(group, name);
             if (configInfoPO == null || StringUtils.isBlank(configInfoPO.getValue())) {
                 return defaultValue;
             }
@@ -262,7 +254,7 @@ public class ConfigServiceImpl implements ConfigService {
     @Override
     public Long longSetting(String group, String name, Long defaultValue) {
         try {
-            ConfigPO configInfoPO = getByGroupAndName(group, name);
+            ConfigPO configInfoPO = getByGroupAndNameFromDB(group, name);
             if (configInfoPO == null || StringUtils.isBlank(configInfoPO.getValue())) {
                 return defaultValue;
             }
@@ -284,7 +276,7 @@ public class ConfigServiceImpl implements ConfigService {
     @Override
     public Double doubleSetting(String group, String name, Double defaultValue) {
         try {
-            ConfigPO configInfoPO = getByGroupAndName(group, name);
+            ConfigPO configInfoPO = getByGroupAndNameFromDB(group, name);
             if (configInfoPO == null || StringUtils.isBlank(configInfoPO.getValue())) {
                 return defaultValue;
             }
@@ -305,7 +297,7 @@ public class ConfigServiceImpl implements ConfigService {
      */
     @Override
     public Boolean booleanSetting(String group, String name, Boolean defaultValue) {
-        ConfigPO configInfoPO = getByGroupAndName(group, name);
+        ConfigPO configInfoPO = getByGroupAndNameFromDB(group, name);
         if (configInfoPO == null || StringUtils.isBlank(configInfoPO.getValue())) {
             return defaultValue;
         }
@@ -323,7 +315,7 @@ public class ConfigServiceImpl implements ConfigService {
     @Override
     public <T> T objectSetting(String group, String name, T defaultValue, Class<T> clazz) {
         try {
-            ConfigPO configInfoPO = getByGroupAndName(group, name);
+            ConfigPO configInfoPO = getByGroupAndNameFromDB(group, name);
             if (configInfoPO == null || StringUtils.isBlank(configInfoPO.getValue())) {
                 return defaultValue;
             }
@@ -360,18 +352,6 @@ public class ConfigServiceImpl implements ConfigService {
 
         if (configInfoDTO.getMemo() == null) {
             configInfoDTO.setMemo("");
-        }
-    }
-
-    private void cleanByGroupAndName(String group, String valueName){
-        configCache.invalidate(group + "@" + valueName);
-    }
-
-    private ConfigPO getByGroupAndName(String group, String valueName) {
-        try {
-            return configCache.get(group + "@" + valueName, () -> getByGroupAndNameFromDB(group, valueName));
-        } catch (Exception e) {
-            return getByGroupAndNameFromDB(group, valueName);
         }
     }
 

@@ -26,7 +26,7 @@ import java.util.List;
  */
 @RestController
 @Api(value = "logi-security-user相关API接口", tags = "logi-security-用户相关API接口")
-@RequestMapping(Constants.API_V1 + "/logi-security/user")
+@RequestMapping(Constants.API_PREFIX_V1 + "/user")
 public class UserController {
 
     @Autowired

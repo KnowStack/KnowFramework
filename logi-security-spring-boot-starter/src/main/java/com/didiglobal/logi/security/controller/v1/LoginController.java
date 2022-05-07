@@ -19,7 +19,7 @@ import javax.servlet.http.HttpServletResponse;
  */
 @RestController
 @Api(value = "logi-security-account登录相关API接口", tags = "logi-security-登录相关API接口")
-@RequestMapping(Constants.API_V1_ACCOUNT_LOGIN)
+@RequestMapping(Constants.API_PREFIX_V1 + Constants.ACCOUNT_LOGIN)
 public class LoginController {
 
     @Autowired

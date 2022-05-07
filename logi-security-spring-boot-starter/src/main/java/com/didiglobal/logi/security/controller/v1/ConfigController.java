@@ -25,7 +25,7 @@ import java.util.List;
  */
 @RestController
 @Api(value = "logi-security-config相关API接口", tags = "logi-security-配置相关API接口")
-@RequestMapping(Constants.API_V1 + "/logi-security/config")
+@RequestMapping(Constants.API_PREFIX_V1 + "/config")
 public class ConfigController {
 
     @Autowired

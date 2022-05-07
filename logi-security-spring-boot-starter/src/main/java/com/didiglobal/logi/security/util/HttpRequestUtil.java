@@ -1,6 +1,8 @@
 package com.didiglobal.logi.security.util;
 
 import org.springframework.util.StringUtils;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -26,18 +28,11 @@ public class HttpRequestUtil {
         throw new IllegalStateException("Utility class");
     }
 
-    public static String getFromHeader(HttpServletRequest request, String key, String defaultValue) {
-        String value = request.getHeader(key);
-        return value == null ? defaultValue : value;
-    }
+    public static String getOperator(){
+        HttpServletRequest request =
+                ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
 
-    public static Integer getOperatorId(HttpServletRequest request) {
-        HttpSession session = request.getSession();
-        Integer id = (Integer) session.getAttribute(HttpRequestUtil.USER_ID );
-        if(id == null) {
-            return getOperatorIdFromHeader(request);
-        }
-        return id;
+        return getOperator(request);
     }
 
     public static String getOperator(HttpServletRequest request) {
@@ -55,6 +50,15 @@ public class HttpRequestUtil {
             return "";
         }
         return operator;
+    }
+
+    public static Integer getOperatorId(HttpServletRequest request) {
+        HttpSession session = request.getSession();
+        Integer id = (Integer) session.getAttribute(HttpRequestUtil.USER_ID );
+        if(id == null) {
+            return getOperatorIdFromHeader(request);
+        }
+        return id;
     }
 
     public static Integer getOperatorIdFromHeader(HttpServletRequest request) {

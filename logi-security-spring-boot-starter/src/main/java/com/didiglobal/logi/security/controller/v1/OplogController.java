@@ -20,7 +20,7 @@ import java.util.List;
  */
 @RestController
 @Api(value = "logi-security-oplog相关API接口", tags = "logi-security-操作日志相关API接口")
-@RequestMapping(Constants.API_V1 + "/logi-security/oplog")
+@RequestMapping(Constants.API_PREFIX_V1 + "/oplog")
 public class OplogController {
 
     @Autowired

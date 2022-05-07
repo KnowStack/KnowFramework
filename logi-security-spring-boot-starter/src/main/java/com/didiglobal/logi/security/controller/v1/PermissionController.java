@@ -18,7 +18,7 @@ import java.util.List;
  */
 @RestController
 @Api(value = "logi-security-permission相关API接口", tags = "logi-security-权限相关API接口")
-@RequestMapping(Constants.API_V1 + "/logi-security/permission")
+@RequestMapping(Constants.API_PREFIX_V1 + "/permission")
 public class PermissionController {
 
     @Autowired
