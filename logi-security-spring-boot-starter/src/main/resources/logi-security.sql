@@ -110,9 +110,7 @@ CREATE TABLE `logi_role`
     create_time  timestamp  default CURRENT_TIMESTAMP null comment '创建时间',
     update_time  timestamp  default CURRENT_TIMESTAMP null on update CURRENT_TIMESTAMP comment '更新时间',
     is_delete    tinyint(1) default 0                 not null comment '逻辑删除',
-    app_name     varchar(16)                          null comment '应用名称',
-    constraint logi_role_role_name_uindex
-    unique (role_name, app_name)
+    app_name     varchar(16)                          null comment '应用名称'
 ) ENGINE=InnoDB AUTO_INCREMENT=1592 DEFAULT CHARSET=utf8 comment '角色信息';
 
 DROP TABLE IF EXISTS `logi_role_permission`;
@@ -141,9 +139,7 @@ CREATE TABLE `logi_user`
     is_delete   tinyint(1)   default 0                 not null comment '逻辑删除',
     create_time timestamp    default CURRENT_TIMESTAMP null comment '注册时间',
     update_time timestamp    default CURRENT_TIMESTAMP null on update CURRENT_TIMESTAMP comment '更新时间',
-    app_name    varchar(16)                            null comment '应用名称',
-    constraint logi_user_username_uindex
-    unique (user_name, app_name)
+    app_name    varchar(16)                            null comment '应用名称'
 ) ENGINE=InnoDB AUTO_INCREMENT=1592 DEFAULT CHARSET=utf8 comment '用户信息';
 
 DROP TABLE IF EXISTS `logi_user_project`;
