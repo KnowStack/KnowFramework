@@ -74,7 +74,8 @@ CREATE TABLE `logi_job_log`
     `app_name`    VARCHAR(100) DEFAULT '' NOT NULL COMMENT '被调度的应用名称',
     `create_time` DATETIME     DEFAULT NOW() COMMENT '创建时间',
     `update_time` DATETIME     DEFAULT NOW() ON UPDATE NOW() COMMENT '更新时间',
-    PRIMARY KEY (`id`)
+    PRIMARY KEY (`id`),
+    KEY `index_job_code` (`job_code`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='job执行历史日志';
 
 drop table if exists `logi_worker`;
