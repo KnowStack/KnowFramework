@@ -76,9 +76,16 @@ public class RoleServiceImpl implements RoleService {
         roleVo.setPermissionTreeVO(permissionTreeVO);
         roleVo.setCreateTime(role.getCreateTime());
         roleVo.setUpdateTime(role.getUpdateTime());
+
         // 获取授予用户数
-        List<Integer> userIdList = userRoleService.getUserIdListByRoleId(roleId);
+        List<Integer>     userIdList      = userRoleService.getUserIdListByRoleId(roleId);
+        List<UserBriefVO> userBriefVOList = userService.getUserBriefListByUserIdList(userIdList);
+        List<String>      userNames       = CollectionUtils.isEmpty(userBriefVOList)
+                                            ? new ArrayList<>()
+                                            : userBriefVOList.stream().map(UserBriefVO::getUserName).collect(Collectors.toList());
+
         roleVo.setAuthedUserCnt(userIdList.size());
+        roleVo.setAuthedUsers(userNames);
         return roleVo;
     }
 
@@ -88,8 +95,17 @@ public class RoleServiceImpl implements RoleService {
         List<RoleVO> roleVOList = new ArrayList<>();
         for(Role role : pageInfo.getRecords()) {
             RoleVO roleVO = CopyBeanUtil.copy(role, RoleVO.class);
+
+            // 获取授予用户数
+            List<Integer>     userIdList      = userRoleService.getUserIdListByRoleId(role.getId());
+            List<UserBriefVO> userBriefVOList = userService.getUserBriefListByUserIdList(userIdList);
+            List<String>      userNames       = CollectionUtils.isEmpty(userBriefVOList)
+                    ? new ArrayList<>()
+                    : userBriefVOList.stream().map(UserBriefVO::getUserName).collect(Collectors.toList());
+
             // 获取该角色已分配给的用户数
-            roleVO.setAuthedUserCnt(userRoleService.getUserRoleCountByRoleId(role.getId()));
+            roleVO.setAuthedUserCnt(userIdList.size());
+            roleVO.setAuthedUsers(userNames);
             roleVO.setCreateTime(role.getCreateTime());
             roleVO.setUpdateTime(role.getUpdateTime());
             roleVOList.add(roleVO);

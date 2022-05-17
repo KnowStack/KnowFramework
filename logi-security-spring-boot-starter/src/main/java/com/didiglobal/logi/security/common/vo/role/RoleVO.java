@@ -7,6 +7,7 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * @author cjm
@@ -27,8 +28,11 @@ public class RoleVO {
     @ApiModelProperty(value = "角色描述", dataType = "String", required = false)
     private String description;
 
-    @ApiModelProperty(value = "授权用户数（拥有该角色的用户数）", dataType = "String", required = false)
+    @ApiModelProperty(value = "授权用户数（拥有该角色的用户数）", dataType = "Integer", required = false)
     private Integer authedUserCnt;
+
+    @ApiModelProperty(value = "授权用户列表）", dataType = "List", required = false)
+    private List<String> authedUsers;
 
     @ApiModelProperty(value = "最后修改者（用户账号）", dataType = "String", required = false)
     private String lastReviser;
