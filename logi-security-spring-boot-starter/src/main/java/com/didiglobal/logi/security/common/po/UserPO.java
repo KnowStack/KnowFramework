@@ -11,7 +11,7 @@ import lombok.EqualsAndHashCode;
  */
 @EqualsAndHashCode(callSuper = true)
 @Data
-@TableName(value = "logi_user")
+@TableName(value = "logi_security_user")
 public class UserPO extends BasePO {
 
     /**

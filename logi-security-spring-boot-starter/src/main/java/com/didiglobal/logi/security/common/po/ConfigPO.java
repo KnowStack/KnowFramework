@@ -13,7 +13,7 @@ import lombok.EqualsAndHashCode;
  */
 @EqualsAndHashCode(callSuper = true)
 @Data
-@TableName(value = "logi_config")
+@TableName(value = "logi_security_config")
 public class ConfigPO extends BasePO {
 
     /**

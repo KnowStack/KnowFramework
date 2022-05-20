@@ -1,6 +1,6 @@
 #-----------------------创建表-----------------------
-DROP TABLE IF EXISTS `logi_dept`;
-CREATE TABLE `logi_dept`
+DROP TABLE IF EXISTS `logi_security_dept`;
+CREATE TABLE `logi_security_dept`
 (
     id          int auto_increment  primary key,
     dept_name   varchar(10) not null comment '部门名',
@@ -14,8 +14,8 @@ CREATE TABLE `logi_dept`
     app_name    varchar(16) null comment '应用名称'
 ) ENGINE=InnoDB AUTO_INCREMENT=1592 DEFAULT CHARSET=utf8 comment '部门信息表';
 
-DROP TABLE IF EXISTS `logi_message`;
-CREATE TABLE `logi_message`
+DROP TABLE IF EXISTS `logi_security_message`;
+CREATE TABLE `logi_security_message`
 (
     id          int auto_increment primary key,
     title       varchar(60)                          not null comment '标题',
@@ -29,8 +29,8 @@ CREATE TABLE `logi_message`
     app_name    varchar(16)                          null comment '应用名称'
 ) ENGINE=InnoDB AUTO_INCREMENT=1592 DEFAULT CHARSET=utf8 comment '消息中心';
 
-DROP TABLE IF EXISTS `logi_oplog`;
-CREATE TABLE `logi_oplog`
+DROP TABLE IF EXISTS `logi_security_oplog`;
+CREATE TABLE `logi_security_oplog`
 (
     id                int auto_increment primary key,
     operator_ip       varchar(20)                          not null comment '操作者ip',
@@ -46,8 +46,8 @@ CREATE TABLE `logi_oplog`
     app_name          varchar(16)                          null comment '应用名称'
 ) ENGINE=InnoDB AUTO_INCREMENT=1592 DEFAULT CHARSET=utf8 comment '操作日志';
 
-DROP TABLE IF EXISTS `logi_oplog_extra`;
-CREATE TABLE `logi_oplog_extra`
+DROP TABLE IF EXISTS `logi_security_oplog_extra`;
+CREATE TABLE `logi_security_oplog_extra`
 (
     id          int auto_increment primary key,
     info        varchar(16) null comment '信息',
@@ -58,8 +58,8 @@ CREATE TABLE `logi_oplog_extra`
     app_name    varchar(16) null comment '应用名称'
 ) ENGINE=InnoDB AUTO_INCREMENT=1592 DEFAULT CHARSET=utf8 comment '操作日志信息（操作页面、操作类型、对象分类）';
 
-DROP TABLE IF EXISTS `logi_permission`;
-CREATE TABLE `logi_permission`
+DROP TABLE IF EXISTS `logi_security_permission`;
+CREATE TABLE `logi_security_permission`
 (
     id              int auto_increment primary key,
     permission_name varchar(40) not null comment '权限名字',
@@ -73,8 +73,8 @@ CREATE TABLE `logi_permission`
     app_name        varchar(16) null comment '应用名称'
 ) ENGINE=InnoDB AUTO_INCREMENT=1592 DEFAULT CHARSET=utf8 comment '权限表';
 
-DROP TABLE IF EXISTS `logi_project`;
-CREATE TABLE `logi_project`
+DROP TABLE IF EXISTS `logi_security_project`;
+CREATE TABLE `logi_security_project`
 (
     id           int auto_increment comment '项目id'     primary key,
     project_code varchar(128)                           not null comment '项目编号',
@@ -88,8 +88,8 @@ CREATE TABLE `logi_project`
     app_name     varchar(16)                            null comment '应用名称'
 ) ENGINE=InnoDB AUTO_INCREMENT=1592 DEFAULT CHARSET=utf8 comment '项目表';
 
-DROP TABLE IF EXISTS `logi_resource_type`;
-CREATE TABLE `logi_resource_type`
+DROP TABLE IF EXISTS `logi_security_resource_type`;
+CREATE TABLE `logi_security_resource_type`
 (
     id              int auto_increment primary key,
     type_name       varchar(16) null comment '资源类型名',
@@ -99,8 +99,8 @@ CREATE TABLE `logi_resource_type`
     app_name        varchar(16) null comment '应用名称'
 ) ENGINE=InnoDB AUTO_INCREMENT=1592 DEFAULT CHARSET=utf8 comment '资源类型表';
 
-DROP TABLE IF EXISTS `logi_role`;
-CREATE TABLE `logi_role`
+DROP TABLE IF EXISTS `logi_security_role`;
+CREATE TABLE `logi_security_role`
 (
     id           int auto_increment primary key,
     role_code    varchar(128)                         not null comment '角色编号',
@@ -113,8 +113,8 @@ CREATE TABLE `logi_role`
     app_name     varchar(16)                          null comment '应用名称'
 ) ENGINE=InnoDB AUTO_INCREMENT=1592 DEFAULT CHARSET=utf8 comment '角色信息';
 
-DROP TABLE IF EXISTS `logi_role_permission`;
-CREATE TABLE `logi_role_permission`
+DROP TABLE IF EXISTS `logi_security_role_permission`;
+CREATE TABLE `logi_security_role_permission`
 (
     id              int auto_increment primary key,
     role_id         int         not null comment '角色id',
@@ -125,8 +125,8 @@ CREATE TABLE `logi_role_permission`
     app_name        varchar(16) null comment '应用名称'
 ) ENGINE=InnoDB AUTO_INCREMENT=1592 DEFAULT CHARSET=utf8 comment '角色权限表（只保留叶子权限与角色关系）';
 
-DROP TABLE IF EXISTS `logi_user`;
-CREATE TABLE `logi_user`
+DROP TABLE IF EXISTS `logi_security_user`;
+CREATE TABLE `logi_security_user`
 (
     id          int auto_increment primary key,
     user_name   varchar(64)                            not null comment '用户账号',
@@ -142,8 +142,8 @@ CREATE TABLE `logi_user`
     app_name    varchar(16)                            null comment '应用名称'
 ) ENGINE=InnoDB AUTO_INCREMENT=1592 DEFAULT CHARSET=utf8 comment '用户信息';
 
-DROP TABLE IF EXISTS `logi_user_project`;
-CREATE TABLE `logi_user_project`
+DROP TABLE IF EXISTS `logi_security_user_project`;
+CREATE TABLE `logi_security_user_project`
 (
     id              int auto_increment primary key,
     user_id         int         not null comment '用户id',
@@ -154,8 +154,8 @@ CREATE TABLE `logi_user_project`
     app_name        varchar(16) null comment '应用名称'
 ) ENGINE=InnoDB AUTO_INCREMENT=1592 DEFAULT CHARSET=utf8 comment '用户项目关系表（项目负责人）';
 
-DROP TABLE IF EXISTS `logi_user_resource`;
-CREATE TABLE `logi_user_resource`
+DROP TABLE IF EXISTS `logi_security_user_resource`;
+CREATE TABLE `logi_security_user_resource`
 (
     id                  int auto_increment primary key,
     user_id             int         not null comment '用户id',
@@ -169,8 +169,8 @@ CREATE TABLE `logi_user_resource`
     app_name            varchar(16) null comment '应用名称'
 ) ENGINE=InnoDB AUTO_INCREMENT=1592 DEFAULT CHARSET=utf8 comment '用户和资源关系表';
 
-DROP TABLE IF EXISTS `logi_user_role`;
-CREATE TABLE `logi_user_role`
+DROP TABLE IF EXISTS `logi_security_user_role`;
+CREATE TABLE `logi_security_user_role`
 (
     id              int auto_increment primary key,
     user_id         int         not null comment '用户id',
@@ -184,8 +184,8 @@ CREATE TABLE `logi_user_role`
 -- ----------------------------
 -- Table structure for logi_config
 -- ----------------------------
-DROP TABLE IF EXISTS `logi_config`;
-CREATE TABLE `logi_config`
+DROP TABLE IF EXISTS `logi_security_config`;
+CREATE TABLE `logi_security_config`
 (
    `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT COMMENT '主键自增',
    `value_group` varchar(100) NOT NULL DEFAULT '' COMMENT '配置项组',
