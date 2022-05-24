@@ -34,7 +34,7 @@ public interface UserRoleDao {
      * @param userId 用户id
      * @param roleId 角色id
      */
-    void deleteByUserIdOrRoleId(Integer userId, Integer roleId);
+    int deleteByUserIdOrRoleId(Integer userId, Integer roleId);
 
     /**
      * 根据角色id获取授予用户数

@@ -45,6 +45,14 @@ public class UserProjectServiceImpl implements UserProjectService {
     }
 
     @Override
+    public void delUserProject(Integer projectId, List<Integer> userIdList) {
+        if(projectId == null || CollectionUtils.isEmpty(userIdList)) {
+            return;
+        }
+        userProjectDao.deleteUserProject(getUserProjectList(projectId, userIdList));
+    }
+
+    @Override
     public void updateUserProject(Integer projectId, List<Integer> userIdList) {
         // 先删除old的关联信息
         deleteUserProjectByProjectId(projectId);

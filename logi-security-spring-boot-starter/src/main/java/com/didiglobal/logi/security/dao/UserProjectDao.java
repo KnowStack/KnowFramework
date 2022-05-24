@@ -30,6 +30,13 @@ public interface UserProjectDao {
     void insertBatch(List<UserProject> userProjectList);
 
     /**
+     * 删除项目和用户关系
+     * @param userProjectList
+     * @return
+     */
+    int deleteUserProject(List<UserProject> userProjectList);
+
+    /**
      * 根据项目id删除用户与项目的关联信息
      * @param projectId 项目id
      */

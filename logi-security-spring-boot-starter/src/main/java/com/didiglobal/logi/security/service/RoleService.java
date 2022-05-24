@@ -50,6 +50,15 @@ public interface RoleService {
     void deleteRoleByRoleId(Integer id, HttpServletRequest request) throws LogiSecurityException;
 
     /**
+     * 删除角色
+     * @param roleId 角色id
+     * @param userId 用户id
+     * @param request 请求信息
+     * @throws LogiSecurityException 该角色已分配给用户，不能删除
+     */
+    void deleteUserFromRole(Integer roleId, Integer userId, HttpServletRequest request) throws LogiSecurityException;
+
+    /**
      * 更新角色信息
      * @param saveDTO 角色信息
      * @param request 请求信息

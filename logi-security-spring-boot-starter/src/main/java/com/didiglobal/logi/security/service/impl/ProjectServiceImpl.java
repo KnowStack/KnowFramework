@@ -182,6 +182,22 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
+    public void addProjectUser(Integer projectId, Integer userId, HttpServletRequest request) {
+        userProjectService.saveUserProject(projectId, new ArrayList<>(userId));
+
+        oplogService.saveOplog( new OplogDTO(HttpRequestUtil.getOperator(request),
+                OplogConstant.PM, "增加项目用户：" + userId, OplogConstant.PM_P, projectId.toString()));
+    }
+
+    @Override
+    public void delProjectUser(Integer projectId, Integer userId, HttpServletRequest request) {
+        userProjectService.delUserProject(projectId, new ArrayList<>(userId));
+
+        oplogService.saveOplog( new OplogDTO(HttpRequestUtil.getOperator(request),
+                OplogConstant.PM, "删除项目用户：" + userId, OplogConstant.PM_P, projectId.toString()));
+    }
+
+    @Override
     public List<ProjectBriefVO> getProjectBriefList() {
         List<ProjectBrief> projectBriefList = projectDao.selectAllBriefList();
         return CopyBeanUtil.copyList(projectBriefList, ProjectBriefVO.class);

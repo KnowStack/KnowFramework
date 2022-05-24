@@ -74,8 +74,8 @@ public class UserRoleServiceImpl implements UserRoleService {
     }
 
     @Override
-    public void deleteByUserIdOrRoleId(Integer userId, Integer roleId){
-        userRoleDao.deleteByUserIdOrRoleId(userId, roleId);
+    public int deleteByUserIdOrRoleId(Integer userId, Integer roleId){
+        return userRoleDao.deleteByUserIdOrRoleId(userId, roleId);
     }
 
     private List<UserRole> getUserRoleList(boolean isUserId, Integer id, List<Integer> idList) {

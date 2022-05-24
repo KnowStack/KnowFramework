@@ -59,6 +59,21 @@ public class UserProjectDaoImpl extends BaseDaoImpl<UserProjectPO> implements Us
     }
 
     @Override
+    public int deleteUserProject(List<UserProject> userProjectList){
+        int delNu = 0;
+        if(!CollectionUtils.isEmpty(userProjectList)) {
+            for(UserProject userProject : userProjectList){
+                QueryWrapper<UserProjectPO> queryWrapper = getQueryWrapperWithAppName();
+                queryWrapper.eq(FieldConstant.PROJECT_ID, userProject.getProjectId());
+                queryWrapper.eq(FieldConstant.USER_ID, userProject.getUserId());
+                delNu += userProjectMapper.delete(queryWrapper);
+            }
+        }
+
+        return delNu;
+    }
+
+    @Override
     public void deleteByProjectId(Integer projectId) {
         QueryWrapper<UserProjectPO> queryWrapper = getQueryWrapperWithAppName();
         queryWrapper.eq(FieldConstant.PROJECT_ID, projectId);

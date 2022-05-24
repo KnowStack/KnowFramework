@@ -157,6 +157,15 @@ public class RoleServiceImpl implements RoleService {
     }
 
     @Override
+    public void deleteUserFromRole(Integer roleId, Integer userId, HttpServletRequest request) throws LogiSecurityException {
+        Role role = roleDao.selectByRoleId(roleId);
+        if(role == null) {return;}
+
+        // 更新关联信息
+        userRoleService.deleteByUserIdOrRoleId(userId, roleId);
+    }
+
+    @Override
     @Transactional(rollbackFor = Exception.class)
     public void updateRole(RoleSaveDTO saveDTO, HttpServletRequest request) throws LogiSecurityException {
         if(roleDao.selectByRoleId(saveDTO.getId()) == null) {

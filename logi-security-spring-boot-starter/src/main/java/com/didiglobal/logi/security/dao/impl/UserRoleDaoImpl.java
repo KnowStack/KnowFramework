@@ -63,15 +63,15 @@ public class UserRoleDaoImpl extends BaseDaoImpl<UserRolePO> implements UserRole
     }
 
     @Override
-    public void deleteByUserIdOrRoleId(Integer userId, Integer roleId) {
+    public int deleteByUserIdOrRoleId(Integer userId, Integer roleId) {
         if(userId == null && roleId == null) {
-            return;
+            return 0 ;
         }
         QueryWrapper<UserRolePO> queryWrapper = getQueryWrapperWithAppName();
         queryWrapper
                 .eq(userId != null, FieldConstant.USER_ID, userId)
                 .eq(roleId != null, FieldConstant.ROLE_ID, roleId);
-        userRoleMapper.delete(queryWrapper);
+        return userRoleMapper.delete(queryWrapper);
     }
 
     @Override

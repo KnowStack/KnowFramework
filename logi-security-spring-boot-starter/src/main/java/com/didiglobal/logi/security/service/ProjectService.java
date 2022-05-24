@@ -79,6 +79,24 @@ public interface ProjectService {
     void changeProjectStatus(Integer projectId, HttpServletRequest request);
 
     /**
+     * 增加项目成员
+     *
+     * @param projectId 项目id
+     * @param userId 项目id
+     * @param request 请求信息
+     */
+    void addProjectUser(Integer projectId, Integer userId, HttpServletRequest request);
+
+    /**
+     * 删除项目成员
+     *
+     * @param projectId 项目id
+     * @param userId 项目id
+     * @param request 请求信息
+     */
+    void delProjectUser(Integer projectId, Integer userId, HttpServletRequest request);
+
+    /**
      * 获取所有项目简要信息
      *
      * @return 项目简要信息list

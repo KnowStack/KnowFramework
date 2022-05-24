@@ -65,8 +65,19 @@ public class RoleController {
     @ApiOperation(value = "删除角色前的检查", notes = "判断该角色是否已经分配给用户，如有分配给用户，则返回用户的信息list")
     @ApiImplicitParam(name = "id", value = "角色id", dataType = "int", required = true)
     public Result<RoleDeleteCheckVO> check(@PathVariable Integer id) {
-        RoleDeleteCheckVO deleteCheckVO = roleService.checkBeforeDelete(id);
-        return Result.success(deleteCheckVO);
+        return Result.success(roleService.checkBeforeDelete(id));
+    }
+
+    @DeleteMapping("/{id}/user/{userId}")
+    @ApiOperation(value = "从角色中删除该角色下的用户", notes = "从角色中删除该角色下的用户")
+    @ApiImplicitParam(name = "id", value = "角色id", dataType = "int", required = true)
+    public Result<String> deleteUser(@PathVariable Integer id, @PathVariable Integer userId, HttpServletRequest request) {
+        try {
+            roleService.deleteUserFromRole(id, userId, request);
+        } catch (LogiSecurityException e) {
+            return Result.fail(e);
+        }
+        return Result.success();
     }
 
     @DeleteMapping("/{id}")

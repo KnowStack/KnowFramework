@@ -14,13 +14,6 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping(Constants.API_PREFIX_V1 + "/common")
 public class CommonController {
 
-    @GetMapping("/pubKey")
-    @ApiOperation(value = "获取公共密钥", notes = "用于加密登陆信息的RSA公钥")
-    public Result<String> pubKey() {
-        // 获取公共密钥
-        return Result.success();
-    }
-
     @GetMapping("/heart")
     @ApiOperation(value = "http请求测试", notes = "http请求测试")
     public Result<String> health() {

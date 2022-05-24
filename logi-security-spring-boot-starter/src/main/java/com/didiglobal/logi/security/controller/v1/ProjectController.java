@@ -102,4 +102,28 @@ public class ProjectController {
         List<ProjectBriefVO> projectBriefVOList = projectService.getProjectBriefList();
         return Result.success(projectBriefVOList);
     }
+
+    @PutMapping("/{id}/user/{userId}")
+    @ApiOperation(value = "从角色中增加该项目下的用户", notes = "从角色中增加该项目下的用户")
+    @ApiImplicitParam(name = "id", value = "角色id", dataType = "int", required = true)
+    public Result<String> addProjectUser(@PathVariable Integer id, @PathVariable Integer userId, HttpServletRequest request) {
+        try {
+            projectService.addProjectUser(id, userId, request);
+        } catch (LogiSecurityException e) {
+            return Result.fail(e);
+        }
+        return Result.success();
+    }
+
+    @DeleteMapping("/{id}/user/{userId}")
+    @ApiOperation(value = "从项目中删除该项目下的用户", notes = "从项目中删除该项目下的用户")
+    @ApiImplicitParam(name = "id", value = "角色id", dataType = "int", required = true)
+    public Result<String> deleteProjectUser(@PathVariable Integer id, @PathVariable Integer userId, HttpServletRequest request) {
+        try {
+            projectService.delProjectUser(id, userId, request);
+        } catch (LogiSecurityException e) {
+            return Result.fail(e);
+        }
+        return Result.success();
+    }
 }

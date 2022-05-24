@@ -29,6 +29,13 @@ public interface UserProjectService {
     void saveUserProject(Integer projectId, List<Integer> userIdList);
 
     /**
+     * 删除用户与项目的相关信息
+     * @param projectId
+     * @param userIdList
+     */
+    void delUserProject(Integer projectId, List<Integer> userIdList);
+
+    /**
      * 更新用户与项目的关联信息，保存新关系之前会删除old的关联信息
      * @param projectId 项目id
      * @param userIdList 用户idList

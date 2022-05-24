@@ -47,5 +47,5 @@ public interface UserRoleService {
      * @param userId 用户id
      * @param roleId 角色id
      */
-    void deleteByUserIdOrRoleId(Integer userId, Integer roleId);
+    int deleteByUserIdOrRoleId(Integer userId, Integer roleId);
 }
