@@ -1,5 +1,7 @@
 package com.didiglobal.logi.security.service;
 
+import com.didiglobal.logi.security.common.enums.project.ProjectUserCode;
+
 import java.util.List;
 
 /**
@@ -10,9 +12,10 @@ public interface UserProjectService {
     /**
      * 根据项目id，获取用户idList
      * @param projectId 项目id
+     * @param  code
      * @return 用户idList
      */
-    List<Integer> getUserIdListByProjectId(Integer projectId);
+    List<Integer> getUserIdListByProjectId(Integer projectId, ProjectUserCode code);
 
     /**
      * 根据用户idList，获取项目idList
@@ -34,6 +37,20 @@ public interface UserProjectService {
      * @param userIdList
      */
     void delUserProject(Integer projectId, List<Integer> userIdList);
+
+    /**
+     * 保存用户与项目的关联信息
+     * @param projectId 项目id
+     * @param ownerIdList 用户idList
+     */
+    void saveOwnerProject(Integer projectId, List<Integer> ownerIdList);
+
+    /**
+     * 删除用户与项目的相关信息
+     * @param projectId
+     * @param ownerIdList
+     */
+    void delOwnerProject(Integer projectId, List<Integer> ownerIdList);
 
     /**
      * 更新用户与项目的关联信息，保存新关系之前会删除old的关联信息

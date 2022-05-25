@@ -36,4 +36,9 @@ public class PermissionDTO {
         this.permissionName = permissionName;
         this.description    = description;
     }
+
+    public PermissionDTO(String permissionName){
+        this.permissionName = permissionName;
+        this.description    = permissionName;
+    }
 }

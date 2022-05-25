@@ -14,7 +14,7 @@ public interface UserProjectDao {
      * @param projectId 项目id
      * @return 用户idList
      */
-    List<Integer> selectUserIdListByProjectId(Integer projectId);
+    List<Integer> selectUserIdListByProjectId(Integer projectId, int type);
 
     /**
      * 根据用户idList查找项目idList

@@ -9,7 +9,6 @@ import com.didiglobal.logi.security.common.vo.project.ProjectDeleteCheckVO;
 import com.didiglobal.logi.security.common.vo.project.ProjectVO;
 import com.didiglobal.logi.security.exception.LogiSecurityException;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 
@@ -22,11 +21,11 @@ public interface ProjectService {
      * 创建项目
      *
      * @param saveDTO 项目信息
-     * @param request 请求信息
+     * @param operator 请求信息
      * @throws LogiSecurityException 项目相关的错误信息
      * @return 项目信息
      */
-    ProjectVO createProject(ProjectSaveDTO saveDTO, HttpServletRequest request) throws LogiSecurityException;
+    ProjectVO createProject(ProjectSaveDTO saveDTO, String operator) throws LogiSecurityException;
 
     /**
      * 获取项目详情，通过项目id
@@ -57,44 +56,62 @@ public interface ProjectService {
      * 删除项目
      *
      * @param projectId 项目id
-     * @param request 请求信息
+     * @param operator 请求信息
      */
-    void deleteProjectByProjectId(Integer projectId, HttpServletRequest request);
+    void deleteProjectByProjectId(Integer projectId, String operator);
 
     /**
      * 更新项目信息
      *
      * @param saveDTO 项目信息
-     * @param request 请求信息
+     * @param operator 请求信息
      * @throws LogiSecurityException 项目相关的错误信息
      */
-    void updateProject(ProjectSaveDTO saveDTO, HttpServletRequest request) throws LogiSecurityException;
+    void updateProject(ProjectSaveDTO saveDTO, String operator) throws LogiSecurityException;
 
     /**
      * 更改项目运行状态，旧状态取反
      *
      * @param projectId 项目id
-     * @param request 请求信息
+     * @param operator 请求信息
      */
-    void changeProjectStatus(Integer projectId, HttpServletRequest request);
+    void changeProjectStatus(Integer projectId, String operator);
 
     /**
      * 增加项目成员
      *
      * @param projectId 项目id
      * @param userId 项目id
-     * @param request 请求信息
+     * @param operator 请求信息
      */
-    void addProjectUser(Integer projectId, Integer userId, HttpServletRequest request);
+    void addProjectUser(Integer projectId, Integer userId, String operator);
 
     /**
      * 删除项目成员
      *
      * @param projectId 项目id
      * @param userId 项目id
-     * @param request 请求信息
+     * @param operator 请求信息
      */
-    void delProjectUser(Integer projectId, Integer userId, HttpServletRequest request);
+    void delProjectUser(Integer projectId, Integer userId, String operator);
+
+    /**
+     * 增加项目负责人
+     *
+     * @param projectId 项目id
+     * @param ownerId 负责人id
+     * @param operator 请求信息
+     */
+    void addProjectOwner(Integer projectId, Integer ownerId, String operator);
+
+    /**
+     * 删除项目负责人
+     *
+     * @param projectId 项目id
+     * @param ownerId 负责人id
+     * @param operator 请求信息
+     */
+    void delProjectOwner(Integer projectId, Integer ownerId, String operator);
 
     /**
      * 获取所有项目简要信息

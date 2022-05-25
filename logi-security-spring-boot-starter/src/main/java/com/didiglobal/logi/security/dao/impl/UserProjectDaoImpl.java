@@ -25,12 +25,14 @@ public class UserProjectDaoImpl extends BaseDaoImpl<UserProjectPO> implements Us
     private UserProjectMapper userProjectMapper;
 
     @Override
-    public List<Integer> selectUserIdListByProjectId(Integer projectId) {
+    public List<Integer> selectUserIdListByProjectId(Integer projectId, int type) {
         if(projectId == null) {
             return new ArrayList<>();
         }
         QueryWrapper<UserProjectPO> queryWrapper = getQueryWrapperWithAppName();
-        queryWrapper.select( FieldConstant.USER_ID).eq(FieldConstant.PROJECT_ID, projectId);
+        queryWrapper.select(FieldConstant.USER_ID);
+        queryWrapper.eq(FieldConstant.PROJECT_ID, projectId);
+        queryWrapper.eq(FieldConstant.USER_TYPE, type);
         List<Object> userIdList = userProjectMapper.selectObjs(queryWrapper);
         return userIdList.stream().map(Integer.class::cast).collect(Collectors.toList());
     }
@@ -49,12 +51,14 @@ public class UserProjectDaoImpl extends BaseDaoImpl<UserProjectPO> implements Us
     @Override
     public void insertBatch(List<UserProject> userProjectList) {
         if(!CollectionUtils.isEmpty(userProjectList)) {
-            List<UserProjectPO> userProjectPOList = CopyBeanUtil.copyList(userProjectList, UserProjectPO.class);
-            for(UserProjectPO userProjectPO : userProjectPOList) {
-                userProjectPO.setAppName(logiSecurityProper.getAppName());
-                userProjectMapper.insert(userProjectPO);
+            for(UserProject project : userProjectList){
+                UserProjectPO userProjectPO = getByProjectAndUserId(project);
+                if(null == userProjectPO){
+                    addUserProject(project);
+                }else {
+                    updateUserProject(userProjectPO.getId(), project);
+                }
             }
-
         }
     }
 
@@ -78,5 +82,28 @@ public class UserProjectDaoImpl extends BaseDaoImpl<UserProjectPO> implements Us
         QueryWrapper<UserProjectPO> queryWrapper = getQueryWrapperWithAppName();
         queryWrapper.eq(FieldConstant.PROJECT_ID, projectId);
         userProjectMapper.delete(queryWrapper);
+    }
+
+    /**************************************************** private method ****************************************************/
+
+    private int addUserProject(UserProject userProject){
+        UserProjectPO userProjectPO = CopyBeanUtil.copy(userProject, UserProjectPO.class);
+        userProjectPO.setAppName(logiSecurityProper.getAppName());
+
+        return userProjectMapper.insert(userProjectPO);
+    }
+
+    private UserProjectPO getByProjectAndUserId(UserProject userProject){
+        QueryWrapper<UserProjectPO> queryWrapper = getQueryWrapperWithAppName();
+        queryWrapper.eq(FieldConstant.PROJECT_ID, userProject.getProjectId());
+        queryWrapper.eq(FieldConstant.USER_ID, userProject.getUserId());
+
+        return userProjectMapper.selectOne(queryWrapper);
+    }
+
+    private int updateUserProject(int id, UserProject userProject){
+        UserProjectPO userProjectPO = CopyBeanUtil.copy(userProject, UserProjectPO.class);
+        userProjectPO.setId(id);
+        return userProjectMapper.updateById(userProjectPO);
     }
 }

@@ -11,6 +11,8 @@ public class FieldConstant {
 
     public static final String USER_ID = "user_id";
 
+    public static final String USER_TYPE = "user_type";
+
     public static final String ROLE_ID = "role_id";
 
     public static final String PROJECT_ID = "project_id";

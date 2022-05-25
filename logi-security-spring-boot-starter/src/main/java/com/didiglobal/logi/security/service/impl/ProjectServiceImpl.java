@@ -12,6 +12,7 @@ import com.didiglobal.logi.security.common.entity.project.ProjectBrief;
 import com.didiglobal.logi.security.common.enums.ResultCode;
 import com.didiglobal.logi.security.common.dto.project.ProjectQueryDTO;
 import com.didiglobal.logi.security.common.dto.project.ProjectSaveDTO;
+import com.didiglobal.logi.security.common.enums.project.ProjectUserCode;
 import com.didiglobal.logi.security.common.vo.project.ProjectBriefVO;
 import com.didiglobal.logi.security.common.vo.project.ProjectDeleteCheckVO;
 import com.didiglobal.logi.security.common.vo.project.ProjectVO;
@@ -67,9 +68,14 @@ public class ProjectServiceImpl implements ProjectService {
             throw new LogiSecurityException(ResultCode.PROJECT_NOT_EXISTS);
         }
         ProjectVO projectVO = CopyBeanUtil.copy(project, ProjectVO.class);
-        // 获取负责人信息
-        List<Integer> userIdList = userProjectService.getUserIdListByProjectId(projectId);
+        // 获取成员信息
+        List<Integer> userIdList = userProjectService.getUserIdListByProjectId(projectId, ProjectUserCode.NORMAL);
         projectVO.setUserList(userService.getUserBriefListByUserIdList(userIdList));
+
+        // 获取负责人信息
+        List<Integer> ownerIdList = userProjectService.getUserIdListByProjectId(projectId, ProjectUserCode.OWNER);
+        projectVO.setOwnerList(userService.getUserBriefListByUserIdList(ownerIdList));
+
         // 获取部门信息
         projectVO.setDeptList(deptService.getDeptBriefListByChildId(projectVO.getDeptId()));
         projectVO.setCreateTime(project.getCreateTime());
@@ -87,7 +93,7 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public ProjectVO createProject(ProjectSaveDTO saveVo, HttpServletRequest request) throws LogiSecurityException {
+    public ProjectVO createProject(ProjectSaveDTO saveVo, String operator) throws LogiSecurityException {
         // 检查参数
         checkParam(saveVo, false);
         Project project = CopyBeanUtil.copy(saveVo, Project.class);
@@ -97,7 +103,7 @@ public class ProjectServiceImpl implements ProjectService {
         userProjectService.saveUserProject(project.getId(), saveVo.getUserIdList());
         // 保存操作日志
         oplogService.saveOplog(
-                new OplogDTO(HttpRequestUtil.getOperator(request), OplogConstant.PM, OplogConstant.PM_A, OplogConstant.PM_P, saveVo.getProjectName()));
+                new OplogDTO(operator, OplogConstant.PM, OplogConstant.PM_A, OplogConstant.PM_P, saveVo.getProjectName()));
         return CopyBeanUtil.copy(project, ProjectVO.class);
     }
 
@@ -119,9 +125,14 @@ public class ProjectServiceImpl implements ProjectService {
         Map<Integer, Dept> deptMap = deptService.getAllDeptMap();
         for(Project project : page.getRecords()) {
             ProjectVO projectVO = CopyBeanUtil.copy(project, ProjectVO.class);
-            // 获取负责人信息
-            List<Integer> userIdList = userProjectService.getUserIdListByProjectId(project.getId());
+            // 获取成员信息
+            List<Integer> userIdList = userProjectService.getUserIdListByProjectId(project.getId(), ProjectUserCode.NORMAL);
             projectVO.setUserList(userService.getUserBriefListByUserIdList(userIdList));
+
+            // 获取负责人信息
+            List<Integer> ownerIdList = userProjectService.getUserIdListByProjectId(project.getId(), ProjectUserCode.OWNER);
+            projectVO.setOwnerList(userService.getUserBriefListByUserIdList(ownerIdList));
+
             // 获取部门信息
             projectVO.setDeptList(deptService.getDeptBriefListFromDeptMapByChildId(deptMap, project.getDeptId()));
             projectVO.setCreateTime(project.getCreateTime());
@@ -132,7 +143,7 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void deleteProjectByProjectId(Integer projectId, HttpServletRequest request) {
+    public void deleteProjectByProjectId(Integer projectId, String operator) {
         Project project = projectDao.selectByProjectId(projectId);
         if(project == null) {
             return;
@@ -143,13 +154,13 @@ public class ProjectServiceImpl implements ProjectService {
         // 逻辑删除项目（自动）
         projectDao.deleteByProjectId(projectId);
         // 保存操作日志
-        oplogService.saveOplog( new OplogDTO(HttpRequestUtil.getOperator(request),
+        oplogService.saveOplog( new OplogDTO(operator,
                 OplogConstant.PM, OplogConstant.PM_D, OplogConstant.PM_P, project.getProjectName()));
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void updateProject(ProjectSaveDTO saveDTO, HttpServletRequest request) throws LogiSecurityException {
+    public void updateProject(ProjectSaveDTO saveDTO, String operator) throws LogiSecurityException {
         if(projectDao.selectByProjectId(saveDTO.getId()) == null) {
             throw new LogiSecurityException(ResultCode.PROJECT_NOT_EXISTS);
         }
@@ -161,13 +172,13 @@ public class ProjectServiceImpl implements ProjectService {
         // 更新项目负责人与项目联系
         userProjectService.updateUserProject(saveDTO.getId(), saveDTO.getUserIdList());
         // 保存操作日志
-        oplogService.saveOplog( new OplogDTO(HttpRequestUtil.getOperator(request),
+        oplogService.saveOplog( new OplogDTO(operator,
                 OplogConstant.PM, OplogConstant.PM_E, OplogConstant.PM_P, saveDTO.getProjectName()));
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void changeProjectStatus(Integer projectId, HttpServletRequest request) {
+    public void changeProjectStatus(Integer projectId, String operator) {
         Project project = projectDao.selectByProjectId(projectId);
         if (project == null) {
             return;
@@ -177,24 +188,40 @@ public class ProjectServiceImpl implements ProjectService {
         projectDao.update(project);
         // 保存操作日志
         String curRunningTag = Boolean.TRUE.equals(project.getRunning()) ? OplogConstant.PM_U : OplogConstant.PM_S;
-        oplogService.saveOplog( new OplogDTO(HttpRequestUtil.getOperator(request),
+        oplogService.saveOplog( new OplogDTO(operator,
                 OplogConstant.PM, curRunningTag, OplogConstant.PM_P, project.getProjectName()));
     }
 
     @Override
-    public void addProjectUser(Integer projectId, Integer userId, HttpServletRequest request) {
+    public void addProjectUser(Integer projectId, Integer userId, String operator) {
         userProjectService.saveUserProject(projectId, new ArrayList<>(userId));
 
-        oplogService.saveOplog( new OplogDTO(HttpRequestUtil.getOperator(request),
+        oplogService.saveOplog( new OplogDTO(operator,
                 OplogConstant.PM, "增加项目用户：" + userId, OplogConstant.PM_P, projectId.toString()));
     }
 
     @Override
-    public void delProjectUser(Integer projectId, Integer userId, HttpServletRequest request) {
+    public void delProjectUser(Integer projectId, Integer userId, String operator) {
         userProjectService.delUserProject(projectId, new ArrayList<>(userId));
 
-        oplogService.saveOplog( new OplogDTO(HttpRequestUtil.getOperator(request),
+        oplogService.saveOplog( new OplogDTO(operator,
                 OplogConstant.PM, "删除项目用户：" + userId, OplogConstant.PM_P, projectId.toString()));
+    }
+
+    @Override
+    public void addProjectOwner(Integer projectId, Integer ownerId, String operator) {
+        userProjectService.saveUserProject(projectId, new ArrayList<>(ownerId));
+
+        oplogService.saveOplog( new OplogDTO(operator,
+                OplogConstant.PM, "增加项目负责人：" + ownerId, OplogConstant.PM_P, projectId.toString()));
+    }
+
+    @Override
+    public void delProjectOwner(Integer projectId, Integer ownerId, String operator) {
+        userProjectService.delUserProject(projectId, new ArrayList<>(ownerId));
+
+        oplogService.saveOplog( new OplogDTO(operator,
+                OplogConstant.PM, "删除项目负责人：" + ownerId, OplogConstant.PM_P, projectId.toString()));
     }
 
     @Override

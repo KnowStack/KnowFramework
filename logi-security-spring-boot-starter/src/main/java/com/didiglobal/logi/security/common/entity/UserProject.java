@@ -16,6 +16,11 @@ public class UserProject {
     private Integer userId;
 
     /**
+     * 用户类型：0：普通项目用户；1：项目owner
+     */
+    private Integer userType;
+
+    /**
      * 项目id
      */
     private Integer projectId;

@@ -25,8 +25,14 @@ public class ProjectSaveDTO {
     /**
      * 项目负责人
      */
-    @ApiModelProperty(value = "项目负责人idList", dataType = "List<Integer>", required = true)
+    @ApiModelProperty(value = "项目成员idList", dataType = "List<Integer>", required = true)
     private List<Integer> userIdList;
+
+    /**
+     * 项目负责人
+     */
+    @ApiModelProperty(value = "项目责任人idList", dataType = "List<Integer>", required = true)
+    private List<Integer> ownerIdList;
 
     /**
      * 描述

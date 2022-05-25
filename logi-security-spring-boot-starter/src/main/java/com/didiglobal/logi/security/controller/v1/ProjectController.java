@@ -11,6 +11,7 @@ import com.didiglobal.logi.security.common.vo.project.ProjectDeleteCheckVO;
 import com.didiglobal.logi.security.common.vo.project.ProjectVO;
 import com.didiglobal.logi.security.exception.LogiSecurityException;
 import com.didiglobal.logi.security.service.ProjectService;
+import com.didiglobal.logi.security.util.HttpRequestUtil;
 import io.swagger.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -45,7 +46,7 @@ public class ProjectController {
     @ApiOperation(value = "更改项目运行状态", notes = "调用该接口则项目运行状态被反转")
     @ApiImplicitParam(name = "id", value = "项目id", dataType = "int", required = true)
     public Result<String> switched(@PathVariable Integer id, HttpServletRequest request) {
-        projectService.changeProjectStatus(id, request);
+        projectService.changeProjectStatus(id, HttpRequestUtil.getOperator(request));
         return Result.success();
     }
 
@@ -53,7 +54,7 @@ public class ProjectController {
     @ApiOperation(value = "更新项目", notes = "根据项目id更新项目信息")
     public Result<String> update(@RequestBody ProjectSaveDTO saveDTO, HttpServletRequest request) {
         try {
-            projectService.updateProject(saveDTO, request);
+            projectService.updateProject(saveDTO, HttpRequestUtil.getOperator(request));
         } catch (LogiSecurityException e) {
             e.printStackTrace();
             return Result.fail(e);
@@ -65,7 +66,7 @@ public class ProjectController {
     @ApiOperation(value = "创建项目", notes = "创建项目")
     public Result<ProjectVO> create(@RequestBody ProjectSaveDTO saveDTO, HttpServletRequest request) {
         try {
-            ProjectVO projectVO = projectService.createProject(saveDTO, request);
+            ProjectVO projectVO = projectService.createProject(saveDTO, HttpRequestUtil.getOperator(request));
             return Result.success(projectVO);
         } catch (LogiSecurityException e) {
             e.printStackTrace();
@@ -85,7 +86,7 @@ public class ProjectController {
     @ApiOperation(value = "删除项目", notes = "根据项目id删除项目")
     @ApiImplicitParam(name = "id", value = "项目id", dataType = "int", required = true)
     public Result<String> delete(@PathVariable Integer id, HttpServletRequest request) {
-        projectService.deleteProjectByProjectId(id, request);
+        projectService.deleteProjectByProjectId(id, HttpRequestUtil.getOperator(request));
         return Result.success();
     }
 
@@ -103,12 +104,24 @@ public class ProjectController {
         return Result.success(projectBriefVOList);
     }
 
+    @PutMapping("/{id}/owner/{ownerId}")
+    @ApiOperation(value = "从角色中增加该项目下的负责人", notes = "从角色中增加该项目下的用户")
+    @ApiImplicitParam(name = "id", value = "角色id", dataType = "int", required = true)
+    public Result<String> addProjectOwner(@PathVariable Integer id, @PathVariable Integer ownerId, HttpServletRequest request) {
+        try {
+            projectService.addProjectOwner(id, ownerId, HttpRequestUtil.getOperator(request));
+        } catch (LogiSecurityException e) {
+            return Result.fail(e);
+        }
+        return Result.success();
+    }
+
     @PutMapping("/{id}/user/{userId}")
     @ApiOperation(value = "从角色中增加该项目下的用户", notes = "从角色中增加该项目下的用户")
     @ApiImplicitParam(name = "id", value = "角色id", dataType = "int", required = true)
     public Result<String> addProjectUser(@PathVariable Integer id, @PathVariable Integer userId, HttpServletRequest request) {
         try {
-            projectService.addProjectUser(id, userId, request);
+            projectService.addProjectUser(id, userId, HttpRequestUtil.getOperator(request));
         } catch (LogiSecurityException e) {
             return Result.fail(e);
         }
@@ -120,7 +133,7 @@ public class ProjectController {
     @ApiImplicitParam(name = "id", value = "角色id", dataType = "int", required = true)
     public Result<String> deleteProjectUser(@PathVariable Integer id, @PathVariable Integer userId, HttpServletRequest request) {
         try {
-            projectService.delProjectUser(id, userId, request);
+            projectService.delProjectUser(id, userId, HttpRequestUtil.getOperator(request));
         } catch (LogiSecurityException e) {
             return Result.fail(e);
         }

@@ -29,10 +29,16 @@ public class ProjectVO {
     private String projectName;
 
     /**
+     * 项目成员
+     */
+    @ApiModelProperty(value = "项目成员", dataType = "List<UserBriefVO>", required = false)
+    private List<UserBriefVO> userList;
+
+    /**
      * 项目负责人
      */
     @ApiModelProperty(value = "项目负责人", dataType = "List<UserBriefVO>", required = false)
-    private List<UserBriefVO> userList;
+    private List<UserBriefVO> ownerList;
 
     /**
      * 描述

@@ -1,6 +1,7 @@
 package com.didiglobal.logi.security.service.impl;
 
 import com.didiglobal.logi.security.common.entity.UserProject;
+import com.didiglobal.logi.security.common.enums.project.ProjectUserCode;
 import com.didiglobal.logi.security.dao.UserProjectDao;
 import com.didiglobal.logi.security.service.UserProjectService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,16 +17,19 @@ import java.util.List;
 @Service("logiSecurityUserProjectServiceImpl")
 public class UserProjectServiceImpl implements UserProjectService {
 
+    private final static int NORMAL = 0;
+    private final static int OWNER  = 1;
+
     @Autowired
     private UserProjectDao userProjectDao;
 
     @Override
-    public List<Integer> getUserIdListByProjectId(Integer projectId) {
+    public List<Integer> getUserIdListByProjectId(Integer projectId, ProjectUserCode code) {
         if(projectId == null) {
             return new ArrayList<>();
         }
         // 根据项目id查负责人用户idList
-        return userProjectDao.selectUserIdListByProjectId(projectId);
+        return userProjectDao.selectUserIdListByProjectId(projectId, code.getType());
     }
 
     @Override
@@ -41,7 +45,7 @@ public class UserProjectServiceImpl implements UserProjectService {
         if(projectId == null || CollectionUtils.isEmpty(userIdList)) {
             return;
         }
-        userProjectDao.insertBatch(getUserProjectList(projectId, userIdList));
+        userProjectDao.insertBatch(getUserProjectList(projectId, userIdList, NORMAL));
     }
 
     @Override
@@ -49,7 +53,23 @@ public class UserProjectServiceImpl implements UserProjectService {
         if(projectId == null || CollectionUtils.isEmpty(userIdList)) {
             return;
         }
-        userProjectDao.deleteUserProject(getUserProjectList(projectId, userIdList));
+        userProjectDao.deleteUserProject(getUserProjectList(projectId, userIdList, NORMAL));
+    }
+
+    @Override
+    public void saveOwnerProject(Integer projectId, List<Integer> ownerIdList) {
+        if(projectId == null || CollectionUtils.isEmpty(ownerIdList)) {
+            return;
+        }
+        userProjectDao.insertBatch(getUserProjectList(projectId, ownerIdList, OWNER));
+    }
+
+    @Override
+    public void delOwnerProject(Integer projectId, List<Integer> ownerIdList) {
+        if(projectId == null || CollectionUtils.isEmpty(ownerIdList)) {
+            return;
+        }
+        userProjectDao.deleteUserProject(getUserProjectList(projectId, ownerIdList, OWNER));
     }
 
     @Override
@@ -74,12 +94,13 @@ public class UserProjectServiceImpl implements UserProjectService {
      * @param userIdList 用户idList
      * @return List<RolePermissionPO>
      */
-    private List<UserProject> getUserProjectList(Integer projectId, List<Integer> userIdList) {
+    private List<UserProject> getUserProjectList(Integer projectId, List<Integer> userIdList, int userType) {
         List<UserProject> userProjectList = new ArrayList<>();
         for(Integer userId : userIdList) {
             UserProject userProject = new UserProject();
             userProject.setProjectId(projectId);
             userProject.setUserId(userId);
+            userProject.setUserType(userType);
             userProjectList.add(userProject);
         }
         return userProjectList;
