@@ -42,6 +42,13 @@ public class ProjectController {
         }
     }
 
+    @GetMapping("/{id}/exist")
+    @ApiOperation(value = "校验项目是否存在", notes = "校验项目是否存在")
+    @ApiImplicitParam(name = "id", value = "项目id", dataType = "int", required = true)
+    public Result<Boolean> checkExist(@PathVariable Integer id) {
+        return Result.buildSucc(projectService.checkProjectExist(id));
+    }
+
     @PutMapping("/switch/{id}")
     @ApiOperation(value = "更改项目运行状态", notes = "调用该接口则项目运行状态被反转")
     @ApiImplicitParam(name = "id", value = "项目id", dataType = "int", required = true)
@@ -110,6 +117,18 @@ public class ProjectController {
     public Result<String> addProjectOwner(@PathVariable Integer id, @PathVariable Integer ownerId, HttpServletRequest request) {
         try {
             projectService.addProjectOwner(id, ownerId, HttpRequestUtil.getOperator(request));
+        } catch (LogiSecurityException e) {
+            return Result.fail(e);
+        }
+        return Result.success();
+    }
+
+    @DeleteMapping("/{id}/owner/{ownerId}")
+    @ApiOperation(value = "从项目中删除该项目下的负责人", notes = "从项目中删除该项目下的负责人")
+    @ApiImplicitParam(name = "id", value = "角色id", dataType = "int", required = true)
+    public Result<String> deleteProjectOwner(@PathVariable Integer id, @PathVariable Integer ownerId, HttpServletRequest request) {
+        try {
+            projectService.delProjectOwner(id, ownerId, HttpRequestUtil.getOperator(request));
         } catch (LogiSecurityException e) {
             return Result.fail(e);
         }

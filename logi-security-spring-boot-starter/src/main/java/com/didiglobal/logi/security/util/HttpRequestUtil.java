@@ -18,7 +18,7 @@ public class HttpRequestUtil {
 
     public static final String USER     = "X-SSO-USER";
 
-    public static final String APP_ID   = "X-LOGI-SECURITY-APP-ID";
+    public static final String PROJECT_ID = "X-LOGI-SECURITY-PROJECT-ID";
 
     public static final Integer REDIRECT_CODE                     = 401;
 
@@ -67,8 +67,8 @@ public class HttpRequestUtil {
         return id;
     }
 
-    public static Integer getAppId(HttpServletRequest request, int defaultAppid) {
-        String appidStr = request.getHeader( APP_ID );
+    public static Integer getProjectId(HttpServletRequest request, int defaultAppid) {
+        String appidStr = request.getHeader( PROJECT_ID );
 
         if (StringUtils.isEmpty(appidStr)) {
             return defaultAppid;
@@ -77,8 +77,8 @@ public class HttpRequestUtil {
         return Integer.valueOf(appidStr);
     }
 
-    public static Integer getAppId(HttpServletRequest request) {
-        String appidStr = request.getHeader( APP_ID );
+    public static Integer getProjectId(HttpServletRequest request) {
+        String appidStr = request.getHeader( PROJECT_ID );
 
         if (StringUtils.isEmpty(appidStr)) {
             return null;

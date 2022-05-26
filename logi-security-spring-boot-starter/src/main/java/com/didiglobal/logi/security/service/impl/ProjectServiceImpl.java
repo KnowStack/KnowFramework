@@ -255,6 +255,11 @@ public class ProjectServiceImpl implements ProjectService {
         return new PagingData<>(list, pageInfo);
     }
 
+    @Override
+    public boolean checkProjectExist(Integer projectId) {
+        return null != projectDao.selectByProjectId(projectId);
+    }
+
     /**
      * 校验参数
      * @param saveVo 项目参数
