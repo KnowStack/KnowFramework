@@ -68,6 +68,7 @@ public enum ResultCode implements CodeMsg {
     PROJECT_DES_CANNOT_BE_BLANK(5006, "项目描述不可为空"),
     PROJECT_DEPT_CANNOT_BE_NULL(5007, "项目使用部门不可为空"),
     PROJECT_CHARGE_USER_CANNOT_BE_NULL(5008, "项目负责人不可为空"),
+    PROJECT_DEL_RESOURCE_NOT_NULL(5009, "项目存在所属资源，不能删除该项目"),
 
     /* 操作日志错误 */
     OPLOG_NOT_EXIST(6001, "操作日志不存在"),

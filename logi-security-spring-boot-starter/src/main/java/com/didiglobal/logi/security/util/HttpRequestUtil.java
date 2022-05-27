@@ -28,6 +28,12 @@ public class HttpRequestUtil {
         throw new IllegalStateException("Utility class");
     }
 
+    public static String getHeaderValue(String headerKey){
+        HttpServletRequest request =
+                ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
+        return request.getHeader(headerKey);
+    }
+
     public static String getOperator(){
         HttpServletRequest request =
                 ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
@@ -68,22 +74,22 @@ public class HttpRequestUtil {
     }
 
     public static Integer getProjectId(HttpServletRequest request, int defaultAppid) {
-        String appidStr = request.getHeader( PROJECT_ID );
+        String projectIdStr = request.getHeader( PROJECT_ID );
 
-        if (StringUtils.isEmpty(appidStr)) {
+        if (StringUtils.isEmpty(projectIdStr)) {
             return defaultAppid;
         }
 
-        return Integer.valueOf(appidStr);
+        return Integer.valueOf(projectIdStr);
     }
 
     public static Integer getProjectId(HttpServletRequest request) {
-        String appidStr = request.getHeader( PROJECT_ID );
+        String projectIdStr = request.getHeader( PROJECT_ID );
 
-        if (StringUtils.isEmpty(appidStr)) {
+        if (StringUtils.isEmpty(projectIdStr)) {
             return null;
         }
 
-        return Integer.valueOf(appidStr);
+        return Integer.valueOf(projectIdStr);
     }
 }

@@ -146,9 +146,14 @@ public class ProjectServiceImpl implements ProjectService {
     public void deleteProjectByProjectId(Integer projectId, String operator) {
         Project project = projectDao.selectByProjectId(projectId);
         if(project == null) {
-            return;
+            throw new LogiSecurityException(ResultCode.PROJECT_NOT_EXISTS);
         }
-        // 删除前要判断一下有没有服务引用了这个项目，有没有具体资源引用了这个项目
+
+        List<String> resources = listResourceOfProject(projectId);
+        if(!CollectionUtils.isEmpty(resources)){
+            throw new LogiSecurityException(ResultCode.PROJECT_DEL_RESOURCE_NOT_NULL);
+        }
+
         // 删除项目与负责人的联系
         userProjectService.deleteUserProjectByProjectId(projectId);
         // 逻辑删除项目（自动）
@@ -232,20 +237,7 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Override
     public ProjectDeleteCheckVO checkBeforeDelete(Integer projectId) {
-        ProjectDeleteCheckVO projectDeleteCheckVO = new ProjectDeleteCheckVO(projectId);
-        if(projectDao.selectByProjectId(projectId) == null) {
-            return projectDeleteCheckVO;
-        }
-        // 获取与该项目相关联的服务
-        // 获取与该项目相关联的具体资源
-        ResourceExtend resourceExtend = resourceExtendBeanTool.getResourceExtendImpl();
-        List<ResourceDTO> resourceDTOList = resourceExtend.getResourceList(projectId, null);
-        if(!CollectionUtils.isEmpty(resourceDTOList)) {
-            List<String> list = resourceDTOList
-                    .stream().map(ResourceDTO::getResourceName).collect(Collectors.toList());
-            projectDeleteCheckVO.setResourceNameList(list);
-        }
-        return projectDeleteCheckVO;
+        return new ProjectDeleteCheckVO(projectId, listResourceOfProject(projectId));
     }
 
     @Override
@@ -285,5 +277,21 @@ public class ProjectServiceImpl implements ProjectService {
             // 项目名不可重复
             throw new LogiSecurityException(ResultCode.PROJECT_NAME_ALREADY_EXISTS);
         }
+    }
+
+    private List<String> listResourceOfProject(Integer projectId){
+        List<String> resources = new ArrayList<>();
+
+        Project project = projectDao.selectByProjectId(projectId);
+        if(null == project){return resources;}
+
+        ResourceExtend resourceExtend = resourceExtendBeanTool.getResourceExtendImpl();
+        if(null == resourceExtend){return resources;}
+
+        List<ResourceDTO> resourceDTOList = resourceExtend.getResourceList(projectId, null);
+        if(CollectionUtils.isEmpty(resourceDTOList)){return resources;}
+
+        return resourceDTOList
+                .stream().map(ResourceDTO::getResourceName).collect(Collectors.toList());
     }
 }
