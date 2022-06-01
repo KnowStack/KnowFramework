@@ -32,6 +32,13 @@ public class UserController {
     @Autowired
     private UserService userService;
 
+    @GetMapping("/{type}/{value}/check")
+    @ApiOperation(value = "获取用户详情", notes = "根据用户id获取用户详情")
+    @ApiImplicitParam(name = "type", value = "用户id", dataType = "int", required = true)
+    public Result<Void> check(@PathVariable Integer type, @PathVariable String value) {
+        return userService.check(type, value);
+    }
+
     @GetMapping("/{id}")
     @ApiOperation(value = "获取用户详情", notes = "根据用户id获取用户详情")
     @ApiImplicitParam(name = "id", value = "用户id", dataType = "int", required = true)

@@ -11,12 +11,21 @@ import com.didiglobal.logi.security.common.dto.user.UserQueryDTO;
 import com.didiglobal.logi.security.common.vo.user.UserBriefVO;
 import com.didiglobal.logi.security.common.vo.user.UserVO;
 import com.didiglobal.logi.security.exception.LogiSecurityException;
+import org.springframework.web.bind.annotation.PathVariable;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
 public interface UserService {
+
+    /**
+     * 用户注册信息校验
+     * @param type
+     * @param value
+     * @return
+     */
+    Result<Void> check(Integer type, String value);
 
     /**
      * 分页获取用户信息

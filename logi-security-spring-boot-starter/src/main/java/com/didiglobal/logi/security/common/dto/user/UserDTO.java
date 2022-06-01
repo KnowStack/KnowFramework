@@ -21,6 +21,12 @@ public class UserDTO {
     @ApiModelProperty(value = "用户真实姓名", dataType = "Integer", required = false)
     private String realName;
 
+    @ApiModelProperty(value = "电话", dataType = "String", required = false)
+    private String phone;
+
+    @ApiModelProperty(value = "邮箱", dataType = "String", required = false)
+    private String email;
+
     @ApiModelProperty(value = "用户角色id", dataType = "Integer", required = false)
     private List<Integer> roleIds;
 }

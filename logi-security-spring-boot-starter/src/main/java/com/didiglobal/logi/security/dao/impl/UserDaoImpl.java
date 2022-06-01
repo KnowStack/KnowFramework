@@ -89,6 +89,20 @@ public class UserDaoImpl extends BaseDaoImpl<UserPO> implements UserDao {
     }
 
     @Override
+    public User selectByUserMail(String userName) {
+        QueryWrapper<UserPO> queryWrapper = getQueryWrapperWithAppName();
+        queryWrapper.eq(FieldConstant.EMAIL, userName);
+        return CopyBeanUtil.copy(decodePW(userMapper.selectOne(queryWrapper)), User.class);
+    }
+
+    @Override
+    public User selectByUserPhone(String userPhone) {
+        QueryWrapper<UserPO> queryWrapper = getQueryWrapperWithAppName();
+        queryWrapper.eq(FieldConstant.PHONE, userPhone);
+        return CopyBeanUtil.copy(decodePW(userMapper.selectOne(queryWrapper)), User.class);
+    }
+
+    @Override
     public boolean deleteByUserId(Integer userId) {
         if(userId == null) {return false;}
 

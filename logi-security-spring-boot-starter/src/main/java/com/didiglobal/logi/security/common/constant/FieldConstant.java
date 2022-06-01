@@ -27,6 +27,10 @@ public class FieldConstant {
 
     public static final String USER_NAME = "user_name";
 
+    public static final String PHONE = "phone";
+
+    public static final String EMAIL = "email";
+
     public static final String REAL_NAME = "real_name";
 
     public static final String CREATE_TIME = "create_time";

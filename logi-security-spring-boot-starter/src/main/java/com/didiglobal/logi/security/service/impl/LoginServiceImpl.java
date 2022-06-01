@@ -8,6 +8,7 @@ import com.didiglobal.logi.security.common.vo.user.UserBriefVO;
 import com.didiglobal.logi.security.exception.LogiSecurityException;
 import com.didiglobal.logi.security.service.LoginService;
 import com.didiglobal.logi.security.service.UserService;
+import com.didiglobal.logi.security.util.AESUtils;
 import com.didiglobal.logi.security.util.CopyBeanUtil;
 import com.didiglobal.logi.security.util.HttpRequestUtil;
 import org.slf4j.Logger;
@@ -41,6 +42,9 @@ public class LoginServiceImpl implements LoginService {
         if(user == null) {
             throw new LogiSecurityException(ResultCode.USER_NOT_EXISTS);
         }
+
+        String decodePasswd = AESUtils.decrypt(loginDTO.getPw());
+        loginDTO.setPw(decodePasswd);
 
         if(!user.getPw().equals(loginDTO.getPw())) {
             // 密码错误

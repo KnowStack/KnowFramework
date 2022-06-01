@@ -42,6 +42,20 @@ public interface UserDao {
     User selectByUserId(Integer userId);
 
     /**
+     * 根据用户 mail 获取用户信息
+     * @param userMail 用户名
+     * @return 用户信息
+     */
+    User selectByUserMail(String userMail);
+
+    /**
+     * 根据用户 phone 获取用户信息
+     * @param userPhone
+     * @return
+     */
+    User selectByUserPhone(String userPhone);
+
+    /**
      * 根据用户id删除用户
      * @param userId 用户id
      * @return 用户信息

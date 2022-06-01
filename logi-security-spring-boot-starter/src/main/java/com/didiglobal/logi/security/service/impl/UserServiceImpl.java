@@ -10,6 +10,7 @@ import com.didiglobal.logi.security.common.dto.user.UserQueryDTO;
 import com.didiglobal.logi.security.common.entity.user.User;
 import com.didiglobal.logi.security.common.entity.user.UserBrief;
 import com.didiglobal.logi.security.common.enums.ResultCode;
+import com.didiglobal.logi.security.common.enums.user.UserCheckType;
 import com.didiglobal.logi.security.common.po.UserPO;
 import com.didiglobal.logi.security.common.vo.role.AssignInfoVO;
 import com.didiglobal.logi.security.common.vo.role.RoleBriefVO;
@@ -25,6 +26,7 @@ import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
 import java.util.*;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import static com.didiglobal.logi.security.common.enums.ResultCode.*;
@@ -34,6 +36,10 @@ import static com.didiglobal.logi.security.common.enums.ResultCode.*;
  */
 @Service("logiSecurityUserServiceImpl")
 public class UserServiceImpl implements UserService {
+
+    private static final Pattern P_USER_NAME    = Pattern.compile("^[0-9a-zA-Z_]{5,50}$");
+    private static final Pattern P_USER_PHONE   = Pattern.compile("^(13[0-9]|14[01456879]|15[0-35-9]|16[2567]|17[0-8]|18[0-9]|19[0-35-9])\\d{8}$");
+    private static final Pattern P_USER_MAIL    = Pattern.compile("^\\w+([-+.]\\w+)*@\\w+([-.]\\w+)*\\.\\w+([-.]\\w+)*$");
 
     @Autowired
     private UserDao userDao;
@@ -53,8 +59,18 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private UserRoleService userRoleService;
 
-    @Autowired
-    private OplogService oplogService;
+    @Override
+    public Result<Void> check(Integer type, String value) {
+        if(UserCheckType.USER_NAME.getCode() == type){
+            return userNameCheck(value);
+        }else if(UserCheckType.USER_PHONE.getCode() == type){
+            return userPhoneCheck(value);
+        }else if(UserCheckType.USER_MAIL.getCode() == type){
+            return userMailCheck(value);
+        }
+
+        return Result.fail("校验类型参数不正确");
+    }
 
     @Override
     public PagingData<UserVO> getUserPage(UserQueryDTO queryDTO) {
@@ -264,5 +280,41 @@ public class UserServiceImpl implements UserService {
     private void privacyProcessing(UserVO userVo) {
         String phone = userVo.getPhone();
         userVo.setPhone(phone.replaceAll("(\\d{3})\\d{4}(\\d{4})","$1****$2"));
+    }
+
+    private Result<Void> userNameCheck(String userName){
+        if(!P_USER_NAME.matcher(userName).matches()){
+            return Result.fail(USER_NAME_FORMAT_ERROR);
+        }
+
+        if(null != userDao.selectByUsername(userName)){
+            return Result.fail(USER_NAME_EXISTS);
+        }
+
+        return Result.success();
+    }
+
+    private Result<Void> userPhoneCheck(String userPhone){
+        if(!P_USER_PHONE.matcher(userPhone).matches()){
+            return Result.fail(USER_NAME_FORMAT_ERROR);
+        }
+
+        if(null != userDao.selectByUserPhone(userPhone)){
+            return Result.fail(USER_PHONE_EXIST);
+        }
+
+        return Result.success();
+    }
+
+    private Result<Void> userMailCheck(String userMail){
+        if(!P_USER_MAIL.matcher(userMail).matches()){
+            return Result.fail(USER_EMAIL_FORMAT_ERROR);
+        }
+
+        if(null != userDao.selectByUserMail(userMail)){
+            return Result.fail(USER_EMAIL_EXIST);
+        }
+
+        return Result.success();
     }
 }
