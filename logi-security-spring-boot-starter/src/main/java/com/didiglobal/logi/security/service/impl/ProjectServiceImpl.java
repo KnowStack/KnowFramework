@@ -298,17 +298,16 @@ public class ProjectServiceImpl implements ProjectService {
      * @return {@code Result<List<ProjectBriefVO>>}
      */
     @Override
-    public Result<List<String>> getProjectBriefByUserId(Integer userId) {
+    public Result<List<ProjectBriefVO>> getProjectBriefByUserId(Integer userId) {
         final List<Integer> projectIds = userProjectService.getProjectIdListByUserIdList(
             Collections.singletonList(userId));
         if (CollectionUtils.isEmpty(projectIds)) {
             return Result.buildSucc(Lists.newArrayList());
         }
     
-        final List<String> projectName = projectIds
+        final List<ProjectBriefVO> projectName = projectIds
             .stream()
             .map(this::getProjectBriefByProjectId)
-            .map(ProjectBriefVO::getProjectName)
             .collect(Collectors.toList());
     
         return Result.buildSucc(projectName);

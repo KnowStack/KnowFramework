@@ -159,5 +159,5 @@ public interface ProjectService {
      * @param userId 用户id
      * @return {@code Result<List<ProjectBriefVO>>}
      */
-    Result<List<String>> getProjectBriefByUserId(Integer userId);
+    Result<List<ProjectBriefVO>> getProjectBriefByUserId(Integer userId);
 }
