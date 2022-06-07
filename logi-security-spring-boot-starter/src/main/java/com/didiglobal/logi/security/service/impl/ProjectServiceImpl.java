@@ -2,39 +2,46 @@ package com.didiglobal.logi.security.service.impl;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.didiglobal.logi.security.common.PagingData;
+import com.didiglobal.logi.security.common.Result;
 import com.didiglobal.logi.security.common.constant.OplogConstant;
 import com.didiglobal.logi.security.common.dto.oplog.OplogDTO;
 import com.didiglobal.logi.security.common.dto.project.ProjectBriefQueryDTO;
+import com.didiglobal.logi.security.common.dto.project.ProjectQueryDTO;
+import com.didiglobal.logi.security.common.dto.project.ProjectSaveDTO;
 import com.didiglobal.logi.security.common.dto.resource.ResourceDTO;
 import com.didiglobal.logi.security.common.entity.dept.Dept;
 import com.didiglobal.logi.security.common.entity.project.Project;
 import com.didiglobal.logi.security.common.entity.project.ProjectBrief;
 import com.didiglobal.logi.security.common.enums.ResultCode;
-import com.didiglobal.logi.security.common.dto.project.ProjectQueryDTO;
-import com.didiglobal.logi.security.common.dto.project.ProjectSaveDTO;
 import com.didiglobal.logi.security.common.enums.project.ProjectUserCode;
 import com.didiglobal.logi.security.common.vo.project.ProjectBriefVO;
 import com.didiglobal.logi.security.common.vo.project.ProjectDeleteCheckVO;
 import com.didiglobal.logi.security.common.vo.project.ProjectVO;
+import com.didiglobal.logi.security.common.vo.user.UserBriefVO;
 import com.didiglobal.logi.security.dao.ProjectDao;
 import com.didiglobal.logi.security.exception.LogiSecurityException;
 import com.didiglobal.logi.security.extend.ResourceExtend;
 import com.didiglobal.logi.security.extend.ResourceExtendBeanTool;
-import com.didiglobal.logi.security.service.*;
+import com.didiglobal.logi.security.service.DeptService;
+import com.didiglobal.logi.security.service.OplogService;
+import com.didiglobal.logi.security.service.ProjectService;
+import com.didiglobal.logi.security.service.UserProjectService;
+import com.didiglobal.logi.security.service.UserService;
 import com.didiglobal.logi.security.util.CopyBeanUtil;
-import com.didiglobal.logi.security.util.HttpRequestUtil;
 import com.didiglobal.logi.security.util.MathUtil;
+import com.google.common.collect.Lists;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
-
-import javax.servlet.http.HttpServletRequest;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 
 /**
@@ -251,7 +258,62 @@ public class ProjectServiceImpl implements ProjectService {
     public boolean checkProjectExist(Integer projectId) {
         return null != projectDao.selectByProjectId(projectId);
     }
-
+    
+    /**
+     * 未分配项目的用户列表
+     *
+     * @param projectId id
+     * @return {@code Result}
+     */
+    @Override
+    public Result<List<UserBriefVO>> unassignedByProjectId(Integer projectId)throws LogiSecurityException {
+        if (!checkProjectExist(projectId)) {
+        
+            throw new LogiSecurityException(ResultCode.PROJECT_NOT_EXISTS);
+        }
+        final ProjectVO projectVO = getProjectDetailByProjectId(projectId);
+        //提取用户id
+        final Set<Integer> userIds = Optional.ofNullable(projectVO)
+            .map(ProjectVO::getUserList)
+            .orElse(Lists.newArrayList())
+            .stream()
+            .map(UserBriefVO::getId)
+            .collect(Collectors.toSet());
+        Optional.ofNullable(projectVO)
+            .map(ProjectVO::getOwnerList)
+            .orElse(Lists.newArrayList())
+            .stream()
+            .map(UserBriefVO::getId)
+            .forEach(userIds::add);
+        final List<UserBriefVO> userBriefVOS = userService.getAllUserBriefList().stream()
+            .filter(id -> !userIds.contains(id))
+            .collect(Collectors.toList());
+        return Result.buildSucc(userBriefVOS);
+    }
+    
+    /**
+     * 获取user下绑定的项目
+     *
+     * @param userId 用户id
+     * @return {@code Result<List<ProjectBriefVO>>}
+     */
+    @Override
+    public Result<List<String>> getProjectBriefByUserId(Integer userId) {
+        final List<Integer> projectIds = userProjectService.getProjectIdListByUserIdList(
+            Collections.singletonList(userId));
+        if (CollectionUtils.isEmpty(projectIds)) {
+            return Result.buildSucc(Lists.newArrayList());
+        }
+    
+        final List<String> projectName = projectIds
+            .stream()
+            .map(this::getProjectBriefByProjectId)
+            .map(ProjectBriefVO::getProjectName)
+            .collect(Collectors.toList());
+    
+        return Result.buildSucc(projectName);
+    }
+    
     /**
      * 校验参数
      * @param saveVo 项目参数

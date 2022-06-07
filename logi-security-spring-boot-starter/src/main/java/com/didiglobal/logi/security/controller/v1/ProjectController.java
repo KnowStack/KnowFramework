@@ -9,6 +9,7 @@ import com.didiglobal.logi.security.common.dto.project.ProjectSaveDTO;
 import com.didiglobal.logi.security.common.vo.project.ProjectBriefVO;
 import com.didiglobal.logi.security.common.vo.project.ProjectDeleteCheckVO;
 import com.didiglobal.logi.security.common.vo.project.ProjectVO;
+import com.didiglobal.logi.security.common.vo.user.UserBriefVO;
 import com.didiglobal.logi.security.exception.LogiSecurityException;
 import com.didiglobal.logi.security.service.ProjectService;
 import com.didiglobal.logi.security.util.HttpRequestUtil;
@@ -158,4 +159,22 @@ public class ProjectController {
         }
         return Result.success();
     }
+    
+    @GetMapping("/unassigned")
+    @ApiOperation(value = "获取项目未分配的用户列表", notes = "获取项目未分配的用户列表")
+    @ApiImplicitParam(name = "id", value = "项目id", dataType = "int", required = true)
+    public Result<List<UserBriefVO>> unassigned(@RequestParam("id") Integer id) {
+        try {
+            return projectService.unassignedByProjectId(id);
+        } catch (LogiSecurityException e) {
+            return Result.fail(e);
+        }
+    }
+    @GetMapping("user/{userId}")
+    @ApiOperation(value = "获取用户绑定的项目列表", notes = "获取用户绑定的项目列表")
+    @ApiImplicitParam(name = "id", value = "项目id", dataType = "int", required = true)
+    public Result<List<String>> getProjectBriefByUserId(@PathVariable("userId") Integer userId) {
+        return projectService.getProjectBriefByUserId(userId);
+    }
+    
 }
