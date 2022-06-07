@@ -2,6 +2,7 @@ package com.didiglobal.logi.security.common.vo.user;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import java.util.List;
 import lombok.Data;
 
 /**
@@ -22,4 +23,11 @@ public class UserBriefVO {
 
     @ApiModelProperty(value = "部门id", dataType = "Integer", required = false)
     private Integer deptId;
+    @ApiModelProperty(value = "电话", dataType = "String", required = false)
+    private String phone;
+    
+    @ApiModelProperty(value = "邮箱", dataType = "String", required = false)
+    private String email;
+    @ApiModelProperty(value = "角色信息", dataType = "List<String>", required = false)
+    private List<String> roleList;
 }

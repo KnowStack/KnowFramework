@@ -1,5 +1,15 @@
 package com.didiglobal.logi.security.service.impl;
 
+import static com.didiglobal.logi.security.common.enums.ResultCode.USER_ACCOUNT_ALREADY_EXIST;
+import static com.didiglobal.logi.security.common.enums.ResultCode.USER_ACCOUNT_INSERT_FAIL;
+import static com.didiglobal.logi.security.common.enums.ResultCode.USER_ACCOUNT_NOT_EXIST;
+import static com.didiglobal.logi.security.common.enums.ResultCode.USER_ACCOUNT_UPDATE_FAIL;
+import static com.didiglobal.logi.security.common.enums.ResultCode.USER_EMAIL_EXIST;
+import static com.didiglobal.logi.security.common.enums.ResultCode.USER_EMAIL_FORMAT_ERROR;
+import static com.didiglobal.logi.security.common.enums.ResultCode.USER_NAME_EXISTS;
+import static com.didiglobal.logi.security.common.enums.ResultCode.USER_NAME_FORMAT_ERROR;
+import static com.didiglobal.logi.security.common.enums.ResultCode.USER_PHONE_EXIST;
+
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.didiglobal.logi.security.common.PagingData;
@@ -18,18 +28,25 @@ import com.didiglobal.logi.security.common.vo.user.UserBriefVO;
 import com.didiglobal.logi.security.common.vo.user.UserVO;
 import com.didiglobal.logi.security.dao.UserDao;
 import com.didiglobal.logi.security.exception.LogiSecurityException;
-import com.didiglobal.logi.security.service.*;
+import com.didiglobal.logi.security.service.DeptService;
+import com.didiglobal.logi.security.service.PermissionService;
+import com.didiglobal.logi.security.service.RolePermissionService;
+import com.didiglobal.logi.security.service.RoleService;
+import com.didiglobal.logi.security.service.UserRoleService;
+import com.didiglobal.logi.security.service.UserService;
 import com.didiglobal.logi.security.util.CopyBeanUtil;
+import com.google.common.collect.Lists;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Objects;
+import java.util.Set;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
-
-import java.util.*;
-import java.util.regex.Pattern;
-import java.util.stream.Collectors;
-
-import static com.didiglobal.logi.security.common.enums.ResultCode.*;
 
 /**
  * @author cjm
@@ -136,7 +153,42 @@ public class UserServiceImpl implements UserService {
         userVo.setCreateTime(user.getCreateTime());
         return userVo;
     }
-
+    
+    @Override
+    public Result<List<UserVO>> getUserDetailByUserIds(List<Integer> ids) {
+        if (!CollectionUtils.isEmpty(ids)) {
+            return Result.buildSucc(Lists.newArrayList());
+        }
+        final List<UserVO> userVOS = ids.stream()
+            .distinct()
+            .map(userDao::selectByUserId)
+            .filter(Objects::nonNull)
+            .map(user -> {
+                final UserVO userVO = CopyBeanUtil.copy(user, UserVO.class);
+                userVO.setUpdateTime(user.getUpdateTime());
+                userVO.setCreateTime(user.getCreateTime());
+                return userVO;
+            })
+            .collect(Collectors.toList());
+        for (UserVO userVO : userVOS) {
+            // 根据用户id获取角色List
+            List<RoleBriefVO> roleBriefVOList = roleService.getRoleBriefListByUserId(
+                userVO.getId());
+            // 设置角色信息
+            userVO.setRoleList(roleBriefVOList);
+            
+            List<Integer> roleIdList = roleBriefVOList.stream().map(RoleBriefVO::getId)
+                .collect(Collectors.toList());
+            // 根据角色idList获取权限idList
+            List<Integer> hasPermissionIdList = rolePermissionService.getPermissionIdListByRoleIdList(
+                roleIdList);
+            // 构建权限树
+            userVO.setPermissionTreeVO(
+                permissionService.buildPermissionTreeWithHas(hasPermissionIdList));
+        }
+        
+        return Result.buildSucc(userVOS);
+    }
     @Override
     public Result<Void> deleteByUserId(Integer userId) {
         if(userId == null) {
@@ -171,7 +223,20 @@ public class UserServiceImpl implements UserService {
             return new ArrayList<>();
         }
         List<UserBrief> userBriefList = userDao.selectBriefListByUserIdList(userIdList);
-        return CopyBeanUtil.copyList(userBriefList, UserBriefVO.class);
+        final List<UserBriefVO> userBriefVOS = CopyBeanUtil.copyList(userBriefList,
+            UserBriefVO.class);
+        for (UserBriefVO userBriefVO : userBriefVOS) {
+            final User user = userDao.selectByUserId(userBriefVO.getId());
+            userBriefVO.setEmail(user.getEmail());
+            userBriefVO.setPhone(user.getPhone());
+            final List<String> roles = roleService.getRoleBriefListByUserId(
+                    userBriefVO.getId())
+                .stream()
+                .map(RoleBriefVO::getRoleName)
+                .collect(Collectors.toList());
+            userBriefVO.setRoleList(roles);
+        }
+        return userBriefVOS;
     }
 
     @Override

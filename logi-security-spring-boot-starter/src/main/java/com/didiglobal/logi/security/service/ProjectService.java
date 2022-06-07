@@ -1,12 +1,14 @@
 package com.didiglobal.logi.security.service;
 
 import com.didiglobal.logi.security.common.PagingData;
+import com.didiglobal.logi.security.common.Result;
 import com.didiglobal.logi.security.common.dto.project.ProjectBriefQueryDTO;
 import com.didiglobal.logi.security.common.dto.project.ProjectQueryDTO;
 import com.didiglobal.logi.security.common.dto.project.ProjectSaveDTO;
 import com.didiglobal.logi.security.common.vo.project.ProjectBriefVO;
 import com.didiglobal.logi.security.common.vo.project.ProjectDeleteCheckVO;
 import com.didiglobal.logi.security.common.vo.project.ProjectVO;
+import com.didiglobal.logi.security.common.vo.user.UserBriefVO;
 import com.didiglobal.logi.security.exception.LogiSecurityException;
 
 import java.util.List;
@@ -142,4 +144,20 @@ public interface ProjectService {
      * @return true:存在，false：不存在
      */
     boolean checkProjectExist(Integer projectId);
+    
+    /**
+     * 未分配项目的用户列表
+     *
+     * @param projectId projectId
+     * @return {@code Result}
+     */
+    Result<List<UserBriefVO>> unassignedByProjectId(Integer projectId)throws LogiSecurityException;
+    
+    /**
+     * 获取user下绑定的项目
+     *
+     * @param userId 用户id
+     * @return {@code Result<List<ProjectBriefVO>>}
+     */
+    Result<List<String>> getProjectBriefByUserId(Integer userId);
 }

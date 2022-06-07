@@ -2,19 +2,14 @@ package com.didiglobal.logi.security.service;
 
 import com.didiglobal.logi.security.common.PagingData;
 import com.didiglobal.logi.security.common.Result;
-import com.didiglobal.logi.security.common.dto.account.AccountLoginDTO;
 import com.didiglobal.logi.security.common.dto.user.UserBriefQueryDTO;
 import com.didiglobal.logi.security.common.dto.user.UserDTO;
+import com.didiglobal.logi.security.common.dto.user.UserQueryDTO;
 import com.didiglobal.logi.security.common.entity.user.User;
 import com.didiglobal.logi.security.common.vo.role.AssignInfoVO;
-import com.didiglobal.logi.security.common.dto.user.UserQueryDTO;
 import com.didiglobal.logi.security.common.vo.user.UserBriefVO;
 import com.didiglobal.logi.security.common.vo.user.UserVO;
 import com.didiglobal.logi.security.exception.LogiSecurityException;
-import org.springframework.web.bind.annotation.PathVariable;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
 public interface UserService {
@@ -142,4 +137,6 @@ public interface UserService {
      * @return
      */
     Result<Void> editUser(UserDTO userDTO, String operator);
+    
+    Result<List<UserVO>> getUserDetailByUserIds(List<Integer> ids);
 }

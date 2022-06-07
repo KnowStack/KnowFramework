@@ -1,12 +1,12 @@
 package com.didiglobal.logi.security.controller.v1;
 
-import com.didiglobal.logi.security.common.constant.Constants;
 import com.didiglobal.logi.security.common.PagingData;
 import com.didiglobal.logi.security.common.PagingResult;
 import com.didiglobal.logi.security.common.Result;
+import com.didiglobal.logi.security.common.constant.Constants;
 import com.didiglobal.logi.security.common.dto.user.UserDTO;
-import com.didiglobal.logi.security.common.vo.role.AssignInfoVO;
 import com.didiglobal.logi.security.common.dto.user.UserQueryDTO;
+import com.didiglobal.logi.security.common.vo.role.AssignInfoVO;
 import com.didiglobal.logi.security.common.vo.user.UserBriefVO;
 import com.didiglobal.logi.security.common.vo.user.UserVO;
 import com.didiglobal.logi.security.exception.LogiSecurityException;
@@ -15,11 +15,19 @@ import com.didiglobal.logi.security.util.HttpRequestUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
-
-import javax.servlet.http.HttpServletRequest;
 import java.util.List;
+import javax.servlet.http.HttpServletRequest;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
  * @author cjm
@@ -37,6 +45,13 @@ public class UserController {
     @ApiImplicitParam(name = "type", value = "用户id", dataType = "int", required = true)
     public Result<Void> check(@PathVariable Integer type, @PathVariable String value) {
         return userService.check(type, value);
+    }
+    
+    @GetMapping()
+    @ApiOperation(value = "批量获取用户详情", notes = "根据用户id获取用户详情")
+    @ApiImplicitParam(name = "ids", value = "用户ids", dataType = "List<Integer>", required = true)
+    public Result<List<UserVO>> detailList(@RequestParam("ids") List<Integer> ids) {
+        return userService.getUserDetailByUserIds(ids);
     }
 
     @GetMapping("/{id}")
@@ -116,4 +131,3 @@ public class UserController {
         return userService.deleteByUserId(id);
     }
 }
-
