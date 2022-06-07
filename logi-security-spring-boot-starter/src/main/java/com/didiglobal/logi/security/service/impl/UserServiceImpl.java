@@ -223,7 +223,20 @@ public class UserServiceImpl implements UserService {
             return new ArrayList<>();
         }
         List<UserBrief> userBriefList = userDao.selectBriefListByUserIdList(userIdList);
-        return CopyBeanUtil.copyList(userBriefList, UserBriefVO.class);
+        final List<UserBriefVO> userBriefVOS = CopyBeanUtil.copyList(userBriefList,
+            UserBriefVO.class);
+        for (UserBriefVO userBriefVO : userBriefVOS) {
+            final User user = userDao.selectByUserId(userBriefVO.getId());
+            userBriefVO.setEmail(user.getEmail());
+            userBriefVO.setPhone(user.getPhone());
+            final List<String> roles = roleService.getRoleBriefListByUserId(
+                    userBriefVO.getId())
+                .stream()
+                .map(RoleBriefVO::getRoleName)
+                .collect(Collectors.toList());
+            userBriefVO.setRoleList(roles);
+        }
+        return userBriefVOS;
     }
 
     @Override
