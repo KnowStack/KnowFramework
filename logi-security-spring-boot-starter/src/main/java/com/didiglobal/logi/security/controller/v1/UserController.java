@@ -1,5 +1,6 @@
 package com.didiglobal.logi.security.controller.v1;
 
+import com.alibaba.fastjson.JSON;
 import com.didiglobal.logi.security.common.PagingData;
 import com.didiglobal.logi.security.common.PagingResult;
 import com.didiglobal.logi.security.common.Result;
@@ -12,6 +13,7 @@ import com.didiglobal.logi.security.common.vo.user.UserVO;
 import com.didiglobal.logi.security.exception.LogiSecurityException;
 import com.didiglobal.logi.security.service.UserService;
 import com.didiglobal.logi.security.util.HttpRequestUtil;
+import com.google.common.collect.Lists;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
@@ -49,9 +51,17 @@ public class UserController {
     
     @GetMapping()
     @ApiOperation(value = "批量获取用户详情", notes = "根据用户id获取用户详情")
-    @ApiImplicitParam(name = "ids", value = "用户ids", dataType = "List<Integer>", required = true)
-    public Result<List<UserVO>> detailList(@RequestParam("ids") List<Integer> ids) {
-        return userService.getUserDetailByUserIds(ids);
+    @ApiImplicitParam(name = "ids", value = "用户ids", dataType = "string",example = "[1,2,3]",
+        required = true)
+    public Result<List<UserVO>> detailList(@RequestParam("ids") String ids) {
+        List<Integer> idList = Lists.newArrayList();
+        try {
+            idList = JSON.parseArray(ids, Integer.class);
+        } catch (Exception e) {
+            return Result.buildParamIllegal("传入的参数不属于json数组");
+        }
+    
+        return userService.getUserDetailByUserIds(idList);
     }
 
     @GetMapping("/{id}")
