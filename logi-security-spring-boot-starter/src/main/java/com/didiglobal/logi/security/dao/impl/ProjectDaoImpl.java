@@ -12,11 +12,10 @@ import com.didiglobal.logi.security.common.po.ProjectPO;
 import com.didiglobal.logi.security.dao.ProjectDao;
 import com.didiglobal.logi.security.dao.mapper.ProjectMapper;
 import com.didiglobal.logi.security.util.CopyBeanUtil;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
-
-import java.util.List;
 
 /**
  * @author cjm
@@ -88,12 +87,8 @@ public class ProjectDaoImpl extends BaseDaoImpl<ProjectPO> implements ProjectDao
     public IPage<Project> selectPageByDeptIdListAndProjectIdList(ProjectQueryDTO queryDTO, List<Integer> deptIdList,
                                                                  List<Integer> projectIdList) {
         IPage<ProjectPO> page = new Page<>(queryDTO.getPage(), queryDTO.getSize());
-        if(deptIdList != null && deptIdList.isEmpty()) {
-            return CopyBeanUtil.copyPage(page, Project.class);
-        }
-        if(projectIdList != null && projectIdList.isEmpty()) {
-            return CopyBeanUtil.copyPage(page, Project.class);
-        }
+        
+       
         QueryWrapper<ProjectPO> projectWrapper = getQueryWrapperWithAppName();
         String projectCode = queryDTO.getProjectCode();
         String projectName = queryDTO.getProjectName();
@@ -101,8 +96,8 @@ public class ProjectDaoImpl extends BaseDaoImpl<ProjectPO> implements ProjectDao
                 .eq(queryDTO.getRunning() != null, FieldConstant.RUNNING, queryDTO.getRunning())
                 .eq(!StringUtils.isEmpty(projectCode), FieldConstant.PROJECT_CODE, projectCode)
                 .like(!StringUtils.isEmpty(projectName), FieldConstant.PROJECT_NAME, projectName)
-                .in(deptIdList != null, FieldConstant.DEPT_ID, deptIdList)
-                .in(projectIdList != null, FieldConstant.ID, projectIdList);
+            .in(deptIdList != null && !deptIdList.isEmpty(), FieldConstant.DEPT_ID, deptIdList)
+            .in(projectIdList != null && !projectIdList.isEmpty(), FieldConstant.ID, projectIdList);
         return CopyBeanUtil.copyPage(projectMapper.selectPage(page, projectWrapper), Project.class);
     }
 }

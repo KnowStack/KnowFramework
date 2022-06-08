@@ -172,7 +172,7 @@ public class ProjectController {
     }
     @GetMapping("/user/{userId}")
     @ApiOperation(value = "获取用户绑定的项目列表", notes = "获取用户绑定的项目列表")
-    @ApiImplicitParam(name = "id", value = "项目id", dataType = "int", required = true)
+    @ApiImplicitParam(name = "userId", value = "项目id", dataType = "int", required = true)
     public Result<List<ProjectBriefVO>> getProjectBriefByUserId(@PathVariable("userId") Integer userId) {
         return projectService.getProjectBriefByUserId(userId);
     }
