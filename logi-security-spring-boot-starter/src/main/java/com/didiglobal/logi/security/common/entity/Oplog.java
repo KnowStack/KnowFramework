@@ -41,4 +41,8 @@ public class Oplog extends BaseEntity {
      * 详情
      */
     private String detail;
+     /**
+     * 操作方法
+     */
+    private String operationMethods;
 }

@@ -32,7 +32,21 @@ public class OplogDTO {
      * 操作日志详情
      */
     private String detail;
-
+    /**
+     * 操作方法
+     */
+    private String operationMethods;
+    
+    public OplogDTO(String operator, String operateType, String targetType, String target,
+        String detail, String operationMethods) {
+        this.operator = operator;
+        this.operateType = operateType;
+        this.targetType = targetType;
+        this.target = target;
+        this.detail = detail;
+        this.operationMethods = operationMethods;
+    }
+    
     public OplogDTO() {}
 
     public OplogDTO(String operator, String operateType, String targetType, String target, String detail) {

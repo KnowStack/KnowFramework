@@ -43,6 +43,11 @@ public class OplogQueryDTO extends PageParamDTO {
      */
     @ApiModelProperty(value = "操作模块（精确）", dataType = "String", required = false)
     private String targetType;
+     /**
+     * 操作方法
+     */
+     @ApiModelProperty(value = "操作方式（精确）", dataType = "String", required = false)
+    private String operationMethods;
 
     /**
      * 操作起始时间

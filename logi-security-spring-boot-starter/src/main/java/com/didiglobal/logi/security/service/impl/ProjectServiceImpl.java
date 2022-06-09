@@ -286,7 +286,7 @@ public class ProjectServiceImpl implements ProjectService {
             .map(UserBriefVO::getId)
             .forEach(userIds::add);
         final List<UserBriefVO> userBriefVOS = userService.getAllUserBriefList().stream()
-            .filter(id -> !userIds.contains(id))
+            .filter(userBriefVO -> !userIds.contains(userBriefVO.getId()))
             .collect(Collectors.toList());
         return Result.buildSucc(userBriefVOS);
     }

@@ -1,5 +1,16 @@
 package com.didiglobal.logi.security.dao.impl;
 
+import static com.didiglobal.logi.security.common.constant.FieldConstant.CREATE_TIME;
+import static com.didiglobal.logi.security.common.constant.FieldConstant.DETAIL;
+import static com.didiglobal.logi.security.common.constant.FieldConstant.ID;
+import static com.didiglobal.logi.security.common.constant.FieldConstant.OPERATE_TYPE;
+import static com.didiglobal.logi.security.common.constant.FieldConstant.OPERATION_METHODS;
+import static com.didiglobal.logi.security.common.constant.FieldConstant.OPERATOR;
+import static com.didiglobal.logi.security.common.constant.FieldConstant.OPERATOR_IP;
+import static com.didiglobal.logi.security.common.constant.FieldConstant.TARGET;
+import static com.didiglobal.logi.security.common.constant.FieldConstant.TARGET_TYPE;
+import static com.didiglobal.logi.security.common.constant.FieldConstant.UPDATE_TIME;
+
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -10,17 +21,14 @@ import com.didiglobal.logi.security.common.po.OplogPO;
 import com.didiglobal.logi.security.dao.OplogDao;
 import com.didiglobal.logi.security.dao.mapper.OplogMapper;
 import com.didiglobal.logi.security.util.CopyBeanUtil;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-import org.springframework.util.CollectionUtils;
-import org.springframework.util.StringUtils;
-
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
-
-import static com.didiglobal.logi.security.common.constant.FieldConstant.*;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+import org.springframework.util.CollectionUtils;
+import org.springframework.util.StringUtils;
 
 /**
  * @author cjm
@@ -40,6 +48,7 @@ public class OplogDaoImpl extends BaseDaoImpl<OplogPO> implements OplogDao {
         queryWrapper
                 .eq(queryDTO.getOperateType() != null, OPERATE_TYPE, queryDTO.getOperateType())
                 .eq(queryDTO.getTargetType() != null, TARGET_TYPE, queryDTO.getTargetType())
+            .eq(StringUtils.hasText(queryDTO.getOperationMethods()),OPERATION_METHODS, queryDTO.getOperationMethods())
                 .like(!StringUtils.isEmpty(queryDTO.getDetail()), DETAIL, queryDTO.getDetail())
                 .like(!StringUtils.isEmpty(queryDTO.getTarget()), TARGET, queryDTO.getTarget())
                 .like(!StringUtils.isEmpty(queryDTO.getOperator()), OPERATOR, queryDTO.getOperator());

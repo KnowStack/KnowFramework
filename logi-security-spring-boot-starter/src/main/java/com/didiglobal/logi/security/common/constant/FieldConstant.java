@@ -56,6 +56,7 @@ public class FieldConstant {
     public static final String OPERATE_TYPE = "operate_type";
 
     public static final String TARGET_TYPE = "target_type";
+    public static final String OPERATION_METHODS = "operation_methods";
 
     public static final String TARGET = "target";
 

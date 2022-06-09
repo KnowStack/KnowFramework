@@ -1,13 +1,12 @@
 package com.didiglobal.logi.security.common.vo.user;
 
-import java.util.Date;
-import java.util.List;
-
-import com.didiglobal.logi.security.common.vo.dept.DeptBriefVO;
 import com.didiglobal.logi.security.common.vo.permission.PermissionTreeVO;
+import com.didiglobal.logi.security.common.vo.project.ProjectBriefVO;
 import com.didiglobal.logi.security.common.vo.role.RoleBriefVO;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import java.util.Date;
+import java.util.List;
 import lombok.Data;
 
 /**
@@ -43,4 +42,8 @@ public class UserVO {
 
     @ApiModelProperty(value = "权限信息（树）", dataType = "PermissionTreeVO", required = false)
     private PermissionTreeVO permissionTreeVO;
+    @ApiModelProperty(value = "应用信息", dataType = "List<ProjectBriefVO>", required = false)
+    private List<ProjectBriefVO> projectList;
+    
+    
 }

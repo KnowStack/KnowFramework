@@ -17,16 +17,20 @@ import com.didiglobal.logi.security.common.Result;
 import com.didiglobal.logi.security.common.dto.user.UserBriefQueryDTO;
 import com.didiglobal.logi.security.common.dto.user.UserDTO;
 import com.didiglobal.logi.security.common.dto.user.UserQueryDTO;
+import com.didiglobal.logi.security.common.entity.project.Project;
 import com.didiglobal.logi.security.common.entity.user.User;
 import com.didiglobal.logi.security.common.entity.user.UserBrief;
 import com.didiglobal.logi.security.common.enums.ResultCode;
 import com.didiglobal.logi.security.common.enums.user.UserCheckType;
 import com.didiglobal.logi.security.common.po.UserPO;
+import com.didiglobal.logi.security.common.vo.project.ProjectBriefVO;
 import com.didiglobal.logi.security.common.vo.role.AssignInfoVO;
 import com.didiglobal.logi.security.common.vo.role.RoleBriefVO;
 import com.didiglobal.logi.security.common.vo.user.UserBriefVO;
 import com.didiglobal.logi.security.common.vo.user.UserVO;
+import com.didiglobal.logi.security.dao.ProjectDao;
 import com.didiglobal.logi.security.dao.UserDao;
+import com.didiglobal.logi.security.dao.UserProjectDao;
 import com.didiglobal.logi.security.exception.LogiSecurityException;
 import com.didiglobal.logi.security.service.DeptService;
 import com.didiglobal.logi.security.service.PermissionService;
@@ -37,6 +41,7 @@ import com.didiglobal.logi.security.service.UserService;
 import com.didiglobal.logi.security.util.CopyBeanUtil;
 import com.google.common.collect.Lists;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
@@ -75,7 +80,11 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private UserRoleService userRoleService;
-
+    @Autowired
+    private UserProjectDao userProjectDao;
+    
+    @Autowired
+    private ProjectDao projectDao;
     @Override
     public Result<Void> check(Integer type, String value) {
         if(UserCheckType.USER_NAME.getCode() == type){
@@ -148,7 +157,16 @@ public class UserServiceImpl implements UserService {
         List<Integer> hasPermissionIdList = rolePermissionService.getPermissionIdListByRoleIdList(roleIdList);
         // 构建权限树
         userVo.setPermissionTreeVO(permissionService.buildPermissionTreeWithHas(hasPermissionIdList));
-
+        //设置应用信息
+        final List<ProjectBriefVO> projectBriefVOS = userProjectDao.selectProjectIdListByUserIdList(
+                Collections.singletonList(userVo.getId()))
+            .stream()
+            .map(projectDao::selectByProjectId)
+            .filter(Project::getRunning)
+            .filter(project -> Boolean.FALSE.equals(project.getIsDelete()))
+            .map(project -> CopyBeanUtil.copy(project, ProjectBriefVO.class))
+            .collect(Collectors.toList());
+        userVo.setProjectList(projectBriefVOS);
         userVo.setUpdateTime(user.getUpdateTime());
         userVo.setCreateTime(user.getCreateTime());
         return userVo;
@@ -185,6 +203,16 @@ public class UserServiceImpl implements UserService {
             // 构建权限树
             userVO.setPermissionTreeVO(
                 permissionService.buildPermissionTreeWithHas(hasPermissionIdList));
+            //设置应用信息
+            final List<ProjectBriefVO> projectBriefVOS = userProjectDao.selectProjectIdListByUserIdList(
+                    Collections.singletonList(userVO.getId()))
+                .stream()
+                .map(projectDao::selectByProjectId)
+                .filter(Project::getRunning)
+                .filter(project -> Boolean.FALSE.equals(project.getIsDelete()))
+                .map(project -> CopyBeanUtil.copy(project, ProjectBriefVO.class))
+                .collect(Collectors.toList());
+            userVO.setProjectList(projectBriefVOS);
         }
         
         return Result.buildSucc(userVOS);
