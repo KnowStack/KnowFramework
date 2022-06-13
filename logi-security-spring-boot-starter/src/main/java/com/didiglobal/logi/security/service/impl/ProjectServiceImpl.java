@@ -314,6 +314,54 @@ public class ProjectServiceImpl implements ProjectService {
     }
     
     /**
+     * 通过项目id和querydto进行分页查询
+     *
+     * @param queryDTO
+     * @param ids      id
+     * @return {@code PagingData<ProjectVO>}
+     */
+    @Override
+    public PagingData<ProjectVO> getProjectPage(ProjectQueryDTO queryDTO, List<Integer> ids) {
+        List<Integer> projectIdList = Lists.newArrayList();
+        // 是否有负责人条件
+        if(!StringUtils.isEmpty(queryDTO.getChargeUsername())) {
+            List<Integer> userIdList = userService.getUserIdListByUsernameOrRealName(queryDTO.getChargeUsername());
+            projectIdList = userProjectService.getProjectIdListByUserIdList(userIdList);
+        }
+        if (!CollectionUtils.isEmpty(ids)) {
+            for (Integer id : ids) {
+                if (!projectIdList.contains(id)) {
+                    projectIdList.add(id);
+                }
+            }
+        }
+        // 获取当前部门的子部门idList
+        List<Integer> deptIdList = deptService.getDeptIdListByParentId(queryDTO.getDeptId());
+        // 分页获取
+        IPage<Project> page = projectDao.selectPageByDeptIdListAndProjectIdList(queryDTO, deptIdList, projectIdList);
+        List<ProjectVO> projectVOList = new ArrayList<>();
+
+        // 提前获取所有部门
+        Map<Integer, Dept> deptMap = deptService.getAllDeptMap();
+        for(Project project : page.getRecords()) {
+            ProjectVO projectVO = CopyBeanUtil.copy(project, ProjectVO.class);
+            // 获取成员信息
+            List<Integer> userIdList = userProjectService.getUserIdListByProjectId(project.getId(), ProjectUserCode.NORMAL);
+            projectVO.setUserList(userService.getUserBriefListByUserIdList(userIdList));
+
+            // 获取负责人信息
+            List<Integer> ownerIdList = userProjectService.getUserIdListByProjectId(project.getId(), ProjectUserCode.OWNER);
+            projectVO.setOwnerList(userService.getUserBriefListByUserIdList(ownerIdList));
+
+            // 获取部门信息
+            projectVO.setDeptList(deptService.getDeptBriefListFromDeptMapByChildId(deptMap, project.getDeptId()));
+            projectVO.setCreateTime(project.getCreateTime());
+            projectVOList.add(projectVO);
+        }
+        return new PagingData<>(projectVOList, page);
+    }
+    
+    /**
      * 校验参数
      * @param saveVo 项目参数
      * @param isUpdate 创建 or 更新

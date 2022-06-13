@@ -17,7 +17,6 @@ import com.didiglobal.logi.security.common.Result;
 import com.didiglobal.logi.security.common.dto.user.UserBriefQueryDTO;
 import com.didiglobal.logi.security.common.dto.user.UserDTO;
 import com.didiglobal.logi.security.common.dto.user.UserQueryDTO;
-import com.didiglobal.logi.security.common.entity.project.Project;
 import com.didiglobal.logi.security.common.entity.user.User;
 import com.didiglobal.logi.security.common.entity.user.UserBrief;
 import com.didiglobal.logi.security.common.enums.ResultCode;
@@ -124,6 +123,14 @@ public class UserServiceImpl implements UserService {
             // 隐私信息处理
             privacyProcessing(userVo);
             userVOList.add(userVo);
+            //设置应用信息
+            final List<ProjectBriefVO> projectBriefVOS = userProjectDao.selectProjectIdListByUserIdList(
+                    Collections.singletonList(userVo.getId()))
+                .stream()
+                .map(projectDao::selectByProjectId)
+                .map(project -> CopyBeanUtil.copy(project, ProjectBriefVO.class))
+                .collect(Collectors.toList());
+            userVo.setProjectList(projectBriefVOS);
         }
         return new PagingData<>(userVOList, pageInfo);
     }
@@ -162,8 +169,6 @@ public class UserServiceImpl implements UserService {
                 Collections.singletonList(userVo.getId()))
             .stream()
             .map(projectDao::selectByProjectId)
-            .filter(Project::getRunning)
-            .filter(project -> Boolean.FALSE.equals(project.getIsDelete()))
             .map(project -> CopyBeanUtil.copy(project, ProjectBriefVO.class))
             .collect(Collectors.toList());
         userVo.setProjectList(projectBriefVOS);
@@ -208,8 +213,6 @@ public class UserServiceImpl implements UserService {
                     Collections.singletonList(userVO.getId()))
                 .stream()
                 .map(projectDao::selectByProjectId)
-                .filter(Project::getRunning)
-                .filter(project -> Boolean.FALSE.equals(project.getIsDelete()))
                 .map(project -> CopyBeanUtil.copy(project, ProjectBriefVO.class))
                 .collect(Collectors.toList());
             userVO.setProjectList(projectBriefVOS);
