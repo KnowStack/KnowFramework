@@ -2,11 +2,12 @@ package com.didiglobal.logi.elasticsearch.client.response.query.query.aggs;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 public class ESAggr {
     private Map<String, Object> unusedMap = new HashMap<>();
@@ -34,7 +35,14 @@ public class ESAggr {
                     bucketList.add(new ESBucket(jsonObject));
                 }
 
-            } else {
+            } else if (BUCKETS_STR.equalsIgnoreCase(key) && Objects.nonNull( root.get(key)) &&root.get(key) instanceof JSONObject){
+                bucketList=root.getJSONObject(key).values()
+                    .stream()
+                    .map(JSONObject.class::cast)
+                    .map(ESBucket::new)
+                    .collect(Collectors.toList());
+            }
+            else {
                 unusedMap.put(key, root.get(key));
             }
         }
