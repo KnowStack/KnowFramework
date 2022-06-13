@@ -53,6 +53,15 @@ public interface ProjectService {
      * @return 项目分页信息
      */
     PagingData<ProjectVO> getProjectPage(ProjectQueryDTO queryDTO);
+    
+    /**
+     * 通过项目id和querydto进行分页查询
+     *
+     * @param queryDTO
+     * @param projectIdList id
+     * @return {@code PagingData<ProjectVO>}
+     */
+    PagingData<ProjectVO> getProjectPage(ProjectQueryDTO queryDTO,List<Integer> projectIdList);
 
     /**
      * 删除项目
