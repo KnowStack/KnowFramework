@@ -222,7 +222,7 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Override
     public void addProjectOwner(Integer projectId, Integer ownerId, String operator) {
-        userProjectService.saveUserProject(projectId, new ArrayList<>(ownerId));
+        userProjectService.saveOwnerProject(projectId, new ArrayList<>(ownerId));
 
         oplogService.saveOplog( new OplogDTO(operator,
                 OplogConstant.PM, "增加项目负责人：" + ownerId, OplogConstant.PM_P, projectId.toString()));
@@ -230,7 +230,7 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Override
     public void delProjectOwner(Integer projectId, Integer ownerId, String operator) {
-        userProjectService.delUserProject(projectId, new ArrayList<>(ownerId));
+        userProjectService.delOwnerProject(projectId, new ArrayList<>(ownerId));
 
         oplogService.saveOplog( new OplogDTO(operator,
                 OplogConstant.PM, "删除项目负责人：" + ownerId, OplogConstant.PM_P, projectId.toString()));
