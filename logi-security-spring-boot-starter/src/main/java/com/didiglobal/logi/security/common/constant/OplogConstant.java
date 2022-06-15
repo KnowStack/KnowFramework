@@ -21,7 +21,7 @@ public class OplogConstant {
 
     // ---------------------------------------
 
-    public static final String RM = "角色管理";
+    public static final String RM = "Role";
 
     public static final String RM_A = "新增";
 
@@ -35,7 +35,7 @@ public class OplogConstant {
 
     // ---------------------------------------
 
-    public static final String UM = "用户管理";
+    public static final String UM = "User";
 
     public static final String UM_U = "用户";
 
@@ -43,7 +43,7 @@ public class OplogConstant {
 
     // ---------------------------------------
 
-    public static final String PM = "项目配置";
+    public static final String PM = "Project";
 
     public static final String PM_P = "项目";
 

@@ -1,5 +1,6 @@
 package com.didiglobal.logi.security.service.impl;
 
+import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.didiglobal.logi.security.common.PagingData;
 import com.didiglobal.logi.security.common.Result;
@@ -110,7 +111,7 @@ public class ProjectServiceImpl implements ProjectService {
         userProjectService.saveUserProject(project.getId(), saveVo.getUserIdList());
         // 保存操作日志
         oplogService.saveOplog(
-                new OplogDTO(operator, OplogConstant.PM, OplogConstant.PM_A, OplogConstant.PM_P, saveVo.getProjectName()));
+                new OplogDTO(operator, OplogConstant.PM_A, OplogConstant.PM, saveVo.getProjectName(), "'' -> " + saveVo.getProjectName()));
         return CopyBeanUtil.copy(project, ProjectVO.class);
     }
 
@@ -167,7 +168,7 @@ public class ProjectServiceImpl implements ProjectService {
         projectDao.deleteByProjectId(projectId);
         // 保存操作日志
         oplogService.saveOplog( new OplogDTO(operator,
-                OplogConstant.PM, OplogConstant.PM_D, OplogConstant.PM_P, project.getProjectName()));
+                OplogConstant.PM_D, OplogConstant.PM, project.getProjectName(), project.getProjectName() + " -> ''"));
     }
 
     @Override
@@ -187,7 +188,7 @@ public class ProjectServiceImpl implements ProjectService {
         userProjectService.saveOwnerProject(saveDTO.getId(), saveDTO.getOwnerIdList());
         // 保存操作日志
         oplogService.saveOplog( new OplogDTO(operator,
-                OplogConstant.PM, OplogConstant.PM_E, OplogConstant.PM_P, saveDTO.getProjectName()));
+                OplogConstant.PM_E, OplogConstant.PM, saveDTO.getProjectName(), JSON.toJSONString(saveDTO)));
     }
 
     @Override
@@ -203,7 +204,7 @@ public class ProjectServiceImpl implements ProjectService {
         // 保存操作日志
         String curRunningTag = Boolean.TRUE.equals(project.getRunning()) ? OplogConstant.PM_U : OplogConstant.PM_S;
         oplogService.saveOplog( new OplogDTO(operator,
-                OplogConstant.PM, curRunningTag, OplogConstant.PM_P, project.getProjectName()));
+                curRunningTag, OplogConstant.PM, project.getProjectName(), "status:" + project.getRunning()));
     }
 
     @Override
@@ -211,7 +212,7 @@ public class ProjectServiceImpl implements ProjectService {
         userProjectService.saveUserProject(projectId, new ArrayList<>(userId));
 
         oplogService.saveOplog( new OplogDTO(operator,
-                OplogConstant.PM, "增加项目用户：" + userId, OplogConstant.PM_P, projectId.toString()));
+                OplogConstant.PM_P, OplogConstant.PM, projectId.toString(), "增加项目用户：" + userId));
     }
 
     @Override
@@ -219,7 +220,7 @@ public class ProjectServiceImpl implements ProjectService {
         userProjectService.delUserProject(projectId, new ArrayList<>(userId));
 
         oplogService.saveOplog( new OplogDTO(operator,
-                OplogConstant.PM, "删除项目用户：" + userId, OplogConstant.PM_P, projectId.toString()));
+                OplogConstant.PM_D,  OplogConstant.PM, projectId.toString(), "删除项目用户：" + userId));
     }
 
     @Override
@@ -227,7 +228,7 @@ public class ProjectServiceImpl implements ProjectService {
         userProjectService.saveOwnerProject(projectId, new ArrayList<>(ownerId));
 
         oplogService.saveOplog( new OplogDTO(operator,
-                OplogConstant.PM, "增加项目负责人：" + ownerId, OplogConstant.PM_P, projectId.toString()));
+                OplogConstant.PM_A, OplogConstant.PM, projectId.toString(), "增加项目负责人：" + ownerId));
     }
 
     @Override
@@ -235,7 +236,7 @@ public class ProjectServiceImpl implements ProjectService {
         userProjectService.delOwnerProject(projectId, new ArrayList<>(ownerId));
 
         oplogService.saveOplog( new OplogDTO(operator,
-                OplogConstant.PM, "删除项目负责人：" + ownerId, OplogConstant.PM_P, projectId.toString()));
+                OplogConstant.PM_D, OplogConstant.PM,  projectId.toString(), "删除项目负责人：" + ownerId));
     }
 
     @Override
