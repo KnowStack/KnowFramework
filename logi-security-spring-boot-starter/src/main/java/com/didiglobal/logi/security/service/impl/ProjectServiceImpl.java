@@ -181,8 +181,10 @@ public class ProjectServiceImpl implements ProjectService {
         // 先更新项目基本信息
         Project project = CopyBeanUtil.copy(saveDTO, Project.class);
         projectDao.update(project);
-        // 更新项目负责人与项目联系
+        // 更新项目成员与项目联系
         userProjectService.updateUserProject(saveDTO.getId(), saveDTO.getUserIdList());
+        //更新项目负责人与项目联系
+        userProjectService.saveOwnerProject(saveDTO.getId(), saveDTO.getOwnerIdList());
         // 保存操作日志
         oplogService.saveOplog( new OplogDTO(operator,
                 OplogConstant.PM, OplogConstant.PM_E, OplogConstant.PM_P, saveDTO.getProjectName()));
