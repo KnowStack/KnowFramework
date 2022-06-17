@@ -108,7 +108,10 @@ public class ProjectServiceImpl implements ProjectService {
         project.setProjectCode("p" + MathUtil.getRandomNumber(7));
         projectDao.insert(project);
         // 插入用户项目关联信息（项目负责人）
+        userProjectService.saveOwnerProject(project.getId(), saveVo.getOwnerIdList());
+        //插入用户项目关联信息（项目成员）
         userProjectService.saveUserProject(project.getId(), saveVo.getUserIdList());
+        
         // 保存操作日志
         oplogService.saveOplog(
                 new OplogDTO(operator, OplogConstant.PM_A, OplogConstant.PM, saveVo.getProjectName(), "'' -> " + saveVo.getProjectName()));
@@ -161,9 +164,10 @@ public class ProjectServiceImpl implements ProjectService {
         if(!CollectionUtils.isEmpty(resources)){
             throw new LogiSecurityException(ResultCode.PROJECT_DEL_RESOURCE_NOT_NULL);
         }
-
         // 删除项目与负责人的联系
         userProjectService.deleteUserProjectByProjectId(projectId);
+        //删除项目与成员的联系
+        userProjectService.deleteOwnerProjectByProjectId(projectId);
         // 逻辑删除项目（自动）
         projectDao.deleteByProjectId(projectId);
         // 保存操作日志
@@ -185,7 +189,7 @@ public class ProjectServiceImpl implements ProjectService {
         // 更新项目成员与项目联系
         userProjectService.updateUserProject(saveDTO.getId(), saveDTO.getUserIdList());
         //更新项目负责人与项目联系
-        userProjectService.saveOwnerProject(saveDTO.getId(), saveDTO.getOwnerIdList());
+        userProjectService.updateOwnerProject(saveDTO.getId(), saveDTO.getOwnerIdList());
         // 保存操作日志
         oplogService.saveOplog( new OplogDTO(operator,
                 OplogConstant.PM_E, OplogConstant.PM, saveDTO.getProjectName(), JSON.toJSONString(saveDTO)));

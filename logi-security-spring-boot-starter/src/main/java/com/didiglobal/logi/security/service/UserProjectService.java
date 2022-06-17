@@ -65,4 +65,13 @@ public interface UserProjectService {
      * @param projectId 项目id
      */
     void deleteUserProjectByProjectId(Integer projectId);
+    
+    /**
+     * 通过项目id删除拥有者和项目的关系
+     *
+     * @param projectId 项目id
+     */
+    void deleteOwnerProjectByProjectId(Integer projectId);
+    
+    void updateOwnerProject(Integer id, List<Integer> ownerIdList);
 }

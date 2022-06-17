@@ -41,4 +41,6 @@ public interface UserProjectDao {
      * @param projectId 项目id
      */
     void deleteByProjectId(Integer projectId);
+    
+    void deleteByProjectIdAndUserType(Integer projectId, int userType);
 }

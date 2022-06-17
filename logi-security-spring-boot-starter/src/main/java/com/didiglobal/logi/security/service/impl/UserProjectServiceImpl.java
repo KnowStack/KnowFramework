@@ -79,15 +79,31 @@ public class UserProjectServiceImpl implements UserProjectService {
         // 插入新的关联信息
         saveUserProject(projectId, userIdList);
     }
-
+    
+    @Override
+    public void updateOwnerProject(Integer projectId, List<Integer> ownerIdList) {
+        // 先删除old的关联信息
+        deleteOwnerProjectByProjectId(projectId);
+        // 插入新的关联信息
+        saveUserProject(projectId, ownerIdList);
+    }
+    
     @Override
     public void deleteUserProjectByProjectId(Integer projectId) {
         if(projectId == null) {
             return;
         }
-        userProjectDao.deleteByProjectId(projectId);
+        userProjectDao.deleteByProjectIdAndUserType(projectId,NORMAL);
     }
-
+    
+    @Override
+    public void deleteOwnerProjectByProjectId(Integer projectId) {
+        if (projectId == null) {
+            return;
+        }
+        userProjectDao.deleteByProjectIdAndUserType(projectId, OWNER);
+    }
+    
     /**
      * 用于构建可以直接插入角色与权限中间表的数据
      * @param projectId 项目Id

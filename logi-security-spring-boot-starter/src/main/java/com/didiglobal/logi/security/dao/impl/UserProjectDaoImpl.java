@@ -83,7 +83,15 @@ public class UserProjectDaoImpl extends BaseDaoImpl<UserProjectPO> implements Us
         queryWrapper.eq(FieldConstant.PROJECT_ID, projectId);
         userProjectMapper.delete(queryWrapper);
     }
-
+    
+    @Override
+    public void deleteByProjectIdAndUserType(Integer projectId, int userType) {
+        QueryWrapper<UserProjectPO> queryWrapper = getQueryWrapperWithAppName();
+        queryWrapper.eq(FieldConstant.PROJECT_ID, projectId);
+        queryWrapper.eq(FieldConstant.USER_TYPE, userType);
+        userProjectMapper.delete(queryWrapper);
+    }
+    
     /**************************************************** private method ****************************************************/
 
     private int addUserProject(UserProject userProject){
