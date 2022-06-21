@@ -383,9 +383,7 @@ public class ProjectServiceImpl implements ProjectService {
         if(StringUtils.isEmpty(saveVo.getDescription())) {
             throw new LogiSecurityException(ResultCode.PROJECT_DES_CANNOT_BE_BLANK);
         }
-        if(CollectionUtils.isEmpty(saveVo.getUserIdList())) {
-            throw new LogiSecurityException(ResultCode.PROJECT_CHARGE_USER_CANNOT_BE_NULL);
-        }
+        
         // 如果是更新操作，则判断项目名重复的时候要排除old信息
         Integer projectId = isUpdate ? saveVo.getId() : null;
         int count = projectDao.selectCountByProjectNameAndNotProjectId(saveVo.getProjectName(), projectId);
