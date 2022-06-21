@@ -85,7 +85,7 @@ public class UserProjectServiceImpl implements UserProjectService {
         // 先删除old的关联信息
         deleteOwnerProjectByProjectId(projectId);
         // 插入新的关联信息
-        saveUserProject(projectId, ownerIdList);
+        saveOwnerProject(projectId, ownerIdList);
     }
     
     @Override
