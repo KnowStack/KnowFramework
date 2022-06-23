@@ -1,6 +1,5 @@
 package com.didiglobal.logi.security.util;
 
-import java.util.Optional;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import org.springframework.util.StringUtils;
@@ -60,7 +59,8 @@ public class HttpRequestUtil {
 
     public static Integer getOperatorId(HttpServletRequest request) {
         HttpSession session = request.getSession();
-        Integer id = (Integer) session.getAttribute(HttpRequestUtil.USER_ID );
+        final Object userIdStr = session.getAttribute(HttpRequestUtil.USER_ID);
+        Integer id = strConvertInteger(String.valueOf(userIdStr));
         if(id == null) {
             return getOperatorIdFromHeader(request);
         }
@@ -69,14 +69,8 @@ public class HttpRequestUtil {
 
     public static Integer getOperatorIdFromHeader(HttpServletRequest request) {
     
-        Integer id = null;
-        try {
-            id = Optional.ofNullable(request.getHeader(USER_ID))
-                    .map(Integer::valueOf)
-                        .orElse(null);
-        } catch (Exception ignore) {
+        Integer id = strConvertInteger(request.getHeader(USER_ID));
         
-        }
         
         
         if(id == null) {return -1;}
@@ -89,8 +83,9 @@ public class HttpRequestUtil {
         if (StringUtils.isEmpty(projectIdStr)) {
             return defaultAppid;
         }
+        
 
-        return Integer.valueOf(projectIdStr);
+        return strConvertInteger(projectIdStr);
     }
 
     public static Integer getProjectId(HttpServletRequest request) {
@@ -99,13 +94,17 @@ public class HttpRequestUtil {
         if (StringUtils.isEmpty(projectIdStr)) {
             return null;
         }
-         Integer projectId = null;
-        try {
-            projectId = Integer.valueOf(projectIdStr);
-        } catch (Exception ignore) {
-        
-        }
+       
 
-        return projectId;
+        return strConvertInteger(projectIdStr);
+    }
+    
+    private static Integer strConvertInteger(String str) {
+        
+        try {
+            return StringUtils.isEmpty(str)?null:Integer.valueOf(str);
+        } catch (Exception ignore) {
+            return null;
+        }
     }
 }
