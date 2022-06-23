@@ -99,7 +99,13 @@ public class HttpRequestUtil {
         if (StringUtils.isEmpty(projectIdStr)) {
             return null;
         }
+         Integer projectId = null;
+        try {
+            projectId = Integer.valueOf(projectIdStr);
+        } catch (Exception ignore) {
+        
+        }
 
-        return Integer.valueOf(projectIdStr);
+        return projectId;
     }
 }
