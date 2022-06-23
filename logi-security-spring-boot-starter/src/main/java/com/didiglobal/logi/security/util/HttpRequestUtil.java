@@ -1,11 +1,11 @@
 package com.didiglobal.logi.security.util;
 
+import java.util.Optional;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import org.springframework.util.StringUtils;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 
 /**
  * @author cjm
@@ -68,7 +68,17 @@ public class HttpRequestUtil {
     }
 
     public static Integer getOperatorIdFromHeader(HttpServletRequest request) {
-        Integer id = Integer.valueOf(request.getHeader(USER_ID));
+    
+        Integer id = null;
+        try {
+            id = Optional.ofNullable(request.getHeader(USER_ID))
+                    .map(Integer::valueOf)
+                        .orElse(null);
+        } catch (Exception ignore) {
+        
+        }
+        
+        
         if(id == null) {return -1;}
         return id;
     }
