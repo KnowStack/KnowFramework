@@ -131,8 +131,8 @@ CREATE TABLE `logi_security_user`
 (
     id          int auto_increment primary key,
     user_name   varchar(64)                            not null comment '用户账号',
-    pw          varchar(2048)                             not null comment '用户密码',
-    salt        char(5)                                not null comment '密码盐',
+    pw          varchar(2048)                          not null comment '用户密码',
+    salt        char(5)      default ''                not null comment '密码盐',
     real_name   varchar(128) default ''                not null comment '真实姓名',
     phone       char(11)     default ''                not null comment 'mobile',
     email       varchar(30)  default ''                not null comment 'email',
