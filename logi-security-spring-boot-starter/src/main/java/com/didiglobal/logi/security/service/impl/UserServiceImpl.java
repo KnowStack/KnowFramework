@@ -129,6 +129,7 @@ public class UserServiceImpl implements UserService {
                 .stream()
                 .map(projectDao::selectByProjectId)
                 .map(project -> CopyBeanUtil.copy(project, ProjectBriefVO.class))
+                .filter(Objects::nonNull)
                 .collect(Collectors.toList());
             userVo.setProjectList(projectBriefVOS);
         }
@@ -170,6 +171,7 @@ public class UserServiceImpl implements UserService {
             .stream()
             .map(projectDao::selectByProjectId)
             .map(project -> CopyBeanUtil.copy(project, ProjectBriefVO.class))
+            .filter(Objects::nonNull)
             .collect(Collectors.toList());
         userVo.setProjectList(projectBriefVOS);
         userVo.setUpdateTime(user.getUpdateTime());
@@ -214,6 +216,7 @@ public class UserServiceImpl implements UserService {
                 .stream()
                 .map(projectDao::selectByProjectId)
                 .map(project -> CopyBeanUtil.copy(project, ProjectBriefVO.class))
+                .filter(Objects::nonNull)
                 .collect(Collectors.toList());
             userVO.setProjectList(projectBriefVOS);
         }
