@@ -75,7 +75,7 @@ public class UserProjectServiceImpl implements UserProjectService {
     @Override
     public void updateUserProject(Integer projectId, List<Integer> userIdList) {
         // 先删除old的关联信息
-        deleteUserProjectByProjectId(projectId);
+        delUserProject(projectId,userIdList);
         // 插入新的关联信息
         saveUserProject(projectId, userIdList);
     }
@@ -83,7 +83,7 @@ public class UserProjectServiceImpl implements UserProjectService {
     @Override
     public void updateOwnerProject(Integer projectId, List<Integer> ownerIdList) {
         // 先删除old的关联信息
-        deleteOwnerProjectByProjectId(projectId);
+        delOwnerProject(projectId,ownerIdList);
         // 插入新的关联信息
         saveOwnerProject(projectId, ownerIdList);
     }

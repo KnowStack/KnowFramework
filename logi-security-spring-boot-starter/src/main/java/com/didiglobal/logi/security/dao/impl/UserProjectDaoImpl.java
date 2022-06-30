@@ -7,6 +7,7 @@ import com.didiglobal.logi.security.common.po.UserProjectPO;
 import com.didiglobal.logi.security.dao.UserProjectDao;
 import com.didiglobal.logi.security.dao.mapper.UserProjectMapper;
 import com.didiglobal.logi.security.util.CopyBeanUtil;
+import java.util.Objects;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
@@ -70,6 +71,8 @@ public class UserProjectDaoImpl extends BaseDaoImpl<UserProjectPO> implements Us
                 QueryWrapper<UserProjectPO> queryWrapper = getQueryWrapperWithAppName();
                 queryWrapper.eq(FieldConstant.PROJECT_ID, userProject.getProjectId());
                 queryWrapper.eq(FieldConstant.USER_ID, userProject.getUserId());
+                queryWrapper.eq(Objects.nonNull(userProject.getUserType()),FieldConstant.USER_TYPE,
+                        userProject.getUserType());
                 delNu += userProjectMapper.delete(queryWrapper);
             }
         }
@@ -105,6 +108,7 @@ public class UserProjectDaoImpl extends BaseDaoImpl<UserProjectPO> implements Us
         QueryWrapper<UserProjectPO> queryWrapper = getQueryWrapperWithAppName();
         queryWrapper.eq(FieldConstant.PROJECT_ID, userProject.getProjectId());
         queryWrapper.eq(FieldConstant.USER_ID, userProject.getUserId());
+        queryWrapper.eq(Objects.nonNull(userProject.getUserType()),FieldConstant.USER_TYPE, userProject.getUserType());
 
         return userProjectMapper.selectOne(queryWrapper);
     }
