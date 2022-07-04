@@ -2,24 +2,37 @@ package com;
 
 import com.alibaba.fastjson.JSON;
 import com.didiglobal.logi.security.common.dto.permission.PermissionDTO;
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
-
+import com.didiglobal.logi.security.service.UserProjectService;
 import java.util.ArrayList;
 import java.util.List;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.ApplicationArguments;
+import org.springframework.boot.ApplicationRunner;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.ConfigurableApplicationContext;
 
 /**
  * @author cjm
  */
 @SpringBootApplication
-public class SecurityTestApplication {
+public class SecurityTestApplication implements ApplicationRunner {
 
     public static void main(String[] args) {
-        test();
-        SpringApplication.run(SecurityTestApplication.class, args);
+        //test();
+        final ConfigurableApplicationContext run = SpringApplication.run(
+            SecurityTestApplication.class, args);
+        //run.close();
     }
-
-
+    @Autowired
+    private UserProjectService userProjectService;
+    
+    @Override
+    public void run(ApplicationArguments args) throws Exception {
+        //userProjectService.updateOwnerProject(1, Collections.singletonList(1593));
+        //userProjectService.updateUserProject(1, Collections.singletonList(1593));
+    }
+    
     public static void test(){
         List<PermissionDTO> list = new ArrayList<>();
 
