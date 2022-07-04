@@ -10,3 +10,8 @@ spring:
   driver-class-name: org.mariadb.jdbc.Driver
   app-name: know_search
   resource-extend-bean-name: myResourceExtendImpl
+
+
+mybatis-plus:
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
