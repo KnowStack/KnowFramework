@@ -31,6 +31,7 @@ import com.didiglobal.logi.elasticsearch.client.response.indices.gettemplate.ESI
 public class ESIndicesGetTemplateRequest extends ESActionRequest<ESIndicesGetTemplateRequest> {
     private String[] templates;
     private boolean include_type_name = false;
+    private boolean flat_settings = false;
 
     public ESIndicesGetTemplateRequest setTemplates(String... tempaltes) {
         this.templates = tempaltes;
@@ -39,6 +40,11 @@ public class ESIndicesGetTemplateRequest extends ESActionRequest<ESIndicesGetTem
 
     public ESIndicesGetTemplateRequest setIncludeTypeName(boolean include_type_name) {
         this.include_type_name = include_type_name;
+        return this;
+    }
+    
+    public ESIndicesGetTemplateRequest setFlatSettings(boolean flat_settings) {
+        this.flat_settings = flat_settings;
         return this;
     }
 
@@ -63,6 +69,9 @@ public class ESIndicesGetTemplateRequest extends ESActionRequest<ESIndicesGetTem
         RestRequest rr = new RestRequest("GET", endPoint, null);
         if (include_type_name) {
             rr.addParam("include_type_name", "true");
+        }
+        if (flat_settings){
+            rr.addParam("flat_settings","true");
         }
 
         return rr;
