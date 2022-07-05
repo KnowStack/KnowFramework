@@ -24,6 +24,14 @@ public interface RoleService {
      * @return RoleVo 角色信息
      */
     RoleVO getRoleDetailByRoleId(Integer roleId);
+    
+    /**
+     * 获取角色简要信息通过角色id
+     *
+     * @param roleId 角色id
+     * @return {@code RoleBriefVO}
+     */
+    RoleBriefVO getRoleBriefByRoleId(Integer roleId);
 
     /**
      * 分页获取角色列表

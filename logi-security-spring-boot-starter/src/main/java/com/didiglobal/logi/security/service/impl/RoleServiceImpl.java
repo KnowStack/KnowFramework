@@ -64,7 +64,13 @@ public class RoleServiceImpl implements RoleService {
 
     @Autowired
     private UserRoleService userRoleService;
-
+    
+    @Override
+    public RoleBriefVO getRoleBriefByRoleId(Integer roleId) {
+        Role role = roleDao.selectByRoleId(roleId);
+        return CopyBeanUtil.copy(role,RoleBriefVO.class);
+    }
+    
     @Override
     public RoleVO getRoleDetailByRoleId(Integer roleId) {
         Role role = roleDao.selectByRoleId(roleId);
