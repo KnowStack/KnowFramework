@@ -171,6 +171,16 @@ public class RoleServiceImpl implements RoleService {
 
         // 更新关联信息
         userRoleService.deleteByUserIdOrRoleId(userId, roleId);
+        //角色表中需要增加这个操作的最后操作人
+        Role updateLastReviserById = new Role();
+        updateLastReviserById.setId(roleId);
+        String operator = HttpRequestUtil.getOperator(request);
+        // 保存操作日志
+        UserBriefVO userBriefVO = userService.getUserBriefByUserName(operator);
+        if (userBriefVO != null) {
+            updateLastReviserById.setLastReviser(userBriefVO.getUserName());
+        }
+        roleDao.update(updateLastReviserById);
     }
 
     @Override
