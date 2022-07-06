@@ -223,6 +223,18 @@ public class RoleServiceImpl implements RoleService {
             List<Integer> oldUserIdList = userRoleService.getUserIdListByRoleId(roleId);
             // 更新关联信息
             userRoleService.updateUserRoleByRoleId(roleId, assignDTO.getIdList());
+            //角色表中需要增加这个操作的最后操作人
+            Role updateLastReviserById = new Role();
+            updateLastReviserById.setId(roleId);
+            // 设置修改人信息
+            UserBriefVO userBriefVO = userService.getUserBriefByUserName(
+                HttpRequestUtil.getOperator(request));
+            if (userBriefVO != null) {
+                updateLastReviserById.setLastReviser(userBriefVO.getUserName());
+            }
+            roleDao.update(updateLastReviserById);
+            
+            
             // 保存操作日志
             Role role = roleDao.selectByRoleId(assignDTO.getId());
             Integer oplogId = oplogService.saveOplog(new OplogDTO(operator,
