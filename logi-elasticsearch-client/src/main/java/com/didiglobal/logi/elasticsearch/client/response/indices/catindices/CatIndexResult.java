@@ -34,7 +34,17 @@ public class CatIndexResult {
 
     @JSONField(name = "pri.store.size")
     private String priStoreSize;
-
+    @JSONField(name = "uuid")
+    private String uuid;
+    
+    public String getUuid() {
+        return uuid;
+    }
+    
+    public void setUuid(String uuid) {
+        this.uuid = uuid;
+    }
+    
     public String getHealth() {
         return health;
     }

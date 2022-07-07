@@ -3,15 +3,13 @@ package com.didiglobal.logi.elasticsearch.client.model;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-
 import org.apache.http.Header;
 import org.apache.http.message.BasicHeader;
 import org.elasticsearch.action.ActionRequest;
 import org.elasticsearch.rest.RestStatus;
 
-import com.didiglobal.logi.elasticsearch.client.ESClient;
-
 public abstract class ESActionRequest<T extends ESActionRequest> extends ActionRequest {
+    protected List<String> filter_path;
     public ESActionRequest() {
         super();
     }
@@ -19,7 +17,16 @@ public abstract class ESActionRequest<T extends ESActionRequest> extends ActionR
     protected ESActionRequest(ESActionRequest request) {
         super(request);
     }
-
+    
+    public ESActionRequest filterPath(List<String> filter_path) {
+        this.filter_path = filter_path;
+        return this;
+    }
+    
+    public List<String> getFilter_path() {
+        return filter_path;
+    }
+    
     abstract public RestRequest toRequest() throws Exception;
 
     public RestRequest buildRequest(List<Header> headers) throws Exception {

@@ -20,6 +20,7 @@
 package com.didiglobal.logi.elasticsearch.client.request.index.gettemplate;
 
 import com.didiglobal.logi.elasticsearch.client.response.indices.gettemplate.ESIndicesGetTemplateResponse;
+import java.util.List;
 import org.elasticsearch.action.ActionRequestBuilder;
 import org.elasticsearch.client.ElasticsearchClient;
 
@@ -36,6 +37,14 @@ public class ESIndicesGetTemplateRequestBuilder extends ActionRequestBuilder<ESI
 
     public ESIndicesGetTemplateRequestBuilder setIncludeTypeName(boolean include_type_name) {
         request.setIncludeTypeName(include_type_name);
+        return this;
+    }
+    public ESIndicesGetTemplateRequestBuilder setFlatSettings(boolean flat_settings){
+        request.setFlatSettings(flat_settings);
+        return this;
+    }
+     public ESIndicesGetTemplateRequestBuilder setFilterPath(List<String> filter_path) {
+         request.filterPath(filter_path);
         return this;
     }
 }

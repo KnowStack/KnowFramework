@@ -20,6 +20,7 @@
 package com.didiglobal.logi.elasticsearch.client.request.query.query;
 
 import com.didiglobal.logi.elasticsearch.client.response.query.query.ESQueryResponse;
+import java.util.List;
 import org.elasticsearch.ExceptionsHelper;
 import org.elasticsearch.action.ActionRequestBuilder;
 import org.elasticsearch.client.ElasticsearchClient;
@@ -101,6 +102,10 @@ public class ESQueryRequestBuilder extends ActionRequestBuilder<ESQueryRequest, 
 
     public ESQueryRequestBuilder preference(String preference) {
         request.preference(preference);
+        return this;
+    }
+     public ESQueryRequestBuilder filterPath(List<String> filter_path) {
+        request.filterPath(filter_path);
         return this;
     }
 

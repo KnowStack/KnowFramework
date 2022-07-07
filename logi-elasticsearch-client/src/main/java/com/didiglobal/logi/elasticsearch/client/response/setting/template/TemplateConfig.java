@@ -70,8 +70,48 @@ public class TemplateConfig {
                 notUsedMap.put(key, root.get(key));
             }
         }
-
+        
         if (mappings == null) {
+            throw new Exception("not have mapping, config:" + root.toJSONString());
+        }
+    }
+    public TemplateConfig(JSONObject root,Boolean isFilterPath) throws Exception {
+        if (root == null) {
+            throw new Exception("root is null");
+        }
+
+        for (String key : root.keySet()) {
+            if (key.equalsIgnoreCase(TEMPLATE_STR)) {
+                template.add((String) root.get(key));
+
+            } else if (key.equalsIgnoreCase(INDEX_PATTERNS_STR)) {
+                Object obj = root.get(key);
+                if (obj instanceof JSONArray) {
+                    for (Object o : (JSONArray) obj) {
+                        template.add(o.toString());
+                    }
+                } else {
+                    template.add(obj.toString());
+                }
+
+            } else if (key.equalsIgnoreCase(ORDER_STR)) {
+                order = root.getLong(key);
+
+            } else if (key.equalsIgnoreCase(SETTINGS_STR)) {
+                setttings = root.getJSONObject(key);
+
+            } else if (key.equalsIgnoreCase(ALIASES_STR)) {
+                aliases = root.getJSONObject(key);
+
+            } else if (key.equalsIgnoreCase(MAPPINGS_STR)) {
+                mappings = new MappingConfig(root.getJSONObject(key));
+
+            } else {
+                notUsedMap.put(key, root.get(key));
+            }
+        }
+        
+        if (mappings == null&&Boolean.FALSE.equals(isFilterPath)) {
             throw new Exception("not have mapping, config:" + root.toJSONString());
         }
     }

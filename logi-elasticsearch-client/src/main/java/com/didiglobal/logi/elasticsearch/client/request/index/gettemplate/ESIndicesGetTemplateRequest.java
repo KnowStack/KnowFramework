@@ -19,19 +19,20 @@
 
 package com.didiglobal.logi.elasticsearch.client.request.index.gettemplate;
 
-import org.apache.commons.lang3.StringUtils;
-import org.elasticsearch.action.ActionRequestValidationException;
-
 import com.didiglobal.logi.elasticsearch.client.model.ESActionRequest;
 import com.didiglobal.logi.elasticsearch.client.model.ESActionResponse;
 import com.didiglobal.logi.elasticsearch.client.model.RestRequest;
 import com.didiglobal.logi.elasticsearch.client.model.RestResponse;
 import com.didiglobal.logi.elasticsearch.client.response.indices.gettemplate.ESIndicesGetTemplateResponse;
+import java.util.Objects;
+import org.apache.commons.lang3.StringUtils;
+import org.elasticsearch.action.ActionRequestValidationException;
 
 public class ESIndicesGetTemplateRequest extends ESActionRequest<ESIndicesGetTemplateRequest> {
     private String[] templates;
     private boolean include_type_name = false;
     private boolean flat_settings = false;
+    
 
     public ESIndicesGetTemplateRequest setTemplates(String... tempaltes) {
         this.templates = tempaltes;
@@ -47,6 +48,8 @@ public class ESIndicesGetTemplateRequest extends ESActionRequest<ESIndicesGetTem
         this.flat_settings = flat_settings;
         return this;
     }
+   
+    
 
 
     @Override
@@ -73,13 +76,19 @@ public class ESIndicesGetTemplateRequest extends ESActionRequest<ESIndicesGetTem
         if (flat_settings){
             rr.addParam("flat_settings","true");
         }
+        if (Objects.nonNull(filter_path)&&!filter_path.isEmpty()){
+            final String filterPath = String.join(",", filter_path);
+            rr.addParam("filter_path",filterPath);
+        }
 
         return rr;
     }
 
     @Override
     public ESActionResponse toResponse(RestResponse response) throws Exception {
-        return ESIndicesGetTemplateResponse.getResponse(response.getResponseContent(), response.getEsVersion());
+        Boolean isFilterPath=Objects.nonNull(filter_path)&&!filter_path.isEmpty();
+        return ESIndicesGetTemplateResponse.getResponse(response.getResponseContent(),
+            response.getEsVersion(),isFilterPath);
     }
 
     @Override
