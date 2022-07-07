@@ -87,8 +87,9 @@ public class ESIndicesGetTemplateRequest extends ESActionRequest<ESIndicesGetTem
     @Override
     public ESActionResponse toResponse(RestResponse response) throws Exception {
         Boolean isFilterPath=Objects.nonNull(filter_path)&&!filter_path.isEmpty();
-        return ESIndicesGetTemplateResponse.getResponse(response.getResponseContent(),
-            response.getEsVersion(),isFilterPath);
+        return Boolean.TRUE.equals(isFilterPath)? ESIndicesGetTemplateResponse.getResponse(response.getResponseContent(),
+            response.getEsVersion(),Boolean.TRUE):ESIndicesGetTemplateResponse.getResponse(response.getResponseContent(),
+            response.getEsVersion());
     }
 
     @Override
