@@ -7,7 +7,7 @@
 
     <groupId>io.github.zqrferrari</groupId>
     <artifactId>logi-elasticsearch-client</artifactId>
-    <version>1.0.17</version>
+    <version>1.0.18</version>
 
     <packaging>jar</packaging>
     <name>${project.groupId}:${project.artifactId}</name>
@@ -84,7 +84,7 @@
         <dependency>
             <groupId>com.alibaba</groupId>
             <artifactId>fastjson</artifactId>
-            <version>1.2.60</version>
+            <version>1.2.76</version>
         </dependency>
         <dependency>
             <groupId>org.apache.commons</groupId>

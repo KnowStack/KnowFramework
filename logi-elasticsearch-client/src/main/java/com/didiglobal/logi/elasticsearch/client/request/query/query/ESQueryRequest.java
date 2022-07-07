@@ -24,6 +24,8 @@ import com.didiglobal.logi.elasticsearch.client.model.ESActionResponse;
 import com.didiglobal.logi.elasticsearch.client.model.RestRequest;
 import com.didiglobal.logi.elasticsearch.client.model.RestResponse;
 import com.didiglobal.logi.elasticsearch.client.response.query.query.ESQueryResponse;
+import java.util.List;
+import java.util.Objects;
 import org.apache.commons.lang3.StringUtils;
 import org.elasticsearch.action.ActionRequestValidationException;
 import org.elasticsearch.action.IndicesRequest;
@@ -63,7 +65,7 @@ public class ESQueryRequest extends ESActionRequest<ESQueryRequest> implements I
     private TimeValue scrollTime;
 
     private String[] types = Strings.EMPTY_ARRAY;
-
+    private List<String> filter_path;
 
     public ESQueryRequest() {
     }
@@ -125,7 +127,12 @@ public class ESQueryRequest extends ESActionRequest<ESQueryRequest> implements I
         this.types = types;
         return this;
     }
-
+    @Override
+    public ESQueryRequest filterPath(List<String> filter_path) {
+        this.filter_path = filter_path;
+        return this;
+    }
+    
     /* preference */
     public ESQueryRequest preference(String preference) {
         this.preference = preference;
@@ -213,6 +220,10 @@ public class ESQueryRequest extends ESActionRequest<ESQueryRequest> implements I
 
         if (routing != null) {
             restRequest.addParam("routing", routing);
+        }
+        if (Objects.nonNull(filter_path)&&!filter_path.isEmpty()){
+            final String filterPath = String.join(",", filter_path);
+            restRequest.addParam("filter_path",filterPath);
         }
 
         return restRequest;

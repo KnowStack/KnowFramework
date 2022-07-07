@@ -50,4 +50,9 @@ public class ESIndicesGetTemplateResponse extends ESActionResponse {
         response.setMultiTemplatesConfig(new MultiTemplatesConfig(JSON.parseObject(str), esVersion));
         return response;
     }
+     public static ESIndicesGetTemplateResponse getResponse(String str, String esVersion, Boolean isFilterPath) throws Exception {
+        ESIndicesGetTemplateResponse response = new ESIndicesGetTemplateResponse();
+        response.setMultiTemplatesConfig(new MultiTemplatesConfig(JSON.parseObject(str), esVersion,isFilterPath));
+        return response;
+    }
 }

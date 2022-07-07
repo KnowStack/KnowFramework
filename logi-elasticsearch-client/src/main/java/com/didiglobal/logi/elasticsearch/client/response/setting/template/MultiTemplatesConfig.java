@@ -1,5 +1,6 @@
 package com.didiglobal.logi.elasticsearch.client.response.setting.template;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -14,7 +15,7 @@ import com.didiglobal.logi.elasticsearch.client.response.setting.common.TypeDefi
 import com.didiglobal.logi.log.ILog;
 import com.didiglobal.logi.log.LogFactory;
 
-public class MultiTemplatesConfig {
+public class MultiTemplatesConfig implements Serializable {
     private final ILog LOGGER = LogFactory.getLog(MultiTemplatesConfig.class);
 
     private Map<String, TemplateConfig> templateConfigMap = new HashMap<>();
@@ -34,6 +35,19 @@ public class MultiTemplatesConfig {
 
         for (String key : root.keySet()) {
             TemplateConfig templateConfig = new TemplateConfig(root.getJSONObject(key));
+            templateConfig.setVersion(esVersion);
+            templateConfigMap.put(key, templateConfig);
+        }
+    }
+    
+    public MultiTemplatesConfig(JSONObject root, String esVersion, Boolean isFilterPath)
+        throws Exception {
+       if (root == null) {
+            throw new Exception("root is null");
+        }
+
+        for (String key : root.keySet()) {
+            TemplateConfig templateConfig = new TemplateConfig(root.getJSONObject(key),isFilterPath);
             templateConfig.setVersion(esVersion);
             templateConfigMap.put(key, templateConfig);
         }
