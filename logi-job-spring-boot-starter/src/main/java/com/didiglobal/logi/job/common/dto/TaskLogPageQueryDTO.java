@@ -33,4 +33,10 @@ public class TaskLogPageQueryDTO {
 
     @ApiModelProperty(value = "任务描述", dataType = "String", required = false)
     private String taskDesc;
+
+    @ApiModelProperty(value = "排序方式，asc：正序(从小到大)，desc：逆序(从大到小)", dataType = "String", required = false)
+    private String sortAsc;
+
+    @ApiModelProperty(value = "排序字段，必须是：status、result、create_time、start_time、end_time", dataType = "String", required = false)
+    private String  sortName;
 }
