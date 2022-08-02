@@ -35,6 +35,8 @@ public class ESIndicesUpdateMappingRequest extends ESActionRequest<ESIndicesUpda
     private String type;
     private TypeConfig typeConfig;
     private boolean include_type_name = false;
+    //es开源版本8.0开始不需要type，因此需要设置一个标志，判断是否需要type
+    private boolean isNeedType = true;
 
     public ESIndicesUpdateMappingRequest setIndex(String index) {
         this.index = index;
@@ -56,6 +58,11 @@ public class ESIndicesUpdateMappingRequest extends ESActionRequest<ESIndicesUpda
         return this;
     }
 
+    public ESIndicesUpdateMappingRequest setIsNeedType(boolean isNeedType) {
+        this.isNeedType = isNeedType;
+        return this;
+    }
+
 
     @Override
     public RestRequest toRequest() throws Exception {
@@ -63,7 +70,7 @@ public class ESIndicesUpdateMappingRequest extends ESActionRequest<ESIndicesUpda
             throw new Exception("index is blank, index:" + index);
         }
 
-        if (StringUtils.isBlank(type)) {
+        if (StringUtils.isBlank(type) && isNeedType) {
             throw new Exception("type is blank, type:" + type);
         }
 
@@ -71,7 +78,14 @@ public class ESIndicesUpdateMappingRequest extends ESActionRequest<ESIndicesUpda
             throw new Exception("type config is null");
         }
 
-        String endPoint = index + "/_mapping/" + type;
+        String endPoint;
+
+        if (isNeedType) {
+            endPoint = index + "/_mapping/" + type;
+        } else {
+            endPoint = index + "/_mapping/";
+        }
+
         RestRequest rr = new RestRequest("PUT", endPoint, null);
         if (include_type_name) {
             rr.addParam("include_type_name", "true");
