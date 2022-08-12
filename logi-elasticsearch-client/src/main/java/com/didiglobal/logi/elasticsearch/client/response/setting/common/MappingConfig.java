@@ -13,6 +13,7 @@ import java.util.Set;
 public class MappingConfig {
     private static final String SINGLE_TYPE = "type";
     private static final String DEFAULT_TYPE_STR = "_default_";
+    private static final String UNDER_SCORE = "_";
     private Map<String, TypeConfig> mapping = new HashMap<>();
     private boolean includeTypeName = true;
 
@@ -103,6 +104,15 @@ public class MappingConfig {
                 if (!key.equals(DEFAULT_TYPE_STR)) {
                     root = mapping.get(key).toJson(version);
                     break;
+                }
+            }
+        } else if (ESVersion.ES501.equals(version)) {
+            //对于ES501，mapping type name can't start with '_'，因此对于start with '_'的key值进行修正
+            for (String key : mapping.keySet()) {
+                if (key.startsWith(UNDER_SCORE)) {
+                    root.put(key.replaceFirst(UNDER_SCORE, ""), mapping.get(key).toJson(version));
+                } else {
+                    root.put(key, mapping.get(key).toJson(version));
                 }
             }
         } else {
