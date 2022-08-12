@@ -105,6 +105,15 @@ public class MappingConfig {
                     break;
                 }
             }
+        } else if (ESVersion.ES501.equals(version)) {
+            //对于ES501，mapping type name can't start with '_'，因此对于start with '_'的key值进行修正
+            for (String key : mapping.keySet()) {
+                if (key.startsWith("_")) {
+                    root.put(key.replaceFirst("_", ""),mapping.get(key).toJson(version));
+                } else {
+                    root.put(key,mapping.get(key).toJson(version));
+                }
+            }
         } else {
             for (String key : mapping.keySet()) {
                 root.put(key, mapping.get(key).toJson(version));
