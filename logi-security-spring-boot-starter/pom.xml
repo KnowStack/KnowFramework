@@ -22,6 +22,7 @@
 
     <url>https://github.com/didi/LogiCommon</url>
 
+
     <scm>
         <url>https://github.com/didi/LogiCommon.git</url>
         <connection>scm:git:git://github.com/didi/LogiCommon.git</connection>
