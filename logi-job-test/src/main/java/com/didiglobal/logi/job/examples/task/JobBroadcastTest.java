@@ -1,5 +1,6 @@
 package com.didiglobal.logi.job.examples.task;
 
+import com.alibaba.fastjson.JSON;
 import com.didiglobal.logi.job.annotation.Task;
 import com.didiglobal.logi.job.common.TaskResult;
 import com.didiglobal.logi.job.core.consensual.ConsensualEnum;
@@ -19,16 +20,8 @@ public class JobBroadcastTest implements Job {
 
     @Override
     public TaskResult execute(JobContext jobContext) {
-        logger.info("**************************************** hihi broad broad start" + System.currentTimeMillis());
-
-
-        for (long i = 0; i < 3000L; i++) {
-//      logger.info("hihi broad broad");
-      System.out.println("hello world broad broad" + i);
-        }
-
-        logger.info("**************************************** hihi broad broad end" + System.currentTimeMillis());
-
+        logger.info("**************************************** JobBroadcastTest start" + System.currentTimeMillis());
+        logger.info("**************************************** JobBroadcastTest end" + System.currentTimeMillis());
         return TaskResult.SUCCESS;
     }
 }

@@ -100,4 +100,9 @@ public class LogITaskPO extends BasePO implements Serializable {
      */
     private String owner;
 
+    /**
+     * 执行节点白名单集
+     */
+    private String nodeNameWhiteListStr;
+
 }

@@ -28,7 +28,12 @@ public class JsonUtils {
                     ret.put(key.replaceAll("\\.", "#") + "." + k, m.get(k));
                 }
             } else {
-                ret.put(key.replaceAll("\\.", "#"), o.toString());
+                if (null == o) {
+                    ret.put(key.replaceAll("\\.", "#"), null);
+                } else {
+                    ret.put(key.replaceAll("\\.", "#"), o.toString());
+                }
+
             }
         }
 

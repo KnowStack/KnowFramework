@@ -35,6 +35,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -126,8 +127,14 @@ public class ProjectServiceImpl implements ProjectService {
             List<Integer> userIdList = userService.getUserIdListByUsernameOrRealName(queryDTO.getChargeUsername());
             projectIdList = userProjectService.getProjectIdListByUserIdList(userIdList);
         }
+         List<Integer> deptIdList =null;
         // 获取当前部门的子部门idList
-        List<Integer> deptIdList = deptService.getDeptIdListByParentId(queryDTO.getDeptId());
+        if (Objects.isNull(queryDTO.getDeptId())) {
+            deptIdList = Collections.emptyList();
+        } else {
+            deptIdList = deptService.getDeptIdListByParentId(queryDTO.getDeptId());
+        
+        }
         // 分页获取
         IPage<Project> page = projectDao.selectPageByDeptIdListAndProjectIdList(queryDTO, deptIdList, projectIdList);
         List<ProjectVO> projectVOList = new ArrayList<>();
@@ -342,8 +349,14 @@ public class ProjectServiceImpl implements ProjectService {
                 }
             }
         }
+        List<Integer> deptIdList = null;
         // 获取当前部门的子部门idList
-        List<Integer> deptIdList = deptService.getDeptIdListByParentId(queryDTO.getDeptId());
+        if (Objects.isNull(queryDTO.getDeptId())) {
+            deptIdList = Collections.emptyList();
+        } else {
+            deptIdList = deptService.getDeptIdListByParentId(queryDTO.getDeptId());
+        
+        }
         // 分页获取
         IPage<Project> page = projectDao.selectPageByDeptIdListAndProjectIdList(queryDTO, deptIdList, projectIdList);
         List<ProjectVO> projectVOList = new ArrayList<>();

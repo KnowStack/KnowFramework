@@ -10,7 +10,7 @@
 //import org.springframework.stereotype.Component;
 //
 //@Component
-//@Task(name = "dd broad", description = "dd broad", cron = "0 0/1 * * * ? *", autoRegister = true, timeout = 100)
+//@Task(name = "dd broad", description = "dd broad", cron = "0 0/1 * * * ? *", autoRegister = true, timeout = 100, consensual = ConsensualEnum.BROADCAST)
 //public class JobBroadcastInterruptTest implements Job {
 //    private static final Logger logger = LoggerFactory.getLogger(JobBroadcastInterruptTest.class);
 //

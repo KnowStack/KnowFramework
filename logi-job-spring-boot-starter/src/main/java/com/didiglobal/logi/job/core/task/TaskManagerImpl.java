@@ -1,5 +1,6 @@
 package com.didiglobal.logi.job.core.task;
 
+import com.alibaba.fastjson.JSON;
 import com.didiglobal.logi.job.LogIJobProperties;
 import com.didiglobal.logi.job.common.Result;
 import com.didiglobal.logi.job.common.domain.LogITask;
@@ -16,15 +17,12 @@ import com.didiglobal.logi.job.core.job.JobManager;
 import com.didiglobal.logi.job.mapper.LogITaskMapper;
 import com.didiglobal.logi.job.utils.BeanUtil;
 import com.didiglobal.logi.job.utils.CronExpression;
+import com.didiglobal.logi.job.utils.IdWorker;
 import com.didiglobal.logi.job.utils.ThreadUtil;
 import com.google.common.collect.Lists;
 
 import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
@@ -32,10 +30,9 @@ import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
-
-import static com.didiglobal.logi.job.core.monitor.SimpleTaskMonitor.SCAN_INTERVAL_SLEEP_SECONDS;
 
 /**
  * task manager impl.
@@ -47,6 +44,11 @@ public class TaskManagerImpl implements TaskManager {
     private static final Logger logger = LoggerFactory.getLogger(TaskManagerImpl.class);
 
     private static final long WAIT_INTERVAL_SECONDS = 10L;
+
+    private static final Long TASK_TIME_OUT_DEFAULT_VALUE = 0l;
+    private static final ConsensualEnum TASK_CONSENSUAL_DEFAULT_VALUE = ConsensualEnum.RANDOM;
+    private static final String OWNER_DEFAULT_VALUE = "system";
+    private static final Integer RETRY_TIMES_DEFAULT_VALUE = 0;
 
     private JobManager jobManager;
     private ConsensualFactory consensualFactory;
@@ -100,82 +102,31 @@ public class TaskManagerImpl implements TaskManager {
 
         logITaskList = logITaskList.stream().filter(taskInfo -> {
             try {
-                if(ConsensualEnum.RANDOM.name().equals(taskInfo.getConsensual())){
-                    Timestamp lastFireTime = taskInfo.getLastFireTime();
-
-                    List<LogITask.TaskWorker> taskWorkers = taskInfo.getTaskWorkers();
-                    for (LogITask.TaskWorker taskWorker : taskWorkers) {
-                        // 取到当前worker做进一步判断，如果没有找到证明没有执行过
-                        if (Objects.equals(WorkerSingleton.getInstance().getLogIWorker().getWorkerCode(),
-                                taskWorker.getWorkerCode())) {
-                            // 判断是否在当前worker可执行状态
-                            if (!Objects.equals(taskWorker.getStatus(), TaskWorkerStatusEnum.WAITING.getValue())) {
-                                logger.info("class=TaskManagerImpl||method=nextTriggers||msg=has task running! "
-                                                + "taskCode={}, workerCode={}", taskInfo.getTaskCode(),
-                                        taskWorker.getWorkerCode());
-                                return false;
-                            }
-                            break;
+                Timestamp lastFireTime = new Timestamp(0L);
+                List<LogITask.TaskWorker> taskWorkers = taskInfo.getTaskWorkers();
+                for (LogITask.TaskWorker taskWorker : taskWorkers) {
+                    // 取到当前worker做进一步判断，如果没有找到证明没有执行过
+                    if (Objects.equals(WorkerSingleton.getInstance().getLogIWorker().getWorkerCode(),
+                            taskWorker.getWorkerCode())) {
+                        // 判断是否在当前worker可执行状态
+                        if (!Objects.equals(taskWorker.getStatus(), TaskWorkerStatusEnum.WAITING.getValue())) {
+                            logger.info("class=TaskManagerImpl||method=nextTriggers||url=||msg=has task running! "
+                                            + "taskCode={}, workerCode={}", taskInfo.getTaskCode(),
+                                    taskWorker.getWorkerCode());
+                            return false;
                         }
+                        lastFireTime = taskWorker.getLastFireTime();
+                        break;
                     }
-
-                    CronExpression cronExpression = new CronExpression(taskInfo.getCron());
-                    long nextTime = cronExpression.getNextValidTimeAfter(lastFireTime).getTime();
-                    taskInfo.setNextFireTime(new Timestamp(nextTime));
-
-                    Timestamp timestamp = new Timestamp(fromTime + interval * 1000);
-                    return timestamp.after(taskInfo.getNextFireTime());
-                }else if(ConsensualEnum.BROADCAST.name().equals(taskInfo.getConsensual())){
-                    List<LogITask.TaskWorker> taskWorkers = taskInfo.getTaskWorkers();
-                    Timestamp lastFireTime = new Timestamp(0L);
-
-                    for (LogITask.TaskWorker taskWorker : taskWorkers) {
-                        // 取到当前worker做进一步判断，如果没有找到证明没有执行过
-                        if (Objects.equals(WorkerSingleton.getInstance().getLogIWorker().getWorkerCode(),
-                                taskWorker.getWorkerCode())) {
-
-                            lastFireTime = taskWorker.getLastFireTime();
-                        }
-                    }
-
-                    CronExpression cronExpression = new CronExpression(taskInfo.getCron());
-                    long nextTime = cronExpression.getNextValidTimeAfter(lastFireTime).getTime();
-                    taskInfo.setNextFireTime(new Timestamp(nextTime));
-
-                    Timestamp timestamp = new Timestamp(fromTime + interval * 1000);
-
-                    if(timestamp.after(new Timestamp(nextTime))){
-                        if((nextTime + SCAN_INTERVAL_SLEEP_SECONDS * 1000) < fromTime
-                                && fromTime < (nextTime + 2 * SCAN_INTERVAL_SLEEP_SECONDS * 1000)){
-                            logger.info("class=TaskManagerImpl||method=nextTriggers||nextTime={}||fromTime={}||msg=skip broadcast duplicate trigger!",
-                                    nextTime, fromTime);
-
-                            for (LogITask.TaskWorker taskWorker : taskWorkers) {
-                                if (Objects.equals(WorkerSingleton.getInstance().getLogIWorker().getWorkerCode(),
-                                        taskWorker.getWorkerCode())) {
-
-                                    taskWorker.setLastFireTime(new Timestamp(nextTime));
-
-                                    LogITaskPO logITaskPO = BeanUtil.convertTo(taskInfo, LogITaskPO.class);
-                                    logITaskPO.setTaskWorkerStr(BeanUtil.convertToJson(taskWorkers));
-
-                                    logITaskMapper.updateTaskWorkStrByCode(logITaskPO);
-                                    return false;
-                                }
-                            }
-                        }
-
-                        return true;
-                    }
-
-                    return false;
                 }
-
-                return false;
+                CronExpression cronExpression = new CronExpression(taskInfo.getCron());
+                long nextTime = cronExpression.getNextValidTimeAfter(lastFireTime).getTime();
+                taskInfo.setNextFireTime(new Timestamp(nextTime));
             } catch (Exception e) {
-                logger.error("class=TaskManagerImpl||method=nextTriggers||msg=exception!", e);
+                logger.error("class=TaskManagerImpl||method=nextTriggers||url=||msg=", e);
                 return false;
             }
+            return (new Timestamp(fromTime + interval * 1000)).after(taskInfo.getNextFireTime());
         }).collect(Collectors.toList());
 
         // sort
@@ -191,7 +142,7 @@ public class TaskManagerImpl implements TaskManager {
         for (LogITask logITask : logITaskList) {
             // 不能在本工作器执行，跳过
             Consensual consensual = consensualFactory.getConsensual(logITask.getConsensual());
-            if (!consensual.canClaim(logITask)) {
+            if (!consensual.canClaim(logITask, logIJobProperties)) {
                 continue;
             }
             execute(logITask, false);
@@ -334,6 +285,130 @@ public class TaskManagerImpl implements TaskManager {
         return logITaskPO2LogITask(logITaskPO);
     }
 
+    @Override
+    @Transactional
+    public Result add(LogITaskDTO dto) {
+        Result checkResult = checkAddParam(dto);
+        if(checkResult.failed()) {
+            return checkResult;
+        }
+        handleAdd(dto);
+        return Result.buildSucc();
+    }
+
+    private void handleAdd(LogITaskDTO dto) {
+        LogITaskPO logITaskPO = new LogITaskPO();
+        logITaskPO.setTaskName(dto.getName());
+        logITaskPO.setTaskDesc(dto.getDescription());
+        logITaskPO.setCron(dto.getCron());
+        logITaskPO.setClassName(dto.getClassName());
+        logITaskPO.setParams(dto.getParams());
+        logITaskPO.setRetryTimes(null == dto.getRetryTimes() ? RETRY_TIMES_DEFAULT_VALUE : dto.getRetryTimes());
+        logITaskPO.setLastFireTime(new Timestamp(System.currentTimeMillis()));
+        logITaskPO.setTimeout(TASK_TIME_OUT_DEFAULT_VALUE);
+        logITaskPO.setSubTaskCodes("");
+        logITaskPO.setConsensual(dto.getConsensual());
+        logITaskPO.setTaskWorkerStr("");
+        logITaskPO.setAppName(logIJobProperties.getAppName());
+        logITaskPO.setOwner(OWNER_DEFAULT_VALUE);
+        logITaskPO.setTaskCode(IdWorker.getIdStr());
+        logITaskPO.setStatus(TaskStatusEnum.RUNNING.getValue());
+        logITaskPO.setNodeNameWhiteListStr(dto.getNodeNameWhiteListString());
+        logITaskMapper.insert(logITaskPO);
+    }
+
+    private Result checkAddParam(LogITaskDTO dto) {
+        if (contains(dto.getClassName())) {
+            return Result.buildFail(
+                    String.format(
+                            "task add failed, duplicate className: %s",
+                            dto.getClassName()
+                    )
+            );
+        }
+        Class taskClazz = null;
+        try {
+            taskClazz = Class.forName(dto.getClassName());
+        } catch (ClassNotFoundException ex) {
+            return Result.buildFail(
+                    String.format(
+                            "task add failed, class not found: %s",
+                            dto.getClassName()
+                    )
+            );
+        }
+        if(null == taskClazz) {
+            return Result.buildFail(
+                    String.format(
+                            "task add failed, class not found: %s",
+                            dto.getClassName()
+                    )
+            );
+        }
+        if(!CronExpression.isValidExpression(dto.getCron())) {
+            return Result.buildFail(
+                    String.format(
+                            "task add failed, cron is invalid: %s",
+                            dto.getCron()
+                    )
+            );
+        }
+        if(StringUtils.isEmpty(dto.getConsensual())) {
+            return Result.buildFail(
+                    String.format(
+                            "task add failed, consensual not be null: %s",
+                            JSON.toJSONString(dto)
+                    )
+            );
+        }
+        if(
+                !dto.getConsensual().equals(ConsensualEnum.RANDOM.name()) &&
+                        !dto.getConsensual().equals(ConsensualEnum.BROADCAST.name())
+        ) {
+            return Result.buildFail(
+                    String.format(
+                            "task add failed, consensual must be : %s",
+                            "RANDOM or BROADCAST"
+                    )
+            );
+        }
+        if(!StringUtils.isEmpty(dto.getParams())) {
+            try {
+                Map<String, String> params = JSON.parseObject(dto.getParams(), Map.class);
+                if(CollectionUtils.isEmpty(params)) {
+                    return Result.buildFail(
+                            "task add failed, params must be json of Map"
+                    );
+                }
+            } catch (Exception ex) {
+                return Result.buildFail(
+                        "task add failed, params must be json of Map"
+                );
+            }
+        }
+        if(!StringUtils.isEmpty(dto.getNodeNameWhiteListString())) {
+            try {
+                List<String> nodeNameWhiteList = JSON.parseObject(dto.getNodeNameWhiteListString(), List.class);
+                if(CollectionUtils.isEmpty(nodeNameWhiteList)) {
+                    return Result.buildFail(
+                            "task add failed, nodeNameWhiteListString must be json of List"
+                    );
+                }
+            } catch (Exception ex) {
+                return Result.buildFail(
+                        "task add failed, nodeNameWhiteListString must be json of List"
+                );
+            }
+        }
+
+        return Result.buildSucc();
+    }
+
+    private boolean contains(String className) {
+        LogITaskPO logITaskPO = logITaskMapper.selectByAppNameAndClassName(logIJobProperties.getAppName(), className);
+        return null != logITaskPO;
+    }
+
     /**************************************** private method ****************************************************/
     private void executeInternal(LogITask logITask, Boolean executeSubs) {
         // jobManager 将job管理起来，超时退出抛异常
@@ -363,7 +438,6 @@ public class TaskManagerImpl implements TaskManager {
         if (logITaskPO == null) {
             return false;
         }
-
         List<LogITask.TaskWorker> taskWorkers = BeanUtil.convertToList(logITaskPO.getTaskWorkerStr(),
                 LogITask.TaskWorker.class);
         boolean needUpdate = false;
@@ -376,10 +450,9 @@ public class TaskManagerImpl implements TaskManager {
                 }
             }
         }
-
         if (needUpdate) {
             logITaskPO.setTaskWorkerStr(BeanUtil.convertToJson(taskWorkers));
-            int updateResult = logITaskMapper.updateTaskWorkStrByCode(logITaskPO);
+            int updateResult = logITaskMapper.updateByCode(logITaskPO);
             if (updateResult <= 0) {
                 return false;
             }
