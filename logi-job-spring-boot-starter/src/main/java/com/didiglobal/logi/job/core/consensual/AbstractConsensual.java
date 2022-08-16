@@ -1,5 +1,7 @@
 package com.didiglobal.logi.job.core.consensual;
 
+import com.alibaba.fastjson.JSON;
+import com.didiglobal.logi.job.LogIJobProperties;
 import com.didiglobal.logi.job.common.domain.LogIWorker;
 import com.didiglobal.logi.job.common.po.LogIWorkerBlacklistPO;
 import com.didiglobal.logi.job.common.domain.LogITask;
@@ -15,6 +17,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,10 +42,33 @@ public abstract class AbstractConsensual implements Consensual {
             .expireAfterWrite(2, TimeUnit.MINUTES).build();
 
     @Override
-    public boolean canClaim(LogITask logITask) {
+    public boolean canClaim(LogITask logITask, LogIJobProperties logIJobProperties) {
         if (inBlacklist()) {
             return false;
         }
+
+        /*
+         * logITask 是否关联可执行机器组，如有，则须检查当前 worker 是否在关联的机器组中，如不是，则过滤掉
+         */
+        String nodeNameWhiteListString = logITask.getNodeNameWhiteListStr();
+        if(StringUtils.isNotBlank(nodeNameWhiteListString)) {
+            String nodeName = logIJobProperties.getNodeName();
+            Set<String> nodeNameWhiteSet = JSON.parseObject(nodeNameWhiteListString, Set.class);
+            if(!nodeNameWhiteSet.contains(nodeName)) {
+                if(logger.isInfoEnabled()) {
+                    logger.info(
+                            String.format(
+                                    "class=AbstractConsensual||method=canClaim||msg=task execute skip this node, because this node %s not in this task's nodeNameWhiteList %s, task info is %s",
+                                    nodeName,
+                                    nodeNameWhiteListString,
+                                    JSON.toJSONString(logITask)
+                            )
+                    );
+                }
+                return false;
+            }
+        }
+
         return tryClaim(logITask);
     }
 

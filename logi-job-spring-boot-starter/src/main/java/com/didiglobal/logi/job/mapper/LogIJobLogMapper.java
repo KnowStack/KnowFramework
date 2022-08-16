@@ -52,10 +52,7 @@ public interface LogIJobLogMapper {
                                              @Param("taskId") Long taskId,
                                              @Param("taskDesc") String taskDesc,
                                              @Param("jobStatus") Integer jobStatus,
-                                             @Param("start") Integer start,
-                                             @Param("size") Integer size,
-                                             @Param("sortName") String sortName,
-                                             @Param("sortAsc") String sortAsc,
+                                             @Param("start") Integer start, @Param("size") Integer size,
                                              @Param("beginTime") Timestamp beginTime,
                                              @Param("endTime") Timestamp endTime);
 

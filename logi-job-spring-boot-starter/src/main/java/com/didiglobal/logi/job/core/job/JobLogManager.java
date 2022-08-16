@@ -11,7 +11,7 @@ public interface JobLogManager {
      * @param pageQueryDTO 分页查询条件
      * @return 查询信息
      */
-    List<LogIJobLogVO> pageJobLogs(TaskLogPageQueryDTO pageQueryDTO);
+    List<LogIJobLogVO> pagineJobLogs(TaskLogPageQueryDTO pageQueryDTO);
 
     /**
      * @param pageQueryDTO 分页查询条件

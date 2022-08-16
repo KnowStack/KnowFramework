@@ -1,5 +1,6 @@
 package com.didiglobal.logi.job.core.consensual;
 
+import com.didiglobal.logi.job.LogIJobProperties;
 import com.didiglobal.logi.job.common.domain.LogITask;
 
 /**
@@ -14,7 +15,8 @@ public interface Consensual {
     /**
      * 节点能否执行任务.
      * @param logITask 任务
+     * @param logIJobProperties node配置
      * @return 是否能认领
      */
-    boolean canClaim(LogITask logITask);
+    boolean canClaim(LogITask logITask, LogIJobProperties logIJobProperties);
 }

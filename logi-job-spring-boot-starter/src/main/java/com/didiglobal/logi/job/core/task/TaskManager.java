@@ -125,4 +125,11 @@ public interface TaskManager {
      */
     LogITask getByCode(String taskCode);
 
+    /**
+     * 添加任务
+     * @param dto 待添加任务信息
+     * @return 任务添加结果
+     */
+    Result add(LogITaskDTO dto);
+
 }

@@ -40,14 +40,14 @@ public class SimpleBeatMonitor implements BeatMonitor {
 
     @Override
     public void stop() {
-        logger.info("class=SimpleBeatMonitor||method=stop||msg=beat monitor stopByJobCode!!!");
+        logger.info("class=SimpleBeatMonitor||method=stopByJobCode||url=||msg=beat monitor stopByJobCode!!!");
         try {
             beatManager.stop();
             if (monitorThread != null && monitorThread.isAlive()) {
                 monitorThread.interrupt();
             }
         } catch (Exception e) {
-            logger.error("class=SimpleBeatMonitor||method=stop||msg=exception!", e);
+            logger.error("class=SimpleBeatMonitor||method=stopByJobCode||url=||msg=", e);
         }
     }
 
@@ -61,7 +61,7 @@ public class SimpleBeatMonitor implements BeatMonitor {
 
                     beatManager.beat();
                 } catch (Exception e) {
-                    logger.info("class=SimpleBeatMonitor||method=run||msg=exception!", e);
+                    logger.info("class=SimpleBeatMonitor||method=run||url=||msg=", e);
                 }
             }
         }

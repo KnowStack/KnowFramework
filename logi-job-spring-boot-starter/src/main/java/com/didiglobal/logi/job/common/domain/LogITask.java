@@ -37,6 +37,11 @@ public class LogITask {
 
     private TaskCallback taskCallback;
 
+    /**
+     * 执行节点白名单集
+     */
+    private String nodeNameWhiteListStr;
+
     @Data
     @AllArgsConstructor
     @NoArgsConstructor

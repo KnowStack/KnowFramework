@@ -28,7 +28,7 @@ public class RandomConsensual extends AbstractConsensual {
     public boolean tryClaim(LogITask logITask) {
         if (taskLockService.tryAcquire(logITask.getTaskCode())) {
             logITask.setTaskCallback(taskCode -> {
-                logger.info("class=RandomConsensual||method=tryClaim||msg=release task lock "
+                logger.info("class=RandomConsensual||method=tryClaim||url=||msg=release task lock "
                         + "taskCode {}", taskCode);
                 taskLockService.tryRelease(taskCode);
             });

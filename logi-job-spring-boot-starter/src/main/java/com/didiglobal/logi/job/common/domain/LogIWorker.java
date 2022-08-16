@@ -38,6 +38,8 @@ public class LogIWorker {
 
     private String appName;
 
+    private String nodeName;
+
     /**
      * get auv worker.
      *
@@ -57,6 +59,7 @@ public class LogIWorker {
         logIWorkerPO.setJobNum(this.jobNum);
         logIWorkerPO.setHeartbeat(new Timestamp(System.currentTimeMillis()));
         logIWorkerPO.setAppName(this.appName);
+        logIWorkerPO.setNodeName(this.nodeName);
         return logIWorkerPO;
     }
 }

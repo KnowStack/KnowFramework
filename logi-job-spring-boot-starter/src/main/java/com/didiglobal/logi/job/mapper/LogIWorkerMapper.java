@@ -17,34 +17,25 @@ import java.util.List;
 public interface LogIWorkerMapper {
 
     @Insert("INSERT INTO logi_worker(worker_code, worker_name, ip, cpu, cpu_used, memory, memory_used, jvm_memory, "
-            + "jvm_memory_used, job_num, heartbeat, app_name) "
+            + "jvm_memory_used, job_num, heartbeat, app_name, node_name) "
             + "VALUES(#{workerCode}, #{workerName}, #{ip}, #{cpu}, #{cpuUsed}, "
-            + "#{memory}, #{memoryUsed}, #{jvmMemory}, #{jvmMemoryUsed}, #{jobNum}, #{heartbeat}, #{appName})")
+            + "#{memory}, #{memoryUsed}, #{jvmMemory}, #{jvmMemoryUsed}, #{job_num}, #{heartbeat}, #{appName}, #{nodeName})")
     int insert(LogIWorkerPO logIWorkerPO);
 
     @Update("INSERT INTO logi_worker(worker_code, worker_name, ip, cpu, cpu_used, memory, memory_used, jvm_memory, "
-            + "jvm_memory_used, job_num, heartbeat, app_name) "
+            + "jvm_memory_used, job_num, heartbeat, app_name, node_name) "
             + "VALUES(#{workerCode}, #{workerName}, #{ip}, #{cpu}, #{cpuUsed}, "
-            + "#{memory}, #{memoryUsed}, #{jvmMemory}, #{jvmMemoryUsed}, #{jobNum}, #{heartbeat}, #{appName}) "
+            + "#{memory}, #{memoryUsed}, #{jvmMemory}, #{jvmMemoryUsed}, #{jobNum}, #{heartbeat}, #{appName}, #{nodeName}) "
             + "ON DUPLICATE KEY UPDATE cpu=#{cpu}, worker_name=#{workerName}, ip=#{ip}, cpu_used=#{cpuUsed}, "
             + "memory=#{memory}, memory_used=#{memoryUsed}, jvm_memory=#{jvmMemory}, "
-            + "jvm_memory_used=#{jvmMemoryUsed}, job_num=#{jobNum}, heartbeat=#{heartbeat}, app_name=#{appName}")
+            + "jvm_memory_used=#{jvmMemoryUsed}, job_num=#{jobNum}, heartbeat=#{heartbeat}, app_name=#{appName}, node_name=#{nodeName}")
     int saveOrUpdateById(LogIWorkerPO logIWorkerPO);
-
-    @Update("update logi_worker set cpu=#{cpu}, worker_name=#{workerName}, ip=#{ip}, cpu_used=#{cpuUsed}, "
-            + "memory=#{memory}, memory_used=#{memoryUsed}, jvm_memory=#{jvmMemory}, "
-            + "jvm_memory_used=#{jvmMemoryUsed}, job_num=#{jobNum}, heartbeat=#{heartbeat}, app_name=#{appName} where worker_code=#{workerCode} and app_name=#{appName}")
-    int updateByCode(LogIWorkerPO logIWorkerPO);
-
-    @Select("select id, worker_code, worker_name, ip, cpu, cpu_used, memory, memory_used, jvm_memory, jvm_memory_used, job_num, heartbeat, app_name "
-            + "from logi_worker where worker_code=#{workerCode} and app_name=#{appName}")
-    LogIWorkerPO selectByCode(@Param("workerCode") String code, @Param("appName") String appName);
 
     @Delete("delete from logi_worker where worker_code=#{workerCode}")
     int deleteByCode(@Param("workerCode") String code);
 
     @Select("select worker_code, worker_name, ip, cpu, cpu_used, memory, memory_used, jvm_memory,"
-            + "jvm_memory_used, job_num, heartbeat, app_name, update_time from logi_worker where app_name=#{appName}")
+            + "jvm_memory_used, job_num, heartbeat, app_name, update_time, node_name from logi_worker where app_name=#{appName}")
     List<LogIWorkerPO> selectByAppName(@Param("appName") String appName);
 
     @Select("select count(1) from logi_worker where app_name=#{appName}")
