@@ -45,6 +45,10 @@ public interface LogITaskLockMapper {
     @Delete("delete from logi_task_lock where id=#{id}")
     int deleteById(@Param("id") Long id);
 
+    @Delete("delete from logi_task_lock where worker_code=#{workerCode} and app_name=#{appName}")
+    int deleteByWorkerCodeAndAppName(@Param("workerCode") String workerCode,
+                                     @Param("appName") String appName);
+
     int deleteByIds(List<Long> ids);
 
 }

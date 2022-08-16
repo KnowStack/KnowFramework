@@ -2,12 +2,9 @@ package com.didiglobal.logi.job.rest;
 
 import com.didiglobal.logi.job.common.PagingResult;
 import com.didiglobal.logi.job.common.dto.TaskLogPageQueryDTO;
-import com.didiglobal.logi.job.common.dto.TaskPageQueryDTO;
 import com.didiglobal.logi.job.common.vo.LogIJobLogVO;
 import com.didiglobal.logi.job.core.job.JobLogManager;
 import io.swagger.annotations.Api;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -27,9 +24,9 @@ public class JobLogsController {
 
     @PostMapping("/list")
     public PagingResult<LogIJobLogVO> getJobLogs(@RequestBody TaskLogPageQueryDTO pageQueryDTO) {
-        List<LogIJobLogVO> logIJobLogVOS = jobLogManager.pagineJobLogs(pageQueryDTO);
-        int taotalCount = jobLogManager.getJobLogsCount(pageQueryDTO);
+        List<LogIJobLogVO> logIJobLogVOS = jobLogManager.pageJobLogs(pageQueryDTO);
+        int totalCount = jobLogManager.getJobLogsCount(pageQueryDTO);
 
-        return PagingResult.buildSucc(logIJobLogVOS, taotalCount, pageQueryDTO.getPage(), pageQueryDTO.getSize());
+        return PagingResult.buildSucc(logIJobLogVOS, totalCount, pageQueryDTO.getPage(), pageQueryDTO.getSize());
     }
 }

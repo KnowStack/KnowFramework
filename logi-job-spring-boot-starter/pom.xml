@@ -6,7 +6,7 @@
 
     <groupId>io.github.zqrferrari</groupId>
     <artifactId>logi-job-spring-boot-starter</artifactId>
-    <version>1.0.10</version>
+    <version>1.0.27</version>
     <packaging>jar</packaging>
     <name>${project.groupId}:${project.artifactId}</name>
     <description>logi-job 提供分布式的定时调度服务</description>
@@ -72,6 +72,14 @@
                     <artifactId>classmate</artifactId>
                     <groupId>com.fasterxml</groupId>
                 </exclusion>
+                <exclusion>
+                    <groupId>org.apache.logging.log4j</groupId>
+                    <artifactId>log4j-api</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.apache.logging.log4j</groupId>
+                    <artifactId>log4j-to-slf4j</artifactId>
+                </exclusion>
             </exclusions>
         </dependency>
 
@@ -79,7 +87,7 @@
             <groupId>org.mariadb.jdbc</groupId>
             <artifactId>mariadb-java-client</artifactId>
             <scope>runtime</scope>
-            <version>2.5.4</version>
+            <version>1.3.0</version>
         </dependency>
 
         <dependency>

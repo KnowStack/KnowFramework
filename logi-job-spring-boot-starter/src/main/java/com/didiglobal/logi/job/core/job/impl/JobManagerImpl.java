@@ -16,6 +16,8 @@ import com.didiglobal.logi.job.core.task.TaskLockService;
 import com.didiglobal.logi.job.mapper.*;
 import com.didiglobal.logi.job.utils.BeanUtil;
 import com.didiglobal.logi.job.utils.ThreadUtil;
+import com.google.common.cache.Cache;
+import com.google.common.cache.CacheBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -68,6 +70,9 @@ public class JobManagerImpl implements JobManager {
     private LogIJobProperties logIJobProperties;
 
     private ConcurrentHashMap<LogIJob, Future> jobFutureMap = new ConcurrentHashMap<>();
+
+    private final Cache<String, String> execuedJob = CacheBuilder.newBuilder()
+            .expireAfterWrite(5, TimeUnit.MINUTES).maximumSize(1000).build();
 
     /**
      * construct
@@ -273,7 +278,7 @@ public class JobManagerImpl implements JobManager {
                     // 间隔一段时间执行一次
                     ThreadUtil.sleep(JOB_FUTURE_CLEAN_INTERVAL, TimeUnit.SECONDS);
 
-                    logger.info("class=JobFutureHandler||method=run||url=||msg=check running jobs at regular "
+                    logger.info("class=JobFutureHandler||method=run||msg=check running jobs at regular "
                             + "time {}", JOB_FUTURE_CLEAN_INTERVAL);
 
                     // 定时轮询任务，检查状态并处理
@@ -281,6 +286,7 @@ public class JobManagerImpl implements JobManager {
                         // job完成，信息整理
                         if (future.isDone()) {
                             reorganizeFinishedJob(jobInfo);
+                            return;
                         }
 
                         // 超时处理
@@ -288,16 +294,18 @@ public class JobManagerImpl implements JobManager {
                         if (timeout <= 0) {
                             return;
                         }
+
                         Long startTime = jobInfo.getStartTime().getTime();
                         Long now = System.currentTimeMillis();
                         Long between = (now - startTime) / 1000;
 
                         if (between > timeout && !future.isDone()) {
+                            jobInfo.setStatus(JobStatusEnum.CANCELED.getValue());
                             future.cancel(true);
                         }
                     }));
                 } catch (Exception e) {
-                    logger.error("class=JobFutureHandler||method=run||url=||msg=", e);
+                    logger.error("class=JobFutureHandler||method=run||msg=exception!", e);
                 }
             }
         }
@@ -312,6 +320,8 @@ public class JobManagerImpl implements JobManager {
     public void reorganizeFinishedJob(LogIJob logIJob) {
         // 移除记录
         jobFutureMap.remove(logIJob);
+
+        execuedJob.put(logIJob.getTaskCode(), logIJob.getTaskCode());
 
         if (JobStatusEnum.CANCELED.getValue().equals(logIJob.getStatus())) {
             logIJob.setResult(new TaskResult(FAIL_CODE, "task job be canceld!"));
@@ -348,7 +358,7 @@ public class JobManagerImpl implements JobManager {
             }
         }
         logITaskPO.setTaskWorkerStr(BeanUtil.convertToJson(taskWorkers));
-        logITaskMapper.updateByCode(logITaskPO);
+        logITaskMapper.updateTaskWorkStrByCode(logITaskPO);
     }
 
     /**
@@ -364,7 +374,7 @@ public class JobManagerImpl implements JobManager {
         public void run() {
             while (true) {
                 try {
-                    logger.info("class=LockRenewHandler||method=run||url=||msg=check need renew lock at "
+                    logger.info("class=LockRenewHandler||method=run||msg=check need renew lock at "
                             + "regular time {}", JOB_INTERVAL);
 
                     // 锁续约
@@ -372,32 +382,32 @@ public class JobManagerImpl implements JobManager {
                             .getInstance().getLogIWorker().getWorkerCode(), logIJobProperties.getAppName());
 
                     if (!CollectionUtils.isEmpty(logITaskLockPOS)) {
-                        for (LogITaskLockPO logITaskLockPO : logITaskLockPOS) {
-                            boolean matched = jobFutureMap.keySet().stream().anyMatch(jobInfo ->
-                                    Objects.equals(logITaskLockPO.getTaskCode(), jobInfo.getTaskCode()));
-                            if (matched) {
-                                long current = System.currentTimeMillis() / 1000;
-                                long exTime = (logITaskLockPO.getCreateTime().getTime() / 1000)
-                                        + logITaskLockPO.getExpireTime();
+                        long current = System.currentTimeMillis() / 1000;
 
-                                if (current < exTime) {
-                                    // 续约
-                                    if (current > exTime - CHECK_BEFORE_INTERVAL) {
-                                        logger.info("class=TaskLockServiceImpl||method=run||url=||msg=update lock "
-                                                        + "expireTime id={}, expireTime={}", logITaskLockPO.getId(),
-                                                logITaskLockPO.getExpireTime());
-                                        logITaskLockMapper.update(
-                                                logITaskLockPO.getId(),
-                                                logITaskLockPO.getExpireTime() + RENEW_INTERVAL);
-                                    }
-                                    continue;
+                        for (LogITaskLockPO logITaskLockPO : logITaskLockPOS) {
+                            long exTime = (logITaskLockPO.getCreateTime().getTime() / 1000)
+                                    + logITaskLockPO.getExpireTime();
+
+                            if (null != execuedJob.getIfPresent(logITaskLockPO.getTaskCode())) {
+                                // 续约
+                                if (current < exTime && current > exTime - CHECK_BEFORE_INTERVAL) {
+                                    logger.info("class=TaskLockServiceImpl||method=run||msg=update lock "
+                                                    + "expireTime id={}, expireTime={}", logITaskLockPO.getId(),
+                                            logITaskLockPO.getExpireTime());
+                                    logITaskLockMapper.update(
+                                            logITaskLockPO.getId(),
+                                            logITaskLockPO.getExpireTime() + RENEW_INTERVAL);
                                 }
+                                continue;
                             }
 
                             // 否则，删除无效的锁、过期的锁
-                            logger.info("class=TaskLockServiceImpl||method=run||url=||msg=lock clean "
-                                    + "lockInfo={}", BeanUtil.convertToJson(logITaskLockPO));
-                            logITaskLockMapper.deleteById(logITaskLockPO.getId());
+                            if(current > exTime){
+                                logger.info("class=TaskLockServiceImpl||method=run||msg=lock clean "
+                                        + "lockInfo={}", BeanUtil.convertToJson(logITaskLockPO));
+                                logITaskLockMapper.deleteById(logITaskLockPO.getId());
+                            }
+
 
                             // 更新当前worker任务状态
                             LogITaskPO logITaskPO = logITaskMapper
@@ -416,16 +426,15 @@ public class JobManagerImpl implements JobManager {
                                 }
                                 logITaskPO.setTaskWorkerStr(BeanUtil.convertToJson(taskWorkers));
 
-                                logger.info("class=TaskLockServiceImpl||method=run||url=||msg=update task workers "
+                                logger.info("class=TaskLockServiceImpl||method=run||msg=update task workers "
                                         + "status taskInfo={}", BeanUtil.convertToJson(logITaskPO));
 
-                                logITaskMapper.updateByCode(logITaskPO);
+                                logITaskMapper.updateTaskWorkStrByCode(logITaskPO);
                             }
                         }
                     }
-
                 } catch (Exception e) {
-                    logger.error("class=LockRenewHandler||method=run||url=||msg=", e);
+                    logger.error("class=LockRenewHandler||method=run||msg=exception!", e);
                 }
 
                 ThreadUtil.sleep(JOB_INTERVAL, TimeUnit.SECONDS);
@@ -455,19 +464,17 @@ public class JobManagerImpl implements JobManager {
                     // 间隔一段时间执行一次
                     ThreadUtil.sleep(JOB_INTERVAL, TimeUnit.SECONDS);
 
-                    logger.info("class=LogCleanHandler||method=run||url=||msg=clean auv_job_log regular"
+                    logger.info("class=LogCleanHandler||method=run||msg=clean auv_job_log regular"
                             + " time {}", JOB_INTERVAL);
 
                     // 删除日志
-                    Calendar calendar = Calendar.getInstance();
-                    calendar.add(Calendar.DATE, -1 * logExpire);
                     int count = logIJobLogMapper.deleteByCreateTime(
-                            new Timestamp(calendar.getTimeInMillis()), logIJobProperties.getAppName()
+                            new Timestamp(System.currentTimeMillis() - logExpire * 24 * 3600 * 1000), logIJobProperties.getAppName()
                     );
 
-                    logger.info("class=LogCleanHandler||method=run||url=||msg=clean log count={}", count);
+                    logger.info("class=LogCleanHandler||method=run||msg=clean log count={}", count);
                 } catch (Exception e) {
-                    logger.error("class=LogCleanHandler||method=run||url=||msg=", e);
+                    logger.error("class=LogCleanHandler||method=run||msg=exception", e);
                 }
             }
         }

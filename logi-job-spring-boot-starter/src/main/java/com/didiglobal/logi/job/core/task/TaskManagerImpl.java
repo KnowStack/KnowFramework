@@ -34,6 +34,8 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
+import static com.didiglobal.logi.job.core.monitor.SimpleTaskMonitor.SCAN_INTERVAL_SLEEP_SECONDS;
+
 /**
  * task manager impl.
  *
@@ -102,31 +104,82 @@ public class TaskManagerImpl implements TaskManager {
 
         logITaskList = logITaskList.stream().filter(taskInfo -> {
             try {
-                Timestamp lastFireTime = new Timestamp(0L);
-                List<LogITask.TaskWorker> taskWorkers = taskInfo.getTaskWorkers();
-                for (LogITask.TaskWorker taskWorker : taskWorkers) {
-                    // 取到当前worker做进一步判断，如果没有找到证明没有执行过
-                    if (Objects.equals(WorkerSingleton.getInstance().getLogIWorker().getWorkerCode(),
-                            taskWorker.getWorkerCode())) {
-                        // 判断是否在当前worker可执行状态
-                        if (!Objects.equals(taskWorker.getStatus(), TaskWorkerStatusEnum.WAITING.getValue())) {
-                            logger.info("class=TaskManagerImpl||method=nextTriggers||url=||msg=has task running! "
-                                            + "taskCode={}, workerCode={}", taskInfo.getTaskCode(),
-                                    taskWorker.getWorkerCode());
-                            return false;
+                if(ConsensualEnum.RANDOM.name().equals(taskInfo.getConsensual())){
+                    Timestamp lastFireTime = taskInfo.getLastFireTime();
+
+                    List<LogITask.TaskWorker> taskWorkers = taskInfo.getTaskWorkers();
+                    for (LogITask.TaskWorker taskWorker : taskWorkers) {
+                        // 取到当前worker做进一步判断，如果没有找到证明没有执行过
+                        if (Objects.equals(WorkerSingleton.getInstance().getLogIWorker().getWorkerCode(),
+                                taskWorker.getWorkerCode())) {
+                            // 判断是否在当前worker可执行状态
+                            if (!Objects.equals(taskWorker.getStatus(), TaskWorkerStatusEnum.WAITING.getValue())) {
+                                logger.info("class=TaskManagerImpl||method=nextTriggers||msg=has task running! "
+                                                + "taskCode={}, workerCode={}", taskInfo.getTaskCode(),
+                                        taskWorker.getWorkerCode());
+                                return false;
+                            }
+                            break;
                         }
-                        lastFireTime = taskWorker.getLastFireTime();
-                        break;
                     }
+
+                    CronExpression cronExpression = new CronExpression(taskInfo.getCron());
+                    long nextTime = cronExpression.getNextValidTimeAfter(lastFireTime).getTime();
+                    taskInfo.setNextFireTime(new Timestamp(nextTime));
+
+                    Timestamp timestamp = new Timestamp(fromTime + interval * 1000);
+                    return timestamp.after(taskInfo.getNextFireTime());
+                }else if(ConsensualEnum.BROADCAST.name().equals(taskInfo.getConsensual())){
+                    List<LogITask.TaskWorker> taskWorkers = taskInfo.getTaskWorkers();
+                    Timestamp lastFireTime = new Timestamp(0L);
+
+                    for (LogITask.TaskWorker taskWorker : taskWorkers) {
+                        // 取到当前worker做进一步判断，如果没有找到证明没有执行过
+                        if (Objects.equals(WorkerSingleton.getInstance().getLogIWorker().getWorkerCode(),
+                                taskWorker.getWorkerCode())) {
+
+                            lastFireTime = taskWorker.getLastFireTime();
+                        }
+                    }
+
+                    CronExpression cronExpression = new CronExpression(taskInfo.getCron());
+                    long nextTime = cronExpression.getNextValidTimeAfter(lastFireTime).getTime();
+                    taskInfo.setNextFireTime(new Timestamp(nextTime));
+
+                    Timestamp timestamp = new Timestamp(fromTime + interval * 1000);
+
+                    if(timestamp.after(new Timestamp(nextTime))){
+                        if((nextTime + SCAN_INTERVAL_SLEEP_SECONDS * 1000) < fromTime
+                                && fromTime < (nextTime + 2 * SCAN_INTERVAL_SLEEP_SECONDS * 1000)){
+                            logger.info("class=TaskManagerImpl||method=nextTriggers||nextTime={}||fromTime={}||msg=skip broadcast duplicate trigger!",
+                                    nextTime, fromTime);
+
+                            for (LogITask.TaskWorker taskWorker : taskWorkers) {
+                                if (Objects.equals(WorkerSingleton.getInstance().getLogIWorker().getWorkerCode(),
+                                        taskWorker.getWorkerCode())) {
+
+                                    taskWorker.setLastFireTime(new Timestamp(nextTime));
+
+                                    LogITaskPO logITaskPO = BeanUtil.convertTo(taskInfo, LogITaskPO.class);
+                                    logITaskPO.setTaskWorkerStr(BeanUtil.convertToJson(taskWorkers));
+
+                                    logITaskMapper.updateTaskWorkStrByCode(logITaskPO);
+                                    return false;
+                                }
+                            }
+                        }
+
+                        return true;
+                    }
+
+                    return false;
                 }
-                CronExpression cronExpression = new CronExpression(taskInfo.getCron());
-                long nextTime = cronExpression.getNextValidTimeAfter(lastFireTime).getTime();
-                taskInfo.setNextFireTime(new Timestamp(nextTime));
+
+                return false;
             } catch (Exception e) {
-                logger.error("class=TaskManagerImpl||method=nextTriggers||url=||msg=", e);
+                logger.error("class=TaskManagerImpl||method=nextTriggers||msg=exception!", e);
                 return false;
             }
-            return (new Timestamp(fromTime + interval * 1000)).after(taskInfo.getNextFireTime());
         }).collect(Collectors.toList());
 
         // sort
@@ -438,6 +491,7 @@ public class TaskManagerImpl implements TaskManager {
         if (logITaskPO == null) {
             return false;
         }
+
         List<LogITask.TaskWorker> taskWorkers = BeanUtil.convertToList(logITaskPO.getTaskWorkerStr(),
                 LogITask.TaskWorker.class);
         boolean needUpdate = false;
@@ -450,9 +504,10 @@ public class TaskManagerImpl implements TaskManager {
                 }
             }
         }
+
         if (needUpdate) {
             logITaskPO.setTaskWorkerStr(BeanUtil.convertToJson(taskWorkers));
-            int updateResult = logITaskMapper.updateByCode(logITaskPO);
+            int updateResult = logITaskMapper.updateTaskWorkStrByCode(logITaskPO);
             if (updateResult <= 0) {
                 return false;
             }

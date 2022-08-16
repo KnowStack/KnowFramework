@@ -8,7 +8,8 @@ public enum JobStatusEnum {
     RUNNING(1),
     SUCCEED(2),
     FAILED(3),
-    CANCELED(4);
+    CANCELED(4),
+    TIMEOUT(5);
 
     private static Map<Integer, JobStatusEnum> map = new HashMap<>(8);
 
@@ -17,6 +18,7 @@ public enum JobStatusEnum {
         map.put(SUCCEED.getValue(), SUCCEED);
         map.put(FAILED.getValue(), FAILED);
         map.put(CANCELED.getValue(), CANCELED);
+        map.put(TIMEOUT.getValue(), TIMEOUT);
     }
 
     private Integer value;

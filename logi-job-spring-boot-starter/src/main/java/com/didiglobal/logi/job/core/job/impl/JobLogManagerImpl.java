@@ -26,6 +26,15 @@ public class JobLogManagerImpl implements JobLogManager {
     private LogIJobLogMapper logIJobLogMapper;
     private LogIJobProperties logIJobProperties;
 
+    private final static String SORT_DESC   = "desc";
+    private final static String SORT_ASC    = "asc";
+
+    private final static String SORT_ID             = "id";
+    private final static String SORT_STATUS         = "status";
+    private final static String SORT_RESULT         = "result";
+    private final static String SORT_CREATE_TIME    = "create_time";
+    private final static String SORT_START_TIME     = "start_time";
+    private final static String SORT_END_TIME       = "end_time";
 
     @Autowired
     public JobLogManagerImpl(TaskManager taskManager,
@@ -37,7 +46,7 @@ public class JobLogManagerImpl implements JobLogManager {
     }
 
     @Override
-    public List<LogIJobLogVO> pagineJobLogs(TaskLogPageQueryDTO dto) {
+    public List<LogIJobLogVO> pageJobLogs(TaskLogPageQueryDTO dto) {
         Map<Long, LogITask> longLogITaskMap = new HashMap<>();
 
         Timestamp beginTimestamp = null;
@@ -54,6 +63,7 @@ public class JobLogManagerImpl implements JobLogManager {
         List<LogIJobLogPO> logIJobLogPOS = logIJobLogMapper.pagineListByCondition(logIJobProperties.getAppName(),
                 dto.getTaskId(), dto.getTaskDesc(), dto.getTaskStatus(),
                 (dto.getPage() - 1) * dto.getSize(), dto.getSize(),
+                genSortName(dto.getSortName()) , genSort(dto.getSortAsc()),
                 beginTimestamp, endTimestamp);
 
         if (CollectionUtils.isEmpty(logIJobLogPOS)) {
@@ -94,5 +104,21 @@ public class JobLogManagerImpl implements JobLogManager {
         return logIJobLogMapper.pagineCountByCondition(logIJobProperties.getAppName(),
                 dto.getTaskId(), dto.getTaskDesc(), dto.getTaskStatus(),
                 beginTimestamp, endTimestamp);
+    }
+
+    private String genSortName(String sortName){
+        if(SORT_STATUS.equals(sortName)){return SORT_STATUS;}
+        if(SORT_RESULT.equals(sortName)){return SORT_RESULT;}
+        if(SORT_CREATE_TIME.equals(sortName)){return SORT_CREATE_TIME;}
+        if(SORT_START_TIME.equals(sortName)){return SORT_START_TIME;}
+        if(SORT_END_TIME.equals(sortName)){return SORT_END_TIME;}
+
+        return SORT_ID;
+    }
+
+    private String genSort(String sortAsc){
+        if(SORT_DESC.equals(sortAsc)){return SORT_DESC;}
+
+        return SORT_ASC;
     }
 }
