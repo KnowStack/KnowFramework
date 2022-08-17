@@ -48,7 +48,7 @@ logi-security相关界面并没提供【角色权限元数据、资源类别数�
 ### 2.2 功能支持
 主要提供：分布式定时调度服务、任务管理、分布式锁等功能
 - 分布式定时调度服务：添加指定注解，并实现规定的接口，编写待调度的方法；
-- 任务管理模块：提供查看任务列表、任务详情、手动执行任务、变更任务状态、任务日志等功能；
+- 任务管理模块：提供查看任务列表、任务详情、手动执行任务、手动添加执行任务、指定任务执行 node、变更任务状态、任务日志等功能；
 - 分布式锁机制：确保多系统下，对于临界资源的保护，和调节调度秩序，防饿死。
 ### 2.3 使用方式
 #### 2.3.1 添加Maven
@@ -56,7 +56,7 @@ logi-security相关界面并没提供【角色权限元数据、资源类别数�
 <dependency>
     <groupId>io.github.zqrferrari</groupId>
     <artifactId>logi-job-spring-boot-starter</artifactId>
-    <version>1.0.10</version>
+    <version>1.0.27</version>
 </dependency>
 ```
 #### 2.3.2 配置信息
@@ -75,6 +75,7 @@ spring:
     log-exipre: 3  #日志保存天数，以天为单位
     app_name: arius_test02 #应用名，用户隔离机器和环境
     claim-strategy: com.didiglobal.logi.job.core.consensual.RandomConsensual #调度策略，有两种随机和广播，默认是随机
+    node-name: node1 # executor node 名，须唯一
 ```
 #### 2.3.3 使用样例
 ```java
@@ -105,6 +106,27 @@ public class ESMonitorJobTask implements Job {
     }
 }
 ```
+#### 2.3.4 动态添加采集任务
+
+```
+URL：localhost:8088/v1/logi-job/task
+
+Http Method：Post
+
+Request Body：{
+    "name": "带参数的定时任务",
+    "description": "带参数的定时任务",
+    "cron": "0 0/1 * * * ? *",
+    "className": "com.didiglobal.logi.job.examples.task.JobBroadcasWithParamtTest",
+    "params": "{\"name\":\"william\", \"age\":30}",
+    "retryTimes": null,
+    "consensual": "RANDOM",
+    "nodeNameWhiteListString": "[\"node1\"]"
+}
+```
+
+
+
 ## 3.logi-log
 ### 3.1 介绍
 集成了：logi-log-log、logi-log-log4j2。
