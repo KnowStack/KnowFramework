@@ -269,7 +269,7 @@ public class TypeDefineOperator {
         }
 
         // 移除高版本不兼容字段
-        define.remove(ES_LOW_STRING_FIELDDATA_STR);
+        //define.remove(ES_LOW_STRING_FIELDDATA_STR);
         define.remove(INCLUDE_IN_ALL_STR);
         define.remove(PRECISION_STEP_STR);
     }
