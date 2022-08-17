@@ -56,10 +56,8 @@ public class AggsParser extends DslParser  {
                 valueNode = ParserRegister.parse(parserType, key, jsonObject.get(key));
                 if(valueNode==null) {
                     throw new Exception("unknown json, json:" + key);
-//                    valueNode = ValueNode.getValueNode(jsonObject.get(key));
                 }
             }
-
             m.m.put(keyNode, valueNode);
         }
 
@@ -102,6 +100,7 @@ public class AggsParser extends DslParser  {
         ParserRegister.registe(ParserType.AGGR, "global",    			new GlobalParser(ParserType.AGGR));
         ParserRegister.registe(ParserType.AGGR, "ip_range",    		new IpRangeParser(ParserType.AGGR));
         ParserRegister.registe(ParserType.AGGR, "missing",      		new AggrMissingParser(ParserType.AGGR));
+        ParserRegister.registe(ParserType.AGGR, "max_bucket",      		new AggrMissingParser(ParserType.AGGR));
 
 
         ParserRegister.registe(ParserType.AGGR, "bool",    	new BoolParser(ParserType.QUERY));
