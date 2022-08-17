@@ -16,6 +16,7 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
@@ -77,6 +78,7 @@ public class TaskBeanPostProcessor implements BeanPostProcessor {
                 LogITaskPO task = getNewLogTask(beanClass, taskAnnotation);
                 task.setTaskCode(IdWorker.getIdStr());
                 task.setStatus(TaskStatusEnum.RUNNING.getValue());
+                task.setNodeNameWhiteListStr(StringUtils.EMPTY);
                 logITaskMapper.insert(task);
             }else {
                 LogITaskPO task = taskMap.get(beanClass.getCanonicalName());
