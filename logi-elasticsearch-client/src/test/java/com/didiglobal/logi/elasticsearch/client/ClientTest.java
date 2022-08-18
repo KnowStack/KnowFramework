@@ -90,7 +90,7 @@ public class ClientTest {
                     "Basic " + Base64.getEncoder().encodeToString(String.format("%s:%s", "1", "azAWiJhxkho33ac").getBytes()));
             gatewayClient = new ESClient();
             gatewayClient.setHeader(header);
-            gatewayClient.addTransportAddress(new InetSocketTransportAddress(InetAddress.getByName("localhost"), 8200));
+            gatewayClient.addTransportAddress(new InetSocketTransportAddress(InetAddress.getByName("10.190.40.10"), 8200));
             gatewayClient.start();
         } catch (UnknownHostException e) {
             throw new RuntimeException(e);
@@ -114,9 +114,7 @@ public class ClientTest {
 		queryRequest.source(json);
 		
 		ESQueryResponse esSearchResponse = gatewayClient.query(queryRequest).actionGet(120, TimeUnit.SECONDS);
-		for (ESBucket hist : esSearchResponse.getAggs().getEsAggrMap().get("hist").getBucketList()) {
-			System.out.println(hist.getUnusedMap());
-		}
+        System.out.println(JSON.toJSONString(esSearchResponse.toJson(),true));
 	}
     @Test
    public void setTemplate() throws ExecutionException, InterruptedException {

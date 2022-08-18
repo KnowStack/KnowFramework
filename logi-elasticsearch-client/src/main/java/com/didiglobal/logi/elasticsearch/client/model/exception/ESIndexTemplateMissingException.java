@@ -1,7 +1,5 @@
 package com.didiglobal.logi.elasticsearch.client.model.exception;
 
-import java.io.IOException;
-
 public class ESIndexTemplateMissingException extends RuntimeException {
     private Throwable t;
 
@@ -13,7 +11,11 @@ public class ESIndexTemplateMissingException extends RuntimeException {
     public String getMessage() {
         return t.getMessage();
     }
-
+    
+    public Throwable getT() {
+        return t;
+    }
+    
     public static boolean check(Throwable t) {
         String str = t.getMessage();
 
