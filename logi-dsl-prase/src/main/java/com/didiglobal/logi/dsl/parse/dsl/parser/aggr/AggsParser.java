@@ -100,7 +100,14 @@ public class AggsParser extends DslParser  {
         ParserRegister.registe(ParserType.AGGR, "global",    			new GlobalParser(ParserType.AGGR));
         ParserRegister.registe(ParserType.AGGR, "ip_range",    		new IpRangeParser(ParserType.AGGR));
         ParserRegister.registe(ParserType.AGGR, "missing",      		new AggrMissingParser(ParserType.AGGR));
-        ParserRegister.registe(ParserType.AGGR, "max_bucket",      		new AggrMissingParser(ParserType.AGGR));
+        ParserRegister.registe(ParserType.AGGR, "max_bucket", new AggrMissingParser(ParserType.AGGR));
+        ParserRegister.registe(ParserType.AGGR, "min_bucket", new AggrMissingParser(ParserType.AGGR));
+        ParserRegister.registe(ParserType.AGGR, "sum_bucket", new AggrMissingParser(ParserType.AGGR));
+        ParserRegister.registe(ParserType.AGGR, "bucket_sort", new AggrMissingParser(ParserType.AGGR));
+        ParserRegister.registe(ParserType.AGGR, "bucket_script", new AggrMissingParser(ParserType.AGGR));
+        ParserRegister.registe(ParserType.AGGR, "moving_fn", new AggrMissingParser(ParserType.AGGR));
+        ParserRegister.registe(ParserType.AGGR, "moving_percentiles", new AggrMissingParser(ParserType.AGGR));
+        ParserRegister.registe(ParserType.AGGR, "stats_bucket", new AggrMissingParser(ParserType.AGGR));
 
 
         ParserRegister.registe(ParserType.AGGR, "bool",    	new BoolParser(ParserType.QUERY));
