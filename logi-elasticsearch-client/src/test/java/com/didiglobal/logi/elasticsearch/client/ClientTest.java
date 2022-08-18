@@ -13,6 +13,7 @@ import com.didiglobal.logi.elasticsearch.client.request.index.putalias.PutAliasN
 import com.didiglobal.logi.elasticsearch.client.request.index.putalias.PutAliasType;
 import com.didiglobal.logi.elasticsearch.client.request.index.stats.IndicesStatsLevel;
 import com.didiglobal.logi.elasticsearch.client.request.ingest.Pipeline;
+import com.didiglobal.logi.elasticsearch.client.request.query.query.ESQueryRequest;
 import com.didiglobal.logi.elasticsearch.client.response.batch.ESBatchResponse;
 import com.didiglobal.logi.elasticsearch.client.response.cat.ESCatResponse;
 import com.didiglobal.logi.elasticsearch.client.response.cluster.ESClusterHealthResponse;
@@ -36,8 +37,13 @@ import com.didiglobal.logi.elasticsearch.client.response.ingest.ESDeletePipeline
 import com.didiglobal.logi.elasticsearch.client.response.ingest.ESGetPipelineResponse;
 import com.didiglobal.logi.elasticsearch.client.response.ingest.ESPutPipelineResponse;
 import com.didiglobal.logi.elasticsearch.client.response.query.query.ESQueryResponse;
+import com.didiglobal.logi.elasticsearch.client.response.query.query.aggs.ESBucket;
 import com.didiglobal.logi.elasticsearch.client.response.setting.common.TypeConfig;
 import com.didiglobal.logi.elasticsearch.client.response.setting.template.TemplateConfig;
+import com.google.common.collect.Lists;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.http.Header;
 import org.apache.http.message.BasicHeader;
 import org.elasticsearch.action.ActionListener;
@@ -64,8 +70,9 @@ public class ClientTest {
     private static ESClient client;
     private static ESClient gatewayClient;
 
-    private static String oldIp = "10.190.47.131";
-    private static String newIp = "10.190.11.77";
+    
+	private static String oldIp = "localhost";
+	private static String newIp = "localhost";
 
     static {
         try {
@@ -73,16 +80,17 @@ public class ClientTest {
             oldClient.addTransportAddress(new InetSocketTransportAddress(InetAddress.getByName(oldIp), 8060));
 //            oldClient.addTransportAddress(new InetSocketTransportAddress(InetAddress.getByName("10.179.28.230"), 9200));
 //            oldClient.addTransportAddress(new InetSocketTransportAddress(InetAddress.getByName("10.179.51.136"), 9200));
-            oldClient.start();
+//            oldClient.start();
 
             newClient = new ESClient();
             newClient.addTransportAddress(new InetSocketTransportAddress(InetAddress.getByName(newIp), 8060));
-            newClient.start();
+            //newClient.start();
 
-            Header header = new BasicHeader("Authorization", "Basic " + Base64.getEncoder().encodeToString(String.format("%s:%s", "1079", "admin").getBytes()));
+            Header header = new BasicHeader("Authorization",
+                    "Basic " + Base64.getEncoder().encodeToString(String.format("%s:%s", "1", "azAWiJhxkho33ac").getBytes()));
             gatewayClient = new ESClient();
             gatewayClient.setHeader(header);
-            gatewayClient.addTransportAddress(new InetSocketTransportAddress(InetAddress.getByName("10.179.117.215"), 8200));
+            gatewayClient.addTransportAddress(new InetSocketTransportAddress(InetAddress.getByName("localhost"), 8200));
             gatewayClient.start();
         } catch (UnknownHostException e) {
             throw new RuntimeException(e);
@@ -90,7 +98,39 @@ public class ClientTest {
 
         client = newClient;
     }
-
+	@Test
+	public void setGatewayClient() throws ExecutionException, InterruptedException {
+		String json = "{\"size\":0,\"query\":{\"bool\":{\"must\":[{\"term\":{\"cluster\":{\"value\":\"logi-elasticsearch-7.6.0\"}}},{\"term\":{\"node\":{\"value\":\"logi01-master01\"}}},{\"range\":{\"timestamp\":{\"gte\":1655879100000,\"lte\":1655879400000}}}]}},\"aggs\":{\"hist\":{\"terms\":{\"field\":\"node\",\"size\":5000,\"collect_mode\":\"breadth_first\"},\"aggs\":{\"hist\":{\"date_histogram\":{\"field\":\"timestamp\",\"fixed_interval\":\"1m\",\"time_zone\":\"Asia/Shanghai\",\"min_doc_count\":0},\"aggs\":{\"http-current_open\":{\"avg\":{\"field\":\"metrics.http-current_open\"}},\"indices-docs-count\":{\"max\":{\"field\":\"metrics.indices-docs-count\"}}}},\"current_max_value\":{\"max_bucket\":{\"buckets_path\":\"hist>http-current_open\"}},\"current_max_value2\":{\"max_bucket\":{\"buckets_path\":\"hist>indices-docs-count\"}},\"current_avg_value\":{\"avg_bucket\":{\"buckets_path\":\"hist>http-current_open\"}},\"current_avg_value2\":{\"avg_bucket\":{\"buckets_path\":\"hist>indices-docs-count\"}}}}}}";
+		System.out.println(json);
+		ESQueryRequest queryRequest = new ESQueryRequest();
+		//queryRequest.types("_type");
+		queryRequest.indices("arius_stats_node_info_2022-06-22");
+		queryRequest.filterPath(Lists.newArrayList(StringUtils.split(
+				"took,timed_out,_shards,hits,aggregations.hist.buckets.key,aggregations.hist.buckets"
+                + ".current_max_value2",
+				",")));
+		//"\"aggregations.hist.buckets.current_max_value.value\""
+		
+		queryRequest.source(json);
+		
+		ESQueryResponse esSearchResponse = gatewayClient.query(queryRequest).actionGet(120, TimeUnit.SECONDS);
+		for (ESBucket hist : esSearchResponse.getAggs().getEsAggrMap().get("hist").getBucketList()) {
+			System.out.println(hist.getUnusedMap());
+		}
+	}
+    @Test
+   public void setTemplate() throws ExecutionException, InterruptedException {
+        String json= "{\n" + "  \"index_patterns\": [\n" + "    \"a\"\n" + "  ],\n" + "  \"mappings\": {\n"
+                     + "    \"properties\": {\n" + "      \"a\": {\n" + "        \"type\": \"text\",\n"
+                     + "        \"fielddata\": true\n" + "      }\n" + "    }\n" + "  }\n" + "}";
+        
+        ESIndicesGetTemplateResponse response = client.admin().indices().prepareGetTemplate("aaaa")
+                
+                
+                .execute().get();
+    
+        System.out.println(response);
+    }
 
     @Test
     public void updateSettins() throws Exception {
