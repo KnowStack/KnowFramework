@@ -19,6 +19,7 @@
         <module>logi-metrices</module>
         <module>logi-elasticsearch-client</module>
         <module>logi-elasticsearch-sql</module>
+        <module>logi-observability</module>
     </modules>
 
     <description>提供公共maven依赖</description>

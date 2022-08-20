@@ -1,8 +1,11 @@
 package com.didiglobal.logi.log.util;
 
-import com.didiglobal.logi.log.LogFactory;
-import com.didiglobal.logi.log.common.Constants;
-import com.didiglobal.logi.log.common.TraceContext;
+import com.alibaba.fastjson.JSON;
+import com.didiglobal.logi.observability.common.bean.Log;
+import com.didiglobal.logi.observability.common.bean.LogEvent;
+import com.didiglobal.logi.observability.common.enums.LogEventType;
+import io.opentelemetry.api.trace.Span;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * @author jinbinbin
@@ -14,34 +17,29 @@ public class FlagWrapper {
         if (null == message) {
             return "";
         }
-        String flag = LogFactory.getFlag();
-
-        StringBuilder stringBuilder = new StringBuilder();
-        if (flag != null && !flag.isEmpty() && !"null".equals(flag)) {
-            stringBuilder.append("||").append(Constants.FLAG).append("=").append(flag);
+        Span span = Span.current();
+        if(Span.getInvalid() != span && span.getSpanContext().isValid()) {
+            //当前上下文不存在于任何span中
+            return JSON.toJSONString(
+                    new LogEvent(
+                            LogEventType.LOG,
+                            new Log(StringUtils.EMPTY, StringUtils.EMPTY, message)
+                    )
+            );
+        } else {
+            String tracerId = span.getSpanContext().getTraceId();
+            String spanId = span.getSpanContext().getSpanId();
+            return JSON.toJSONString(
+                            new LogEvent(
+                                    LogEventType.LOG,
+                                    new Log(tracerId, spanId, message)
+                            )
+                    );
         }
-        TraceContext traceContext = LogFactory.getTrace();
-        if (traceContext != null) {
-            if (traceContext.getTraceId() != null) {
-                stringBuilder.append("||").append(Constants.TRACE_ID).append("=").append(traceContext.getTraceId());
-            }
-            if (traceContext.getSpanId() != null) {
-                stringBuilder.append("||").append(Constants.SPAN_ID).append("=").append(traceContext.getSpanId());
-            }
-
-            if (traceContext.getCspanId() != null) {
-                stringBuilder.append("||").append(Constants.CSPAN_ID).append("=").append(traceContext.getCspanId());
-            }
-        }
-
-        if (stringBuilder.length() == 0) {
-            return message;
-        }
-        return message + stringBuilder.toString();
     }
 
     public static String wrapExceptionMessage(String message) {
-        return wrapMessage(message) + "||hostName=" + HostUtil.getHostName();
+        return wrapMessage(message);
     }
 
 }

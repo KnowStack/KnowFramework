@@ -3,10 +3,20 @@ package com.didiglobal.logi.log;
 import com.didiglobal.logi.log.common.TraceContext;
 import com.didiglobal.logi.log.facade.Slf4jFacade;
 import com.didiglobal.logi.log.util.FlagGenerator;
+import io.opentelemetry.api.OpenTelemetry;
+import io.opentelemetry.exporter.logging.LoggingMetricExporter;
+import io.opentelemetry.exporter.logging.LoggingSpanExporter;
+import io.opentelemetry.sdk.OpenTelemetrySdk;
+import io.opentelemetry.sdk.metrics.SdkMeterProvider;
+import io.opentelemetry.sdk.metrics.export.MetricReader;
+import io.opentelemetry.sdk.metrics.export.PeriodicMetricReader;
+import io.opentelemetry.sdk.trace.SdkTracerProvider;
+import io.opentelemetry.sdk.trace.export.SimpleSpanProcessor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.Constructor;
+import java.time.Duration;
 
 /**
  * 统一日志记录记录方式工具类，（主要包括框架类 log4j2和slf4j api）方便做一些公共的切面工作
@@ -21,12 +31,31 @@ public class LogFactory {
     private static Constructor<? extends ILog> logConstructor;
     private static ThreadLocal<String>         flag   = new ThreadLocal<String>();
     private static ThreadLocal<TraceContext>   trace  = new ThreadLocal<TraceContext>();
+
+    private final static OpenTelemetry openTelemetry = initOpenTelemetry();
+
     static {
         try {
             useSlf4jLogging();
         } catch (Throwable t) {
             throw new LogException(t);
         }
+    }
+
+    private static OpenTelemetry initOpenTelemetry() {
+        // Tracer provider configured to export spans with SimpleSpanProcessor using
+        // the logging exporter.
+        SdkTracerProvider tracerProvider =
+                SdkTracerProvider.builder()
+                        .addSpanProcessor(SimpleSpanProcessor.create(LoggingSpanExporter.create()))
+                        .build();
+        return OpenTelemetrySdk.builder()
+                .setTracerProvider(tracerProvider)
+                .buildAndRegisterGlobal();
+    }
+
+    public static OpenTelemetry getOpenTelemetry() {
+        return openTelemetry;
     }
 
     private static synchronized void useSlf4jLogging() throws Exception {
