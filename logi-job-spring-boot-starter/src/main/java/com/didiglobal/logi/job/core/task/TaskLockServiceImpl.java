@@ -6,14 +6,11 @@ import com.didiglobal.logi.job.common.dto.LogITaskLockDTO;
 import com.didiglobal.logi.job.core.WorkerSingleton;
 import com.didiglobal.logi.job.mapper.LogITaskLockMapper;
 import com.didiglobal.logi.job.utils.BeanUtil;
-
-import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.List;
 import java.util.stream.Collectors;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.didiglobal.logi.log.ILog;
+import com.didiglobal.logi.log.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
@@ -25,7 +22,7 @@ import org.springframework.util.CollectionUtils;
  */
 @Service
 public class TaskLockServiceImpl implements TaskLockService {
-    private static final Logger logger = LoggerFactory.getLogger(TaskLockServiceImpl.class);
+    private static final ILog logger     = LogFactory.getLog(TaskLockServiceImpl.class);
     // 每次申请锁的默认过期时间
     private static final Long EXPIRE_TIME_SECONDS = 300L;
 

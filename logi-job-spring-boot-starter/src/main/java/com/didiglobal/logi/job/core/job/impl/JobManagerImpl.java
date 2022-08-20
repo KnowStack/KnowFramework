@@ -16,15 +16,14 @@ import com.didiglobal.logi.job.core.task.TaskLockService;
 import com.didiglobal.logi.job.mapper.*;
 import com.didiglobal.logi.job.utils.BeanUtil;
 import com.didiglobal.logi.job.utils.ThreadUtil;
+import com.didiglobal.logi.log.ILog;
+import com.didiglobal.logi.log.LogFactory;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
-
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.sql.Timestamp;
@@ -35,7 +34,6 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
-
 import static com.didiglobal.logi.job.common.TaskResult.FAIL_CODE;
 import static com.didiglobal.logi.job.common.TaskResult.RUNNING_CODE;
 
@@ -46,7 +44,7 @@ import static com.didiglobal.logi.job.common.TaskResult.RUNNING_CODE;
  */
 @Service
 public class JobManagerImpl implements JobManager {
-    private static final Logger logger = LoggerFactory.getLogger(JobManagerImpl.class);
+    private static final ILog logger     = LogFactory.getLog(JobManagerImpl.class);
     // 停止任务尝试次数
     private static final int TRY_MAX_TIMES = 3;
     // 停止任务每次尝试后sleep 时间 秒

@@ -2,14 +2,14 @@ package com.didiglobal.logi.job.utils;
 
 import java.util.concurrent.TimeUnit;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.didiglobal.logi.log.ILog;
+import com.didiglobal.logi.log.LogFactory;
 
 /**
  * thread util.
  */
 public class ThreadUtil {
-    private static final Logger logger = LoggerFactory.getLogger(ThreadUtil.class);
+    private static final ILog logger     = LogFactory.getLog(ThreadUtil.class);
 
     /**
      * sleep.

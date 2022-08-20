@@ -7,6 +7,8 @@ import com.didiglobal.logi.job.common.po.LogIWorkerBlacklistPO;
 import com.didiglobal.logi.job.common.domain.LogITask;
 import com.didiglobal.logi.job.core.WorkerSingleton;
 import com.didiglobal.logi.job.mapper.LogIWorkerBlacklistMapper;
+import com.didiglobal.logi.log.ILog;
+import com.didiglobal.logi.log.LogFactory;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 
@@ -18,8 +20,6 @@ import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -31,7 +31,7 @@ import org.springframework.stereotype.Service;
 @Service
 public abstract class AbstractConsensual implements Consensual {
 
-    private static final Logger logger = LoggerFactory.getLogger(AbstractConsensual.class);
+    private static final ILog logger     = LogFactory.getLog(AbstractConsensual.class);
 
     @Autowired
     private LogIWorkerBlacklistMapper logIWorkerBlacklistMapper;

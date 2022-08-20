@@ -1,8 +1,8 @@
 package com.didiglobal.logi.job;
 
 import com.didiglobal.logi.job.core.Scheduler;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.didiglobal.logi.log.ILog;
+import com.didiglobal.logi.log.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationListener;
@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class ApplicationCloseListener implements ApplicationListener<ContextClosedEvent> {
 
-    private static final Logger logger = LoggerFactory.getLogger(ApplicationCloseListener.class);
+    private static final ILog logger     = LogFactory.getLog(ApplicationCloseListener.class);
 
     private ApplicationContext applicationContext;
 

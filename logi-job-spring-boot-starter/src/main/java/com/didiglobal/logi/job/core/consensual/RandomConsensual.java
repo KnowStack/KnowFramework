@@ -2,8 +2,8 @@ package com.didiglobal.logi.job.core.consensual;
 
 import com.didiglobal.logi.job.common.domain.LogITask;
 import com.didiglobal.logi.job.core.task.TaskLockService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.didiglobal.logi.log.ILog;
+import com.didiglobal.logi.log.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,7 +14,7 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class RandomConsensual extends AbstractConsensual {
-    private static final Logger logger = LoggerFactory.getLogger(RandomConsensual.class);
+    private static final ILog logger     = LogFactory.getLog(RandomConsensual.class);
 
     @Autowired
     private TaskLockService taskLockService;

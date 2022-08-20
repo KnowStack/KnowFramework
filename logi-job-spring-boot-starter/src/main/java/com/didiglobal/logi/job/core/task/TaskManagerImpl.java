@@ -19,6 +19,8 @@ import com.didiglobal.logi.job.utils.BeanUtil;
 import com.didiglobal.logi.job.utils.CronExpression;
 import com.didiglobal.logi.job.utils.IdWorker;
 import com.didiglobal.logi.job.utils.ThreadUtil;
+import com.didiglobal.logi.log.ILog;
+import com.didiglobal.logi.log.LogFactory;
 import com.google.common.collect.Lists;
 
 import java.sql.Timestamp;
@@ -27,8 +29,6 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
@@ -43,7 +43,7 @@ import static com.didiglobal.logi.job.core.monitor.SimpleTaskMonitor.SCAN_INTERV
  */
 @Service
 public class TaskManagerImpl implements TaskManager {
-    private static final Logger logger = LoggerFactory.getLogger(TaskManagerImpl.class);
+    private static final ILog logger     = LogFactory.getLog(TaskManagerImpl.class);
 
     private static final long WAIT_INTERVAL_SECONDS = 10L;
 

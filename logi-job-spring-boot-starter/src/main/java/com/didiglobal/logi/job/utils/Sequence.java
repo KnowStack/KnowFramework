@@ -5,12 +5,12 @@ import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.util.concurrent.ThreadLocalRandom;
 
-import org.apache.ibatis.logging.Log;
-import org.apache.ibatis.logging.LogFactory;
+import com.didiglobal.logi.log.ILog;
+import com.didiglobal.logi.log.LogFactory;
 import org.springframework.util.StringUtils;
 
 public class Sequence {
-    private static final Log logger = LogFactory.getLog(Sequence.class);
+    private static final ILog logger     = LogFactory.getLog(Sequence.class);
     private final long twepoch = 1288834974657L;
     private final long workerIdBits = 5L;
     private final long datacenterIdBits = 5L;

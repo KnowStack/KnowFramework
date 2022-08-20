@@ -8,8 +8,8 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.didiglobal.logi.log.ILog;
+import com.didiglobal.logi.log.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -21,7 +21,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class SimpleTaskMonitor implements TaskMonitor {
 
-    private static final Logger logger = LoggerFactory.getLogger(SimpleTaskMonitor.class);
+    private static final ILog logger     = LogFactory.getLog(SimpleTaskMonitor.class);
 
     public static final long SCAN_INTERVAL_SLEEP_SECONDS = 10;
     public static final long INTERVAL_SECONDS = 1;

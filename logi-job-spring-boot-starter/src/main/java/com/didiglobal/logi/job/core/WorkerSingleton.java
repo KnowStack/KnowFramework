@@ -9,15 +9,15 @@ import java.sql.Timestamp;
 import java.text.DecimalFormat;
 import java.util.concurrent.TimeUnit;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.didiglobal.logi.log.ILog;
+import com.didiglobal.logi.log.LogFactory;
 import oshi.SystemInfo;
 import oshi.hardware.CentralProcessor;
 import oshi.hardware.GlobalMemory;
 
 public class WorkerSingleton {
     private static final int CPU_INTERVAL = 1;
-    private static final Logger logger = LoggerFactory.getLogger(WorkerSingleton.class);
+    private static final ILog logger     = LogFactory.getLog(WorkerSingleton.class);
     private volatile LogIWorker logIWorker;
 
     private WorkerSingleton() {

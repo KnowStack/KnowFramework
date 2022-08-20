@@ -5,8 +5,8 @@ import com.didiglobal.logi.job.utils.ThreadUtil;
 
 import java.util.concurrent.TimeUnit;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.didiglobal.logi.log.ILog;
+import com.didiglobal.logi.log.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,8 +17,7 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class SimpleBeatMonitor implements BeatMonitor {
-    private static final Logger logger = LoggerFactory.getLogger(SimpleTaskMonitor.class);
-
+    private static final ILog logger     = LogFactory.getLog(SimpleTaskMonitor.class);
     private BeatManager beatManager;
 
     private Thread monitorThread;

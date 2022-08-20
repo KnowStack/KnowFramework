@@ -16,9 +16,9 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import com.didiglobal.logi.log.ILog;
+import com.didiglobal.logi.log.LogFactory;
 import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanPostProcessor;
@@ -29,7 +29,7 @@ import javax.annotation.PostConstruct;
 @Component
 public class TaskBeanPostProcessor implements BeanPostProcessor {
 
-    private static final Logger logger = LoggerFactory.getLogger(TaskBeanPostProcessor.class);
+    private static final ILog logger     = LogFactory.getLog(TaskBeanPostProcessor.class);
 
     private static Map<String, LogITaskPO> taskMap = new HashMap<>();
 
