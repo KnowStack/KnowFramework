@@ -13,7 +13,11 @@ public class ESIndexNotFoundException extends RuntimeException {
     public String getMessage() {
         return t.getMessage();
     }
-
+    
+    public Throwable getT() {
+        return t;
+    }
+    
     public static boolean check(Throwable t) {
         String str = t.getMessage();
 
