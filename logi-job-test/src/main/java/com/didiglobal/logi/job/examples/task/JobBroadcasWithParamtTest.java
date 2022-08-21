@@ -29,6 +29,6 @@ public class JobBroadcasWithParamtTest implements Job {
 
         logger.info("**************************************** JobBroadcasWithParamtTest end" + System.currentTimeMillis());
 
-        return TaskResult.SUCCESS;
+        return TaskResult.buildSuccess();
     }
 }

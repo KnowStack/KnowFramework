@@ -32,23 +32,22 @@ public class Observability {
     public static String getCurrentSpanId() {
         Span span = Span.current();
         if(Span.getInvalid() != span && span.getSpanContext().isValid()) {
-            //当前上下文不存在于任何span中
-            return StringUtils.EMPTY;
-        } else {
-            String tracerId = span.getSpanContext().getTraceId();
             String spanId = span.getSpanContext().getSpanId();
             return spanId;
+        } else {
+            //当前上下文不存在于任何span中
+            return StringUtils.EMPTY;
         }
     }
 
     public static String getCurrentTraceId() {
         Span span = Span.current();
         if(Span.getInvalid() != span && span.getSpanContext().isValid()) {
-            //当前上下文不存在于任何span中
-            return StringUtils.EMPTY;
-        } else {
             String tracerId = span.getSpanContext().getTraceId();
             return tracerId;
+        } else {
+            //当前上下文不存在于任何span中
+            return StringUtils.EMPTY;
         }
     }
 

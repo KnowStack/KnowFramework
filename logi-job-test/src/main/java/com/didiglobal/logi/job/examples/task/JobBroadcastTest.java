@@ -22,6 +22,6 @@ public class JobBroadcastTest implements Job {
     public TaskResult execute(JobContext jobContext) {
         logger.info("**************************************** JobBroadcastTest start" + System.currentTimeMillis());
         logger.info("**************************************** JobBroadcastTest end" + System.currentTimeMillis());
-        return TaskResult.SUCCESS;
+        return TaskResult.buildSuccess();
     }
 }
