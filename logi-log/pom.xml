@@ -106,6 +106,7 @@
             <artifactId>logi-observability</artifactId>
             <version>1.0.7</version>
         </dependency>
+
     </dependencies>
 
     <build>

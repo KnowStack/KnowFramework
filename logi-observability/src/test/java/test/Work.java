@@ -7,7 +7,7 @@ import io.opentelemetry.context.Context;
 public class Work {
 
     public static void doWork(Tracer tracer) {
-        Span span = tracer.spanBuilder("doWork").setParent(Context.current()).startSpan();
+        Span span = tracer.spanBuilder("doWork").startSpan();
         try {
             Thread.sleep(1000);
         } catch (InterruptedException e) {
@@ -18,7 +18,7 @@ public class Work {
     }
 
     public static void doWork2(Tracer tracer) {
-        Span span = tracer.spanBuilder("doWork2").setParent(Context.current()).startSpan();
+        Span span = tracer.spanBuilder("doWork2").startSpan();
         try {
             Thread.sleep(1000);
         } catch (InterruptedException e) {

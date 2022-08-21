@@ -1,5 +1,6 @@
 package com.didiglobal.logi.job.core.job.impl;
 
+import com.alibaba.fastjson.JSON;
 import com.didiglobal.logi.job.LogIJobProperties;
 import com.didiglobal.logi.job.common.TaskResult;
 import com.didiglobal.logi.job.common.domain.LogIJob;
@@ -18,8 +19,13 @@ import com.didiglobal.logi.job.utils.BeanUtil;
 import com.didiglobal.logi.job.utils.ThreadUtil;
 import com.didiglobal.logi.log.ILog;
 import com.didiglobal.logi.log.LogFactory;
+import com.didiglobal.logi.observability.Observability;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
+import io.opentelemetry.api.trace.Span;
+import io.opentelemetry.api.trace.StatusCode;
+import io.opentelemetry.api.trace.Tracer;
+import io.opentelemetry.context.Scope;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -71,6 +77,8 @@ public class JobManagerImpl implements JobManager {
 
     private final Cache<String, String> execuedJob = CacheBuilder.newBuilder()
             .expireAfterWrite(5, TimeUnit.MINUTES).maximumSize(1000).build();
+
+    private Tracer tracer = Observability.getTracer(JobManagerImpl.class.getName());
 
     /**
      * construct
@@ -205,7 +213,10 @@ public class JobManagerImpl implements JobManager {
             logger.info("class=JobHandler||method=call||msg=start job {} with classname {}",
                     logIJob.getJobCode(), logIJob.getClassName());
 
-            try {
+            Span span = tracer.spanBuilder(
+                    String.format("%s.%s", this.getClass().getName(), "call")
+            ).startSpan();
+            try(Scope scope = span.makeCurrent()) {
                 logIJob.setStartTime(new Timestamp(System.currentTimeMillis()));
                 logIJob.setStatus(JobStatusEnum.SUCCEED.getValue());
                 logIJob.setResult(new TaskResult(RUNNING_CODE, "task job is running!"));
@@ -230,32 +241,39 @@ public class JobManagerImpl implements JobManager {
 
                 logIJob.setResult(object);
                 logIJob.setEndTime(new Timestamp(System.currentTimeMillis()));
+                span.setStatus(StatusCode.OK);
             } catch (InterruptedException e) {
                 // 记录任务被打断 进程关闭/线程关闭
                 logIJob.setStatus(JobStatusEnum.CANCELED.getValue());
-                logIJob.setResult(new TaskResult(FAIL_CODE, "task job be canceld!"));
+                TaskResult taskResult = new TaskResult(FAIL_CODE, "task job be canceld!");
+                logIJob.setResult(taskResult);
                 String error = printStackTraceAsString(e);
                 logIJob.setError(printStackTraceAsString(e));
                 logger.error("class=JobHandler||method=call||classname={}||msg={}", logIJob.getClassName(), error);
+                span.setStatus(StatusCode.ERROR, JSON.toJSONString(taskResult));
             } catch (Exception e) {
                 // 记录任务异常信息
                 logIJob.setStatus(JobStatusEnum.FAILED.getValue());
-                logIJob.setResult(new TaskResult(FAIL_CODE, "task job has exception when running!" + e));
+                TaskResult taskResult = new TaskResult(FAIL_CODE, "task job has exception when running!" + e);
+                logIJob.setResult(taskResult);
                 String error = printStackTraceAsString(e);
                 logIJob.setError(printStackTraceAsString(e));
                 logger.error("class=JobHandler||method=call||classname=||msg={}", logIJob.getClassName(), error);
+                span.setStatus(StatusCode.ERROR, JSON.toJSONString(taskResult));
             } finally {
+                try {
+                    //执行完成，记录日志
+                    LogIJobLogPO logIJobLogPO = logIJob.getAuvJobLog();
+                    logIJobLogMapper.updateByCode(logIJobLogPO);
 
-                //执行完成，记录日志
-                LogIJobLogPO logIJobLogPO = logIJob.getAuvJobLog();
-                logIJobLogMapper.updateByCode(logIJobLogPO);
-
-                // job callback, 释放任务锁
-                if (logIJob.getTaskCallback() != null) {
-                    logIJob.getTaskCallback().callback(logIJob.getTaskCode());
+                    // job callback, 释放任务锁
+                    if (logIJob.getTaskCallback() != null) {
+                        logIJob.getTaskCallback().callback(logIJob.getTaskCode());
+                    }
+                } finally {
+                    span.end();
                 }
             }
-
             return object;
         }
     }

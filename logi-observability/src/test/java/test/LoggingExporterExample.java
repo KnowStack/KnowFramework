@@ -20,7 +20,7 @@ public final class LoggingExporterExample {
   }
 
   public void myWonderfulUseCase() {
-    Span span = this.tracer.spanBuilder("start my wonderful use case").setParent(Context.current()).startSpan();
+    Span span = this.tracer.spanBuilder("start my wonderful use case").startSpan();
     try (Scope scope = span.makeCurrent()) {
       span.addEvent("Event 0");
       Work.doWork(tracer);

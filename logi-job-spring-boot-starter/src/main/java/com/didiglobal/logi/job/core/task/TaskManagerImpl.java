@@ -21,19 +21,17 @@ import com.didiglobal.logi.job.utils.IdWorker;
 import com.didiglobal.logi.job.utils.ThreadUtil;
 import com.didiglobal.logi.log.ILog;
 import com.didiglobal.logi.log.LogFactory;
+import com.didiglobal.logi.observability.Observability;
 import com.google.common.collect.Lists;
-
 import java.sql.Timestamp;
 import java.util.*;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
-
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
-
 import static com.didiglobal.logi.job.core.monitor.SimpleTaskMonitor.SCAN_INTERVAL_SLEEP_SECONDS;
 
 /**
@@ -57,7 +55,6 @@ public class TaskManagerImpl implements TaskManager {
     private TaskLockService taskLockService;
     private LogITaskMapper logITaskMapper;
     private LogIJobProperties logIJobProperties;
-
 
     /**
      * constructor.

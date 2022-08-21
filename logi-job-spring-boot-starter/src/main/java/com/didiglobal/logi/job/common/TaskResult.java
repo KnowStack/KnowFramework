@@ -1,5 +1,6 @@
 package com.didiglobal.logi.job.common;
 
+import com.didiglobal.logi.observability.Observability;
 import lombok.Data;
 
 import java.io.Serializable;
@@ -11,6 +12,8 @@ public class TaskResult implements Serializable {
 
     private int code;
     private String message;
+    private String traceId;
+    private String spanId;
 
     public static final int SUCCESS_CODE = 1;
     public static final int RUNNING_CODE = 0;
@@ -23,7 +26,14 @@ public class TaskResult implements Serializable {
     }
 
     public TaskResult(int code, String message) {
+        this(code, message, Observability.getCurrentTraceId(), Observability.getCurrentSpanId());
+    }
+
+    public TaskResult(int code, String message, String traceId, String spanId) {
         this.code = code;
         this.message = message;
+        this.traceId = traceId;
+        this.spanId = spanId;
     }
+
 }

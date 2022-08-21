@@ -32,30 +32,12 @@ public class LogFactory {
     private static ThreadLocal<String>         flag   = new ThreadLocal<String>();
     private static ThreadLocal<TraceContext>   trace  = new ThreadLocal<TraceContext>();
 
-    private final static OpenTelemetry openTelemetry = initOpenTelemetry();
-
     static {
         try {
             useSlf4jLogging();
         } catch (Throwable t) {
             throw new LogException(t);
         }
-    }
-
-    private static OpenTelemetry initOpenTelemetry() {
-        // Tracer provider configured to export spans with SimpleSpanProcessor using
-        // the logging exporter.
-        SdkTracerProvider tracerProvider =
-                SdkTracerProvider.builder()
-                        .addSpanProcessor(SimpleSpanProcessor.create(LoggingSpanExporter.create()))
-                        .build();
-        return OpenTelemetrySdk.builder()
-                .setTracerProvider(tracerProvider)
-                .buildAndRegisterGlobal();
-    }
-
-    public static OpenTelemetry getOpenTelemetry() {
-        return openTelemetry;
     }
 
     private static synchronized void useSlf4jLogging() throws Exception {

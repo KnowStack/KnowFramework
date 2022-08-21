@@ -1,4 +1,4 @@
-package com.didiglobal.logi.observability;
+package com.didiglobal.logi.observability.exporter;
 
 import com.alibaba.fastjson.JSON;
 import com.didiglobal.logi.observability.common.bean.LogEvent;
