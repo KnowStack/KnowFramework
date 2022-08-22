@@ -1,13 +1,13 @@
 package com.didiglobal.logi.job.examples.task;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.didiglobal.logi.log.ILog;
+import com.didiglobal.logi.log.LogFactory;
 import org.springframework.stereotype.Component;
 
 @Component
 public class Worker {
 
-    private static final Logger logger = LoggerFactory.getLogger(Worker.class);
+    private static final ILog logger = LogFactory.getLog(Worker.class);
 
     public void doWork() {
         logger.info("do work().");

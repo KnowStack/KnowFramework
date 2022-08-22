@@ -6,6 +6,8 @@ import com.didiglobal.logi.job.common.TaskResult;
 import com.didiglobal.logi.job.core.consensual.ConsensualEnum;
 import com.didiglobal.logi.job.core.job.Job;
 import com.didiglobal.logi.job.core.job.JobContext;
+import com.didiglobal.logi.log.ILog;
+import com.didiglobal.logi.log.LogFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +16,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class JobBroadcasWithParamtTest implements Job {
 
-    private static final Logger logger = LoggerFactory.getLogger(JobBroadcasWithParamtTest.class);
+    private static final ILog logger = LogFactory.getLog(JobBroadcasWithParamtTest.class);
 
     @Autowired
     private Worker worker;
