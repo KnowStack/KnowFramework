@@ -21,7 +21,7 @@ public class AopSpan {
 
     @Around("aopSpan()")
     public Object markSpan(ProceedingJoinPoint proceedingJoinPoint) throws Throwable {
-        String clazzName = proceedingJoinPoint.getTarget().getClass().getName();
+        String clazzName = proceedingJoinPoint.getSignature().getDeclaringTypeName();
         String methodName = proceedingJoinPoint.getSignature().getName();
         Span span = tracer.spanBuilder(String.format("%s.%s", clazzName, methodName)).startSpan();
         try (Scope scope = span.makeCurrent()) {
