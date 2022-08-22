@@ -8,11 +8,16 @@ import com.didiglobal.logi.job.core.job.Job;
 import com.didiglobal.logi.job.core.job.JobContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
 public class JobBroadcasWithParamtTest implements Job {
+
     private static final Logger logger = LoggerFactory.getLogger(JobBroadcasWithParamtTest.class);
+
+    @Autowired
+    private Worker worker;
 
     @Override
     public TaskResult execute(JobContext jobContext) {
@@ -26,6 +31,8 @@ public class JobBroadcasWithParamtTest implements Job {
                         jobContext.getCurrentWorkerCode()
                 )
         );
+
+        worker.doWork();
 
         logger.info("**************************************** JobBroadcasWithParamtTest end" + System.currentTimeMillis());
 

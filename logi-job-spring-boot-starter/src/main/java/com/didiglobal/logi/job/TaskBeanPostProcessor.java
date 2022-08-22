@@ -19,6 +19,7 @@ import java.util.stream.Collectors;
 import com.didiglobal.logi.log.ILog;
 import com.didiglobal.logi.log.LogFactory;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.aop.support.AopUtils;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanPostProcessor;
@@ -54,7 +55,7 @@ public class TaskBeanPostProcessor implements BeanPostProcessor {
                 return bean;
             }
 
-            Class<?> beanClass = bean.getClass();
+            Class<?> beanClass = AopUtils.getTargetClass(bean);
             // add job to jobFactory
             if (bean instanceof Job) {
                 jobFactory.addJob(beanClass.getCanonicalName(), (Job) bean);

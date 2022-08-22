@@ -7,6 +7,7 @@ import com.didiglobal.logi.job.core.WorkerSingleton;
 import com.didiglobal.logi.job.utils.IdWorker;
 import com.didiglobal.logi.log.ILog;
 import com.didiglobal.logi.log.LogFactory;
+import org.springframework.aop.support.AopUtils;
 import org.springframework.stereotype.Component;
 import java.util.HashMap;
 import java.util.Map;
@@ -33,10 +34,10 @@ public class SimpleJobFactory implements JobFactory {
 
     @Override
     public LogIJob newJob(LogITask logITask) {
-        if(null == jobMap.get(logITask.getClassName())){
+        Job job = jobMap.get(logITask.getClassName());
+        if(null == job) {
             return null;
         }
-
         LogIJob logIJob = new LogIJob();
         logIJob.setJobCode(IdWorker.getIdStr());
         logIJob.setTaskCode(logITask.getTaskCode());
@@ -49,9 +50,10 @@ public class SimpleJobFactory implements JobFactory {
         logIJob.setTryTimes(logITask.getRetryTimes() == null ? 1 : logITask.getRetryTimes());
         logIJob.setStatus(JobStatusEnum.STARTED.getValue());
         logIJob.setTimeout(logITask.getTimeout());
-        logIJob.setJob(jobMap.get(logITask.getClassName()));
+        logIJob.setJob(job);
         logIJob.setTaskCallback(logITask.getTaskCallback());
         logIJob.setAppName(logITask.getAppName());
         return logIJob;
     }
+
 }
