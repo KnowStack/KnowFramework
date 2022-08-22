@@ -16,7 +16,7 @@ public class AopSpan {
 
     private Tracer tracer = Observability.getTracer(AopSpan.class.getName());
 
-    @Pointcut(value = "execution(* com.didiglobal.logi..*.*(..))")
+    @Pointcut(value = "execution(* com.didiglobal..*.*(..))")
     public void aopSpan() {}
 
     @Around("aopSpan()")
