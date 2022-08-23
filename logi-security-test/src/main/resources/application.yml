@@ -10,6 +10,7 @@ spring:
   driver-class-name: org.mariadb.jdbc.Driver
   app-name: know_search
   resource-extend-bean-name: myResourceExtendImpl
+  login-extend-bean-name:
 
 
 mybatis-plus:
