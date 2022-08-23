@@ -30,8 +30,8 @@ public class LogiSecurityProper {
 
     /**
      * 用户需要实现loginExtend接口，并在spring容器中的bean name
+     * 对应 配置文件[logi.security.login-extend-bean-name] 配置 项
      */
-    @NotEmpty(message = "配置文件配置必须要配置[logi.security.login-extend-bean-name]属性")
     private String loginExtendBeanName;
 
     /**
