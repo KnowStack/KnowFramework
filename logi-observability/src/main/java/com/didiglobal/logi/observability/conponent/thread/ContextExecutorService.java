@@ -1,7 +1,9 @@
 package com.didiglobal.logi.observability.conponent.thread;
 
+import com.alibaba.fastjson.JSON;
 import com.didiglobal.logi.observability.Observability;
 import io.opentelemetry.api.trace.Span;
+import io.opentelemetry.api.trace.StatusCode;
 import io.opentelemetry.api.trace.Tracer;
 import io.opentelemetry.context.Context;
 import io.opentelemetry.context.Scope;
@@ -142,7 +144,12 @@ public class ContextExecutorService implements ExecutorService {
         String spanName = String.format("%s.%s", callable.getClass().getName(), "call");
         Span span = tracer.spanBuilder(spanName).startSpan();
         try(Scope scope = span.makeCurrent()) {
-            return callable.call();
+            T value = callable.call();
+            span.setStatus(StatusCode.OK);
+            return value;
+        } catch (Exception ex) {
+            span.setStatus(StatusCode.ERROR, ex.getMessage());
+            throw ex;
         } finally {
             span.end();
         }
@@ -153,7 +160,11 @@ public class ContextExecutorService implements ExecutorService {
         Span span = tracer.spanBuilder(spanName).startSpan();
         try(Scope scope = span.makeCurrent()) {
             runnable.run();
-        } finally {
+            span.setStatus(StatusCode.OK);
+        } catch (Exception ex) {
+            span.setStatus(StatusCode.ERROR, ex.getMessage());
+            throw ex;
+        }  finally {
             span.end();
         }
     }

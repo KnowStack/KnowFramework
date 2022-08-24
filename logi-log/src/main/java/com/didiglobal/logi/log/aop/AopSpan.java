@@ -1,7 +1,9 @@
 package com.didiglobal.logi.log.aop;
 
+import com.alibaba.fastjson.JSON;
 import com.didiglobal.logi.observability.Observability;
 import io.opentelemetry.api.trace.Span;
+import io.opentelemetry.api.trace.StatusCode;
 import io.opentelemetry.api.trace.Tracer;
 import io.opentelemetry.context.Scope;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -26,8 +28,10 @@ public class AopSpan {
         Span span = tracer.spanBuilder(String.format("%s.%s", clazzName, methodName)).startSpan();
         try (Scope scope = span.makeCurrent()) {
             Object result = proceedingJoinPoint.proceed();
+            span.setStatus(StatusCode.OK);
             return result;
         } catch (Throwable ex) {
+            span.setStatus(StatusCode.ERROR, JSON.toJSONString(ex.getMessage()));
             throw ex;
         } finally {
             span.end();
