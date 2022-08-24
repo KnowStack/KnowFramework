@@ -1,10 +1,12 @@
 package com.didiglobal.logi.observability;
 
 import com.didiglobal.logi.observability.conponent.thread.ContextExecutorService;
+import com.didiglobal.logi.observability.conponent.thread.ContextScheduledExecutorService;
 import com.didiglobal.logi.observability.exporter.LoggingSpanExporter;
 import io.opentelemetry.api.OpenTelemetry;
 import io.opentelemetry.api.trace.Span;
 import io.opentelemetry.api.trace.Tracer;
+import io.opentelemetry.context.Context;
 import io.opentelemetry.sdk.OpenTelemetrySdk;
 import io.opentelemetry.sdk.trace.SdkTracerProvider;
 import io.opentelemetry.sdk.trace.export.SimpleSpanProcessor;
@@ -71,8 +73,8 @@ public class Observability {
         return new ContextExecutorService(executor);
     }
 
-//    default ScheduledExecutorService wrap(ScheduledExecutorService executor) {
-//        return new ContextScheduledExecutorService(this, executor);
-//    }
+    public static ScheduledExecutorService wrap(ScheduledExecutorService executor) {
+        return new ContextScheduledExecutorService(executor);
+    }
 
 }

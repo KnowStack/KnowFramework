@@ -9,9 +9,9 @@ import lombok.SneakyThrows;
 import org.apache.commons.lang3.concurrent.BasicThreadFactory;
 import java.util.concurrent.*;
 
-public class Test {
+public class ContextExecutorServiceTest {
 
-    private static Tracer tracer = Observability.getTracer(Test.class.getName());
+    private static Tracer tracer = Observability.getTracer(ContextExecutorServiceTest.class.getName());
 
     public static void main(String[] args) throws InterruptedException {
 
