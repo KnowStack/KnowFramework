@@ -1,5 +1,8 @@
 package com.didiglobal.logi.observability.conponent.thread;
 
+import com.didiglobal.logi.observability.Observability;
+import io.opentelemetry.api.trace.Span;
+import io.opentelemetry.api.trace.Tracer;
 import io.opentelemetry.context.Context;
 import io.opentelemetry.context.Scope;
 import java.util.ArrayList;
@@ -11,6 +14,7 @@ import java.util.concurrent.*;
 public class ContextExecutorService implements ExecutorService {
 
     private final ExecutorService delegate;
+    private Tracer tracer = Observability.getTracer(ContextExecutorService.class.getName());
 
     ExecutorService delegate() {
         return this.delegate;
@@ -106,7 +110,7 @@ public class ContextExecutorService implements ExecutorService {
     protected  <T> Callable<T> wrap(Callable<T> callable, Context context) {
         return () -> {
             try (Scope scope = context.makeCurrent()) {
-                T value = callable.call();
+                T value = invokeCall(callable);
                 return value;
             } finally {
                 //do nothing.
@@ -117,7 +121,7 @@ public class ContextExecutorService implements ExecutorService {
     protected Runnable wrap(Runnable runnable, Context context) {
         return () -> {
             try (Scope scope = context.makeCurrent()) {
-                runnable.run();
+                invokeRun(runnable);
             } finally {
                 //do nothing.
             }
@@ -132,6 +136,26 @@ public class ContextExecutorService implements ExecutorService {
             wrapped.add(wrap(task, context));
         }
         return wrapped;
+    }
+
+    private <T> T invokeCall(Callable<T> callable) throws Exception {
+        String spanName = String.format("%s.%s", callable.getClass().getName(), "call");
+        Span span = tracer.spanBuilder(spanName).startSpan();
+        try(Scope scope = span.makeCurrent()) {
+            return callable.call();
+        } finally {
+            span.end();
+        }
+    }
+
+    private void invokeRun(Runnable runnable) {
+        String spanName = String.format("%s.%s", runnable.getClass().getName(), "run");
+        Span span = tracer.spanBuilder(spanName).startSpan();
+        try(Scope scope = span.makeCurrent()) {
+            runnable.run();
+        } finally {
+            span.end();
+        }
     }
 
 }
