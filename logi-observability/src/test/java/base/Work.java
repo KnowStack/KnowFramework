@@ -1,8 +1,7 @@
-package test;
+package base;
 
 import io.opentelemetry.api.trace.Span;
 import io.opentelemetry.api.trace.Tracer;
-import io.opentelemetry.context.Context;
 
 public class Work {
 

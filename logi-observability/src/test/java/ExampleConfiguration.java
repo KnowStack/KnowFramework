@@ -1,5 +1,3 @@
-package test;
-
 import com.didiglobal.logi.observability.exporter.LoggingSpanExporter;
 import io.opentelemetry.api.OpenTelemetry;
 import io.opentelemetry.sdk.OpenTelemetrySdk;

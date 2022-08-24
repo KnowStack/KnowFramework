@@ -104,7 +104,7 @@
         <dependency>
             <groupId>io.github.zqrferrari</groupId>
             <artifactId>logi-observability</artifactId>
-            <version>1.0.7</version>
+            <version>1.0.0</version>
         </dependency>
 
         <dependency>
@@ -121,6 +121,12 @@
                     <groupId>ch.qos.logback</groupId>
                 </exclusion>
             </exclusions>
+        </dependency>
+
+        <dependency>
+            <groupId>io.github.zqrferrari</groupId>
+            <artifactId>logi-elasticsearch-client</artifactId>
+            <version>1.0.23</version>
         </dependency>
 
     </dependencies>

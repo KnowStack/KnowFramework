@@ -1,9 +1,9 @@
-package test;
+package base;
 
+import com.didiglobal.logi.observability.Observability;
 import io.opentelemetry.api.OpenTelemetry;
 import io.opentelemetry.api.trace.Span;
 import io.opentelemetry.api.trace.Tracer;
-import io.opentelemetry.context.Context;
 import io.opentelemetry.context.Scope;
 
 /**
@@ -13,11 +13,7 @@ import io.opentelemetry.context.Scope;
 public final class LoggingExporterExample {
   private static final String INSTRUMENTATION_NAME = LoggingExporterExample.class.getName();
 
-  private final Tracer tracer;
-
-  public LoggingExporterExample(OpenTelemetry openTelemetry) {
-    tracer = openTelemetry.getTracer(INSTRUMENTATION_NAME);
-  }
+  private final Tracer tracer = Observability.getTracer(INSTRUMENTATION_NAME);
 
   public void myWonderfulUseCase() {
     Span span = this.tracer.spanBuilder("start my wonderful use case").startSpan();
@@ -31,11 +27,9 @@ public final class LoggingExporterExample {
   }
 
   public static void main(String[] args) {
-    // it is important to initialize your SDK as early as possible in your application's lifecycle
-    OpenTelemetry oTel = ExampleConfiguration.initOpenTelemetry();
 
     // Start the example
-    LoggingExporterExample example = new LoggingExporterExample(oTel);
+    LoggingExporterExample example = new LoggingExporterExample();
     Span span = example.tracer.spanBuilder("main").startSpan();
     try (Scope scope = span.makeCurrent()) {
       // Generate a few sample spans
