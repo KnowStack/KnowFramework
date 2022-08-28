@@ -6,6 +6,7 @@ import com.didiglobal.logi.observability.exporter.LoggingSpanExporter;
 import io.opentelemetry.api.OpenTelemetry;
 import io.opentelemetry.api.trace.Span;
 import io.opentelemetry.api.trace.Tracer;
+import io.opentelemetry.context.propagation.TextMapPropagator;
 import io.opentelemetry.sdk.OpenTelemetrySdk;
 import io.opentelemetry.sdk.trace.SdkTracerProvider;
 import io.opentelemetry.sdk.trace.export.SimpleSpanProcessor;
@@ -68,12 +69,24 @@ public class Observability {
         }
     }
 
+    /**
+     * @param executor 待封装线程池
+     * @return 附带 trace 上下文信息线程池
+     */
     public static ExecutorService wrap(ExecutorService executor) {
         return new ContextExecutorService(executor);
     }
 
+    /**
+     * @param executor 待封装调度线程池
+     * @return 附带 trace 上下文信息调度线程池
+     */
     public static ScheduledExecutorService wrap(ScheduledExecutorService executor) {
         return new ContextScheduledExecutorService(executor);
+    }
+
+    public static TextMapPropagator getTextMapPropagator() {
+        return delegate.getPropagators().getTextMapPropagator();
     }
 
 }

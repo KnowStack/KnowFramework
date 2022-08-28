@@ -31,7 +31,7 @@ public class AopSpan {
             span.setStatus(StatusCode.OK);
             return result;
         } catch (Throwable ex) {
-            span.setStatus(StatusCode.ERROR, JSON.toJSONString(ex.getMessage()));
+            span.setStatus(StatusCode.ERROR, ex.getMessage());
             throw ex;
         } finally {
             span.end();
