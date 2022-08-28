@@ -124,9 +124,14 @@
         </dependency>
 
         <dependency>
-            <groupId>io.github.zqrferrari</groupId>
-            <artifactId>logi-elasticsearch-client</artifactId>
-            <version>1.0.23</version>
+            <groupId>org.elasticsearch.client</groupId>
+            <artifactId>elasticsearch-rest-high-level-client</artifactId>
+            <version>7.9.2</version>
+        </dependency>
+        <dependency>
+            <groupId>org.elasticsearch</groupId>
+            <artifactId>elasticsearch</artifactId>
+            <version>7.9.2</version>
         </dependency>
 
     </dependencies>
