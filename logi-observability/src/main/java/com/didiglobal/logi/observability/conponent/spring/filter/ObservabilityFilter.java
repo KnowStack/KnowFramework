@@ -1,4 +1,4 @@
-package com.didiglobal.logi.log.common.web.filter;
+package com.didiglobal.logi.observability.conponent.spring.filter;
 
 import com.didiglobal.logi.observability.Observability;
 import io.opentelemetry.api.trace.Span;
@@ -11,7 +11,9 @@ import io.opentelemetry.context.propagation.TextMapGetter;
 import io.opentelemetry.context.propagation.TextMapPropagator;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.core.Ordered;
+import org.springframework.stereotype.Component;
 import javax.servlet.*;
+import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -21,6 +23,8 @@ import java.util.List;
 /**
  * 可观察拦截器 高优先级 优先处理
  */
+@Component
+@WebFilter(urlPatterns = "/", filterName = "observabilityFilter")
 public class ObservabilityFilter implements Ordered, Filter {
 
     private static final TextMapPropagator TEXT_MAP_PROPAGATOR = Observability.getTextMapPropagator();
@@ -53,7 +57,9 @@ public class ObservabilityFilter implements Ordered, Filter {
         HttpServletRequest request = (HttpServletRequest) servletRequest;
         Context context = TEXT_MAP_PROPAGATOR.extract(Context.current(), request, getter);
         String requestUri = request.getRequestURI();
-        Span span = tracer.spanBuilder(requestUri).setParent(context).setSpanKind(SpanKind.SERVER).startSpan();
+        Span span = tracer.spanBuilder(
+                String.format("%s.%s", this.getClass().getName(), "doFilter")
+        ).setParent(context).setSpanKind(SpanKind.SERVER).startSpan();
         try (Scope scope = span.makeCurrent()) {
             // Set the Semantic Convention
             span.setAttribute("component", "http");

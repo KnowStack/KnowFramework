@@ -1,6 +1,5 @@
-package com.didiglobal.logi.log.aop;
+package com.didiglobal.logi.observability.conponent.spring.aop;
 
-import com.alibaba.fastjson.JSON;
 import com.didiglobal.logi.observability.Observability;
 import io.opentelemetry.api.trace.Span;
 import io.opentelemetry.api.trace.StatusCode;
@@ -14,11 +13,11 @@ import org.springframework.stereotype.Component;
 
 @Aspect
 @Component
-public class AopSpan {
+public class ObservabilitySpan {
 
-    private Tracer tracer = Observability.getTracer(AopSpan.class.getName());
+    private Tracer tracer = Observability.getTracer(ObservabilitySpan.class.getName());
 
-    @Pointcut(value = "execution(* com.didiglobal..*.*(..))")
+    @Pointcut(value = "execution(* com.didiglobal..*.*(..))")//TODO：切片可配 后续有时间
     public void aopSpan() {}
 
     @Around("aopSpan()")
