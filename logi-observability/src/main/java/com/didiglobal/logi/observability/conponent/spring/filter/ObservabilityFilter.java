@@ -1,6 +1,7 @@
 package com.didiglobal.logi.observability.conponent.spring.filter;
 
 import com.didiglobal.logi.observability.Observability;
+import com.didiglobal.logi.observability.common.constant.Constant;
 import io.opentelemetry.api.trace.Span;
 import io.opentelemetry.api.trace.SpanKind;
 import io.opentelemetry.api.trace.StatusCode;
@@ -62,8 +63,8 @@ public class ObservabilityFilter implements Ordered, Filter {
         ).setParent(context).setSpanKind(SpanKind.SERVER).startSpan();
         try (Scope scope = span.makeCurrent()) {
             // Set the Semantic Convention
-            span.setAttribute("component", "http");
-            span.setAttribute("http.method", request.getMethod());
+            span.setAttribute(Constant.COMPONENT, Constant.COMPONENT_HTTP);
+            span.setAttribute(Constant.HTTP_METHOD, request.getMethod());
             /*
              One of the following is required:
              - http.scheme, http.host, http.target
@@ -71,9 +72,9 @@ public class ObservabilityFilter implements Ordered, Filter {
              - http.scheme, net.host.name, net.host.port, http.target
              - http.url
             */
-            span.setAttribute("http.scheme", "http");
-            span.setAttribute("http.host", String.format("%s:%d", request.getLocalAddr(), request.getLocalPort()));
-            span.setAttribute("http.target", requestUri);
+            span.setAttribute(Constant.HTTP_SCHEMA, Constant.COMPONENT_HTTP);
+            span.setAttribute(Constant.HTTP_HOST, String.format("%s:%d", request.getLocalAddr(), request.getLocalPort()));
+            span.setAttribute(Constant.HTTP_TARGET, requestUri);
             // Process the request
             filterChain.doFilter(servletRequest, servletResponse);
             span.setStatus(StatusCode.OK);

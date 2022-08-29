@@ -1,6 +1,7 @@
 package com.didiglobal.logi.observability.conponent.http;
 
 import com.didiglobal.logi.observability.Observability;
+import com.didiglobal.logi.observability.common.constant.Constant;
 import io.opentelemetry.api.trace.Span;
 import io.opentelemetry.api.trace.SpanKind;
 import io.opentelemetry.api.trace.StatusCode;
@@ -19,10 +20,6 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.util.Map;
 
-/**
- * @author zengqiao
- * @date 20/5/24
- */
 public class HttpUtils {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(HttpUtils.class);
@@ -128,13 +125,13 @@ public class HttpUtils {
             /*
              * inject info into span
              */
-            span.setAttribute("http.method", "GET");
-            span.setAttribute("component", "http");
+            span.setAttribute(Constant.HTTP_METHOD, method);
+            span.setAttribute(Constant.COMPONENT, Constant.COMPONENT_HTTP);
 
             String paramUrl = setUrlParams(url, params);
             // 打开链接
             URL urlObj = new URL(paramUrl);
-            span.setAttribute("http.url", url.toString());
+            span.setAttribute(Constant.HTTP_URL, url.toString());
 
             conn = (HttpURLConnection) urlObj.openConnection();
 

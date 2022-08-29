@@ -1,10 +1,9 @@
 package com.didiglobal.logi.job.configuration;
 
 import com.didiglobal.logi.job.LogIJobProperties;
+import com.didiglobal.logi.observability.conponent.mybatis.ObservabilityInterceptor;
 import com.zaxxer.hikari.HikariDataSource;
-
 import javax.sql.DataSource;
-
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.mybatis.spring.SqlSessionFactoryBean;
 import org.mybatis.spring.SqlSessionTemplate;
@@ -56,6 +55,7 @@ public class AuvDataSourceConfig {
                 new org.apache.ibatis.session.Configuration();
         configuration.setMapUnderscoreToCamelCase(true);
         bean.setConfiguration(configuration);
+        bean.setPlugins(new ObservabilityInterceptor());
         return bean.getObject(); // 设置mybatis的xml所在位置
     }
 
