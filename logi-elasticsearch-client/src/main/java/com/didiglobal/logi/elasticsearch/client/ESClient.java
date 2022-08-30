@@ -36,10 +36,10 @@ import java.util.concurrent.atomic.AtomicReference;
 public class ESClient extends ESAbstractClient {
     protected static final ILog LOGGER = LogFactory.getLog(ESClient.class);
 
-    private List<TransportAddress> tas = new ArrayList<>();
+    private final List<TransportAddress> tas = Lists.newArrayList();
 
     private RestClient restClient;
-    private List<Header> headers = new ArrayList<>();
+    private List<Header> headers = Lists.newArrayList();
     private String uriPrefix = null;
 
     public static final String DEFAULT_ES_VERSION = "2.3.3";
@@ -280,10 +280,12 @@ public class ESClient extends ESAbstractClient {
 
     @Override
     public void close() {
-        try {
-            restClient.close();
-        } catch (IOException e) {
-            LOGGER.error("fail to close", e);
+        if (Objects.nonNull(restClient)) {
+            try {
+                restClient.close();
+            } catch (IOException e) {
+                LOGGER.error("fail to close", e);
+            }
         }
     }
 
