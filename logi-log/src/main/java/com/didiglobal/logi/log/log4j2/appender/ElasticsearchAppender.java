@@ -84,11 +84,14 @@ public class ElasticsearchAppender extends AbstractAppender {
     /**
      * 日志缓冲数据
      */
-    private BlockingQueue<Map<String, Object>> buffer;
+    private BlockingQueue<IndexRequest> buffer;
     /**
      * log event 刷写线程
      */
     private ExecutorService threadPool;
+
+    private volatile CompletableFuture<?> availableFuture = new CompletableFuture<>();
+    private volatile CompletableFuture<?> notAvailableFuture = new CompletableFuture<>();
 
     public ElasticsearchAppender(
             String name,
@@ -134,10 +137,11 @@ public class ElasticsearchAppender extends AbstractAppender {
                 if(CollectionUtils.isNotEmpty(buffer)) {
                     flushBuffer();
                 } else {
+                    resetAvailable();
                     try {
-                        Thread.sleep(500);
-                    } catch (InterruptedException ex) {
-                        Thread.currentThread().interrupt();
+                        notAvailableFuture.get(50, TimeUnit.MILLISECONDS);
+                    } catch (Exception ex) {
+                        //ignore
                     }
                 }
             }
@@ -163,7 +167,6 @@ public class ElasticsearchAppender extends AbstractAppender {
             this.client.close();
         } catch (IOException ex) {
             //ignore
-
         } finally {
             super.stop();
         }
@@ -254,6 +257,41 @@ public class ElasticsearchAppender extends AbstractAppender {
     }
 
     private void processAndPutLogEventInBuffer(LogEvent event) {
+        Map<String, Object> element = logEvent2Map(event);
+        if(null != element) {
+            IndexRequest indexRequest = new IndexRequest(indexName).source(element);
+            while (true) {
+                boolean successful = buffer.offer(indexRequest);
+                if(!successful) {// the buffer is full
+                    resetUnavailable();
+                    try {
+                        availableFuture.get(50, TimeUnit.MILLISECONDS);
+                    } catch (Exception ex) {
+                        //ignore
+                    }
+                } else {
+                    if(!notAvailableFuture.isDone()) {
+                        notAvailableFuture.complete(null);
+                    }
+                    break;
+                }
+            }
+        }
+    }
+
+    private void resetUnavailable() {
+        if (availableFuture.isDone()) {
+            this.availableFuture = new CompletableFuture<>();
+        }
+    }
+
+    private void resetAvailable() {
+        if (notAvailableFuture.isDone()) {
+            this.notAvailableFuture = new CompletableFuture<>();
+        }
+    }
+
+    private Map<String, Object> logEvent2Map(LogEvent event) {
         Map<String, Object> item = new HashMap<>();
         /*
          * build env info
@@ -286,14 +324,15 @@ public class ElasticsearchAppender extends AbstractAppender {
                     // TODO：
                 } else {
                     // other whise ignore
+                    return null;
                 }
-                buffer.put(item);
+                return item;
             } else {
-                return;
+                return null;
             }
         } catch (Exception ex) {
             // process message error, ignore skip it
-            return;
+            return null;
         }
     }
 
@@ -329,16 +368,32 @@ public class ElasticsearchAppender extends AbstractAppender {
      */
     private synchronized void flushBuffer() {
         BulkRequest bulkRequest = new BulkRequest();
-        try {
-            Iterator<Map<String, Object>> iterator = buffer.iterator();
-            while (iterator.hasNext()) {
-                Map<String, Object> item = iterator.next();
-                bulkRequest.add(new IndexRequest(indexName).source(item));
+        Integer bulkRequestSize = 0;
+        for (int i = 0; i < buffer.size(); i++) {
+            IndexRequest indexRequest = null;
+            try {
+                indexRequest = buffer.poll(10, TimeUnit.MILLISECONDS);
+            } catch (InterruptedException ex) {
+                Thread.currentThread().interrupt();
             }
-            client.bulk(bulkRequest, RequestOptions.DEFAULT);
-        } catch (IOException exception) {
-            //出现异常或失败丢弃
+            if(null != indexRequest) {
+                if(!availableFuture.isDone()) {
+                    availableFuture.complete(null);
+                }
+                bulkRequest.add(indexRequest);
+                bulkRequestSize++;
+            } else {
+                break;
+            }
+        }
+        if(bulkRequestSize > 0) {
+            try {
+                client.bulk(bulkRequest, RequestOptions.DEFAULT);
+            } catch (IOException ex) {
+                //ignore
+            }
         }
     }
 
 }
+
