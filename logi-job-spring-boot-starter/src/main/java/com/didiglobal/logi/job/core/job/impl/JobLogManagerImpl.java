@@ -1,6 +1,8 @@
 package com.didiglobal.logi.job.core.job.impl;
 
+import com.alibaba.fastjson.JSON;
 import com.didiglobal.logi.job.LogIJobProperties;
+import com.didiglobal.logi.job.common.TaskResult;
 import com.didiglobal.logi.job.common.domain.LogITask;
 import com.didiglobal.logi.job.common.dto.TaskLogPageQueryDTO;
 import com.didiglobal.logi.job.common.po.LogIJobLogPO;
@@ -9,11 +11,12 @@ import com.didiglobal.logi.job.core.job.JobLogManager;
 import com.didiglobal.logi.job.core.task.TaskManager;
 import com.didiglobal.logi.job.mapper.LogIJobLogMapper;
 import com.didiglobal.logi.job.utils.BeanUtil;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
-
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -104,6 +107,21 @@ public class JobLogManagerImpl implements JobLogManager {
         return logIJobLogMapper.pagineCountByCondition(logIJobProperties.getAppName(),
                 dto.getTaskId(), dto.getTaskDesc(), dto.getTaskStatus(),
                 beginTimestamp, endTimestamp);
+    }
+
+    @Override
+    public TaskResult getJobLogResult(Long id) {
+        LogIJobLogPO logIJobLogPO = logIJobLogMapper.selectById(id);
+        if(StringUtils.isNotBlank(logIJobLogPO.getResult())) {
+            return JSON.parseObject(logIJobLogPO.getResult(), TaskResult.class);
+        } else {
+            return null;
+        }
+    }
+
+    @Override
+    public List<String> getLogsByTraceIdFromExternalSystem(String traceId) {
+        return new ArrayList<>();
     }
 
     private String genSortName(String sortName){

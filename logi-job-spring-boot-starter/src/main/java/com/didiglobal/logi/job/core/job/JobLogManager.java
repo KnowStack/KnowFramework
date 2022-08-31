@@ -1,5 +1,7 @@
 package com.didiglobal.logi.job.core.job;
 
+import com.didiglobal.logi.job.common.TaskResult;
+import com.didiglobal.logi.job.common.domain.LogIJob;
 import com.didiglobal.logi.job.common.dto.TaskLogPageQueryDTO;
 import com.didiglobal.logi.job.common.vo.LogIJobLogVO;
 
@@ -18,4 +20,17 @@ public interface JobLogManager {
      * @return 数量
      */
     int getJobLogsCount(TaskLogPageQueryDTO pageQueryDTO);
+
+    /**
+     * @param id job log id
+     * @return Logijob result
+     */
+    TaskResult getJobLogResult(Long id);
+
+    /**
+     * @param traceId 上下文 id
+     * @return 上下文相关日志信息
+     */
+    List<String> getLogsByTraceIdFromExternalSystem(String traceId);
+
 }

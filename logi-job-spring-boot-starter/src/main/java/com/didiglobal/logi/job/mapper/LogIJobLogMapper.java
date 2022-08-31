@@ -62,4 +62,12 @@ public interface LogIJobLogMapper {
     Integer pagineCountByCondition(@Param("appName") String appName, @Param("taskId") Long taskId,
                                    @Param("taskDesc") String taskDesc, @Param("jobStatus") Integer jobStatus,
                                    @Param("beginTime") Timestamp beginTime, @Param("endTime") Timestamp endTime);
+
+    @Select("select id, job_code, task_code, task_id, task_name, task_desc, "
+            + "class_name, try_times, worker_code, worker_ip, start_time, "
+            + "end_time, status, error, result, create_time, update_time, app_name from logi_job_log where "
+            + "id=#{id}")
+    LogIJobLogPO selectById(Long id);
+
 }
+
