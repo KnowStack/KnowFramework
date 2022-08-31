@@ -11,6 +11,11 @@ public class Constant {
     public static final String HTTP_SCHEMA = "http.scheme";
     public static final String HTTP_HOST = "http.host";
     public static final String HTTP_TARGET = "http.target";
+    public static final String SPAN_KIND_ATTRIBUTE_KEY_SPAN_KIND = "spanKind";
+    public static final String SPAN_KIND_CRON_TASK = "CRON_TASK";
+    public static final String SPAN_KIND_ATTRIBUTE_KEY_JOB_CLASS_NAME = "JobClassName";
+    public static final String SPAN_KIND_ATTRIBUTE_KEY_TASK_NAME = "TaskName";
+
 
 }
 
