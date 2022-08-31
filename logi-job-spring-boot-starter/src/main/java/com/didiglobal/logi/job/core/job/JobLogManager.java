@@ -23,14 +23,8 @@ public interface JobLogManager {
 
     /**
      * @param id job log id
-     * @return Logijob result
+     * @return job log 上下文相关日志信息
      */
-    TaskResult getJobLogResult(Long id);
-
-    /**
-     * @param traceId 上下文 id
-     * @return 上下文相关日志信息
-     */
-    List<String> getLogsByTraceIdFromExternalSystem(String traceId);
+    List<String> getJobLog(Long id);
 
 }
