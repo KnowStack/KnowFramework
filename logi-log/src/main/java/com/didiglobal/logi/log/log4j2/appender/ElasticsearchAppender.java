@@ -1,6 +1,7 @@
 package com.didiglobal.logi.log.log4j2.appender;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.didiglobal.logi.observability.common.bean.Log;
 import com.didiglobal.logi.observability.common.bean.Span;
 import com.didiglobal.logi.observability.common.enums.LogEventType;
@@ -309,31 +310,31 @@ public class ElasticsearchAppender extends AbstractAppender {
          */
         String message = event.getMessage().getFormattedMessage();
         try {
-            com.didiglobal.logi.observability.common.bean.LogEvent logEvent = JSON.parseObject(message, com.didiglobal.logi.observability.common.bean.LogEvent.class);
-            if(null != logEvent) {
-                LogEventType logEventType = logEvent.getLogEventType();
-                if(LogEventType.LOG.equals(logEventType)) {
-                    Log log = (Log) logEvent.getData();
+            JSONObject jsonObject = JSON.parseObject(message);
+            if(null != jsonObject) {
+                String logEventType = jsonObject.getObject("logEventType", String.class);
+                if(LogEventType.LOG.name().equals(logEventType)) {
+                    Log log = jsonObject.getObject("data", Log.class);
                     item.put("logType", LogEventType.LOG.name());
                     putLog(log, item);
-                } else if(LogEventType.TRACE.equals(logEventType)) {
-                    Span span = (Span) logEvent.getData();
+                } else if(LogEventType.TRACE.name().equals(logEventType)) {
+                    Span span = jsonObject.getObject("data", Span.class);
                     item.put("logType", LogEventType.TRACE.name());
                     putSpan(span, item);
-                } else if(LogEventType.METRIC.equals(logEventType)) {
+                } else if(LogEventType.METRIC.name().equals(logEventType)) {
                     // TODO：
                 } else {
-                    // other whise ignore
-                    return null;
+                    // other whise
+                    item.put("message", message);
                 }
-                return item;
             } else {
-                return null;
+                item.put("message", message);
             }
         } catch (Exception ex) {
-            // process message error, ignore skip it
-            return null;
+            // process message error
+            item.put("message", message);
         }
+        return item;
     }
 
     private void putSpan(Span span, Map<String, Object> item) {
