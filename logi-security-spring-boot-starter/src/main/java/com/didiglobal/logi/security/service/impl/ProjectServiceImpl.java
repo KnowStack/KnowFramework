@@ -194,9 +194,13 @@ public class ProjectServiceImpl implements ProjectService {
         Project project = CopyBeanUtil.copy(saveDTO, Project.class);
         projectDao.update(project);
         // 更新项目成员与项目联系
-        userProjectService.updateUserProject(saveDTO.getId(), saveDTO.getUserIdList());
-        //更新项目负责人与项目联系
-        userProjectService.updateOwnerProject(saveDTO.getId(), saveDTO.getOwnerIdList());
+        if (!CollectionUtils.isEmpty(saveDTO.getUserIdList())) {
+            userProjectService.updateUserProject(saveDTO.getId(), saveDTO.getUserIdList());
+        }
+        // 更新项目负责人与项目联系
+        if (CollectionUtils.isEmpty(saveDTO.getOwnerIdList())) {
+            userProjectService.updateOwnerProject(saveDTO.getId(), saveDTO.getOwnerIdList());
+        }
         // 保存操作日志
         oplogService.saveOplog( new OplogDTO(operator,
                 OplogConstant.PM_E, OplogConstant.PM, saveDTO.getProjectName(), JSON.toJSONString(saveDTO)));
@@ -390,12 +394,8 @@ public class ProjectServiceImpl implements ProjectService {
         if(StringUtils.isEmpty(saveVo.getProjectName())) {
             throw new LogiSecurityException(ResultCode.PROJECT_NAME_CANNOT_BE_BLANK);
         }
-        if(saveVo.getDeptId() == null) {
-            throw new LogiSecurityException(ResultCode.PROJECT_DEPT_CANNOT_BE_NULL);
-        }
-        if(StringUtils.isEmpty(saveVo.getDescription())) {
-            throw new LogiSecurityException(ResultCode.PROJECT_DES_CANNOT_BE_BLANK);
-        }
+        
+        
         
         // 如果是更新操作，则判断项目名重复的时候要排除old信息
         Integer projectId = isUpdate ? saveVo.getId() : null;
