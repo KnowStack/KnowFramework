@@ -35,8 +35,11 @@ public class JobLogsController {
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     @ResponseBody
     public Result<List<String>> getLogById(@PathVariable Long id) {
-        List<String> jobLogList = jobLogManager.getJobLog(id);
-        return Result.buildSucc(jobLogList);
+        try {
+            return Result.buildSucc(jobLogManager.getJobLog(id));
+        } catch (Exception ex) {
+            return Result.buildFail(ex.getMessage());
+        }
     }
 
 }

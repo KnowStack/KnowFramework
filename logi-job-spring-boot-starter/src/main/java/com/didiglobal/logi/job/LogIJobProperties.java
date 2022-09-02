@@ -25,4 +25,29 @@ public class LogIJobProperties {
     private String nodeName;
     private String jobLogFetcherExtendBeanName;
 
+    /**
+     * elasticsearch address
+     */
+    private String elasticsearchAddress;
+    /**
+     * elasticsearch port
+     */
+    private Integer elasticsearchPort;
+    /**
+     * elasticsearch user
+     */
+    private String elasticsearchUser;
+    /**
+     * elasticsearch password
+     */
+    private String elasticsearchPassword;
+    /**
+     * elasticsearch index name
+     */
+    private String elasticsearchIndexName;
+    /**
+     * elasticsearch type name
+     */
+    private String elasticsearchTypeName;
+
 }

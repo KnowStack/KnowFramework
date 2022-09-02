@@ -16,6 +16,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
+
+import java.io.IOException;
 import java.sql.Timestamp;
 import java.util.HashMap;
 import java.util.List;
@@ -122,16 +124,29 @@ public class JobLogManagerImpl implements JobLogManager {
     }
 
     @Override
-    public List<String> getJobLog(Long id) {
+    public List<String> getJobLog(Long id) throws Exception {
         TaskResult taskResult = getJobLogResult(id);
         if(null != taskResult) {
             String traceId = taskResult.getTraceId();
             if(StringUtils.isNotBlank(traceId)) {
                 List<String> logs = jobLogFetcherExtendBeanTool.getLoginExtendImpl().getLogsByTraceIdFromExternalSystem(traceId);
                 return logs;
+            } else {
+                throw new Exception(
+                        String.format(
+                                "JobLog id:%d 任务执行结果缺失 traceId，请确认是否正确配置可观测性组件",
+                                id
+                        )
+                );
             }
+        } else {
+            throw new Exception(
+                    String.format(
+                            "JobLog id:%d 在系统中不存在任务执行结果",
+                            id
+                    )
+            );
         }
-        return null;
     }
 
     private String genSortName(String sortName){
