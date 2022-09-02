@@ -40,7 +40,7 @@ public class ElasticsearchAppender extends AbstractAppender {
     public static final String PLUGIN_NAME = "ElasticsearchAppender";
 
     private static final String           COMMA             = ",";
-    private static final String TYPE_NAME_DEFAULT_VALUE = "_doc";
+    private static final String TYPE_NAME_DEFAULT_VALUE = "type";
     private static final String THRESHOLD_DEFAULT_VALUE = "all";
     private static final Integer BUFFER_SIZE_DEFAULT_VALUE = 1000;
 
@@ -260,7 +260,7 @@ public class ElasticsearchAppender extends AbstractAppender {
     private void processAndPutLogEventInBuffer(LogEvent event) {
         Map<String, Object> element = logEvent2Map(event);
         if(null != element) {
-            IndexRequest indexRequest = new IndexRequest(indexName, typeName).source(element);
+            IndexRequest indexRequest = new IndexRequest(indexName).source(element);
             while (true) {
                 boolean successful = buffer.offer(indexRequest);
                 if(!successful) {// the buffer is full
