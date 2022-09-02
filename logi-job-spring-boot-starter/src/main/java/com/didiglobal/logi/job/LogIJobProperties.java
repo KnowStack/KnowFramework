@@ -23,4 +23,6 @@ public class LogIJobProperties {
     private String appName;
     private Boolean enable = true;
     private String nodeName;
+    private String jobLogFetcherExtendBeanName;
+
 }

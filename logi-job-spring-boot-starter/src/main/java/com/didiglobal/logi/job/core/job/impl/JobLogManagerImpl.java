@@ -1,18 +1,21 @@
 package com.didiglobal.logi.job.core.job.impl;
 
+import com.alibaba.fastjson.JSON;
 import com.didiglobal.logi.job.LogIJobProperties;
+import com.didiglobal.logi.job.common.TaskResult;
 import com.didiglobal.logi.job.common.domain.LogITask;
 import com.didiglobal.logi.job.common.dto.TaskLogPageQueryDTO;
 import com.didiglobal.logi.job.common.po.LogIJobLogPO;
 import com.didiglobal.logi.job.common.vo.LogIJobLogVO;
 import com.didiglobal.logi.job.core.job.JobLogManager;
 import com.didiglobal.logi.job.core.task.TaskManager;
+import com.didiglobal.logi.job.extend.JobLogFetcherExtendBeanTool;
 import com.didiglobal.logi.job.mapper.LogIJobLogMapper;
 import com.didiglobal.logi.job.utils.BeanUtil;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
-
 import java.sql.Timestamp;
 import java.util.HashMap;
 import java.util.List;
@@ -35,6 +38,9 @@ public class JobLogManagerImpl implements JobLogManager {
     private final static String SORT_CREATE_TIME    = "create_time";
     private final static String SORT_START_TIME     = "start_time";
     private final static String SORT_END_TIME       = "end_time";
+
+    @Autowired
+    private JobLogFetcherExtendBeanTool jobLogFetcherExtendBeanTool;
 
     @Autowired
     public JobLogManagerImpl(TaskManager taskManager,
@@ -104,6 +110,28 @@ public class JobLogManagerImpl implements JobLogManager {
         return logIJobLogMapper.pagineCountByCondition(logIJobProperties.getAppName(),
                 dto.getTaskId(), dto.getTaskDesc(), dto.getTaskStatus(),
                 beginTimestamp, endTimestamp);
+    }
+
+    private TaskResult getJobLogResult(Long id) {
+        LogIJobLogPO logIJobLogPO = logIJobLogMapper.selectById(id);
+        if(StringUtils.isNotBlank(logIJobLogPO.getResult())) {
+            return JSON.parseObject(logIJobLogPO.getResult(), TaskResult.class);
+        } else {
+            return null;
+        }
+    }
+
+    @Override
+    public List<String> getJobLog(Long id) {
+        TaskResult taskResult = getJobLogResult(id);
+        if(null != taskResult) {
+            String traceId = taskResult.getTraceId();
+            if(StringUtils.isNotBlank(traceId)) {
+                List<String> logs = jobLogFetcherExtendBeanTool.getLoginExtendImpl().getLogsByTraceIdFromExternalSystem(traceId);
+                return logs;
+            }
+        }
+        return null;
     }
 
     private String genSortName(String sortName){

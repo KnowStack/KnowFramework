@@ -20,6 +20,7 @@ import com.didiglobal.logi.job.utils.ThreadUtil;
 import com.didiglobal.logi.log.ILog;
 import com.didiglobal.logi.log.LogFactory;
 import com.didiglobal.logi.observability.Observability;
+import com.didiglobal.logi.observability.common.constant.Constant;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import io.opentelemetry.api.trace.Span;
@@ -217,6 +218,11 @@ public class JobManagerImpl implements JobManager {
                     String.format("%s.%s", this.getClass().getName(), "call")
             ).startSpan();
             try(Scope scope = span.makeCurrent()) {
+
+                span.setAttribute(Constant.SPAN_KIND_ATTRIBUTE_KEY_SPAN_KIND, Constant.SPAN_KIND_CRON_TASK);
+                span.setAttribute(Constant.SPAN_KIND_ATTRIBUTE_KEY_JOB_CLASS_NAME, logIJob.getClassName());
+                span.setAttribute(Constant.SPAN_KIND_ATTRIBUTE_KEY_TASK_NAME, logIJob.getTaskName());
+
                 logIJob.setStartTime(new Timestamp(System.currentTimeMillis()));
                 logIJob.setStatus(JobStatusEnum.SUCCEED.getValue());
                 logIJob.setResult(new TaskResult(RUNNING_CODE, "task job is running!"));

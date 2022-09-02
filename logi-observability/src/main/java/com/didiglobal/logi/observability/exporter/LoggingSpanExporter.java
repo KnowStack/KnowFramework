@@ -13,11 +13,12 @@ import io.opentelemetry.sdk.trace.data.SpanData;
 import io.opentelemetry.sdk.trace.export.SpanExporter;
 import java.util.Collection;
 import java.util.Map;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class LoggingSpanExporter implements SpanExporter {
 
-    private static final Logger logger = Logger.getLogger(LoggingSpanExporter.class.getName());
+    private static final Logger logger = LoggerFactory.getLogger(LoggingSpanExporter.class.getName());
 
     public static LoggingSpanExporter create() {
         return new LoggingSpanExporter();

@@ -55,7 +55,6 @@ public class AuvDataSourceConfig {
                 new org.apache.ibatis.session.Configuration();
         configuration.setMapUnderscoreToCamelCase(true);
         bean.setConfiguration(configuration);
-        bean.setPlugins(new ObservabilityInterceptor());//TODO：改为通过 spring 进行自动装载
         return bean.getObject(); // 设置mybatis的xml所在位置
     }
 

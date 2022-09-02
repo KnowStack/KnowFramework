@@ -17,7 +17,7 @@ public class ObservabilitySpan {
 
     private Tracer tracer = Observability.getTracer(ObservabilitySpan.class.getName());
 
-    @Pointcut(value = "execution(* com.didiglobal..*.*(..))")//TODO：切片可配 后续有时间
+    @Pointcut(value = "execution(* com.didiglobal..*.*(..)) || execution(* com.didichuxing..*.*(..))")//TODO：切片可配 后续有时间
     public void aopSpan() {}
 
     @Around("aopSpan()")

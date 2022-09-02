@@ -1,5 +1,6 @@
 package com.didiglobal.logi.observability.conponent.spring.filter;
 
+import com.alibaba.fastjson.JSON;
 import com.didiglobal.logi.observability.Observability;
 import com.didiglobal.logi.observability.common.constant.Constant;
 import io.opentelemetry.api.trace.Span;
@@ -10,16 +11,17 @@ import io.opentelemetry.context.Context;
 import io.opentelemetry.context.Scope;
 import io.opentelemetry.context.propagation.TextMapGetter;
 import io.opentelemetry.context.propagation.TextMapPropagator;
+import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.core.Ordered;
 import org.springframework.stereotype.Component;
 import javax.servlet.*;
 import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpServletResponseWrapper;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Enumeration;
-import java.util.List;
+import java.util.*;
 
 /**
  * 可观察拦截器 高优先级 优先处理
@@ -30,6 +32,12 @@ public class ObservabilityFilter implements Ordered, Filter {
 
     private static final TextMapPropagator TEXT_MAP_PROPAGATOR = Observability.getTextMapPropagator();
     private static final Tracer tracer = Observability.getTracer(ObservabilityFilter.class.getName());
+
+    private static Set<Integer> validHttpStatusCodeSet = new HashSet<>();
+
+    static {
+        validHttpStatusCodeSet.add(HttpStatus.SC_OK);
+    }
 
     /*
      * extract the context from http headers
@@ -76,8 +84,22 @@ public class ObservabilityFilter implements Ordered, Filter {
             span.setAttribute(Constant.HTTP_HOST, String.format("%s:%d", request.getLocalAddr(), request.getLocalPort()));
             span.setAttribute(Constant.HTTP_TARGET, requestUri);
             // Process the request
-            filterChain.doFilter(servletRequest, servletResponse);
-            span.setStatus(StatusCode.OK);
+            StatusExposingServletResponse response = new StatusExposingServletResponse((HttpServletResponse) servletResponse);
+            filterChain.doFilter(servletRequest, response);
+            //set span status
+            int httpStatus = response.getStatus();
+            if(!validHttpStatusCodeSet.contains(httpStatus)) {
+                span.setStatus(
+                        StatusCode.ERROR,
+                        String.format(
+                                "http状态码%d不在合法http状态码集%s内",
+                                httpStatus,
+                                JSON.toJSONString(validHttpStatusCodeSet)
+                        )
+                );
+            } else {
+                span.setStatus(StatusCode.OK);
+            }
         } catch (Exception ex) {
             span.setStatus(StatusCode.ERROR, ex.getMessage());
         } finally {
@@ -89,6 +111,21 @@ public class ObservabilityFilter implements Ordered, Filter {
     @Override
     public int getOrder() {
         return Ordered.HIGHEST_PRECEDENCE;
+    }
+
+    static class StatusExposingServletResponse extends HttpServletResponseWrapper implements HttpServletResponse {
+        private int status = 200;
+        public StatusExposingServletResponse(HttpServletResponse response) {
+            super(response);
+        }
+        @Override
+        public void setStatus(int sc) {
+            this.status = sc;
+            super.setStatus(sc);
+        }
+        public int getStatus() {
+            return status;
+        }
     }
 
 }
