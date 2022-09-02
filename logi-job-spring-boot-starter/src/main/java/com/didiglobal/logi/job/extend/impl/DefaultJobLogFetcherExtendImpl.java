@@ -30,7 +30,6 @@ import java.util.List;
 @Component("defaultJobLogFetcherExtendImpl")
 public class DefaultJobLogFetcherExtendImpl implements JobLogFetcherExtend {
 
-    @Autowired
     private LogIJobProperties logIJobProperties;
 
     /**
@@ -38,7 +37,9 @@ public class DefaultJobLogFetcherExtendImpl implements JobLogFetcherExtend {
      */
     private RestHighLevelClient client;
 
-    public DefaultJobLogFetcherExtendImpl() {
+    @Autowired
+    public DefaultJobLogFetcherExtendImpl(LogIJobProperties logIJobProperties) {
+        this.logIJobProperties = logIJobProperties;
         this.client = getRestHighLevelClient();
     }
 

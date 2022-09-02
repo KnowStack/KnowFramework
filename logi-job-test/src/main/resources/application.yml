@@ -15,4 +15,10 @@ spring:
     app_name: logi_job_test
     claim-strategy: com.didiglobal.logi.job.core.consensual.RandomConsensual
     node-name: node1
-    job-log-fetcher-extend-bean-name:
+    job-log-fetcher-extend-bean-name: com.didiglobal.logi.job.extend.impl.DefaultJobLogFetcherExtendImpl
+    elasticsearch-address: localhost
+    elasticsearch-port: 9200
+    elasticsearch-user: admin
+    elasticsearch-password: admin
+    elasticsearch-index-name: index_observability
+    elasticsearch-type-name: type
