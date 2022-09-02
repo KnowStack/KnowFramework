@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.didiglobal.logi.observability.common.bean.Log;
 import com.didiglobal.logi.observability.common.bean.Span;
+import com.didiglobal.logi.observability.common.constant.Constant;
 import com.didiglobal.logi.observability.common.enums.LogEventType;
 import io.opentelemetry.api.common.AttributeKey;
 import org.apache.commons.collections.CollectionUtils;
@@ -297,14 +298,14 @@ public class ElasticsearchAppender extends AbstractAppender {
         /*
          * build env info
          */
-        item.put("className", event.getSource().getClassName());
-        item.put("fileName", event.getSource().getFileName());
-        item.put("lineNumber", event.getSource().getLineNumber());
-        item.put("methodName", event.getSource().getMethodName());
-        item.put("logName", event.getLoggerName());
-        item.put("logLevel", event.getLevel().toString());
-        item.put("logThread", event.getThreadName());
-        item.put("logMills", new Date(event.getTimeMillis()));
+        item.put(Constant.LOG_FIELD_NAME_CLASS_NAME, event.getSource().getClassName());
+        item.put(Constant.LOG_FIELD_NAME_FILE_NAME, event.getSource().getFileName());
+        item.put(Constant.LOG_FIELD_NAME_LINE_NUMBER, event.getSource().getLineNumber());
+        item.put(Constant.LOG_FIELD_NAME_METHOD_NAME, event.getSource().getMethodName());
+        item.put(Constant.LOG_FIELD_NAME_LOG_NAME, event.getLoggerName());
+        item.put(Constant.LOG_FIELD_NAME_LOG_LEVEL, event.getLevel().toString());
+        item.put(Constant.LOG_FIELD_NAME_LOG_THREAD, event.getThreadName());
+        item.put(Constant.LOG_FIELD_NAME_LOG_MILLS, new Date(event.getTimeMillis()));
         /*
          * build log info
          */
@@ -315,43 +316,43 @@ public class ElasticsearchAppender extends AbstractAppender {
                 String logEventType = jsonObject.getObject("logEventType", String.class);
                 if(LogEventType.LOG.name().equals(logEventType)) {
                     Log log = jsonObject.getObject("data", Log.class);
-                    item.put("logType", LogEventType.LOG.name());
+                    item.put(Constant.LOG_FIELD_NAME_LOG_TYPE, LogEventType.LOG.name());
                     putLog(log, item);
                 } else if(LogEventType.TRACE.name().equals(logEventType)) {
                     Span span = jsonObject.getObject("data", Span.class);
-                    item.put("logType", LogEventType.TRACE.name());
+                    item.put(Constant.LOG_FIELD_NAME_LOG_TYPE, LogEventType.TRACE.name());
                     putSpan(span, item);
                 } else if(LogEventType.METRIC.name().equals(logEventType)) {
                     // TODO：
                 } else {
                     // other whise
-                    item.put("logType", LogEventType.LOG.name());
-                    item.put("message", message);
+                    item.put(Constant.LOG_FIELD_NAME_LOG_TYPE, LogEventType.LOG.name());
+                    item.put(Constant.LOG_FIELD_NAME_MESSAGE, message);
                 }
             } else {
-                item.put("logType", LogEventType.LOG.name());
-                item.put("message", message);
+                item.put(Constant.LOG_FIELD_NAME_LOG_TYPE, LogEventType.LOG.name());
+                item.put(Constant.LOG_FIELD_NAME_MESSAGE, message);
             }
         } catch (Exception ex) {
             // process message error
-            item.put("logType", LogEventType.LOG.name());
-            item.put("message", message);
+            item.put(Constant.LOG_FIELD_NAME_LOG_TYPE, LogEventType.LOG.name());
+            item.put(Constant.LOG_FIELD_NAME_MESSAGE, message);
         }
         return item;
     }
 
     private void putSpan(Span span, Map<String, Object> item) {
-        item.put("spanName", span.getSpanName());
-        item.put("traceId", span.getTraceId());
-        item.put("spanId", span.getSpanId());
-        item.put("spanKind", span.getSpanKind().name());
-        item.put("parentSpanId", span.getParentSpanId());
-        item.put("startEpochNanos", span.getStartEpochNanos());
-        item.put("endEpochNanos", span.getEndEpochNanos());
-        item.put("statusData", span.getStatusData().name());
-        item.put("spentNanos", span.getSpentNanos());
-        item.put("tracerName", span.getTracerName());
-        item.put("tracerVersion", span.getTracerVersion());
+        item.put(Constant.LOG_FIELD_NAME_SPAN_NAME, span.getSpanName());
+        item.put(Constant.LOG_FIELD_NAME_TRACE_ID, span.getTraceId());
+        item.put(Constant.LOG_FIELD_NAME_SPAN_ID, span.getSpanId());
+        item.put(Constant.LOG_FIELD_NAME_SPAN_KIND, span.getSpanKind().name());
+        item.put(Constant.LOG_FIELD_NAME_PARENT_SPAN_ID, span.getParentSpanId());
+        item.put(Constant.LOG_FIELD_NAME_START_EPOCH_NANOS, span.getStartEpochNanos());
+        item.put(Constant.LOG_FIELD_NAME_END_EPOCH_NANOS, span.getEndEpochNanos());
+        item.put(Constant.LOG_FIELD_NAME_STATUS_DATA, span.getStatusData().name());
+        item.put(Constant.LOG_FIELD_NAME_SPENT_NANOS, span.getSpentNanos());
+        item.put(Constant.LOG_FIELD_NAME_TRACER_NAME, span.getTracerName());
+        item.put(Constant.LOG_FIELD_NAME_TRACER_VERSION, span.getTracerVersion());
         if(MapUtils.isNotEmpty(span.getAttributes())) {
             for (Map.Entry<AttributeKey<?>, Object> entry : span.getAttributes().entrySet()) {
                 AttributeKey<?> key = entry.getKey();
@@ -362,9 +363,9 @@ public class ElasticsearchAppender extends AbstractAppender {
     }
 
     private void putLog(Log log, Map<String, Object> item) {
-        item.put("tracerId", log.getTracerId());
-        item.put("spanId", log.getSpanId());
-        item.put("message", log.getMessage());
+        item.put(Constant.LOG_FIELD_NAME_TRACE_ID, log.getTracerId());
+        item.put(Constant.LOG_FIELD_NAME_SPAN_ID, log.getSpanId());
+        item.put(Constant.LOG_FIELD_NAME_MESSAGE, log.getMessage());
     }
 
     /**
