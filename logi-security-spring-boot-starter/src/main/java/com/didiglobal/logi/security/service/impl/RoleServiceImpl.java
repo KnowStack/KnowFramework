@@ -423,9 +423,7 @@ public class RoleServiceImpl implements RoleService {
         if(StringUtils.isEmpty(saveDTO.getRoleName())) {
             throw new LogiSecurityException(ResultCode.ROLE_NAME_CANNOT_BE_BLANK);
         }
-        if(StringUtils.isEmpty(saveDTO.getDescription())) {
-            throw new LogiSecurityException(ResultCode.ROLE_DEPT_CANNOT_BE_BLANK);
-        }
+        
         if(CollectionUtils.isEmpty(saveDTO.getPermissionIdList())) {
             throw new LogiSecurityException(ResultCode.ROLE_PERMISSION_CANNOT_BE_NULL);
         }
