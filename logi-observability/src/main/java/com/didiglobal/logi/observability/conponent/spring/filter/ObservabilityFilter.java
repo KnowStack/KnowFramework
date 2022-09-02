@@ -71,8 +71,8 @@ public class ObservabilityFilter implements Ordered, Filter {
         ).setParent(context).setSpanKind(SpanKind.SERVER).startSpan();
         try (Scope scope = span.makeCurrent()) {
             // Set the Semantic Convention
-            span.setAttribute(Constant.COMPONENT, Constant.COMPONENT_HTTP);
-            span.setAttribute(Constant.HTTP_METHOD, request.getMethod());
+            span.setAttribute(Constant.ATTRIBUTE_KEY_COMPONENT, Constant.ATTRIBUTE_VALUE_COMPONENT_HTTP);
+            span.setAttribute(Constant.ATTRIBUTE_KEY_HTTP_METHOD, request.getMethod());
             /*
              One of the following is required:
              - http.scheme, http.host, http.target
@@ -80,9 +80,9 @@ public class ObservabilityFilter implements Ordered, Filter {
              - http.scheme, net.host.name, net.host.port, http.target
              - http.url
             */
-            span.setAttribute(Constant.HTTP_SCHEMA, Constant.COMPONENT_HTTP);
-            span.setAttribute(Constant.HTTP_HOST, String.format("%s:%d", request.getLocalAddr(), request.getLocalPort()));
-            span.setAttribute(Constant.HTTP_TARGET, requestUri);
+            span.setAttribute(Constant.ATTRIBUTE_KEY_HTTP_SCHEMA, Constant.ATTRIBUTE_VALUE_COMPONENT_HTTP);
+            span.setAttribute(Constant.ATTRIBUTE_KEY_HTTP_HOST, String.format("%s:%d", request.getLocalAddr(), request.getLocalPort()));
+            span.setAttribute(Constant.ATTRIBUTE_KEY_HTTP_TARGET, requestUri);
             // Process the request
             StatusExposingServletResponse response = new StatusExposingServletResponse((HttpServletResponse) servletResponse);
             filterChain.doFilter(servletRequest, response);

@@ -125,13 +125,13 @@ public class HttpUtils {
             /*
              * inject info into span
              */
-            span.setAttribute(Constant.HTTP_METHOD, method);
-            span.setAttribute(Constant.COMPONENT, Constant.COMPONENT_HTTP);
+            span.setAttribute(Constant.ATTRIBUTE_KEY_HTTP_METHOD, method);
+            span.setAttribute(Constant.ATTRIBUTE_KEY_COMPONENT, Constant.ATTRIBUTE_VALUE_COMPONENT_HTTP);
 
             String paramUrl = setUrlParams(url, params);
             // 打开链接
             URL urlObj = new URL(paramUrl);
-            span.setAttribute(Constant.HTTP_URL, url.toString());
+            span.setAttribute(Constant.ATTRIBUTE_KEY_HTTP_URL, url.toString());
 
             conn = (HttpURLConnection) urlObj.openConnection();
 

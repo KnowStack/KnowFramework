@@ -60,8 +60,8 @@ public class ObservabilityInterceptor implements Interceptor {
             Object parameter = invocation.getArgs()[1];
             // 3. 获取对应 sql 语 句
             String sql = ms.getBoundSql(parameter).getSql();
-            span.setAttribute(Constant.SQL_STATEMENT, sql);
-            span.setAttribute(Constant.SQL_TYPE, commandType.name());
+            span.setAttribute(Constant.ATTRIBUTE_KEY_SQL_STATEMENT, sql);
+            span.setAttribute(Constant.ATTRIBUTE_KEY_SQL_TYPE, commandType.name());
             Object result = invocation.proceed();
             span.setStatus(StatusCode.OK);
             return result;

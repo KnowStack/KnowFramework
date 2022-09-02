@@ -219,9 +219,9 @@ public class JobManagerImpl implements JobManager {
             ).startSpan();
             try(Scope scope = span.makeCurrent()) {
 
-                span.setAttribute(Constant.SPAN_KIND_ATTRIBUTE_KEY_SPAN_KIND, Constant.SPAN_KIND_CRON_TASK);
-                span.setAttribute(Constant.SPAN_KIND_ATTRIBUTE_KEY_JOB_CLASS_NAME, logIJob.getClassName());
-                span.setAttribute(Constant.SPAN_KIND_ATTRIBUTE_KEY_TASK_NAME, logIJob.getTaskName());
+                span.setAttribute(Constant.ATTRIBUTE_KEY_SPAN_KIND, Constant.ATTRIBUTE_VALUE_SPAN_KIND_CRON_TASK);
+                span.setAttribute(Constant.ATTRIBUTE_KEY_JOB_CLASS_NAME, logIJob.getClassName());
+                span.setAttribute(Constant.ATTRIBUTE_KEY_TASK_NAME, logIJob.getTaskName());
 
                 logIJob.setStartTime(new Timestamp(System.currentTimeMillis()));
                 logIJob.setStatus(JobStatusEnum.SUCCEED.getValue());
