@@ -198,7 +198,7 @@ public class ProjectServiceImpl implements ProjectService {
             userProjectService.updateUserProject(saveDTO.getId(), saveDTO.getUserIdList());
         }
         // 更新项目负责人与项目联系
-        if (CollectionUtils.isEmpty(saveDTO.getOwnerIdList())) {
+        if (!CollectionUtils.isEmpty(saveDTO.getOwnerIdList())) {
             userProjectService.updateOwnerProject(saveDTO.getId(), saveDTO.getOwnerIdList());
         }
         // 保存操作日志
