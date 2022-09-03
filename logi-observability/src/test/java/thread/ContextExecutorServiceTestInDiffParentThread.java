@@ -63,15 +63,19 @@ public class ContextExecutorServiceTestInDiffParentThread {
         @SneakyThrows
         @Override
         public void run() {
-            ContextFuture contextFuture = (ContextFuture) future;
-            String msg = contextFuture.get().toString();
-            contextFuture.getContext().makeCurrent();
-            Span span = tracer.spanBuilder("MyRunnable.run()").startSpan();
-            try(Scope scope = span.makeCurrent()) {
-                System.out.println("MyRunnable.run()");
-                System.out.println(" parameter is : " + msg);
-            } finally {
-                span.end();
+            try {
+                ContextFuture contextFuture = (ContextFuture) future;
+                String msg = contextFuture.get().toString();
+                contextFuture.getContext().makeCurrent();
+                Span span = tracer.spanBuilder("MyRunnable.run()").startSpan();
+                try(Scope scope = span.makeCurrent()) {
+                    System.out.println("MyRunnable.run()");
+                    System.out.println(" parameter is : " + msg);
+                } finally {
+                    span.end();
+                }
+            } catch (Exception ex) {
+
             }
         }
     }

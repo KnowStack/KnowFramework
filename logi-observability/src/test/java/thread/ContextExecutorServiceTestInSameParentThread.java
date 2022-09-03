@@ -62,10 +62,14 @@ public class ContextExecutorServiceTestInSameParentThread {
         @SneakyThrows
         @Override
         public void run() {
-            ContextFuture contextFuture = (ContextFuture) future;
-            String msg = contextFuture.get().toString();
-            System.out.println("MyRunnable.run()");
-            System.out.println(" parameter is : " + msg);
+            try {
+                ContextFuture contextFuture = (ContextFuture) future;
+                String msg = contextFuture.get().toString();
+                System.out.println("MyRunnable.run()");
+                System.out.println(" parameter is : " + msg);
+            } catch (Exception ex) {
+
+            }
         }
     }
 
