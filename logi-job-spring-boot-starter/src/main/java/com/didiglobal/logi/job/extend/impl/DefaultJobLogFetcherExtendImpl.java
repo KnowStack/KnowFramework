@@ -4,22 +4,18 @@ import com.alibaba.fastjson.JSON;
 import com.didiglobal.logi.job.LogIJobProperties;
 import com.didiglobal.logi.job.extend.JobLogFetcherExtend;
 import com.didiglobal.logi.observability.common.constant.Constant;
-import com.didiglobal.logi.observability.common.enums.LogEventType;
 import org.apache.http.HttpHost;
 import org.apache.http.auth.AuthScope;
 import org.apache.http.auth.UsernamePasswordCredentials;
 import org.apache.http.client.CredentialsProvider;
 import org.apache.http.impl.client.BasicCredentialsProvider;
 import org.apache.http.impl.nio.reactor.IOReactorConfig;
-import org.apache.lucene.queryparser.xml.builders.BooleanQueryBuilder;
 import org.elasticsearch.action.search.SearchRequest;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.RequestOptions;
 import org.elasticsearch.client.RestClient;
 import org.elasticsearch.client.RestClientBuilder;
 import org.elasticsearch.client.RestHighLevelClient;
-import org.elasticsearch.index.query.QueryBuilder;
-import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.index.query.TermQueryBuilder;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.SearchHits;
@@ -52,13 +48,8 @@ public class DefaultJobLogFetcherExtendImpl implements JobLogFetcherExtend {
         SearchRequest request = new SearchRequest();
         request.indices(logIJobProperties.getElasticsearchIndexName());
         SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
-
-        QueryBuilder queryBuilder = QueryBuilders.boolQuery().filter(
-                QueryBuilders.termQuery(Constant.LOG_FIELD_NAME_TRACE_ID, traceId)
-        ).filter(
-                QueryBuilders.termQuery(Constant.LOG_FIELD_NAME_LOG_TYPE, LogEventType.LOG.name())
-        );
-        searchSourceBuilder.query(queryBuilder);
+        TermQueryBuilder termQueryBuilder = new TermQueryBuilder(Constant.LOG_FIELD_NAME_TRACE_ID, traceId);
+        searchSourceBuilder.query(termQueryBuilder);
         request.source(searchSourceBuilder);
         try {
             SearchResponse response = this.client.search(request, RequestOptions.DEFAULT);
