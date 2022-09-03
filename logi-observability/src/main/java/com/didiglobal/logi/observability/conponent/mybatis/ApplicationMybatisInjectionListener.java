@@ -18,8 +18,11 @@ public class ApplicationMybatisInjectionListener implements ApplicationListener<
         if(!isInit.compareAndSet(false,true)) {
             return;
         }
-        SqlSessionFactory sqlSessionFactory = contextRefreshedEvent.getApplicationContext().getBean(SqlSessionFactory.class);
-        sqlSessionFactory.getConfiguration().addInterceptor(new ObservabilityInterceptor());
+        String[] nameArray = contextRefreshedEvent.getApplicationContext().getBeanNamesForType(SqlSessionFactory.class);
+        for (String name : nameArray) {
+            SqlSessionFactory sqlSessionFactory = contextRefreshedEvent.getApplicationContext().getBean(name, SqlSessionFactory.class);
+            sqlSessionFactory.getConfiguration().addInterceptor(new ObservabilityInterceptor());
+        }
     }
 
 }
