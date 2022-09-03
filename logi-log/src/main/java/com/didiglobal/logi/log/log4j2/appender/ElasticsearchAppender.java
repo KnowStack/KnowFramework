@@ -261,7 +261,7 @@ public class ElasticsearchAppender extends AbstractAppender {
     private void processAndPutLogEventInBuffer(LogEvent event) {
         Map<String, Object> element = logEvent2Map(event);
         if(null != element) {
-            IndexRequest indexRequest = new IndexRequest(indexName, typeName).source(element);
+            IndexRequest indexRequest = new IndexRequest(indexName).source(element);
             while (true) {
                 boolean successful = buffer.offer(indexRequest);
                 if(!successful) {// the buffer is full
