@@ -16,7 +16,7 @@ public class TaskAddTest {
         params.put("cron", "0 0/1 * * * ? *");
         params.put("className", "com.didiglobal.logi.job.examples.task.JobBroadcasWithParamtTest");
         params.put("params", "{\"name\":\"william\", \"age\":30}");
-        params.put("retryTimes", null);
+//        params.put("retryTimes", null);
         params.put("consensual", "RANDOM");
         params.put("nodeNameWhiteListString", "[\"node1\"]");
         String content = JSON.toJSONString(params);
