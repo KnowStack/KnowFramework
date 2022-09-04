@@ -29,6 +29,11 @@ import org.elasticsearch.client.RequestOptions;
 import org.elasticsearch.client.RestClient;
 import org.elasticsearch.client.RestClientBuilder;
 import org.elasticsearch.client.RestHighLevelClient;
+import org.elasticsearch.client.indices.CreateIndexRequest;
+import org.elasticsearch.client.indices.CreateIndexResponse;
+import org.elasticsearch.client.indices.GetIndexRequest;
+import org.elasticsearch.common.unit.TimeValue;
+import org.elasticsearch.common.xcontent.XContentType;
 import org.springframework.scheduling.concurrent.CustomizableThreadFactory;
 import java.io.IOException;
 import java.io.Serializable;
@@ -120,6 +125,8 @@ public class ElasticsearchAppender extends AbstractAppender {
         this.buffer = new LinkedBlockingQueue<>(bufferSize);
         //初始化 elasticsearch client
         this.client = getRestHighLevelClient();
+        //校验 index 是否已创建，如未创建，则进行创建 创建 时 采用 给 定 elasticsearch mappings.
+        verifyAndCreateElasticsearchIndexIfNotExists();
         //构建 elasticsearch 缓冲区刷写线程
         threadPool = new ThreadPoolExecutor(
                 1,
@@ -130,6 +137,38 @@ public class ElasticsearchAppender extends AbstractAppender {
                 new CustomizableThreadFactory("Log4jElasticsearchAppenderThreadPool")
         );
         threadPool.execute(new SendLogEvent2ElasticsearchRunnable());
+    }
+
+    private void verifyAndCreateElasticsearchIndexIfNotExists() {
+        try{
+            if(!elasticsearchIndexExists()) {
+                createElasticsearchIndex();
+            } else {
+                return;
+            }
+        } catch (IOException ex) {
+            //index 校验出现异常 无须创建索引
+            return;
+        }
+    }
+
+    private void createElasticsearchIndex() {
+        CreateIndexRequest createIndexRequest = new CreateIndexRequest(indexName);
+        createIndexRequest.mapping("", XContentType.JSON);
+        createIndexRequest.setTimeout(new TimeValue(1, TimeUnit.MINUTES));
+        try {
+            CreateIndexResponse createIndexResponse = client.indices().create(createIndexRequest, RequestOptions.DEFAULT);
+            if(!createIndexResponse.isAcknowledged()) {
+                //索引创建 失 败 ignore
+            }
+        } catch (IOException ex) {
+            //索引创建出现异常 ignore
+        }
+    }
+
+    private boolean elasticsearchIndexExists() throws IOException {
+        GetIndexRequest exist=new GetIndexRequest(indexName);
+        return client.indices().exists(exist, RequestOptions.DEFAULT);
     }
 
     class SendLogEvent2ElasticsearchRunnable implements Runnable {
