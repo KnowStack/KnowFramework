@@ -50,6 +50,8 @@ public class DefaultJobLogFetcherExtendImpl implements JobLogFetcherExtend {
         SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
         TermQueryBuilder termQueryBuilder = new TermQueryBuilder(Constant.LOG_FIELD_NAME_TRACE_ID, traceId);
         searchSourceBuilder.query(termQueryBuilder);
+        searchSourceBuilder.from(0);
+        searchSourceBuilder.size(10000);
         request.source(searchSourceBuilder);
         try {
             SearchResponse response = this.client.search(request, RequestOptions.DEFAULT);
