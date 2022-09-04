@@ -144,15 +144,17 @@ public class ElasticsearchAppender extends AbstractAppender {
         //校验 index 是否已创建，如未创建，则进行创建 创建 时 采用 给 定 elasticsearch mappings.
         verifyAndCreateElasticsearchIndexIfNotExists();
         //构建 elasticsearch 缓冲区刷写线程
-        threadPool = new ThreadPoolExecutor(
-                1,
-                1,
-                0L,
-                TimeUnit.MILLISECONDS,
-                new LinkedBlockingQueue<Runnable>(),
-                new CustomizableThreadFactory("Log4jElasticsearchAppenderThreadPool")
-        );
-        threadPool.execute(new SendLogEvent2ElasticsearchRunnable());
+        if(null == threadPool) {
+            threadPool = new ThreadPoolExecutor(
+                    1,
+                    1,
+                    0L,
+                    TimeUnit.MILLISECONDS,
+                    new LinkedBlockingQueue<Runnable>(),
+                    new CustomizableThreadFactory("Log4jElasticsearchAppenderThreadPool")
+            );
+            threadPool.execute(new SendLogEvent2ElasticsearchRunnable());
+        }
     }
 
     private Integer getNumberOfShards(Integer numberOfShards) {
