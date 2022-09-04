@@ -22,3 +22,6 @@ spring:
     elasticsearch-password: admin
     elasticsearch-index-name: index_observability
     elasticsearch-type-name: type
+
+observability:
+  pointcut: execution(* com.didiglobal..*.*(..)) || execution(* com.didichuxing..*.*(..))
