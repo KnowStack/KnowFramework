@@ -32,8 +32,10 @@ import org.elasticsearch.client.RestHighLevelClient;
 import org.elasticsearch.client.indices.CreateIndexRequest;
 import org.elasticsearch.client.indices.CreateIndexResponse;
 import org.elasticsearch.client.indices.GetIndexRequest;
+import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.unit.TimeValue;
-import org.elasticsearch.common.xcontent.XContentType;
+import org.elasticsearch.common.xcontent.XContentBuilder;
+import org.elasticsearch.common.xcontent.XContentFactory;
 import org.springframework.scheduling.concurrent.CustomizableThreadFactory;
 import java.io.IOException;
 import java.io.Serializable;
@@ -49,6 +51,8 @@ public class ElasticsearchAppender extends AbstractAppender {
     private static final String TYPE_NAME_DEFAULT_VALUE = "type";
     private static final String THRESHOLD_DEFAULT_VALUE = "all";
     private static final Integer BUFFER_SIZE_DEFAULT_VALUE = 1000;
+    private static final Integer NUMBER_OF_SHARDS_DEFAULT_VALUE = 1;
+    private static final Integer NUMBER_OF_REPLICAS_DEFAULT_VALUE = 1;
 
     /**
      * elasticsearch address
@@ -74,6 +78,14 @@ public class ElasticsearchAppender extends AbstractAppender {
      * elasticsearch type name
      */
     private String typeName;
+    /**
+     * index shard 数
+     */
+    private Integer numberOfShards;
+    /**
+     * index replicas 数
+     */
+    private Integer numberOfReplicas;
     /**
      * 日志输出级别，可选择 info、debug、warn、error、all（default value）
      */
@@ -110,6 +122,8 @@ public class ElasticsearchAppender extends AbstractAppender {
             String password,
             String indexName,
             String typeName,
+            Integer numberOfShards,
+            Integer numberOfReplicas,
             String threshold,
             Integer bufferSize) {
         super(name, filter, layout);
@@ -119,6 +133,8 @@ public class ElasticsearchAppender extends AbstractAppender {
         this.password = password;
         this.indexName = indexName;
         this.typeName = getTypeName(typeName);
+        this.numberOfShards = getNumberOfShards(numberOfShards);
+        this.numberOfReplicas = getNumberOfReplicas(numberOfReplicas);
         this.threshold = getThreshold(threshold);
         this.bufferSize = getBufferSize(bufferSize);
         //初始化缓冲区
@@ -139,6 +155,22 @@ public class ElasticsearchAppender extends AbstractAppender {
         threadPool.execute(new SendLogEvent2ElasticsearchRunnable());
     }
 
+    private Integer getNumberOfShards(Integer numberOfShards) {
+        if(null == numberOfShards || 0 >= numberOfShards) {
+            return NUMBER_OF_SHARDS_DEFAULT_VALUE;
+        } else {
+            return numberOfShards;
+        }
+    }
+
+    private Integer getNumberOfReplicas(Integer numberOfReplicas) {
+        if(null == numberOfReplicas || 0 >= numberOfReplicas) {
+            return NUMBER_OF_REPLICAS_DEFAULT_VALUE;
+        } else {
+            return numberOfReplicas;
+        }
+    }
+
     private void verifyAndCreateElasticsearchIndexIfNotExists() {
         try{
             if(!elasticsearchIndexExists()) {
@@ -152,9 +184,14 @@ public class ElasticsearchAppender extends AbstractAppender {
         }
     }
 
-    private void createElasticsearchIndex() {
+    private void createElasticsearchIndex() throws IOException {
         CreateIndexRequest createIndexRequest = new CreateIndexRequest(indexName);
-        createIndexRequest.mapping("", XContentType.JSON);
+        createIndexRequest.settings(Settings.builder()
+                .put("index.number_of_shards", this.numberOfShards)
+                .put("index.number_of_replicas", this.numberOfReplicas)
+        );
+        XContentBuilder mapping = getMapping();
+        createIndexRequest.mapping(mapping);
         createIndexRequest.setTimeout(new TimeValue(1, TimeUnit.MINUTES));
         try {
             CreateIndexResponse createIndexResponse = client.indices().create(createIndexRequest, RequestOptions.DEFAULT);
@@ -164,6 +201,78 @@ public class ElasticsearchAppender extends AbstractAppender {
         } catch (IOException ex) {
             //索引创建出现异常 ignore
         }
+    }
+
+    private XContentBuilder getMapping() throws IOException {
+        XContentBuilder mapping = XContentFactory.jsonBuilder()
+                .startObject()
+                    .startObject("properties")
+                        .startObject(Constant.LOG_FIELD_NAME_CLASS_NAME)
+                            .field("type", "keyword")
+                        .endObject()
+                        .startObject(Constant.LOG_FIELD_NAME_FILE_NAME)
+                            .field("type", "keyword")
+                        .endObject()
+                        .startObject(Constant.LOG_FIELD_NAME_LOG_NAME)
+                            .field("type", "keyword")
+                        .endObject()
+                        .startObject(Constant.LOG_FIELD_NAME_METHOD_NAME)
+                            .field("type", "keyword")
+                        .endObject()
+                        .startObject(Constant.LOG_FIELD_NAME_SPAN_NAME)
+                            .field("type", "keyword")
+                        .endObject()
+                        .startObject(Constant.LOG_FIELD_NAME_TRACER_NAME)
+                            .field("type", "keyword")
+                        .endObject()
+                        .startObject(Constant.LOG_FIELD_NAME_END_EPOCH_NANOS)
+                            .field("type", "long")
+                        .endObject()
+                        .startObject(Constant.LOG_FIELD_NAME_LINE_NUMBER)
+                            .field("type", "long")
+                        .endObject()
+                        .startObject(Constant.LOG_FIELD_NAME_LOG_LEVEL)
+                            .field("type", "keyword")
+                        .endObject()
+                        .startObject(Constant.LOG_FIELD_NAME_LOG_MILLS)
+                            .field("type", "date")
+                        .endObject()
+                        .startObject(Constant.LOG_FIELD_NAME_LOG_THREAD)
+                            .field("type", "keyword")
+                        .endObject()
+                        .startObject(Constant.LOG_FIELD_NAME_LOG_TYPE)
+                            .field("type", "keyword")
+                        .endObject()
+                        .startObject(Constant.LOG_FIELD_NAME_MESSAGE)
+                            .field("type", "text")
+                        .endObject()
+                        .startObject(Constant.LOG_FIELD_NAME_PARENT_SPAN_ID)
+                            .field("type", "keyword")
+                        .endObject()
+                        .startObject(Constant.LOG_FIELD_NAME_SPAN_ID)
+                            .field("type", "keyword")
+                        .endObject()
+                        .startObject(Constant.LOG_FIELD_NAME_SPAN_KIND)
+                            .field("type", "keyword")
+                        .endObject()
+                        .startObject(Constant.LOG_FIELD_NAME_SPENT_NANOS)
+                            .field("type", "long")
+                        .endObject()
+                        .startObject(Constant.LOG_FIELD_NAME_START_EPOCH_NANOS)
+                            .field("type", "long")
+                        .endObject()
+                        .startObject(Constant.LOG_FIELD_NAME_STATUS_DATA)
+                            .field("type", "keyword")
+                        .endObject()
+                        .startObject(Constant.LOG_FIELD_NAME_TRACE_ID)
+                            .field("type", "keyword")
+                        .endObject()
+                        .startObject(Constant.LOG_FIELD_NAME_TRACER_VERSION)
+                            .field("type", "keyword")
+                        .endObject()
+                    .endObject()
+                .endObject();
+        return mapping;
     }
 
     private boolean elasticsearchIndexExists() throws IOException {
@@ -222,6 +331,8 @@ public class ElasticsearchAppender extends AbstractAppender {
             @PluginAttribute("password") String password,
             @PluginAttribute("indexName") String indexName,
             @PluginAttribute("typeName") String typeName,
+            @PluginAttribute("numberOfShards") int numberOfShards,
+            @PluginAttribute("numberOfReplicas") int numberOfReplicas,
             @PluginAttribute("threshold") String threshold,
             @PluginAttribute("bufferSize") int bufferSize,
             @PluginElement("Filter") final Filter filter,
@@ -244,6 +355,8 @@ public class ElasticsearchAppender extends AbstractAppender {
                 password,
                 indexName,
                 typeName,
+                numberOfShards,
+                numberOfReplicas,
                 threshold,
                 bufferSize
         );
