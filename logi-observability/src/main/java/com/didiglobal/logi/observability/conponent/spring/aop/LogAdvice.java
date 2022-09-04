@@ -14,7 +14,7 @@ public class LogAdvice implements MethodInterceptor {
 
     @Override
     public Object invoke(MethodInvocation methodInvocation) throws Throwable {
-        String clazzName = methodInvocation.getThis().getClass().getSuperclass().getName();
+        String clazzName = methodInvocation.getThis().getClass().getName();
         String methodName = methodInvocation.getMethod().getName();
         Span span = tracer.spanBuilder(String.format("%s.%s", clazzName, methodName)).startSpan();
         try (Scope scope = span.makeCurrent()) {
