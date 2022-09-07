@@ -1,30 +1,43 @@
-package thread;
+package com.didiglobal.logi.observability.thread;
 
 import com.didiglobal.logi.observability.Observability;
-import com.didiglobal.logi.observability.conponent.thread.ContextScheduledFuture;
+import com.didiglobal.logi.observability.conponent.thread.ContextFuture;
 import io.opentelemetry.api.trace.Span;
 import io.opentelemetry.api.trace.Tracer;
 import io.opentelemetry.context.Scope;
 import lombok.SneakyThrows;
+import org.apache.commons.lang3.concurrent.BasicThreadFactory;
+
 import java.util.concurrent.*;
 
-public class ContextScheduledExecutorServiceTestInSameParentThread {
+public class ContextExecutorServiceTestInSameParentThread {
 
-    private static Tracer tracer = Observability.getTracer(ContextScheduledExecutorServiceTestInSameParentThread.class.getName());
+    private static Tracer tracer = Observability.getTracer(ContextExecutorServiceTestInSameParentThread.class.getName());
 
     public static void main(String[] args) throws InterruptedException {
 
         //1.）封装线程 池
-        ScheduledExecutorService threadPool1 = Observability.wrap(Executors.newScheduledThreadPool(1));
-        ScheduledExecutorService threadPool2 = Observability.wrap(Executors.newScheduledThreadPool(1));
+        ExecutorService threadPool1 = Observability.wrap(
+                new ThreadPoolExecutor(1, 1,
+                        0L, TimeUnit.MILLISECONDS,
+                        new LinkedBlockingQueue<>( 100 ),
+                        new BasicThreadFactory.Builder().namingPattern("main-1").build())
+        );
+
+        ExecutorService threadPool2 = Observability.wrap(
+                new ThreadPoolExecutor(1, 1,
+                        0L, TimeUnit.MILLISECONDS,
+                        new LinkedBlockingQueue<>( 100 ),
+                        new BasicThreadFactory.Builder().namingPattern("main-2").build())
+        );
 
         Span span = tracer.spanBuilder("main").startSpan();
         try (Scope scope = span.makeCurrent()) {
             System.out.println("start function main()");
             //2.）提交附带返回值任务
-            ScheduledFuture<String> scheduledFuture = threadPool1.schedule(new MyCallable(), 0, TimeUnit.MINUTES);
+            Future<String> future = threadPool1.submit(new MyCallable());
             //3.）将范围值作为入参，新线程执行
-            threadPool2.scheduleWithFixedDelay(new MyRunnable(scheduledFuture),10, 5 * 1000 * 60, TimeUnit.SECONDS);
+            threadPool2.submit(new MyRunnable(future));
         } finally {
             span.end();
         }
@@ -42,15 +55,15 @@ public class ContextScheduledExecutorServiceTestInSameParentThread {
     }
 
     static class MyRunnable implements Runnable {
-        private ScheduledFuture scheduledFuture;
-        public MyRunnable(ScheduledFuture scheduledFuture) {
-            this.scheduledFuture = scheduledFuture;
+        private Future future;
+        public MyRunnable(Future future) {
+            this.future = future;
         }
         @SneakyThrows
         @Override
         public void run() {
             try {
-                ContextScheduledFuture contextFuture = (ContextScheduledFuture) scheduledFuture;
+                ContextFuture contextFuture = (ContextFuture) future;
                 String msg = contextFuture.get().toString();
                 System.out.println("MyRunnable.run()");
                 System.out.println(" parameter is : " + msg);

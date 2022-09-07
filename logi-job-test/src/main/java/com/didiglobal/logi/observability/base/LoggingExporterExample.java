@@ -1,7 +1,6 @@
-package base;
+package com.didiglobal.logi.observability.base;
 
 import com.didiglobal.logi.observability.Observability;
-import io.opentelemetry.api.OpenTelemetry;
 import io.opentelemetry.api.trace.Span;
 import io.opentelemetry.api.trace.Tracer;
 import io.opentelemetry.context.Scope;
