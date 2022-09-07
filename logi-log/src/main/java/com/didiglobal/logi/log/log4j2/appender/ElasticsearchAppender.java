@@ -210,7 +210,7 @@ public class ElasticsearchAppender extends AbstractAppender {
                 .startObject()
                     .startObject("properties")
                         .startObject(Constant.ATTRIBUTE_KEY_SQL_STATEMENT)
-                            .field("type", "text")
+                            .field("type", "keyword")
                         .endObject()
                         .startObject(Constant.ATTRIBUTE_KEY_SQL_TYPE)
                             .field("type", "keyword")

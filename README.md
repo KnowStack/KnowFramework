@@ -56,7 +56,7 @@ logi-security相关界面并没提供【角色权限元数据、资源类别数�
 <dependency>
     <groupId>io.github.zqrferrari</groupId>
     <artifactId>logi-job-spring-boot-starter</artifactId>
-    <version>1.0.27</version>
+    <version>2.0.0</version>
 </dependency>
 ```
 #### 2.3.2 配置信息
@@ -76,6 +76,13 @@ spring:
     app_name: arius_test02 #应用名，用户隔离机器和环境
     claim-strategy: com.didiglobal.logi.job.core.consensual.RandomConsensual #调度策略，有两种随机和广播，默认是随机
     node-name: node1 # executor node 名，须唯一
+    job-log-fetcher-extend-bean-name: com.didiglobal.logi.job.extend.impl.DefaultJobLogFetcherExtendImpl # job log fetcher 名，默认从 elasticsearch 进行日志查询
+    elasticsearch-address: localhost # 存储 job log 的 elasticsearch address
+    elasticsearch-port: 9200 # 存储 job log 的 elasticsearch port
+    elasticsearch-user: admin # 存储 job log 的 elasticsearch user
+    elasticsearch-password: admin # 存储 job log 的 elasticsearch password
+    elasticsearch-index-name: index_observability # 存储 job log 的 elasticsearch index
+    elasticsearch-type-name: type # 存储 job log 的 elasticsearch type
 ```
 #### 2.3.3 使用样例
 ```java
@@ -106,26 +113,28 @@ public class ESMonitorJobTask implements Job {
     }
 }
 ```
-#### 2.3.4 动态添加采集任务
+#### 2.3.4 动态添加调度任务
 
 ```
 URL：localhost:8088/v1/logi-job/task
-
 Http Method：Post
-
 Request Body：{
     "name": "带参数的定时任务",
     "description": "带参数的定时任务",
     "cron": "0 0/1 * * * ? *",
-    "className": "com.didiglobal.logi.job.examples.task.JobBroadcasWithParamtTest",
-    "params": "{\"name\":\"william\", \"age\":30}",
-    "retryTimes": null,
+    "className": "com.didiglobal.logi.job.examples.task.JobBroadcasWithParamtTest", # 须预先编写好
+    "params": "{\"name\":\"william\", \"age\":30}", # job 入参
     "consensual": "RANDOM",
-    "nodeNameWhiteListString": "[\"node1\"]"
+    "nodeNameWhiteListString": "[\"node1\"]" # 该任务可运行的节点列表，对应配置文件中配置项 node-name
 }
 ```
 
+#### 2.3.5 查看任务执行相关上下文日志、trace信息
 
+```
+URL：localhost:8088/v1/logi-job/logs/{jobLogId}
+Http Method：GET
+```
 
 ## 3.logi-log
 ### 3.1 介绍
@@ -133,80 +142,14 @@ Request Body：{
 ### 3.2 添加maven
 ```xml
 <dependency>
-    <groupId>io.github.zqrferrari</groupId>
-    <artifactId>logi-log-log</artifactId>
-    <version>1.0.5</version>
+	<groupId>io.github.zqrferrari</groupId>
+	<artifactId>logi-log</artifactId>
+	<version>2.0.0</version>
 </dependency>
 ```
-### 3.2 logi-log-log
-logi-log-log是基于slf4j封装的组件，为用户提供日志相关功能。各个业务可以选择log4j，logback，log4j2，只要配置上桥接就可以使用。
-#### 3.2.1 Trace功能
-Trace功能，是为了根据一个flag，把单个请求的日志关联起来。
-1. 入口设置flag
-
-  ```java
-  @Override
-  public void doFilter(ServletRequest req, ServletResponse resp, FilterChain chain) throws IOException, ServletException {
-      try {
-          // 入口请求，设置flag，后续的日志都会带上同一个flag，用户trace
-          LogFactory.setUniqueFlag();
-      } finally {
-          // 请求结束，要清理flag
-          LogFactory.removeFlag();
-      }
-  }
-  ```
-
-2. Logger对象
-
-  ```java
-  /**
-   * 获取ILog对象
-   */
-  private static final ILog LOGGER = LogFactory.getLog(MyLogTest.class);
-  ```
-
-3. 打印日志
-
-  ```java
-  @Override
-  public void doFilter(ServletRequest req, ServletResponse resp, FilterChain chain) throws IOException, ServletException {
-      try {
-        	// 入口请求，设置flag，后续的日志都会带上同一个flag，用户trace
-        	LogFactory.setUniqueFlag();
-      } finally {
-          // 打印日志
-          LOGGER.info("测试info：{}", req);
-          LOGGER.warn("测试warn：{}", resp);
-          // 请求结束，要清理flag
-          LogFactory.removeFlag();
-      }
-  }
-  ```
-
-4. 新建的线程里打印日志，是不会自动带上flag的，如果需要，可以将flag传入runnable对象
-
-   ```java
-   public class DetectTask implements Runnable {
-       
-       private String flag;
-       
-       private DetectTask(String flag) {
-           this.flag = flag;
-       }
-       
-       @Override
-       public void run() {
-           try {
-               LogFactory.setFlag(flag);
-               // do...
-           } finally {
-               LogFactory.removeFlag();
-           }
-       }
-   }
-   ```
-#### 3.2.2 日志聚合
+### 3.2 logi-log
+logi-log是基于slf4j封装的组件，为用户提供日志相关功能。各个业务可以选择log4j，logback，log4j2，只要配置上桥接就可以使用。
+#### 3.2.1 日志聚合
 1. 日志聚合
 
    是为了防止频繁打印日志，影响应用的运行，特别是在异常场景下，每条数据都会触发异常。聚合是通过key来实现聚合的，可以自定义key来实现多种聚合。
@@ -267,7 +210,22 @@ logi-log-log4j2，是基于log4j2 2.9.1封装的，支持日志发送到kafka，
 </NoRepeatRollingFile>
 ```
 
+#### 3.3.3 日志发送到 Elasticsearch
+
+```
+<Appenders>
+		<ElasticsearchAppender name="esAppender" address="localhost" port="9200" user="admin" password="admin" indexName="index_observability" typeName="type" threshold="all" bufferSize="1000" numberOfShards="1" numberOfReplicas="1">
+		</ElasticsearchAppender>
+</Appenders>
+<Loggers>
+	<root level="INFO">
+		<appender-ref ref="esAppender" />
+	</root>
+</Loggers>
+```
+
 ## 4.logi-metrices
+
 Arius内部指标采集和计算的工具包。
 ### 4.1 添加Maven
 ```xml
@@ -303,6 +261,20 @@ Arius内部指标采集和计算的工具包。
     <groupId>io.github.zqrferrari</groupId>
     <artifactId>logi-elasticsearch-sql</artifactId>
     <version>1.0.4</version>
+</dependency>
+```
+
+## 8.logi-observability
+
+基于 open-telemetry 规范的可观性 SDK 组件库，提供快速接入可观测性的能力。
+
+### 8.1添加Maven
+
+```
+<dependency>
+	<groupId>io.github.zqrferrari</groupId>
+	<artifactId>logi-observability</artifactId>
+	<version>1.0.0</version>
 </dependency>
 ```
 
