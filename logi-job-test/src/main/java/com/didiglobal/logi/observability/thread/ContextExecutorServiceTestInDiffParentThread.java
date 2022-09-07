@@ -1,5 +1,7 @@
 package com.didiglobal.logi.observability.thread;
 
+import com.didiglobal.logi.log.ILog;
+import com.didiglobal.logi.log.LogFactory;
 import com.didiglobal.logi.observability.Observability;
 import com.didiglobal.logi.observability.conponent.thread.ContextFuture;
 import io.opentelemetry.api.trace.Span;
@@ -7,12 +9,13 @@ import io.opentelemetry.api.trace.Tracer;
 import io.opentelemetry.context.Scope;
 import lombok.SneakyThrows;
 import org.apache.commons.lang3.concurrent.BasicThreadFactory;
-
 import java.util.concurrent.*;
 
 public class ContextExecutorServiceTestInDiffParentThread {
 
     private static Tracer tracer = Observability.getTracer(ContextExecutorServiceTestInDiffParentThread.class.getName());
+
+    private static final ILog logger = LogFactory.getLog(ContextExecutorServiceTestInDiffParentThread.class);
 
     public static void main(String[] args) throws InterruptedException {
 
@@ -34,7 +37,7 @@ public class ContextExecutorServiceTestInDiffParentThread {
         Future<String> future = null;
         Span span = tracer.spanBuilder("main").startSpan();
         try (Scope scope = span.makeCurrent()) {
-            System.out.println("start function main()");
+            logger.info("start function main()");
             //2.）提交附带返回值任务
             future = threadPool1.submit(new MyCallable());
         } finally {
@@ -51,7 +54,7 @@ public class ContextExecutorServiceTestInDiffParentThread {
     static class MyCallable implements Callable<String> {
         @Override
         public String call() throws Exception {
-            System.out.println("MyCallable.call()");
+            logger.info("MyCallable.call()");
             return "SUCCESSFUL";
         }
     }
@@ -70,8 +73,8 @@ public class ContextExecutorServiceTestInDiffParentThread {
                 contextFuture.getContext().makeCurrent();
                 Span span = tracer.spanBuilder("MyRunnable.run()").startSpan();
                 try(Scope scope = span.makeCurrent()) {
-                    System.out.println("MyRunnable.run()");
-                    System.out.println(" parameter is : " + msg);
+                    logger.info("MyRunnable.run()");
+                    logger.info(" parameter is : " + msg);
                 } finally {
                     span.end();
                 }

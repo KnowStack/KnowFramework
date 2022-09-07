@@ -1,5 +1,7 @@
 package com.didiglobal.logi.observability.thread;
 
+import com.didiglobal.logi.log.ILog;
+import com.didiglobal.logi.log.LogFactory;
 import com.didiglobal.logi.observability.Observability;
 import com.didiglobal.logi.observability.conponent.thread.ContextScheduledFuture;
 import io.opentelemetry.api.trace.Span;
@@ -13,6 +15,8 @@ public class ContextScheduledExecutorServiceTestInSameParentThread {
 
     private static Tracer tracer = Observability.getTracer(ContextScheduledExecutorServiceTestInSameParentThread.class.getName());
 
+    private static final ILog logger = LogFactory.getLog(ContextScheduledExecutorServiceTestInSameParentThread.class);
+
     public static void main(String[] args) throws InterruptedException {
 
         //1.）封装线程 池
@@ -21,7 +25,7 @@ public class ContextScheduledExecutorServiceTestInSameParentThread {
 
         Span span = tracer.spanBuilder("main").startSpan();
         try (Scope scope = span.makeCurrent()) {
-            System.out.println("start function main()");
+            logger.info("start function main()");
             //2.）提交附带返回值任务
             ScheduledFuture<String> scheduledFuture = threadPool1.schedule(new MyCallable(), 0, TimeUnit.MINUTES);
             //3.）将范围值作为入参，新线程执行
@@ -37,7 +41,7 @@ public class ContextScheduledExecutorServiceTestInSameParentThread {
     static class MyCallable implements Callable<String> {
         @Override
         public String call() throws Exception {
-            System.out.println("MyCallable.call()");
+            logger.info("MyCallable.call()");
             return "SUCCESSFUL";
         }
     }
@@ -53,8 +57,8 @@ public class ContextScheduledExecutorServiceTestInSameParentThread {
             try {
                 ContextScheduledFuture contextFuture = (ContextScheduledFuture) scheduledFuture;
                 String msg = contextFuture.get().toString();
-                System.out.println("MyRunnable.run()");
-                System.out.println(" parameter is : " + msg);
+                logger.info("MyRunnable.run()");
+                logger.info(" parameter is : " + msg);
             } catch (Exception ex) {
 
             }

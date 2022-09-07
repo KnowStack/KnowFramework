@@ -1,5 +1,7 @@
 package com.didiglobal.logi.observability.thread;
 
+import com.didiglobal.logi.log.ILog;
+import com.didiglobal.logi.log.LogFactory;
 import com.didiglobal.logi.observability.Observability;
 import com.didiglobal.logi.observability.conponent.thread.ContextFuture;
 import io.opentelemetry.api.trace.Span;
@@ -7,12 +9,13 @@ import io.opentelemetry.api.trace.Tracer;
 import io.opentelemetry.context.Scope;
 import lombok.SneakyThrows;
 import org.apache.commons.lang3.concurrent.BasicThreadFactory;
-
 import java.util.concurrent.*;
 
 public class ContextExecutorServiceTestInSameParentThread {
 
     private static Tracer tracer = Observability.getTracer(ContextExecutorServiceTestInSameParentThread.class.getName());
+
+    private static final ILog logger = LogFactory.getLog(ContextExecutorServiceTestInSameParentThread.class);
 
     public static void main(String[] args) throws InterruptedException {
 
@@ -33,7 +36,7 @@ public class ContextExecutorServiceTestInSameParentThread {
 
         Span span = tracer.spanBuilder("main").startSpan();
         try (Scope scope = span.makeCurrent()) {
-            System.out.println("start function main()");
+            logger.info("start function main()");
             //2.）提交附带返回值任务
             Future<String> future = threadPool1.submit(new MyCallable());
             //3.）将范围值作为入参，新线程执行
@@ -49,7 +52,7 @@ public class ContextExecutorServiceTestInSameParentThread {
     static class MyCallable implements Callable<String> {
         @Override
         public String call() throws Exception {
-            System.out.println("MyCallable.call()");
+            logger.info("MyCallable.call()");
             return "SUCCESSFUL";
         }
     }
@@ -65,8 +68,8 @@ public class ContextExecutorServiceTestInSameParentThread {
             try {
                 ContextFuture contextFuture = (ContextFuture) future;
                 String msg = contextFuture.get().toString();
-                System.out.println("MyRunnable.run()");
-                System.out.println(" parameter is : " + msg);
+                logger.info("MyRunnable.run()");
+                logger.info(" parameter is : " + msg);
             } catch (Exception ex) {
 
             }
