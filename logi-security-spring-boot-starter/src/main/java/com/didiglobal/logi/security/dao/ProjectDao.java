@@ -70,4 +70,12 @@ public interface ProjectDao {
      * @param project 项目信息
      */
     void update(Project project);
+    
+    /**
+     * 通过 ids 获取项目的简要信息
+     *
+     * @param projectIds 项目编号列表
+     * @return ProjectBrief 对象的列表。
+     */
+    List<Project> selectProjectBriefByProjectIds(List<Integer> projectIds);
 }

@@ -7,6 +7,7 @@ import com.didiglobal.logi.security.common.dto.user.UserDTO;
 import com.didiglobal.logi.security.common.dto.user.UserQueryDTO;
 import com.didiglobal.logi.security.common.entity.user.User;
 import com.didiglobal.logi.security.common.vo.role.AssignInfoVO;
+import com.didiglobal.logi.security.common.vo.user.UserBasicVO;
 import com.didiglobal.logi.security.common.vo.user.UserBriefVO;
 import com.didiglobal.logi.security.common.vo.user.UserVO;
 import com.didiglobal.logi.security.exception.LogiSecurityException;
@@ -139,4 +140,12 @@ public interface UserService {
     Result<Void> editUser(UserDTO userDTO, String operator);
     
     Result<List<UserVO>> getUserDetailByUserIds(List<Integer> ids);
+    
+    /**
+     * 通过用户ID列表获取用户基本信息列表。
+     *
+     * @param userIds 要查询的 userId 列表。
+     * @return UserBasicVO列表
+     */
+    List<UserBasicVO> getUserBasicListByUserIdList(List<Integer> userIds);
 }

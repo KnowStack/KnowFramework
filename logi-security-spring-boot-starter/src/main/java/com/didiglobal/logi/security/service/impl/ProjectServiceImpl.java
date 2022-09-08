@@ -1,5 +1,8 @@
 package com.didiglobal.logi.security.service.impl;
 
+import static com.didiglobal.logi.security.common.enums.project.ProjectUserCode.NORMAL;
+import static com.didiglobal.logi.security.common.enums.project.ProjectUserCode.OWNER;
+
 import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.didiglobal.logi.security.common.PagingData;
@@ -10,14 +13,17 @@ import com.didiglobal.logi.security.common.dto.project.ProjectBriefQueryDTO;
 import com.didiglobal.logi.security.common.dto.project.ProjectQueryDTO;
 import com.didiglobal.logi.security.common.dto.project.ProjectSaveDTO;
 import com.didiglobal.logi.security.common.dto.resource.ResourceDTO;
+import com.didiglobal.logi.security.common.entity.UserProject;
 import com.didiglobal.logi.security.common.entity.dept.Dept;
 import com.didiglobal.logi.security.common.entity.project.Project;
 import com.didiglobal.logi.security.common.entity.project.ProjectBrief;
 import com.didiglobal.logi.security.common.enums.ResultCode;
 import com.didiglobal.logi.security.common.enums.project.ProjectUserCode;
 import com.didiglobal.logi.security.common.vo.project.ProjectBriefVO;
+import com.didiglobal.logi.security.common.vo.project.ProjectBriefVOWithUser;
 import com.didiglobal.logi.security.common.vo.project.ProjectDeleteCheckVO;
 import com.didiglobal.logi.security.common.vo.project.ProjectVO;
+import com.didiglobal.logi.security.common.vo.user.UserBasicVO;
 import com.didiglobal.logi.security.common.vo.user.UserBriefVO;
 import com.didiglobal.logi.security.dao.ProjectDao;
 import com.didiglobal.logi.security.exception.LogiSecurityException;
@@ -38,6 +44,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -78,11 +85,11 @@ public class ProjectServiceImpl implements ProjectService {
         }
         ProjectVO projectVO = CopyBeanUtil.copy(project, ProjectVO.class);
         // 获取成员信息
-        List<Integer> userIdList = userProjectService.getUserIdListByProjectId(projectId, ProjectUserCode.NORMAL);
+        List<Integer> userIdList = userProjectService.getUserIdListByProjectId(projectId, NORMAL);
         projectVO.setUserList(userService.getUserBriefListByUserIdList(userIdList));
 
         // 获取负责人信息
-        List<Integer> ownerIdList = userProjectService.getUserIdListByProjectId(projectId, ProjectUserCode.OWNER);
+        List<Integer> ownerIdList = userProjectService.getUserIdListByProjectId(projectId, OWNER);
         projectVO.setOwnerList(userService.getUserBriefListByUserIdList(ownerIdList));
 
         // 获取部门信息
@@ -144,11 +151,11 @@ public class ProjectServiceImpl implements ProjectService {
         for(Project project : page.getRecords()) {
             ProjectVO projectVO = CopyBeanUtil.copy(project, ProjectVO.class);
             // 获取成员信息
-            List<Integer> userIdList = userProjectService.getUserIdListByProjectId(project.getId(), ProjectUserCode.NORMAL);
+            List<Integer> userIdList = userProjectService.getUserIdListByProjectId(project.getId(), NORMAL);
             projectVO.setUserList(userService.getUserBriefListByUserIdList(userIdList));
 
             // 获取负责人信息
-            List<Integer> ownerIdList = userProjectService.getUserIdListByProjectId(project.getId(), ProjectUserCode.OWNER);
+            List<Integer> ownerIdList = userProjectService.getUserIdListByProjectId(project.getId(), OWNER);
             projectVO.setOwnerList(userService.getUserBriefListByUserIdList(ownerIdList));
 
             // 获取部门信息
@@ -370,11 +377,11 @@ public class ProjectServiceImpl implements ProjectService {
         for(Project project : page.getRecords()) {
             ProjectVO projectVO = CopyBeanUtil.copy(project, ProjectVO.class);
             // 获取成员信息
-            List<Integer> userIdList = userProjectService.getUserIdListByProjectId(project.getId(), ProjectUserCode.NORMAL);
+            List<Integer> userIdList = userProjectService.getUserIdListByProjectId(project.getId(), NORMAL);
             projectVO.setUserList(userService.getUserBriefListByUserIdList(userIdList));
 
             // 获取负责人信息
-            List<Integer> ownerIdList = userProjectService.getUserIdListByProjectId(project.getId(), ProjectUserCode.OWNER);
+            List<Integer> ownerIdList = userProjectService.getUserIdListByProjectId(project.getId(), OWNER);
             projectVO.setOwnerList(userService.getUserBriefListByUserIdList(ownerIdList));
 
             // 获取部门信息
@@ -420,5 +427,51 @@ public class ProjectServiceImpl implements ProjectService {
 
         return resourceDTOList
                 .stream().map(ResourceDTO::getResourceName).collect(Collectors.toList());
+    }
+    
+    /**
+     * > 按项目 ID 获取用户的项目简介 VO 列表
+     *
+     * @param projectIds 项目 ID 列表
+     * @return 列表<ProjectBriefVOWithUser>
+     */
+    @Override
+    public List<ProjectBriefVOWithUser> listProjectBriefVOWithUserByProjectIds(List<Integer> projectIds) {
+        //1.获取项目
+        List<Project> projects = projectDao.selectProjectBriefByProjectIds(projectIds);
+        //2.获取项目和用户的关系
+        List<UserProject> userProjects = userProjectService.lisUserProjectByProjectIds(projectIds);
+        Map<Integer, Map<Integer, Set<Integer>>> projectId2UserProjectListMap = userProjects.stream().collect(
+                Collectors.groupingBy(UserProject::getProjectId,
+                        Collectors.groupingBy(UserProject::getUserType,Collectors.mapping(UserProject::getUserId,
+                                Collectors.toSet()))));
+    
+        //3. 获取用户的简要信息
+        List<Integer> userIds = userProjects.stream().map(UserProject::getUserId).distinct()
+                .collect(Collectors.toList());
+        List<UserBasicVO> userBasicListByUserIdList = userService.getUserBasicListByUserIdList(userIds);
+        //4. 转换
+        Map<Integer, UserBasicVO> userId2UserBasicVOMap = userBasicListByUserIdList.stream()
+                .collect(Collectors.toMap(UserBasicVO::getId, i -> i));
+        //5.function
+        Consumer<ProjectBriefVOWithUser> projectBriefVOWithUserConsumer = projectBriefVOWithUser -> {
+            Integer projectId = projectBriefVOWithUser.getId();
+            Optional.ofNullable(projectId2UserProjectListMap.get(projectId)).ifPresent(userType2UserIdsMaps -> {
+                if (userType2UserIdsMaps.containsKey(NORMAL.getType())) {
+                    List<UserBasicVO> userList = userType2UserIdsMaps.get(NORMAL.getType()).stream()
+                            .map(userId2UserBasicVOMap::get).collect(Collectors.toList());
+                    projectBriefVOWithUser.setUserList(userList);
+                }
+                if (userType2UserIdsMaps.containsKey(OWNER.getType())) {
+                    List<UserBasicVO> ownerList = userType2UserIdsMaps.get(OWNER.getType()).stream()
+                            .map(userId2UserBasicVOMap::get).collect(Collectors.toList());
+                    projectBriefVOWithUser.setOwnerList(ownerList);
+                }
+            });
+        };
+        List<ProjectBriefVOWithUser> projectBriefVOWithUsers = CopyBeanUtil.copyList(projects,
+                ProjectBriefVOWithUser.class,projectBriefVOWithUserConsumer);
+    
+        return projectBriefVOWithUsers;
     }
 }

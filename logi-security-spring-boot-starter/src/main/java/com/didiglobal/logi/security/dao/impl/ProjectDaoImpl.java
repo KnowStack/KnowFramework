@@ -100,4 +100,18 @@ public class ProjectDaoImpl extends BaseDaoImpl<ProjectPO> implements ProjectDao
             .in(projectIdList != null && !projectIdList.isEmpty(), FieldConstant.ID, projectIdList);
         return CopyBeanUtil.copyPage(projectMapper.selectPage(page, projectWrapper), Project.class);
     }
+    
+    /**
+     * 通过 ids 获取项目的简要信息
+     *
+     * @param projectIds 项目编号列表
+     * @return ProjectBrief 对象的列表。
+     */
+    @Override
+    public List<Project> selectProjectBriefByProjectIds(List<Integer> projectIds) {
+        QueryWrapper<ProjectPO> projectWrapper = getQueryWrapperWithAppName();
+        projectWrapper.select(FieldConstant.ID, FieldConstant.PROJECT_NAME,FieldConstant.PROJECT_CODE);
+        projectWrapper.in(FieldConstant.ID, projectIds);
+        return CopyBeanUtil.copyList(projectMapper.selectList(projectWrapper),Project.class);
+    }
 }

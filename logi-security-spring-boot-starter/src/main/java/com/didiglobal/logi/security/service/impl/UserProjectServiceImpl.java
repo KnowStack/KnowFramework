@@ -4,6 +4,7 @@ import com.didiglobal.logi.security.common.entity.UserProject;
 import com.didiglobal.logi.security.common.enums.project.ProjectUserCode;
 import com.didiglobal.logi.security.dao.UserProjectDao;
 import com.didiglobal.logi.security.service.UserProjectService;
+import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
@@ -120,5 +121,10 @@ public class UserProjectServiceImpl implements UserProjectService {
             userProjectList.add(userProject);
         }
         return userProjectList;
+    }
+    
+    @Override
+    public List<UserProject> lisUserProjectByProjectIds(List<Integer> projectIds) {
+        return userProjectDao.selectByProjectIds(projectIds);
     }
 }
