@@ -16,6 +16,8 @@ public class RoleQueryDTO extends PageParamDTO {
 
     @ApiModelProperty(value = "角色编号（精确）", dataType = "String", required = false)
     private String roleCode;
+    @ApiModelProperty(value = "id（精确）", dataType = "String", required = false)
+    private Integer id;
 
     @ApiModelProperty(value = "角色名（模糊）", dataType = "String", required = false)
     private String roleName;

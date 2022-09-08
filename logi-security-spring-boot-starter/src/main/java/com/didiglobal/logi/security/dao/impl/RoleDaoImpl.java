@@ -11,6 +11,7 @@ import com.didiglobal.logi.security.common.po.RolePO;
 import com.didiglobal.logi.security.dao.RoleDao;
 import com.didiglobal.logi.security.dao.mapper.RoleMapper;
 import com.didiglobal.logi.security.util.CopyBeanUtil;
+import java.util.Objects;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
@@ -56,6 +57,7 @@ public class RoleDaoImpl extends BaseDaoImpl<RolePO> implements RoleDao {
                     .like(!StringUtils.isEmpty(description), FieldConstant.DESCRIPTION, description)
                     .orderByDesc(FieldConstant.CREATE_TIME);
         }
+        roleWrapper.eq(Objects.nonNull(queryDTO.getId()),FieldConstant.ID,queryDTO.getId());
         roleMapper.selectPage(pageInfo, roleWrapper);
         return CopyBeanUtil.copyPage(pageInfo, Role.class);
     }
