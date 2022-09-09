@@ -6,6 +6,7 @@ import com.didiglobal.logi.security.common.dto.project.ProjectBriefQueryDTO;
 import com.didiglobal.logi.security.common.dto.project.ProjectQueryDTO;
 import com.didiglobal.logi.security.common.dto.project.ProjectSaveDTO;
 import com.didiglobal.logi.security.common.vo.project.ProjectBriefVO;
+import com.didiglobal.logi.security.common.vo.project.ProjectBriefVOWithUser;
 import com.didiglobal.logi.security.common.vo.project.ProjectDeleteCheckVO;
 import com.didiglobal.logi.security.common.vo.project.ProjectVO;
 import com.didiglobal.logi.security.common.vo.user.UserBriefVO;
@@ -169,4 +170,15 @@ public interface ProjectService {
      * @return {@code Result<List<ProjectBriefVO>>}
      */
     Result<List<ProjectBriefVO>> getProjectBriefByUserId(Integer userId);
+    
+    /**
+     *  按项目 ID 获取用户的项目简介 VO 列表
+     *
+     * @param projectIds 项目 ID 列表
+     * @return
+     */
+    List<ProjectBriefVOWithUser> listProjectBriefVOWithUserByProjectIds(List<Integer> projectIds);
+    
+    
+    
 }

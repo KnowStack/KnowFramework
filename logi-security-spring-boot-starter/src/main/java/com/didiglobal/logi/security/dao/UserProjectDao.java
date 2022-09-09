@@ -43,4 +43,6 @@ public interface UserProjectDao {
     void deleteByProjectId(Integer projectId);
     
     void deleteByProjectIdAndUserType(Integer projectId, int userType);
+    
+    List<UserProject> selectByProjectIds(List<Integer> projectIds);
 }

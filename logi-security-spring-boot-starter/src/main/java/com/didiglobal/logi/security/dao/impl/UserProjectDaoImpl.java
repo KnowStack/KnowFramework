@@ -37,7 +37,14 @@ public class UserProjectDaoImpl extends BaseDaoImpl<UserProjectPO> implements Us
         List<Object> userIdList = userProjectMapper.selectObjs(queryWrapper);
         return userIdList.stream().map(Integer.class::cast).collect(Collectors.toList());
     }
-
+    
+    @Override
+    public List<UserProject> selectByProjectIds(List<Integer> projectIds) {
+        QueryWrapper<UserProjectPO> queryWrapper = getQueryWrapperWithAppName();
+        queryWrapper.select(FieldConstant.USER_ID,FieldConstant.PROJECT_ID,FieldConstant.USER_TYPE);
+        return CopyBeanUtil.copyList(userProjectMapper.selectList(queryWrapper),UserProject.class);
+    }
+    
     @Override
     public List<Integer> selectProjectIdListByUserIdList(List<Integer> userIdList) {
         if(CollectionUtils.isEmpty(userIdList)) {

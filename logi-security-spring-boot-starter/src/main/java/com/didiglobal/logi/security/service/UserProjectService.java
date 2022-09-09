@@ -1,8 +1,10 @@
 package com.didiglobal.logi.security.service;
 
+import com.didiglobal.logi.security.common.entity.UserProject;
 import com.didiglobal.logi.security.common.enums.project.ProjectUserCode;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author cjm
@@ -74,4 +76,12 @@ public interface UserProjectService {
     void deleteOwnerProjectByProjectId(Integer projectId);
     
     void updateOwnerProject(Integer id, List<Integer> ownerIdList);
+    
+    /**
+     * 通过项目 ID 列表获取 UserProject 对象列表。
+     *
+     * @param projectIds 项目 ID 列表
+     * @return
+     */
+    List<UserProject> lisUserProjectByProjectIds(List<Integer> projectIds);
 }

@@ -25,6 +25,7 @@ import com.didiglobal.logi.security.common.po.UserPO;
 import com.didiglobal.logi.security.common.vo.project.ProjectBriefVO;
 import com.didiglobal.logi.security.common.vo.role.AssignInfoVO;
 import com.didiglobal.logi.security.common.vo.role.RoleBriefVO;
+import com.didiglobal.logi.security.common.vo.user.UserBasicVO;
 import com.didiglobal.logi.security.common.vo.user.UserBriefVO;
 import com.didiglobal.logi.security.common.vo.user.UserVO;
 import com.didiglobal.logi.security.dao.ProjectDao;
@@ -177,6 +178,17 @@ public class UserServiceImpl implements UserService {
         userVo.setUpdateTime(user.getUpdateTime());
         userVo.setCreateTime(user.getCreateTime());
         return userVo;
+    }
+    
+    /**
+     * 通过用户ID列表获取用户基本信息列表。
+     *
+     * @param userIds 要查询的 userId 列表。
+     * @return UserBasicVO列表
+     */
+    @Override
+    public List<UserBasicVO> getUserBasicListByUserIdList(List<Integer> userIds) {
+        return CopyBeanUtil.copyList(userDao.selectBriefListByUserIdList(userIds),UserBasicVO.class);
     }
     
     @Override
