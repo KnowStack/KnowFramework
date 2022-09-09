@@ -36,9 +36,13 @@ import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.unit.TimeValue;
 import org.elasticsearch.common.xcontent.XContentBuilder;
 import org.elasticsearch.common.xcontent.XContentFactory;
+import org.elasticsearch.index.query.QueryBuilders;
+import org.elasticsearch.index.reindex.DeleteByQueryRequest;
 import org.springframework.scheduling.concurrent.CustomizableThreadFactory;
 import java.io.IOException;
 import java.io.Serializable;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.concurrent.*;
 
@@ -53,6 +57,7 @@ public class ElasticsearchAppender extends AbstractAppender {
     private static final Integer BUFFER_SIZE_DEFAULT_VALUE = 1000;
     private static final Integer NUMBER_OF_SHARDS_DEFAULT_VALUE = 1;
     private static final Integer NUMBER_OF_REPLICAS_DEFAULT_VALUE = 1;
+    private static final Integer LOG_EXPIRE_DEFAULT_VALUE = 7;
 
     /**
      * elasticsearch address
@@ -108,6 +113,10 @@ public class ElasticsearchAppender extends AbstractAppender {
      * log event 刷写线程
      */
     private ExecutorService threadPool;
+    /**
+     * 日志过期阈值，单位：日
+     */
+    private Integer logExpire;
 
     private volatile CompletableFuture<?> availableFuture = new CompletableFuture<>();
     private volatile CompletableFuture<?> notAvailableFuture = new CompletableFuture<>();
@@ -125,7 +134,8 @@ public class ElasticsearchAppender extends AbstractAppender {
             Integer numberOfShards,
             Integer numberOfReplicas,
             String threshold,
-            Integer bufferSize) {
+            Integer bufferSize,
+            Integer logExpire) {
         super(name, filter, layout);
         this.address = address;
         this.port = port;
@@ -137,6 +147,7 @@ public class ElasticsearchAppender extends AbstractAppender {
         this.numberOfReplicas = getNumberOfReplicas(numberOfReplicas);
         this.threshold = getThreshold(threshold);
         this.bufferSize = getBufferSize(bufferSize);
+        this.logExpire = getLogExpire(logExpire);
         //初始化缓冲区
         this.buffer = new LinkedBlockingQueue<>(bufferSize);
         //初始化 elasticsearch client
@@ -146,14 +157,23 @@ public class ElasticsearchAppender extends AbstractAppender {
         //构建 elasticsearch 缓冲区刷写线程
         if(null == threadPool) {
             threadPool = new ThreadPoolExecutor(
-                    1,
-                    1,
+                    2,
+                    2,
                     0L,
                     TimeUnit.MILLISECONDS,
                     new LinkedBlockingQueue<Runnable>(),
                     new CustomizableThreadFactory("Log4jElasticsearchAppenderThreadPool")
             );
             threadPool.execute(new SendLogEvent2ElasticsearchRunnable());
+            threadPool.execute(new ElasticsearchLogCleanRunnable(this.indexName, this.client));
+        }
+    }
+
+    private Integer getLogExpire(Integer logExpire) {
+        if(null == logExpire || 0 >= logExpire) {
+            return LOG_EXPIRE_DEFAULT_VALUE;
+        } else {
+            return logExpire;
         }
     }
 
@@ -330,6 +350,60 @@ public class ElasticsearchAppender extends AbstractAppender {
         }
     }
 
+    class ElasticsearchLogCleanRunnable implements Runnable {
+
+        // 每小时执行一次
+        private static final long INTERVAL = 1 * 60 * 60 * 1000;
+        private DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+        private String indexName;
+        private RestHighLevelClient client;
+
+        public ElasticsearchLogCleanRunnable(String indexName, RestHighLevelClient client) {
+            this.indexName = indexName;
+            this.client = client;
+        }
+
+        @Override
+        public void run() {
+            while(true) {
+                /*
+                 * 间隔1小时进行一次 elasticsearch logs 清理
+                 */
+                try {
+                    // 间隔一段时间执行一次
+                    Thread.sleep(INTERVAL);
+                } catch (InterruptedException ex) {
+                    Thread.currentThread().interrupt();
+                }
+                /*
+                 * 删除日志
+                 */
+                try {
+                    deleteByCreateTime(System.currentTimeMillis() - logExpire * 24 * 3600 * 1000);
+                } catch (Exception ex) {
+
+                }
+            }
+        }
+
+        private void deleteByCreateTime(Long createTime) {
+            DeleteByQueryRequest deleteByQueryRequest = new DeleteByQueryRequest();
+            deleteByQueryRequest.indices(this.indexName);
+            deleteByQueryRequest.setQuery(
+                    QueryBuilders.rangeQuery(Constant.LOG_FIELD_NAME_LOG_MILLS)
+                    .lte(
+                            dateFormat.format(createTime)
+                    )
+            );
+            try {
+                this.client.deleteByQuery(deleteByQueryRequest, RequestOptions.DEFAULT);
+            } catch (IOException ex) {
+                //ignore
+            }
+        }
+
+    }
+
     @Override
     public void append(LogEvent event) {
         if (threshold.equalsIgnoreCase("all") || threshold.equalsIgnoreCase(event.getLevel().toString())) {
@@ -367,6 +441,7 @@ public class ElasticsearchAppender extends AbstractAppender {
             @PluginAttribute("numberOfReplicas") int numberOfReplicas,
             @PluginAttribute("threshold") String threshold,
             @PluginAttribute("bufferSize") int bufferSize,
+            @PluginAttribute("logExpire") int logExpire,
             @PluginElement("Filter") final Filter filter,
             @PluginElement("Layout") Layout<? extends Serializable> layout
     ) {
@@ -390,7 +465,8 @@ public class ElasticsearchAppender extends AbstractAppender {
                 numberOfShards,
                 numberOfReplicas,
                 threshold,
-                bufferSize
+                bufferSize,
+                logExpire
         );
     }
 
