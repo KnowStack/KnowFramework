@@ -1,4 +1,4 @@
-package com.didiglobal.logi.observability.common;
+package com.didiglobal.logi.observability.common.util;
 
 import org.apache.commons.lang3.StringUtils;
 

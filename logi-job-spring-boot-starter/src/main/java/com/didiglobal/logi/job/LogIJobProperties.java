@@ -1,6 +1,8 @@
 package com.didiglobal.logi.job;
 
+import com.didiglobal.logi.observability.common.util.NetworkUtils;
 import lombok.Data;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 /**
@@ -49,5 +51,20 @@ public class LogIJobProperties {
      * elasticsearch type name
      */
     private String elasticsearchTypeName;
+
+    /**
+     * @return 如配置值非空，取配置值，否则采用 ip_hostname
+     */
+    public String getNodeName() {
+        if(StringUtils.isBlank(this.nodeName)) {
+            return String.format(
+              "%s_%s",
+                    NetworkUtils.getHostIp(),
+                    NetworkUtils.getHostName()
+            );
+        } else {
+            return this.nodeName;
+        }
+    }
 
 }

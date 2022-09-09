@@ -1,6 +1,6 @@
 package com.didiglobal.logi.observability.common.bean;
 
-import com.didiglobal.logi.observability.common.NetworkUtils;
+import com.didiglobal.logi.observability.common.util.NetworkUtils;
 import com.didiglobal.logi.observability.common.enums.LogEventType;
 import lombok.Data;
 
