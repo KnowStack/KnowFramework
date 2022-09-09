@@ -81,7 +81,7 @@ public interface UserProjectService {
      * 通过项目 ID 列表获取 UserProject 对象列表。
      *
      * @param projectIds 项目 ID 列表
-     * @return 列表<用户项目>
+     * @return
      */
     List<UserProject> lisUserProjectByProjectIds(List<Integer> projectIds);
 }

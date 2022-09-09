@@ -430,10 +430,10 @@ public class ProjectServiceImpl implements ProjectService {
     }
     
     /**
-     * > 按项目 ID 获取用户的项目简介 VO 列表
+     *  按项目 ID 获取用户的项目简介 VO 列表
      *
      * @param projectIds 项目 ID 列表
-     * @return 列表<ProjectBriefVOWithUser>
+     * @return
      */
     @Override
     public List<ProjectBriefVOWithUser> listProjectBriefVOWithUserByProjectIds(List<Integer> projectIds) {
