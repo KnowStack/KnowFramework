@@ -121,6 +121,9 @@ public class ElasticsearchAppender extends AbstractAppender {
     private volatile CompletableFuture<?> availableFuture = new CompletableFuture<>();
     private volatile CompletableFuture<?> notAvailableFuture = new CompletableFuture<>();
 
+    private volatile Boolean sendLogEvent2ElasticsearchRunnableSwitch;
+    private volatile Boolean elasticsearchLogCleanRunnableSwitch;
+
     public ElasticsearchAppender(
             String name,
             Filter filter,
@@ -164,6 +167,8 @@ public class ElasticsearchAppender extends AbstractAppender {
                     new LinkedBlockingQueue<Runnable>(),
                     new CustomizableThreadFactory("Log4jElasticsearchAppenderThreadPool")
             );
+            sendLogEvent2ElasticsearchRunnableSwitch = Boolean.TRUE;
+            elasticsearchLogCleanRunnableSwitch = Boolean.TRUE;
             threadPool.execute(new SendLogEvent2ElasticsearchRunnable());
             threadPool.execute(new ElasticsearchLogCleanRunnable(this.indexName, this.client));
         }
@@ -335,7 +340,7 @@ public class ElasticsearchAppender extends AbstractAppender {
     class SendLogEvent2ElasticsearchRunnable implements Runnable {
         @Override
         public void run() {
-            while (true) {
+            while (sendLogEvent2ElasticsearchRunnableSwitch) {
                 if(CollectionUtils.isNotEmpty(buffer)) {
                     flushBuffer();
                 } else {
@@ -365,7 +370,7 @@ public class ElasticsearchAppender extends AbstractAppender {
 
         @Override
         public void run() {
-            while(true) {
+            while(elasticsearchLogCleanRunnableSwitch) {
                 /*
                  * 间隔1小时进行一次 elasticsearch logs 清理
                  */
@@ -420,12 +425,19 @@ public class ElasticsearchAppender extends AbstractAppender {
             if (buffer.size() > 0) {
                 flushBuffer();
             }
+            stopAllRunnable();
             this.client.close();
-        } catch (IOException ex) {
+        } catch (Exception ex) {
             //ignore
         } finally {
             super.stop();
         }
+    }
+
+    private void stopAllRunnable() {
+        this.sendLogEvent2ElasticsearchRunnableSwitch = Boolean.FALSE;
+        this.elasticsearchLogCleanRunnableSwitch = Boolean.FALSE;
+        this.threadPool.shutdownNow();
     }
 
     @PluginFactory
