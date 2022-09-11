@@ -1,5 +1,6 @@
 package com.didiglobal.logi.security.service.impl;
 
+import com.didiglobal.logi.security.common.dto.user.UserProjectDTO;
 import com.didiglobal.logi.security.common.entity.UserProject;
 import com.didiglobal.logi.security.common.enums.project.ProjectUserCode;
 import com.didiglobal.logi.security.dao.UserProjectDao;
@@ -126,5 +127,10 @@ public class UserProjectServiceImpl implements UserProjectService {
     @Override
     public List<UserProject> lisUserProjectByProjectIds(List<Integer> projectIds) {
         return userProjectDao.selectByProjectIds(projectIds);
+    }
+    
+    @Override
+    public List<UserProject> lisUserProjectByUserProjectDTO(UserProjectDTO userProjectDTO) {
+        return userProjectDao.select(userProjectDTO);
     }
 }

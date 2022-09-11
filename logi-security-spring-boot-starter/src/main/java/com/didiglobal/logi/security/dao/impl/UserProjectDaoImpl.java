@@ -2,6 +2,7 @@ package com.didiglobal.logi.security.dao.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.didiglobal.logi.security.common.constant.FieldConstant;
+import com.didiglobal.logi.security.common.dto.user.UserProjectDTO;
 import com.didiglobal.logi.security.common.entity.UserProject;
 import com.didiglobal.logi.security.common.po.UserProjectPO;
 import com.didiglobal.logi.security.dao.UserProjectDao;
@@ -124,5 +125,22 @@ public class UserProjectDaoImpl extends BaseDaoImpl<UserProjectPO> implements Us
         UserProjectPO userProjectPO = CopyBeanUtil.copy(userProject, UserProjectPO.class);
         userProjectPO.setId(id);
         return userProjectMapper.updateById(userProjectPO);
+    }
+    
+    @Override
+    public List<UserProject> select(UserProjectDTO userProjectDTO) {
+        QueryWrapper<UserProjectPO> queryWrapper = getQueryWrapperWithAppName();
+        queryWrapper.select(FieldConstant.ID, FieldConstant.PROJECT_ID, FieldConstant.USER_ID, FieldConstant.USER_TYPE);
+        if (Objects.nonNull(userProjectDTO)) {
+            queryWrapper.eq(Objects.nonNull(userProjectDTO.getId()), FieldConstant.ID, userProjectDTO.getId())
+                    .eq(Objects.nonNull(userProjectDTO.getProjectId()), FieldConstant.PROJECT_ID,
+                            userProjectDTO.getProjectId())
+                    .eq(Objects.nonNull(userProjectDTO.getUserId()), FieldConstant.USER_ID, userProjectDTO.getUserId())
+                    .eq(Objects.nonNull(userProjectDTO.getUserType()), FieldConstant.USER_TYPE,
+                            userProjectDTO.getUserType())
+                    .eq(Objects.nonNull(userProjectDTO.getIsDelete()), FieldConstant.IS_DELETE,
+                            userProjectDTO.getIsDelete());
+        }
+        return CopyBeanUtil.copyList(userProjectMapper.selectList(queryWrapper), UserProject.class);
     }
 }

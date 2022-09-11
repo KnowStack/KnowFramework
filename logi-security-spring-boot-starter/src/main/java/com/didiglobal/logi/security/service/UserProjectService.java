@@ -1,5 +1,6 @@
 package com.didiglobal.logi.security.service;
 
+import com.didiglobal.logi.security.common.dto.user.UserProjectDTO;
 import com.didiglobal.logi.security.common.entity.UserProject;
 import com.didiglobal.logi.security.common.enums.project.ProjectUserCode;
 
@@ -84,4 +85,12 @@ public interface UserProjectService {
      * @return
      */
     List<UserProject> lisUserProjectByProjectIds(List<Integer> projectIds);
+    
+    /**
+     * 它返回基于 UserProjectDTO 对象的 UserProject 对象列表。
+     *
+     * @param userProjectDTO 包含搜索条件的对象。
+     * @return List<UserProject>
+     */
+    List<UserProject> lisUserProjectByUserProjectDTO(UserProjectDTO userProjectDTO);
 }
