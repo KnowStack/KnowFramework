@@ -2,6 +2,7 @@ package com.didiglobal.logi.security.service;
 
 import com.didiglobal.logi.security.common.dto.dept.DeptDTO;
 import com.didiglobal.logi.security.common.entity.dept.Dept;
+import com.didiglobal.logi.security.common.entity.dept.DeptBrief;
 import com.didiglobal.logi.security.common.vo.dept.DeptBriefVO;
 import com.didiglobal.logi.security.common.vo.dept.DeptTreeVO;
 
@@ -63,4 +64,5 @@ public interface DeptService {
      * @param deptDTOList 部门信息
      */
     void saveDept(List<DeptDTO> deptDTOList);
+    List<DeptBrief> listDeptBrief();
 }
