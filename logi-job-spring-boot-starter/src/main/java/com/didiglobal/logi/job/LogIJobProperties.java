@@ -57,11 +57,7 @@ public class LogIJobProperties {
      */
     public String getNodeName() {
         if(StringUtils.isBlank(this.nodeName)) {
-            return String.format(
-              "%s_%s",
-                    NetworkUtils.getHostIp(),
-                    NetworkUtils.getHostName()
-            );
+            return NetworkUtils.getHostIpAndHostName();
         } else {
             return this.nodeName;
         }

@@ -2,15 +2,12 @@ package com.didiglobal.logi.job.core;
 
 import com.didiglobal.logi.job.common.domain.LogIWorker;
 import com.didiglobal.logi.job.utils.ThreadUtil;
-
-import java.net.InetAddress;
-import java.net.UnknownHostException;
 import java.sql.Timestamp;
 import java.text.DecimalFormat;
 import java.util.concurrent.TimeUnit;
-
 import com.didiglobal.logi.log.ILog;
 import com.didiglobal.logi.log.LogFactory;
+import com.didiglobal.logi.observability.common.util.NetworkUtils;
 import oshi.SystemInfo;
 import oshi.hardware.CentralProcessor;
 import oshi.hardware.GlobalMemory;
@@ -55,17 +52,9 @@ public class WorkerSingleton {
 
         static {
             LogIWorker logIWorker = new LogIWorker();
-            InetAddress inetAddress = null;
-            try {
-                inetAddress = InetAddress.getLocalHost();
-            } catch (UnknownHostException e) {
-                logger.error("class=SimpleWorkerFactory||method=||url=||msg=", e);
-            }
-
-            logIWorker.setWorkerCode(inetAddress == null ? "INVALID_CODE"
-                    : inetAddress.getHostAddress() + "_" + inetAddress.getHostName());
-            logIWorker.setWorkerName(inetAddress == null ? "INVALID_NAME" : inetAddress.getHostName());
-            logIWorker.setIp(inetAddress.getHostAddress());
+            logIWorker.setWorkerCode(NetworkUtils.getHostIpAndHostName());
+            logIWorker.setWorkerName(NetworkUtils.getHostName());
+            logIWorker.setIp(NetworkUtils.getHostIp());
             singleton.setLogIWorker(logIWorker);
         }
 

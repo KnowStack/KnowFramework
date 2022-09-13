@@ -37,6 +37,14 @@ public class NetworkUtils {
         return HOST_IP;
     }
 
+    public static String getHostIpAndHostName() {
+        return String.format(
+                "%s_%s",
+                NetworkUtils.getHostIp(),
+                NetworkUtils.getHostName()
+        );
+    }
+
     /**
      * @return 主机名
      */

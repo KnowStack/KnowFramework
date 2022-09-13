@@ -30,7 +30,7 @@ public class TaskAddTest {
         params.put("className", "com.didichuxing.datachannel.agentmanager.task.JobBroadcasWithParamtTest");
         params.put("params", "{\"name\":\"william\", \"age\":30}");
         params.put("consensual", "RANDOM");
-        params.put("nodeNameWhiteListString", "[\"node1\"]");
+        params.put("nodeNameWhiteListString", "[\"172.28.83.212_192.168.0.101\"]");
         String content = JSON.toJSONString(params);
         String response = HttpUtils.postForString(url, content, null);
         System.err.println(response);
