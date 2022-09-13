@@ -64,5 +64,5 @@ public interface DeptService {
      * @param deptDTOList 部门信息
      */
     void saveDept(List<DeptDTO> deptDTOList);
-    List<DeptBrief> listDeptBrief();
+    List<DeptBrief> listAllDeptBrief();
 }

@@ -183,7 +183,7 @@ public class DeptServiceImpl implements DeptService {
     }
     
     @Override
-    public List<DeptBrief> listDeptBrief() {
+    public List<DeptBrief> listAllDeptBrief() {
         return deptDao.selectAllDeptBriefList();
     }
     
