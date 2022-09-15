@@ -86,4 +86,12 @@ public class DeptDaoImpl extends BaseDaoImpl<DeptPO> implements DeptDao {
         }
 
     }
+    
+    @Override
+    public List<DeptBrief> selectAllDeptBriefList() {
+        QueryWrapper<DeptPO> queryWrapper = getQueryWrapperWithAppName();
+        queryWrapper.select(FieldConstant.ID, FieldConstant.DESCRIPTION, FieldConstant.PARENT_ID, FieldConstant.LEAF,
+                FieldConstant.LEVEL);
+        return CopyBeanUtil.copyList(deptMapper.selectList(queryWrapper), DeptBrief.class);
+    }
 }

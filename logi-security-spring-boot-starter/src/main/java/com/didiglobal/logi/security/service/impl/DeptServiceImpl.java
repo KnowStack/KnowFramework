@@ -2,6 +2,7 @@ package com.didiglobal.logi.security.service.impl;
 
 import com.didiglobal.logi.security.common.dto.dept.DeptDTO;
 import com.didiglobal.logi.security.common.entity.dept.Dept;
+import com.didiglobal.logi.security.common.entity.dept.DeptBrief;
 import com.didiglobal.logi.security.common.vo.dept.DeptBriefVO;
 
 import com.didiglobal.logi.security.common.enums.ResultCode;
@@ -180,7 +181,12 @@ public class DeptServiceImpl implements DeptService {
         }
         deptDao.insertBatch(deptList);
     }
-
+    
+    @Override
+    public List<DeptBrief> listAllDeptBrief() {
+        return deptDao.selectAllDeptBriefList();
+    }
+    
     private long getDeptId() {
         return System.currentTimeMillis() % 1000 * (long) Math.pow(10, 5) + MathUtil.getRandomNumber(5);
     }

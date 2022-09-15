@@ -48,4 +48,7 @@ public interface DeptDao {
      * @param deptList 部门信息List
      */
     void insertBatch(List<Dept> deptList);
+    
+    List<DeptBrief> selectAllDeptBriefList();
+    
 }

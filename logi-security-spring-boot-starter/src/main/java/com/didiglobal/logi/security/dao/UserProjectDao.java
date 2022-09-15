@@ -1,5 +1,6 @@
 package com.didiglobal.logi.security.dao;
 
+import com.didiglobal.logi.security.common.dto.user.UserProjectDTO;
 import com.didiglobal.logi.security.common.entity.UserProject;
 
 import java.util.List;
@@ -45,4 +46,6 @@ public interface UserProjectDao {
     void deleteByProjectIdAndUserType(Integer projectId, int userType);
     
     List<UserProject> selectByProjectIds(List<Integer> projectIds);
+    
+    List<UserProject> select(UserProjectDTO userProjectDTO);
 }
