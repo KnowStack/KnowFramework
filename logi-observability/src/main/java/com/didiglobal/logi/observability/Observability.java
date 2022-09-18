@@ -11,7 +11,7 @@ import io.opentelemetry.context.propagation.ContextPropagators;
 import io.opentelemetry.context.propagation.TextMapPropagator;
 import io.opentelemetry.sdk.OpenTelemetrySdk;
 import io.opentelemetry.sdk.trace.SdkTracerProvider;
-import io.opentelemetry.sdk.trace.export.SimpleSpanProcessor;
+import io.opentelemetry.sdk.trace.export.BatchSpanProcessor;
 import org.apache.commons.lang3.StringUtils;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.ScheduledExecutorService;
@@ -28,7 +28,7 @@ public class Observability {
         // the logging exporter.
         SdkTracerProvider tracerProvider =
                 SdkTracerProvider.builder()
-                        .addSpanProcessor(SimpleSpanProcessor.create(LoggingSpanExporter.create()))
+                        .addSpanProcessor(BatchSpanProcessor.builder(LoggingSpanExporter.create()).build())
                         .build();
         OpenTelemetrySdk sdk = OpenTelemetrySdk.builder()
                 .setTracerProvider(tracerProvider)
