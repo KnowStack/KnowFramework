@@ -53,21 +53,21 @@ public class ContextExecutorService implements ExecutorService {
 
     @Override
     public <T> Future<T> submit(Callable<T> task) {
-        Context context = Context.current();
+        Context context = getContext(task);
         Future<T> future = this.delegate().submit(wrap(task, context));
         return new ContextFuture(future, context);
     }
 
     @Override
     public <T> Future<T> submit(Runnable task, T result) {
-        Context context = Context.current();
+        Context context = getContext(task);
         Future<T> future = this.delegate().submit(wrap(task, context), result);
         return new ContextFuture(future, context);
     }
 
     @Override
     public Future<?> submit(Runnable task) {
-        Context context = Context.current();
+        Context context = getContext(task);
         Future<?> future = this.delegate().submit(wrap(task, context));
         return new ContextFuture(future, context);
     }
@@ -167,6 +167,28 @@ public class ContextExecutorService implements ExecutorService {
         }  finally {
             span.end();
         }
+    }
+
+    private <T> Context getContext(Callable<T> task) {
+        Context context = null;
+        if(task instanceof CrossThreadCallable) {
+            CrossThreadCallable crossThreadCallable = (CrossThreadCallable) task;
+            context = crossThreadCallable.getContextFuture().getContext();
+        } else {
+            context = Context.current();
+        }
+        return context;
+    }
+
+    private Context getContext(Runnable runnable) {
+        Context context = null;
+        if(runnable instanceof CrossThreadRunnable) {
+            CrossThreadRunnable crossThreadRunnable = (CrossThreadRunnable) runnable;
+            context = crossThreadRunnable.getContextFuture().getContext();
+        } else {
+            context = Context.current();
+        }
+        return context;
     }
 
 }
