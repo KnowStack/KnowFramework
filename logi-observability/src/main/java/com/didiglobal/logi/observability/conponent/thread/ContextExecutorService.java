@@ -106,7 +106,7 @@ public class ContextExecutorService implements ExecutorService {
 
     @Override
     public void execute(Runnable command) {
-        this.delegate().execute(wrap(command, Context.current()));
+        this.delegate().execute(wrap(command, getContext(command)));
     }
 
     protected  <T> Callable<T> wrap(Callable<T> callable, Context context) {

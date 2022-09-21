@@ -4,6 +4,7 @@ import com.didiglobal.logi.log.ILog;
 import com.didiglobal.logi.log.LogFactory;
 import com.didiglobal.logi.observability.Observability;
 import com.didiglobal.logi.observability.conponent.thread.ContextFuture;
+import com.didiglobal.logi.observability.conponent.thread.CrossThreadRunnable;
 import io.opentelemetry.api.trace.Span;
 import io.opentelemetry.api.trace.Tracer;
 import io.opentelemetry.context.Scope;
@@ -45,7 +46,7 @@ public class ContextExecutorServiceTestInDiffParentThread {
         }
 
         //3.）将范围值作为入参，新线程执行
-        threadPool2.submit(new MyRunnable(future));
+        threadPool2.submit(new MyRunnable((ContextFuture) future));
 
         Thread.sleep(1000 * 60 * 4);
 
@@ -59,28 +60,17 @@ public class ContextExecutorServiceTestInDiffParentThread {
         }
     }
 
-    static class MyRunnable implements Runnable {
-        private Future future;
-        public MyRunnable(Future future) {
-            this.future = future;
+    static class MyRunnable extends CrossThreadRunnable {
+
+        public MyRunnable(ContextFuture contextFuture) {
+            super(contextFuture);
         }
+
         @SneakyThrows
         @Override
         public void run() {
-            try {
-                ContextFuture contextFuture = (ContextFuture) future;
-                String msg = contextFuture.get().toString();
-                contextFuture.getContext().makeCurrent();
-                Span span = tracer.spanBuilder("MyRunnable.run()").startSpan();
-                try(Scope scope = span.makeCurrent()) {
-                    logger.info("MyRunnable.run()");
-                    logger.info(" parameter is : " + msg);
-                } finally {
-                    span.end();
-                }
-            } catch (Exception ex) {
-
-            }
+            logger.info("MyRunnable.run()");
+            logger.info(" parameter is : " + super.getContextFuture().get().toString());
         }
     }
 
