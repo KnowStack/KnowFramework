@@ -18,28 +18,28 @@ public class ContextScheduledExecutorService extends ContextExecutorService impl
 
     @Override
     public ScheduledFuture<?> schedule(Runnable command, long delay, TimeUnit unit) {
-        Context context = Context.current();
+        Context context = ContextUtil.getContext(command);
         ScheduledFuture<?> scheduledFuture = this.delegate().schedule(super.wrap(command, context), delay, unit);
         return new ContextScheduledFuture(scheduledFuture, context);
     }
 
     @Override
     public <V> ScheduledFuture<V> schedule(Callable<V> callable, long delay, TimeUnit unit) {
-        Context context = Context.current();
+        Context context = ContextUtil.getContext(callable);
         ScheduledFuture<?> scheduledFuture = this.delegate().schedule(super.wrap(callable, context), delay, unit);
         return new ContextScheduledFuture(scheduledFuture, context);
     }
 
     @Override
     public ScheduledFuture<?> scheduleAtFixedRate(Runnable command, long initialDelay, long period, TimeUnit unit) {
-        Context context = Context.current();
+        Context context = ContextUtil.getContext(command);
         ScheduledFuture<?> scheduledFuture = this.delegate().scheduleAtFixedRate(super.wrap(command, context), initialDelay, period, unit);
         return new ContextScheduledFuture(scheduledFuture, context);
     }
 
     @Override
     public ScheduledFuture<?> scheduleWithFixedDelay(Runnable command, long initialDelay, long delay, TimeUnit unit) {
-        Context context = Context.current();
+        Context context = ContextUtil.getContext(command);
         ScheduledFuture<?> scheduledFuture = this.delegate().scheduleWithFixedDelay(super.wrap(command, context), initialDelay, delay, unit);
         return new ContextScheduledFuture(scheduledFuture, context);
     }
