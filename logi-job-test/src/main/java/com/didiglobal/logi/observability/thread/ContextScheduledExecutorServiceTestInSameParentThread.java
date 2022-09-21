@@ -55,8 +55,7 @@ public class ContextScheduledExecutorServiceTestInSameParentThread {
         @Override
         public void run() {
             try {
-                ContextScheduledFuture contextFuture = (ContextScheduledFuture) scheduledFuture;
-                String msg = contextFuture.get().toString();
+                String msg = scheduledFuture.get().toString();
                 logger.info("MyRunnable.run()");
                 logger.info(" parameter is : " + msg);
             } catch (Exception ex) {
