@@ -66,8 +66,7 @@ public class ContextExecutorServiceTestInSameParentThread {
         @Override
         public void run() {
             try {
-                ContextFuture contextFuture = (ContextFuture) future;
-                String msg = contextFuture.get().toString();
+                String msg = future.get().toString();
                 logger.info("MyRunnable.run()");
                 logger.info(" parameter is : " + msg);
             } catch (Exception ex) {
