@@ -4,6 +4,7 @@ import com.didiglobal.logi.log.ILog;
 import com.didiglobal.logi.log.LogFactory;
 import com.didiglobal.logi.observability.Observability;
 import com.didiglobal.logi.observability.conponent.thread.ContextScheduledFuture;
+import com.didiglobal.logi.observability.conponent.thread.CrossThreadRunnableWithContextScheduledFuture;
 import io.opentelemetry.api.trace.Span;
 import io.opentelemetry.api.trace.Tracer;
 import io.opentelemetry.context.Scope;
@@ -34,7 +35,7 @@ public class ContextScheduledExecutorServiceTestInDiffParentThread {
         }
 
         //3.）将范围值作为入参，新线程执行
-        threadPool2.scheduleWithFixedDelay(new MyRunnable(scheduledFuture),10, 10, TimeUnit.SECONDS);
+        threadPool2.scheduleWithFixedDelay(new MyRunnable((ContextScheduledFuture) scheduledFuture),10, 10, TimeUnit.SECONDS);
 
         Thread.sleep(1000 * 60 * 4);
 
@@ -48,29 +49,19 @@ public class ContextScheduledExecutorServiceTestInDiffParentThread {
         }
     }
 
-    static class MyRunnable implements Runnable {
-        private ScheduledFuture scheduledFuture;
-        public MyRunnable(ScheduledFuture scheduledFuture) {
-            this.scheduledFuture = scheduledFuture;
+    static class MyRunnable extends CrossThreadRunnableWithContextScheduledFuture {
+
+        public MyRunnable(ContextScheduledFuture contextScheduledFuture) {
+            super(contextScheduledFuture);
         }
+
         @SneakyThrows
         @Override
         public void run() {
-            try {
-                ContextScheduledFuture contextFuture = (ContextScheduledFuture) scheduledFuture;
-                String msg = contextFuture.get().toString();
-                contextFuture.getContext().makeCurrent();
-                Span span = tracer.spanBuilder("MyRunnable.run()").startSpan();
-                try(Scope scope = span.makeCurrent()) {
-                    logger.info("MyRunnable.run()");
-                    logger.info(" parameter is : " + msg);
-                } finally {
-                    span.end();
-                }
-            } catch (Exception ex) {
-
-            }
+            logger.info("MyRunnable.run()");
+            logger.info(" parameter is : " + super.getContextScheduledFuture().get().toString());
         }
+
     }
 
 }

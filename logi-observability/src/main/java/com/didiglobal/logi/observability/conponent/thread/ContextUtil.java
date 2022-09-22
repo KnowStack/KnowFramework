@@ -10,6 +10,9 @@ public class ContextUtil {
         if(task instanceof CrossThreadCallableWithContextFuture) {
             CrossThreadCallableWithContextFuture crossThreadCallable = (CrossThreadCallableWithContextFuture) task;
             context = crossThreadCallable.getContextFuture().getContext();
+        } else if(task instanceof CrossThreadCallableWithContextScheduledFuture) {
+            CrossThreadCallableWithContextScheduledFuture crossThreadCallable = (CrossThreadCallableWithContextScheduledFuture) task;
+            context = crossThreadCallable.getContextScheduledFuture().getContext();
         } else {
             context = Context.current();
         }
@@ -21,6 +24,9 @@ public class ContextUtil {
         if(runnable instanceof CrossThreadRunnableWithContextFuture) {
             CrossThreadRunnableWithContextFuture crossThreadRunnable = (CrossThreadRunnableWithContextFuture) runnable;
             context = crossThreadRunnable.getContextFuture().getContext();
+        } else if(runnable instanceof CrossThreadRunnableWithContextScheduledFuture) {
+            CrossThreadRunnableWithContextScheduledFuture crossThreadRunnable = (CrossThreadRunnableWithContextScheduledFuture) runnable;
+            context = crossThreadRunnable.getContextScheduledFuture().getContext();
         } else {
             context = Context.current();
         }
