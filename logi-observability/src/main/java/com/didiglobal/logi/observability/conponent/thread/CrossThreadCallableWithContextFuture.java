@@ -1,10 +1,12 @@
 package com.didiglobal.logi.observability.conponent.thread;
 
-public abstract class CrossThreadRunnable implements Runnable {
+import java.util.concurrent.Callable;
+
+public abstract class CrossThreadCallableWithContextFuture<T> implements Callable<T> {
 
     private ContextFuture contextFuture;
 
-    public CrossThreadRunnable(ContextFuture contextFuture) {
+    public CrossThreadCallableWithContextFuture(ContextFuture contextFuture) {
         this.contextFuture = contextFuture;
     }
 

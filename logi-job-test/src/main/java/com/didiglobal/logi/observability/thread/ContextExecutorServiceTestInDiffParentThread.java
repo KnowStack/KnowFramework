@@ -4,7 +4,7 @@ import com.didiglobal.logi.log.ILog;
 import com.didiglobal.logi.log.LogFactory;
 import com.didiglobal.logi.observability.Observability;
 import com.didiglobal.logi.observability.conponent.thread.ContextFuture;
-import com.didiglobal.logi.observability.conponent.thread.CrossThreadRunnable;
+import com.didiglobal.logi.observability.conponent.thread.CrossThreadRunnableWithContextFuture;
 import io.opentelemetry.api.trace.Span;
 import io.opentelemetry.api.trace.Tracer;
 import io.opentelemetry.context.Scope;
@@ -60,7 +60,7 @@ public class ContextExecutorServiceTestInDiffParentThread {
         }
     }
 
-    static class MyRunnable extends CrossThreadRunnable {
+    static class MyRunnable extends CrossThreadRunnableWithContextFuture {
 
         public MyRunnable(ContextFuture contextFuture) {
             super(contextFuture);

@@ -7,8 +7,8 @@ public class ContextUtil {
 
     public static <T> Context getContext(Callable<T> task) {
         Context context = null;
-        if(task instanceof CrossThreadCallable) {
-            CrossThreadCallable crossThreadCallable = (CrossThreadCallable) task;
+        if(task instanceof CrossThreadCallableWithContextFuture) {
+            CrossThreadCallableWithContextFuture crossThreadCallable = (CrossThreadCallableWithContextFuture) task;
             context = crossThreadCallable.getContextFuture().getContext();
         } else {
             context = Context.current();
@@ -18,8 +18,8 @@ public class ContextUtil {
 
     public static Context getContext(Runnable runnable) {
         Context context = null;
-        if(runnable instanceof CrossThreadRunnable) {
-            CrossThreadRunnable crossThreadRunnable = (CrossThreadRunnable) runnable;
+        if(runnable instanceof CrossThreadRunnableWithContextFuture) {
+            CrossThreadRunnableWithContextFuture crossThreadRunnable = (CrossThreadRunnableWithContextFuture) runnable;
             context = crossThreadRunnable.getContextFuture().getContext();
         } else {
             context = Context.current();
