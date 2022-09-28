@@ -2,6 +2,7 @@ package com.didiglobal.logi.observability;
 
 import com.didiglobal.logi.observability.conponent.thread.ContextExecutorService;
 import com.didiglobal.logi.observability.conponent.thread.ContextScheduledExecutorService;
+import com.didiglobal.logi.observability.exporter.LoggingMetricExporter;
 import com.didiglobal.logi.observability.exporter.LoggingSpanExporter;
 import io.opentelemetry.api.OpenTelemetry;
 import io.opentelemetry.api.metrics.Meter;
@@ -10,7 +11,6 @@ import io.opentelemetry.api.trace.Tracer;
 import io.opentelemetry.api.trace.propagation.W3CTraceContextPropagator;
 import io.opentelemetry.context.propagation.ContextPropagators;
 import io.opentelemetry.context.propagation.TextMapPropagator;
-import io.opentelemetry.exporter.logging.LoggingMetricExporter;
 import io.opentelemetry.sdk.OpenTelemetrySdk;
 import io.opentelemetry.sdk.metrics.SdkMeterProvider;
 import io.opentelemetry.sdk.metrics.export.MetricReader;
@@ -18,7 +18,6 @@ import io.opentelemetry.sdk.metrics.export.PeriodicMetricReader;
 import io.opentelemetry.sdk.trace.SdkTracerProvider;
 import io.opentelemetry.sdk.trace.export.BatchSpanProcessor;
 import org.apache.commons.lang3.StringUtils;
-
 import java.time.Duration;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.ScheduledExecutorService;
@@ -59,6 +58,7 @@ public class Observability {
                 .setPropagators(ContextPropagators.create(W3CTraceContextPropagator.getInstance()))
                 .buildAndRegisterGlobal();
         Runtime.getRuntime().addShutdownHook(new Thread(tracerProvider::close));
+        Runtime.getRuntime().addShutdownHook(new Thread(meterProvider::close));
         return sdk;
     }
 
