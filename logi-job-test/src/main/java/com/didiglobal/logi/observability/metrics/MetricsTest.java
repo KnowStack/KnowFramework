@@ -2,7 +2,6 @@ package com.didiglobal.logi.observability.metrics;
 
 import com.didiglobal.logi.observability.Observability;
 import io.opentelemetry.api.common.Attributes;
-import io.opentelemetry.api.metrics.DoubleHistogram;
 import io.opentelemetry.api.metrics.Meter;
 
 public class MetricsTest {
@@ -24,13 +23,13 @@ public class MetricsTest {
                 .buildWithCallback(
                         result -> result.record(0.0d, Attributes.empty()));
 
-        DoubleHistogram doubleHistogram = sampleMeter.histogramBuilder("http.response.time")
-                .setDescription("Reports http response time")
-                .setUnit("second")
-                .build();
-        for (int i = 0; i < 10; i++) {
-            doubleHistogram.record(i);
-        }
+//        DoubleHistogram doubleHistogram = sampleMeter.histogramBuilder("http.response.time")
+//                .setDescription("Reports http response time")
+//                .setUnit("second")
+//                .build();
+//        for (int i = 0; i < 10; i++) {
+//            doubleHistogram.record(i);
+//        }
 
     }
 }
