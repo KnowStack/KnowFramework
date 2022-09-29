@@ -3,9 +3,7 @@ package com.didiglobal.logi.security.service;
 import com.didiglobal.logi.security.common.dto.user.UserProjectDTO;
 import com.didiglobal.logi.security.common.entity.UserProject;
 import com.didiglobal.logi.security.common.enums.project.ProjectUserCode;
-
 import java.util.List;
-import java.util.Map;
 
 /**
  * @author cjm
@@ -56,11 +54,13 @@ public interface UserProjectService {
     void delOwnerProject(Integer projectId, List<Integer> ownerIdList);
 
     /**
-     * 更新用户与项目的关联信息，保存新关系之前会删除old的关联信息
+     * 更新用户与项目的关联信息，保存新关系之前会删除old的关联信息 不会删除old信息
      * @param projectId 项目id
      * @param userIdList 用户idList
      */
     void updateUserProject(Integer projectId, List<Integer> userIdList);
+    
+    void updateUserInformationAssociatedWithProject(Integer projectId,List<Integer> userIdList);
 
 
     /**
@@ -77,6 +77,13 @@ public interface UserProjectService {
     void deleteOwnerProjectByProjectId(Integer projectId);
     
     void updateOwnerProject(Integer id, List<Integer> ownerIdList);
+    /**
+     * 更新与项目关联的所有者信息。 不会删除old信息
+     *
+     * @param projectId 您要更新的项目的 ID。
+     * @param ownerIdList 要与项目关联的 ownerId 列表。
+     */
+    void updateOwnerInformationAssociatedWithProject(Integer projectId, List<Integer> ownerIdList);
     
     /**
      * 通过项目 ID 列表获取 UserProject 对象列表。

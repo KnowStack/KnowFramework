@@ -5,13 +5,12 @@ import com.didiglobal.logi.security.common.entity.UserProject;
 import com.didiglobal.logi.security.common.enums.project.ProjectUserCode;
 import com.didiglobal.logi.security.dao.UserProjectDao;
 import com.didiglobal.logi.security.service.UserProjectService;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * @author cjm
@@ -83,11 +82,50 @@ public class UserProjectServiceImpl implements UserProjectService {
     }
     
     @Override
+    public void updateUserInformationAssociatedWithProject(Integer projectId,
+        List<Integer> userIdList) {
+        if (CollectionUtils.isEmpty(userIdList)){
+            return;
+        }
+        //过滤出当前存在的关联信息
+        final List<Integer> userIds = userProjectDao.selectUserIdListByProjectId(projectId,
+            NORMAL);
+        
+        final List<Integer> filterUserIdList = userIdList.stream().filter(id -> !userIds.contains(id))
+            .distinct().collect(Collectors.toList());
+        if (CollectionUtils.isEmpty(filterUserIdList)){
+            return;
+        }
+        // 插入新的关联信息
+        saveUserProject(projectId, userIdList);
+    
+    }
+    
+    @Override
     public void updateOwnerProject(Integer projectId, List<Integer> ownerIdList) {
         // 先删除old的关联信息
         deleteOwnerProjectByProjectId(projectId);
         // 插入新的关联信息
         saveOwnerProject(projectId, ownerIdList);
+    }
+    
+    @Override
+    public void updateOwnerInformationAssociatedWithProject(Integer projectId, List<Integer> ownerIdList) {
+          if (CollectionUtils.isEmpty(ownerIdList)){
+            return;
+        }
+        //过滤出当前存在的关联信息
+        final List<Integer> userIds = userProjectDao.selectUserIdListByProjectId(projectId,
+            NORMAL);
+        
+        final List<Integer> filterOwnerIdList =
+            ownerIdList.stream().filter(id -> !userIds.contains(id))
+            .distinct().collect(Collectors.toList());
+        if (CollectionUtils.isEmpty(filterOwnerIdList)){
+            return;
+        }
+        // 插入新的关联信息
+        saveUserProject(projectId, filterOwnerIdList);
     }
     
     @Override
