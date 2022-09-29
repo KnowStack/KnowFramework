@@ -60,6 +60,12 @@ public interface UserProjectService {
      */
     void updateUserProject(Integer projectId, List<Integer> userIdList);
     
+    /**
+     * 此功能更新与项目关联的用户信息 不会删除old信息
+     *
+     * @param projectId 您要更新的项目的 ID。
+     * @param userIdList 要与项目关联的用户 ID 列表。
+     */
     void updateUserInformationAssociatedWithProject(Integer projectId,List<Integer> userIdList);
 
 
