@@ -84,9 +84,4 @@ public class LogIWorkerPO extends BasePO implements Serializable {
      */
     private String appName;
 
-    /**
-     * 节点名称（唯一）
-     */
-    private String nodeName;
-
 }

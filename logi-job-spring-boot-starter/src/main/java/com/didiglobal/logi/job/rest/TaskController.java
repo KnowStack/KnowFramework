@@ -3,14 +3,12 @@ package com.didiglobal.logi.job.rest;
 import com.didiglobal.logi.job.common.PagingResult;
 import com.didiglobal.logi.job.common.Result;
 import com.didiglobal.logi.job.common.domain.LogITask;
-import com.didiglobal.logi.job.common.dto.LogITaskDTO;
 import com.didiglobal.logi.job.common.dto.TaskPageQueryDTO;
 import com.didiglobal.logi.job.common.vo.LogITaskVO;
 import com.didiglobal.logi.job.core.consensual.ConsensualEnum;
 import com.didiglobal.logi.job.core.task.TaskManager;
 import com.didiglobal.logi.job.utils.BeanUtil;
 import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.*;
@@ -18,6 +16,8 @@ import org.springframework.web.bind.annotation.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static com.didiglobal.logi.job.common.CommonUtil.sqlFuzzyQueryTransfer;
 
 /**
  * task controller.
@@ -39,6 +39,9 @@ public class TaskController {
 
     @PostMapping("/list")
     public PagingResult<LogITaskVO> getAll(@RequestBody TaskPageQueryDTO taskPageQueryDTO) {
+        taskPageQueryDTO.setTaskDesc(sqlFuzzyQueryTransfer(taskPageQueryDTO.getTaskDesc()));
+        taskPageQueryDTO.setClassName(sqlFuzzyQueryTransfer(taskPageQueryDTO.getClassName()));
+
         List<LogITask> logITasks = taskManager.getPagineList(taskPageQueryDTO);
         int count = taskManager.pagineTaskConut(taskPageQueryDTO);
 
@@ -65,13 +68,6 @@ public class TaskController {
     @DeleteMapping("/{taskCode}")
     public Result<Boolean> delete(@PathVariable String taskCode) {
         return taskManager.delete(taskCode);
-    }
-
-    @ApiOperation(value = "新增调度任务", notes = "")
-    @RequestMapping(value = "", method = RequestMethod.POST)
-    @ResponseBody
-    public Result add(@RequestBody LogITaskDTO dto) {
-        return taskManager.add(dto);
     }
 
     /**************************************** private method ****************************************************/

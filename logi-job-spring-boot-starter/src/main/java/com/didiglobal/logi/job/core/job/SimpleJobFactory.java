@@ -5,10 +5,10 @@ import com.didiglobal.logi.job.common.domain.LogITask;
 import com.didiglobal.logi.job.common.enums.JobStatusEnum;
 import com.didiglobal.logi.job.core.WorkerSingleton;
 import com.didiglobal.logi.job.utils.IdWorker;
-import com.didiglobal.logi.log.ILog;
-import com.didiglobal.logi.log.LogFactory;
-import org.springframework.aop.support.AopUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -20,7 +20,7 @@ import java.util.Map;
 @Component
 public class SimpleJobFactory implements JobFactory {
 
-    private static final ILog logger     = LogFactory.getLog(SimpleJobFactory.class);
+    private static final Logger logger = LoggerFactory.getLogger(SimpleJobFactory.class);
 
     private Map<String, Job> jobMap = new HashMap<>();
 
@@ -34,10 +34,10 @@ public class SimpleJobFactory implements JobFactory {
 
     @Override
     public LogIJob newJob(LogITask logITask) {
-        Job job = jobMap.get(logITask.getClassName());
-        if(null == job) {
+        if(null == jobMap.get(logITask.getClassName())){
             return null;
         }
+
         LogIJob logIJob = new LogIJob();
         logIJob.setJobCode(IdWorker.getIdStr());
         logIJob.setTaskCode(logITask.getTaskCode());
@@ -50,10 +50,9 @@ public class SimpleJobFactory implements JobFactory {
         logIJob.setTryTimes(logITask.getRetryTimes() == null ? 1 : logITask.getRetryTimes());
         logIJob.setStatus(JobStatusEnum.STARTED.getValue());
         logIJob.setTimeout(logITask.getTimeout());
-        logIJob.setJob(job);
+        logIJob.setJob(jobMap.get(logITask.getClassName()));
         logIJob.setTaskCallback(logITask.getTaskCallback());
         logIJob.setAppName(logITask.getAppName());
         return logIJob;
     }
-
 }

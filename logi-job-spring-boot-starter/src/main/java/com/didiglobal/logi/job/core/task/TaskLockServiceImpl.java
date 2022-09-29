@@ -6,11 +6,14 @@ import com.didiglobal.logi.job.common.dto.LogITaskLockDTO;
 import com.didiglobal.logi.job.core.WorkerSingleton;
 import com.didiglobal.logi.job.mapper.LogITaskLockMapper;
 import com.didiglobal.logi.job.utils.BeanUtil;
+
+import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.List;
 import java.util.stream.Collectors;
-import com.didiglobal.logi.log.ILog;
-import com.didiglobal.logi.log.LogFactory;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
@@ -22,7 +25,7 @@ import org.springframework.util.CollectionUtils;
  */
 @Service
 public class TaskLockServiceImpl implements TaskLockService {
-    private static final ILog logger     = LogFactory.getLog(TaskLockServiceImpl.class);
+    private static final Logger logger = LoggerFactory.getLogger(TaskLockServiceImpl.class);
     // 每次申请锁的默认过期时间
     private static final Long EXPIRE_TIME_SECONDS = 300L;
 
@@ -122,7 +125,7 @@ public class TaskLockServiceImpl implements TaskLockService {
         }
         long current = System.currentTimeMillis() / 1000;
         List<Long> taskLockIdList = logITaskLockPOList.stream().filter(logITaskLockPO ->
-                logITaskLockPO.getCreateTime().getTime() / 1000 + logITaskLockPO.getExpireTime() < current)
+                        logITaskLockPO.getCreateTime().getTime() / 1000 + logITaskLockPO.getExpireTime() < current)
                 .map(LogITaskLockPO::getId)
                 .collect(Collectors.toList());
 

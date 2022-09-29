@@ -1,18 +1,20 @@
 package com.didiglobal.logi.job.common;
 
-import com.didiglobal.logi.log.ILog;
-import com.didiglobal.logi.log.LogFactory;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
 import java.io.Serializable;
+
 import lombok.Data;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Created by limeng on 2020-04-27.
  */
 @Data
 public class Result<T> extends BaseResult implements Serializable {
-    private static final ILog logger     = LogFactory.getLog(Result.class);
+    private static final Logger logger = LoggerFactory.getLogger(Result.class);
 
     private static final ObjectMapper mapper = new ObjectMapper();
 

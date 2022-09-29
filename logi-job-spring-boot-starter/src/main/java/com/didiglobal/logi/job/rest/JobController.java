@@ -1,10 +1,12 @@
 package com.didiglobal.logi.job.rest;
 
 import com.didiglobal.logi.job.common.Result;
+import com.didiglobal.logi.job.common.vo.LogIJobVO;
 import com.didiglobal.logi.job.core.job.JobManager;
-import com.didiglobal.logi.log.ILog;
-import com.didiglobal.logi.log.LogFactory;
+import com.didiglobal.logi.job.utils.BeanUtil;
 import io.swagger.annotations.Api;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,7 +19,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping(Constants.V1 + "/logi-job/job")
 @Api(tags = "logi-job 执行生成的 job 相关接口")
 public class JobController {
-    private static final ILog logger     = LogFactory.getLog(JobController.class);
+    private static final Logger logger = LoggerFactory.getLogger(JobController.class);
 
     @Autowired
     private JobManager jobManager;

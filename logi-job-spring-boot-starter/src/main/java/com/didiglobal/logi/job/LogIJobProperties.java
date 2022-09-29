@@ -1,8 +1,6 @@
 package com.didiglobal.logi.job;
 
-import com.didiglobal.logi.observability.common.util.NetworkUtils;
 import lombok.Data;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 /**
@@ -24,43 +22,4 @@ public class LogIJobProperties {
     private Integer logExpire;
     private String appName;
     private Boolean enable = true;
-    private String nodeName;
-    private String jobLogFetcherExtendBeanName;
-
-    /**
-     * elasticsearch address
-     */
-    private String elasticsearchAddress;
-    /**
-     * elasticsearch port
-     */
-    private Integer elasticsearchPort;
-    /**
-     * elasticsearch user
-     */
-    private String elasticsearchUser;
-    /**
-     * elasticsearch password
-     */
-    private String elasticsearchPassword;
-    /**
-     * elasticsearch index name
-     */
-    private String elasticsearchIndexName;
-    /**
-     * elasticsearch type name
-     */
-    private String elasticsearchTypeName;
-
-    /**
-     * @return 如配置值非空，取配置值，否则采用 ip_hostname
-     */
-    public String getNodeName() {
-        if(StringUtils.isBlank(this.nodeName)) {
-            return NetworkUtils.getHostIpAndHostName();
-        } else {
-            return this.nodeName;
-        }
-    }
-
 }

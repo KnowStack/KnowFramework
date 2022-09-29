@@ -17,7 +17,6 @@ CREATE TABLE `logi_task`
     `owner`           VARCHAR(200)  DEFAULT '' NOT NULL COMMENT '责任人',
     `task_worker_str` VARCHAR(3000) DEFAULT '' NOT NULL COMMENT '机器执行信息',
     `app_name`        VARCHAR(100)  DEFAULT '' NOT NULL COMMENT '被调度的应用名称',
-    `node_name_white_list_str` VARCHAR(3000) DEFAULT '' NOT NULL COMMENT '执行节点名对应白名单集',
     `create_time`     DATETIME      DEFAULT NOW() COMMENT '创建时间',
     `update_time`     DATETIME      DEFAULT NOW() ON UPDATE NOW() COMMENT '更新时间',
     PRIMARY KEY (`id`),
@@ -97,7 +96,6 @@ CREATE TABLE `logi_worker`
     `app_name`        VARCHAR(100) DEFAULT '' NOT NULL COMMENT '被调度的应用名称',
     `create_time`     DATETIME     DEFAULT NOW() COMMENT '创建时间',
     `update_time`     DATETIME     DEFAULT NOW() ON UPDATE NOW() COMMENT '更新时间',
-    `node_name`     VARCHAR(100) DEFAULT '' NOT NULL COMMENT 'node 名',
     PRIMARY KEY (`id`),
     UNIQUE KEY `worker_code` (`worker_code`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='worker信息';

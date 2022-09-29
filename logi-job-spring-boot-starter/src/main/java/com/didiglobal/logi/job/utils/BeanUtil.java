@@ -1,16 +1,16 @@
 package com.didiglobal.logi.job.utils;
 
-import com.didiglobal.logi.log.ILog;
-import com.didiglobal.logi.log.LogFactory;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 
 import java.util.List;
 
 public class BeanUtil {
-    private static final ILog logger     = LogFactory.getLog(BeanUtil.class);
+    private static final Logger logger = LoggerFactory.getLogger(BeanUtil.class);
     private static final ObjectMapper objectMapper = new ObjectMapper();
 
     /**

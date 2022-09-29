@@ -12,17 +12,18 @@ import com.didiglobal.logi.job.mapper.LogITaskLockMapper;
 import com.didiglobal.logi.job.mapper.LogITaskMapper;
 import com.didiglobal.logi.job.mapper.LogIWorkerMapper;
 import com.didiglobal.logi.job.utils.BeanUtil;
-import com.didiglobal.logi.log.ILog;
-import com.didiglobal.logi.log.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
+
 import java.util.Iterator;
 import java.util.List;
 
 @Service
 public class BeatManagerImpl implements BeatManager {
-    private static final ILog logger     = LogFactory.getLog(BeatManagerImpl.class);
+    private static final Logger logger = LoggerFactory.getLogger(BeatManagerImpl.class);
 
     private JobManager          jobManager;
     private LogIWorkerMapper    logIWorkerMapper;
@@ -60,7 +61,6 @@ public class BeatManagerImpl implements BeatManager {
         LogIWorker logIWorker = workerSingleton.getLogIWorker();
         logIWorker.setJobNum(jobManager.runningJobSize());
         logIWorker.setAppName(logIJobProperties.getAppName());
-        logIWorker.setNodeName(logIJobProperties.getNodeName());
 
         int ret;
         if(null == logIWorkerMapper.selectByCode(logIWorker.getWorkerCode(), logIWorker.getAppName())){

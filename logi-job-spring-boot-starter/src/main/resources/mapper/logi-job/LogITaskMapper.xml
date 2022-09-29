@@ -22,14 +22,13 @@
         <result column="task_worker_str" property="taskWorkerStr"/>
         <result column="create_time" property="createTime"/>
         <result column="update_time" property="updateTime"/>
-        <result column="node_name_white_list_str" property="nodeNameWhiteListStr" />
     </resultMap>
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
         id
         , task_code, task_name, task_desc, cron, class_name, params, retry_times, last_fire_time, timeout, status, sub_task_codes,
-    consensual,task_worker_str, create_time, update_time, app_name, owner, node_name_white_list_str
+    consensual,task_worker_str, create_time, update_time, app_name, owner
     </sql>
 
     <select id="pagineListByCondition" parameterType="map" resultMap="BaseResultMap">

@@ -1,6 +1,5 @@
 package com.didiglobal.logi.job.core.task;
 
-import com.alibaba.fastjson.JSON;
 import com.didiglobal.logi.job.LogIJobProperties;
 import com.didiglobal.logi.job.common.Result;
 import com.didiglobal.logi.job.common.domain.LogITask;
@@ -17,21 +16,25 @@ import com.didiglobal.logi.job.core.job.JobManager;
 import com.didiglobal.logi.job.mapper.LogITaskMapper;
 import com.didiglobal.logi.job.utils.BeanUtil;
 import com.didiglobal.logi.job.utils.CronExpression;
-import com.didiglobal.logi.job.utils.IdWorker;
 import com.didiglobal.logi.job.utils.ThreadUtil;
-import com.didiglobal.logi.log.ILog;
-import com.didiglobal.logi.log.LogFactory;
-import com.didiglobal.logi.observability.Observability;
 import com.google.common.collect.Lists;
+
 import java.sql.Timestamp;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
+
 import static com.didiglobal.logi.job.core.monitor.SimpleTaskMonitor.SCAN_INTERVAL_SLEEP_SECONDS;
 
 /**
@@ -41,20 +44,16 @@ import static com.didiglobal.logi.job.core.monitor.SimpleTaskMonitor.SCAN_INTERV
  */
 @Service
 public class TaskManagerImpl implements TaskManager {
-    private static final ILog logger     = LogFactory.getLog(TaskManagerImpl.class);
+    private static final Logger logger = LoggerFactory.getLogger(TaskManagerImpl.class);
 
     private static final long WAIT_INTERVAL_SECONDS = 10L;
-
-    private static final Long TASK_TIME_OUT_DEFAULT_VALUE = 0l;
-    private static final ConsensualEnum TASK_CONSENSUAL_DEFAULT_VALUE = ConsensualEnum.RANDOM;
-    private static final String OWNER_DEFAULT_VALUE = "system";
-    private static final Integer RETRY_TIMES_DEFAULT_VALUE = 0;
 
     private JobManager jobManager;
     private ConsensualFactory consensualFactory;
     private TaskLockService taskLockService;
     private LogITaskMapper logITaskMapper;
     private LogIJobProperties logIJobProperties;
+
 
     /**
      * constructor.
@@ -192,7 +191,7 @@ public class TaskManagerImpl implements TaskManager {
         for (LogITask logITask : logITaskList) {
             // 不能在本工作器执行，跳过
             Consensual consensual = consensualFactory.getConsensual(logITask.getConsensual());
-            if (!consensual.canClaim(logITask, logIJobProperties)) {
+            if (!consensual.canClaim(logITask)) {
                 continue;
             }
             execute(logITask, false);
@@ -333,130 +332,6 @@ public class TaskManagerImpl implements TaskManager {
         LogITaskPO logITaskPO = logITaskMapper.selectByCode(taskCode, logIJobProperties.getAppName());
 
         return logITaskPO2LogITask(logITaskPO);
-    }
-
-    @Override
-    @Transactional
-    public Result add(LogITaskDTO dto) {
-        Result checkResult = checkAddParam(dto);
-        if(checkResult.failed()) {
-            return checkResult;
-        }
-        handleAdd(dto);
-        return Result.buildSucc();
-    }
-
-    private void handleAdd(LogITaskDTO dto) {
-        LogITaskPO logITaskPO = new LogITaskPO();
-        logITaskPO.setTaskName(dto.getName());
-        logITaskPO.setTaskDesc(dto.getDescription());
-        logITaskPO.setCron(dto.getCron());
-        logITaskPO.setClassName(dto.getClassName());
-        logITaskPO.setParams(dto.getParams());
-        logITaskPO.setRetryTimes(null == dto.getRetryTimes() ? RETRY_TIMES_DEFAULT_VALUE : dto.getRetryTimes());
-        logITaskPO.setLastFireTime(new Timestamp(System.currentTimeMillis()));
-        logITaskPO.setTimeout(TASK_TIME_OUT_DEFAULT_VALUE);
-        logITaskPO.setSubTaskCodes("");
-        logITaskPO.setConsensual(dto.getConsensual());
-        logITaskPO.setTaskWorkerStr("");
-        logITaskPO.setAppName(logIJobProperties.getAppName());
-        logITaskPO.setOwner(OWNER_DEFAULT_VALUE);
-        logITaskPO.setTaskCode(IdWorker.getIdStr());
-        logITaskPO.setStatus(TaskStatusEnum.RUNNING.getValue());
-        logITaskPO.setNodeNameWhiteListStr(dto.getNodeNameWhiteListString());
-        logITaskMapper.insert(logITaskPO);
-    }
-
-    private Result checkAddParam(LogITaskDTO dto) {
-        if (contains(dto.getClassName())) {
-            return Result.buildFail(
-                    String.format(
-                            "task add failed, duplicate className: %s",
-                            dto.getClassName()
-                    )
-            );
-        }
-        Class taskClazz = null;
-        try {
-            taskClazz = Class.forName(dto.getClassName());
-        } catch (ClassNotFoundException ex) {
-            return Result.buildFail(
-                    String.format(
-                            "task add failed, class not found: %s",
-                            dto.getClassName()
-                    )
-            );
-        }
-        if(null == taskClazz) {
-            return Result.buildFail(
-                    String.format(
-                            "task add failed, class not found: %s",
-                            dto.getClassName()
-                    )
-            );
-        }
-        if(!CronExpression.isValidExpression(dto.getCron())) {
-            return Result.buildFail(
-                    String.format(
-                            "task add failed, cron is invalid: %s",
-                            dto.getCron()
-                    )
-            );
-        }
-        if(StringUtils.isEmpty(dto.getConsensual())) {
-            return Result.buildFail(
-                    String.format(
-                            "task add failed, consensual not be null: %s",
-                            JSON.toJSONString(dto)
-                    )
-            );
-        }
-        if(
-                !dto.getConsensual().equals(ConsensualEnum.RANDOM.name()) &&
-                        !dto.getConsensual().equals(ConsensualEnum.BROADCAST.name())
-        ) {
-            return Result.buildFail(
-                    String.format(
-                            "task add failed, consensual must be : %s",
-                            "RANDOM or BROADCAST"
-                    )
-            );
-        }
-        if(!StringUtils.isEmpty(dto.getParams())) {
-            try {
-                Map<String, String> params = JSON.parseObject(dto.getParams(), Map.class);
-                if(CollectionUtils.isEmpty(params)) {
-                    return Result.buildFail(
-                            "task add failed, params must be json of Map"
-                    );
-                }
-            } catch (Exception ex) {
-                return Result.buildFail(
-                        "task add failed, params must be json of Map"
-                );
-            }
-        }
-        if(!StringUtils.isEmpty(dto.getNodeNameWhiteListString())) {
-            try {
-                List<String> nodeNameWhiteList = JSON.parseObject(dto.getNodeNameWhiteListString(), List.class);
-                if(CollectionUtils.isEmpty(nodeNameWhiteList)) {
-                    return Result.buildFail(
-                            "task add failed, nodeNameWhiteListString must be json of List"
-                    );
-                }
-            } catch (Exception ex) {
-                return Result.buildFail(
-                        "task add failed, nodeNameWhiteListString must be json of List"
-                );
-            }
-        }
-
-        return Result.buildSucc();
-    }
-
-    private boolean contains(String className) {
-        LogITaskPO logITaskPO = logITaskMapper.selectByAppNameAndClassName(logIJobProperties.getAppName(), className);
-        return null != logITaskPO;
     }
 
     /**************************************** private method ****************************************************/

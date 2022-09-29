@@ -1,14 +1,14 @@
 package com.didiglobal.logi.job.configuration;
 
 import com.didiglobal.logi.job.LogIJobProperties;
-import com.didiglobal.logi.observability.conponent.mybatis.ObservabilityInterceptor;
 import com.zaxxer.hikari.HikariDataSource;
+
 import javax.sql.DataSource;
+
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.mybatis.spring.SqlSessionFactoryBean;
 import org.mybatis.spring.SqlSessionTemplate;
 import org.mybatis.spring.annotation.MapperScan;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -27,7 +27,7 @@ public class AuvDataSourceConfig {
      * @return 数据源
      */
     @Bean("auvDataSource")
-    public DataSource dataSource(@Autowired LogIJobProperties logIJobProperties) {
+    public DataSource dataSource(LogIJobProperties logIJobProperties) {
         HikariDataSource dataSource = new HikariDataSource();
         dataSource.setUsername(logIJobProperties.getUsername());
         dataSource.setPassword(logIJobProperties.getPassword());

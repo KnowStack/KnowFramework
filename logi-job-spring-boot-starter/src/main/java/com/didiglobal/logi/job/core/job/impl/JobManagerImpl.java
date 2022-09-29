@@ -1,6 +1,5 @@
 package com.didiglobal.logi.job.core.job.impl;
 
-import com.alibaba.fastjson.JSON;
 import com.didiglobal.logi.job.LogIJobProperties;
 import com.didiglobal.logi.job.common.TaskResult;
 import com.didiglobal.logi.job.common.domain.LogIJob;
@@ -17,20 +16,15 @@ import com.didiglobal.logi.job.core.task.TaskLockService;
 import com.didiglobal.logi.job.mapper.*;
 import com.didiglobal.logi.job.utils.BeanUtil;
 import com.didiglobal.logi.job.utils.ThreadUtil;
-import com.didiglobal.logi.log.ILog;
-import com.didiglobal.logi.log.LogFactory;
-import com.didiglobal.logi.observability.Observability;
-import com.didiglobal.logi.observability.common.constant.Constant;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
-import io.opentelemetry.api.trace.Span;
-import io.opentelemetry.api.trace.StatusCode;
-import io.opentelemetry.api.trace.Tracer;
-import io.opentelemetry.context.Scope;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
+
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.sql.Timestamp;
@@ -41,6 +35,7 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
+
 import static com.didiglobal.logi.job.common.TaskResult.FAIL_CODE;
 import static com.didiglobal.logi.job.common.TaskResult.RUNNING_CODE;
 
@@ -51,7 +46,7 @@ import static com.didiglobal.logi.job.common.TaskResult.RUNNING_CODE;
  */
 @Service
 public class JobManagerImpl implements JobManager {
-    private static final ILog logger     = LogFactory.getLog(JobManagerImpl.class);
+    private static final Logger logger = LoggerFactory.getLogger(JobManagerImpl.class);
     // 停止任务尝试次数
     private static final int TRY_MAX_TIMES = 3;
     // 停止任务每次尝试后sleep 时间 秒
@@ -78,8 +73,6 @@ public class JobManagerImpl implements JobManager {
 
     private final Cache<String, String> execuedJob = CacheBuilder.newBuilder()
             .expireAfterWrite(5, TimeUnit.MINUTES).maximumSize(1000).build();
-
-    private Tracer tracer = Observability.getTracer(JobManagerImpl.class.getName());
 
     /**
      * construct
@@ -214,15 +207,7 @@ public class JobManagerImpl implements JobManager {
             logger.info("class=JobHandler||method=call||msg=start job {} with classname {}",
                     logIJob.getJobCode(), logIJob.getClassName());
 
-            Span span = tracer.spanBuilder(
-                    String.format("%s.%s", this.getClass().getName(), "call")
-            ).startSpan();
-            try(Scope scope = span.makeCurrent()) {
-
-                span.setAttribute(Constant.ATTRIBUTE_KEY_SPAN_KIND, Constant.ATTRIBUTE_VALUE_SPAN_KIND_CRON_TASK);
-                span.setAttribute(Constant.ATTRIBUTE_KEY_JOB_CLASS_NAME, logIJob.getClassName());
-                span.setAttribute(Constant.ATTRIBUTE_KEY_TASK_NAME, logIJob.getTaskName());
-
+            try {
                 logIJob.setStartTime(new Timestamp(System.currentTimeMillis()));
                 logIJob.setStatus(JobStatusEnum.SUCCEED.getValue());
                 logIJob.setResult(new TaskResult(RUNNING_CODE, "task job is running!"));
@@ -247,39 +232,32 @@ public class JobManagerImpl implements JobManager {
 
                 logIJob.setResult(object);
                 logIJob.setEndTime(new Timestamp(System.currentTimeMillis()));
-                span.setStatus(StatusCode.OK);
             } catch (InterruptedException e) {
                 // 记录任务被打断 进程关闭/线程关闭
                 logIJob.setStatus(JobStatusEnum.CANCELED.getValue());
-                TaskResult taskResult = new TaskResult(FAIL_CODE, "task job be canceld!");
-                logIJob.setResult(taskResult);
+                logIJob.setResult(new TaskResult(FAIL_CODE, "task job be canceld!"));
                 String error = printStackTraceAsString(e);
                 logIJob.setError(printStackTraceAsString(e));
                 logger.error("class=JobHandler||method=call||classname={}||msg={}", logIJob.getClassName(), error);
-                span.setStatus(StatusCode.ERROR, JSON.toJSONString(taskResult));
             } catch (Exception e) {
                 // 记录任务异常信息
                 logIJob.setStatus(JobStatusEnum.FAILED.getValue());
-                TaskResult taskResult = new TaskResult(FAIL_CODE, "task job has exception when running!" + e);
-                logIJob.setResult(taskResult);
+                logIJob.setResult(new TaskResult(FAIL_CODE, "task job has exception when running!" + e));
                 String error = printStackTraceAsString(e);
                 logIJob.setError(printStackTraceAsString(e));
                 logger.error("class=JobHandler||method=call||classname=||msg={}", logIJob.getClassName(), error);
-                span.setStatus(StatusCode.ERROR, JSON.toJSONString(taskResult));
             } finally {
-                try {
-                    //执行完成，记录日志
-                    LogIJobLogPO logIJobLogPO = logIJob.getAuvJobLog();
-                    logIJobLogMapper.updateByCode(logIJobLogPO);
 
-                    // job callback, 释放任务锁
-                    if (logIJob.getTaskCallback() != null) {
-                        logIJob.getTaskCallback().callback(logIJob.getTaskCode());
-                    }
-                } finally {
-                    span.end();
+                //执行完成，记录日志
+                LogIJobLogPO logIJobLogPO = logIJob.getAuvJobLog();
+                logIJobLogMapper.updateByCode(logIJobLogPO);
+
+                // job callback, 释放任务锁
+                if (logIJob.getTaskCallback() != null) {
+                    logIJob.getTaskCallback().callback(logIJob.getTaskCode());
                 }
             }
+
             return object;
         }
     }
@@ -469,7 +447,7 @@ public class JobManagerImpl implements JobManager {
      */
     class LogCleanHandler implements Runnable {
         // 每小时执行一次
-        private static final long JOB_INTERVAL = 3600L;
+        private static final long JOB_LOG_DEL_INTERVAL = 3600L;
         // 日志保存时间[默认保存7天]
         private Integer logExpire = 7;
 
@@ -484,17 +462,26 @@ public class JobManagerImpl implements JobManager {
             while (true) {
                 try {
                     // 间隔一段时间执行一次
-                    ThreadUtil.sleep(JOB_INTERVAL, TimeUnit.SECONDS);
+                    ThreadUtil.sleep( JOB_LOG_DEL_INTERVAL, TimeUnit.SECONDS);
 
                     logger.info("class=LogCleanHandler||method=run||msg=clean auv_job_log regular"
-                            + " time {}", JOB_INTERVAL);
+                            + " time {}", JOB_LOG_DEL_INTERVAL );
 
-                    // 删除日志
-                    int count = logIJobLogMapper.deleteByCreateTime(
-                            new Timestamp(System.currentTimeMillis() - logExpire * 24 * 3600 * 1000), logIJobProperties.getAppName()
-                    );
+                    String    appName    = logIJobProperties.getAppName();
+                    Timestamp deleteTime = new Timestamp(System.currentTimeMillis() - logExpire * 24 * 3600 * 1000);
 
-                    logger.info("class=LogCleanHandler||method=run||msg=clean log count={}", count);
+                    int deleteRowTotal    = logIJobLogMapper.selectCountByAppNameAndCreateTime(appName, deleteTime);
+                    int deleteRowPerTimes = deleteRowTotal / 60;
+                    int deleteRowReal     = 0;
+
+                    for(int i = 0; i < 60; i++){
+                        // 删除日志
+                        int count = logIJobLogMapper.deleteByCreateTime(deleteTime, appName, deleteRowPerTimes);
+                        deleteRowReal += count;
+                    }
+
+                    logger.info("class=LogCleanHandler||method=run||msg=clean log deleteRowTotal={}, deleteRowReal={}",
+                            deleteRowTotal, deleteRowReal);
                 } catch (Exception e) {
                     logger.error("class=LogCleanHandler||method=run||msg=exception", e);
                 }

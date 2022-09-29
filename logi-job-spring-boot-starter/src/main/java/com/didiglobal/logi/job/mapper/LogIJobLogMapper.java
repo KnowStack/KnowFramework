@@ -42,11 +42,12 @@ public interface LogIJobLogMapper {
             + "update_time=#{updateTime}, app_name=#{appName} where job_code=#{jobCode}")
     int updateByCode(LogIJobLogPO logIJobLogPO);
 
-    @Delete("delete from logi_job_log where create_time<=#{createTime} and app_name=#{appName}")
-    int deleteByCreateTime(@Param("createTime") Timestamp createTime, @Param("appName") String appName);
+    @Delete("delete from logi_job_log where create_time<=#{createTime} and app_name=#{appName} limit #{limits}")
+    int deleteByCreateTime(@Param("createTime") Timestamp createTime, @Param("appName") String appName,
+                           @Param("limits") Integer limits);
 
-    @Select("select count(1) from logi_job_log where app_name=#{appName} and task_code=#{taskCode}")
-    int selectCountByAppName(@Param("appName") String appName, @Param("taskCode") String taskCode);
+    @Select("select count(1) from logi_job_log where app_name=#{appName} and create_time<=#{createTime}")
+    int selectCountByAppNameAndCreateTime(@Param("appName") String appName, @Param("createTime") Timestamp createTime);
 
     List<LogIJobLogPO> pagineListByCondition(@Param("appName") String appName,
                                              @Param("taskId") Long taskId,
@@ -62,12 +63,4 @@ public interface LogIJobLogMapper {
     Integer pagineCountByCondition(@Param("appName") String appName, @Param("taskId") Long taskId,
                                    @Param("taskDesc") String taskDesc, @Param("jobStatus") Integer jobStatus,
                                    @Param("beginTime") Timestamp beginTime, @Param("endTime") Timestamp endTime);
-
-    @Select("select id, job_code, task_code, task_id, task_name, task_desc, "
-            + "class_name, try_times, worker_code, worker_ip, start_time, "
-            + "end_time, status, error, result, create_time, update_time, app_name from logi_job_log where "
-            + "id=#{id}")
-    LogIJobLogPO selectById(Long id);
-
 }
-

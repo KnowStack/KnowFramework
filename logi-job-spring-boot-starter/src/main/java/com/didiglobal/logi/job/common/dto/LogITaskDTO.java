@@ -12,9 +12,5 @@ public class LogITaskDTO {
     private String params;
     private Integer retryTimes;
     private String consensual;
-    /**
-     * 执行节点白名单集
-     */
-    private String nodeNameWhiteListString;
 
 }
