@@ -12,6 +12,15 @@ public class Breakers {
     @JSONField(name = "parent")
     private BreakerNode parent;
 
+    @JSONField(name = "in_flight_requests")
+    private BreakerNode inFlightRequests;
+
+    @JSONField(name = "accounting")
+    private BreakerNode accounting;
+
+    @JSONField(name = "in_flight_http_requests")
+    private BreakerNode inFlightHttpRequests;
+
     public BreakerNode getRequest() {
         return request;
     }
@@ -34,5 +43,29 @@ public class Breakers {
 
     public void setParent(BreakerNode parent) {
         this.parent = parent;
+    }
+
+    public BreakerNode getInFlightRequests() {
+        return inFlightRequests;
+    }
+
+    public void setInFlightRequests(BreakerNode inFlightRequests) {
+        this.inFlightRequests = inFlightRequests;
+    }
+
+    public BreakerNode getAccounting() {
+        return accounting;
+    }
+
+    public void setAccounting(BreakerNode accounting) {
+        this.accounting = accounting;
+    }
+
+    public BreakerNode getInFlightHttpRequests() {
+        return inFlightHttpRequests;
+    }
+
+    public void setInFlightHttpRequests(BreakerNode inFlightHttpRequests) {
+        this.inFlightHttpRequests = inFlightHttpRequests;
     }
 }
