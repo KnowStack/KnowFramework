@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>io.github.zqrferrari</groupId>
-    <artifactId>logi-common</artifactId>
+    <artifactId>know-framework</artifactId>
     <version>1.0.0</version>
     <packaging>pom</packaging>
 
