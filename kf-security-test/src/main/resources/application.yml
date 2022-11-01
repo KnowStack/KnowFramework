@@ -1,0 +1,18 @@
+server.port: 8888
+
+spring:
+ application:
+  name: kf-security-test
+ kf-security:
+  jdbc-url:
+  username:
+  password:
+  driver-class-name: org.mariadb.jdbc.Driver
+  app-name: know_search
+  resource-extend-bean-name: myResourceExtendImpl
+  login-extend-bean-name:
+
+
+mybatis-plus:
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl

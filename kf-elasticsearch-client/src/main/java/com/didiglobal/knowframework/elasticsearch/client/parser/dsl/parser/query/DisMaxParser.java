@@ -1,0 +1,66 @@
+package com.didiglobal.knowframework.elasticsearch.client.parser.dsl.parser.query;
+
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
+import com.didiglobal.knowframework.elasticsearch.client.parser.dsl.ast.common.KeyWord;
+import com.didiglobal.knowframework.elasticsearch.client.parser.dsl.ast.query.DisMax;
+import com.didiglobal.knowframework.elasticsearch.client.parser.dsl.parser.DslParser;
+import com.didiglobal.knowframework.elasticsearch.client.parser.dsl.parser.ParserType;
+import com.didiglobal.knowframework.elasticsearch.client.parser.dsl.ast.common.key.StringNode;
+import com.didiglobal.knowframework.elasticsearch.client.parser.dsl.ast.common.multi.NodeList;
+import com.didiglobal.knowframework.elasticsearch.client.parser.dsl.ast.common.multi.NodeMap;
+import com.didiglobal.knowframework.elasticsearch.client.parser.dsl.ast.common.value.ValueNode;
+
+/**
+ * 解析dis_max查询子句
+ * {
+ * "query": {
+ * "dis_max": {
+ * "tie_breaker": 0.7,
+ * "boost": 1.2,
+ * "queries": [
+ * {
+ * "term": {
+ * "age": 34
+ * }
+ * },
+ * {
+ * "term": {
+ * "age": 35
+ * }
+ * }
+ * ]
+ * }
+ * }
+ * }
+ */
+public class DisMaxParser extends DslParser {
+
+    public DisMaxParser(ParserType type) {
+        super(type);
+    }
+
+    @Override
+    public KeyWord parse(String name, Object obj) throws Exception {
+        DisMax node = new DisMax(name);
+        NodeMap nm = new NodeMap();
+        node.n = nm;
+
+        JSONObject jsonObj = (JSONObject) obj;
+        for (String key : jsonObj.keySet()) {
+            if ("tie_breaker".equalsIgnoreCase(key) || "boost".equalsIgnoreCase(key)) {
+                nm.m.put(new StringNode(key), ValueNode.getValueNode(jsonObj.get(key)));
+
+            } else if ("queries".equalsIgnoreCase(key)) {
+                nm.m.put(new StringNode(key), NodeList.toNodeList(parserType, (JSON) jsonObj.get(key), false));
+
+            } else {
+                // 未知的key 默认处理
+                nm.m.put(new StringNode(key), ValueNode.getValueNode(jsonObj.get(key)));
+            }
+        }
+
+        return node;
+    }
+
+}
