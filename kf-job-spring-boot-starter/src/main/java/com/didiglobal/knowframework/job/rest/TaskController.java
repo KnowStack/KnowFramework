@@ -26,7 +26,7 @@ import static com.didiglobal.knowframework.job.common.CommonUtil.sqlFuzzyQueryTr
  */
 @RestController
 @RequestMapping(Constants.V1 + "/logi-job/task")
-@Api(tags = "logi-job 配置的 task 相关接口")
+@Api(tags = "kf-job 配置的 task 相关接口")
 public class TaskController {
 
     @Autowired

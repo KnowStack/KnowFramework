@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping(Constants.V1 + "/logi-job/taskLock")
-@Api(tags = "logi-job 的任务锁相关接口")
+@Api(tags = "kf-job 的任务锁相关接口")
 public class TaskLockController {
 
     @Autowired

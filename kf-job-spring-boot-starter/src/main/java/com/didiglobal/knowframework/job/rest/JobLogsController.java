@@ -19,7 +19,7 @@ import static com.didiglobal.knowframework.job.common.CommonUtil.sqlFuzzyQueryTr
  */
 @RestController
 @RequestMapping(Constants.V1 + "/logi-job/logs")
-@Api(tags = "logi-job 执行生成的任务日志相关接口")
+@Api(tags = "kf-job 执行生成的任务日志相关接口")
 public class JobLogsController {
     @Autowired
     private JobLogManager jobLogManager;

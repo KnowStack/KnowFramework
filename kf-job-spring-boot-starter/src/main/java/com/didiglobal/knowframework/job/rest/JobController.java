@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.*;
  */
 @RestController
 @RequestMapping(Constants.V1 + "/logi-job/job")
-@Api(tags = "logi-job 执行生成的 job 相关接口")
+@Api(tags = "kf-job 执行生成的 job 相关接口")
 public class JobController {
     private static final Logger logger = LoggerFactory.getLogger(JobController.class);
 
