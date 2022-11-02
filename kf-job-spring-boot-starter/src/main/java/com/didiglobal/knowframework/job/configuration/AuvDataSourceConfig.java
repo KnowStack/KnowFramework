@@ -1,6 +1,6 @@
 package com.didiglobal.knowframework.job.configuration;
 
-import com.didiglobal.knowframework.job.LogIJobProperties;
+import com.didiglobal.knowframework.job.KfJobProperties;
 import com.zaxxer.hikari.HikariDataSource;
 
 import javax.sql.DataSource;
@@ -23,17 +23,17 @@ public class AuvDataSourceConfig {
 
     /**
      * 配置数据源
-     * @param logIJobProperties 数据源配置信息
+     * @param kfJobProperties 数据源配置信息
      * @return 数据源
      */
     @Bean("auvDataSource")
-    public DataSource dataSource(LogIJobProperties logIJobProperties) {
+    public DataSource dataSource(KfJobProperties kfJobProperties) {
         HikariDataSource dataSource = new HikariDataSource();
-        dataSource.setUsername(logIJobProperties.getUsername());
-        dataSource.setPassword(logIJobProperties.getPassword());
-        dataSource.setJdbcUrl(logIJobProperties.getJdbcUrl());
-        dataSource.setDriverClassName(logIJobProperties.getDriverClassName());
-        dataSource.setMaxLifetime(logIJobProperties.getMaxLifetime());
+        dataSource.setUsername( kfJobProperties.getUsername());
+        dataSource.setPassword( kfJobProperties.getPassword());
+        dataSource.setJdbcUrl( kfJobProperties.getJdbcUrl());
+        dataSource.setDriverClassName( kfJobProperties.getDriverClassName());
+        dataSource.setMaxLifetime( kfJobProperties.getMaxLifetime());
         return dataSource;
     }
 

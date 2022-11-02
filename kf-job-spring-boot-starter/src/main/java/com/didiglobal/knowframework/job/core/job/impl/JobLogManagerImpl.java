@@ -1,13 +1,13 @@
 package com.didiglobal.knowframework.job.core.job.impl;
 
-import com.didiglobal.knowframework.job.LogIJobProperties;
-import com.didiglobal.knowframework.job.common.domain.LogITask;
-import com.didiglobal.knowframework.job.common.dto.TaskLogPageQueryDTO;
-import com.didiglobal.knowframework.job.common.po.LogIJobLogPO;
-import com.didiglobal.knowframework.job.common.vo.LogIJobLogVO;
+import com.didiglobal.knowframework.job.KfJobProperties;
+import com.didiglobal.knowframework.job.common.domain.KfTask;
+import com.didiglobal.knowframework.job.common.dto.KfTaskLogPageQueryDTO;
+import com.didiglobal.knowframework.job.common.po.KfJobLogPO;
+import com.didiglobal.knowframework.job.common.vo.KfJobLogVO;
 import com.didiglobal.knowframework.job.core.job.JobLogManager;
 import com.didiglobal.knowframework.job.core.task.TaskManager;
-import com.didiglobal.knowframework.job.mapper.LogIJobLogMapper;
+import com.didiglobal.knowframework.job.mapper.KfJobLogMapper;
 import com.didiglobal.knowframework.job.utils.BeanUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -19,12 +19,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+/**
+ * @author didi
+ */
 @Service
 public class JobLogManagerImpl implements JobLogManager {
 
     private TaskManager taskManager;
-    private LogIJobLogMapper logIJobLogMapper;
-    private LogIJobProperties logIJobProperties;
+    private KfJobLogMapper kfJobLogMapper;
+    private KfJobProperties kfJobProperties;
 
     private final static String SORT_DESC   = "desc";
     private final static String SORT_ASC    = "asc";
@@ -38,16 +41,16 @@ public class JobLogManagerImpl implements JobLogManager {
 
     @Autowired
     public JobLogManagerImpl(TaskManager taskManager,
-                             LogIJobLogMapper logIJobLogMapper,
-                             LogIJobProperties logIJobProperties) {
+                             KfJobLogMapper kfJobLogMapper,
+                             KfJobProperties kfJobProperties) {
         this.taskManager = taskManager;
-        this.logIJobLogMapper = logIJobLogMapper;
-        this.logIJobProperties = logIJobProperties;
+        this.kfJobLogMapper = kfJobLogMapper;
+        this.kfJobProperties = kfJobProperties;
     }
 
     @Override
-    public List<LogIJobLogVO> pageJobLogs(TaskLogPageQueryDTO dto) {
-        Map<Long, LogITask> longLogITaskMap = new HashMap<>();
+    public List<KfJobLogVO> pageJobLogs(KfTaskLogPageQueryDTO dto) {
+        Map<Long, KfTask> longKfTaskMap = new HashMap<>();
 
         Timestamp beginTimestamp = null;
         Timestamp endTimestamp = null;
@@ -60,35 +63,35 @@ public class JobLogManagerImpl implements JobLogManager {
             endTimestamp = new Timestamp(dto.getEndTime());
         }
 
-        List<LogIJobLogPO> logIJobLogPOS = logIJobLogMapper.pagineListByCondition(logIJobProperties.getAppName(),
+        List<KfJobLogPO> kfJobLogPOS = kfJobLogMapper.pagineListByCondition( kfJobProperties.getAppName(),
                 dto.getTaskId(), dto.getTaskDesc(), dto.getTaskStatus(),
                 (dto.getPage() - 1) * dto.getSize(), dto.getSize(),
                 genSortName(dto.getSortName()) , genSort(dto.getSortAsc()),
                 beginTimestamp, endTimestamp);
 
-        if (CollectionUtils.isEmpty(logIJobLogPOS)) {
+        if (CollectionUtils.isEmpty( kfJobLogPOS )) {
             return null;
         }
 
-        return logIJobLogPOS.stream().map(logIJobLogPO -> {
-            LogIJobLogVO logIJobLogVO = BeanUtil.convertTo(logIJobLogPO, LogIJobLogVO.class);
+        return kfJobLogPOS.stream().map( kfJobLogPO -> {
+            KfJobLogVO kfJobLogVO = BeanUtil.convertTo( kfJobLogPO, KfJobLogVO.class);
 
-            LogITask logITask = longLogITaskMap.get(logIJobLogPO.getTaskId());
-            if (null == logITask) {
-                logITask = taskManager.getByCode(logIJobLogPO.getTaskCode());
-                longLogITaskMap.put(logIJobLogPO.getTaskId(), logITask);
+            KfTask kfTask = longKfTaskMap.get( kfJobLogPO.getTaskId());
+            if (null == kfTask) {
+                kfTask = taskManager.getByCode( kfJobLogPO.getTaskCode());
+                longKfTaskMap.put( kfJobLogPO.getTaskId(), kfTask );
             }
 
-            List<String> ips = logITask.getTaskWorkers().stream().map(w -> w.getIp()).collect(Collectors.toList());
-            logIJobLogVO.setAllWorkerIps(ips);
+            List<String> ips = kfTask.getTaskWorkers().stream().map( w -> w.getIp()).collect(Collectors.toList());
+            kfJobLogVO.setAllWorkerIps(ips);
 
-            logIJobLogVO.setTaskName(logITask.getTaskName());
-            return logIJobLogVO;
+            kfJobLogVO.setTaskName( kfTask.getTaskName());
+            return kfJobLogVO;
         }).collect(Collectors.toList());
     }
 
     @Override
-    public int getJobLogsCount(TaskLogPageQueryDTO dto) {
+    public int getJobLogsCount(KfTaskLogPageQueryDTO dto) {
 
         Timestamp beginTimestamp = null;
         Timestamp endTimestamp = null;
@@ -101,7 +104,7 @@ public class JobLogManagerImpl implements JobLogManager {
             endTimestamp = new Timestamp(dto.getEndTime());
         }
 
-        return logIJobLogMapper.pagineCountByCondition(logIJobProperties.getAppName(),
+        return kfJobLogMapper.pagineCountByCondition( kfJobProperties.getAppName(),
                 dto.getTaskId(), dto.getTaskDesc(), dto.getTaskStatus(),
                 beginTimestamp, endTimestamp);
     }

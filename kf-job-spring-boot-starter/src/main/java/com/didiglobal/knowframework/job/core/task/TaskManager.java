@@ -1,8 +1,8 @@
 package com.didiglobal.knowframework.job.core.task;
 
-import com.didiglobal.knowframework.job.common.domain.LogITask;
-import com.didiglobal.knowframework.job.common.dto.LogITaskDTO;
-import com.didiglobal.knowframework.job.common.dto.TaskPageQueryDTO;
+import com.didiglobal.knowframework.job.common.domain.KfTask;
+import com.didiglobal.knowframework.job.common.dto.KfTaskDTO;
+import com.didiglobal.knowframework.job.common.dto.KfTaskPageQueryDTO;
 import com.didiglobal.knowframework.job.common.Result;
 
 import java.util.List;
@@ -24,10 +24,10 @@ public interface TaskManager {
 
     /**
      * 更新任务
-     * @param logITaskDTO 更新信息
+     * @param kfTaskDTO 更新信息
      * @return boolean
      */
-    boolean update(LogITaskDTO logITaskDTO);
+    boolean update(KfTaskDTO kfTaskDTO);
 
     /**
      * 接下来需要执行的任务,按时间先后顺序排序.
@@ -35,7 +35,7 @@ public interface TaskManager {
      * @param interval 从现在开始下次执行时间间隔 毫秒
      * @return task info list
      */
-    List<LogITask> nextTriggers(Long interval);
+    List<KfTask> nextTriggers(Long interval);
 
     /**
      * 接下来需要执行的任务,按时间先后顺序排序.
@@ -44,14 +44,14 @@ public interface TaskManager {
      * @param interval interval
      * @return task info list
      */
-    List<LogITask> nextTriggers(Long fromTime, Long interval);
+    List<KfTask> nextTriggers(Long fromTime, Long interval);
 
     /**
      * 提交任务，执行器会根据一致性协同算法判断是否执行.
      *
-     * @param logITaskList task info list
+     * @param kfTaskList task info list
      */
-    void submit(List<LogITask> logITaskList);
+    void submit(List<KfTask> kfTaskList);
 
     /**
      * 根据 task taskCode 执行任务.
@@ -65,10 +65,10 @@ public interface TaskManager {
     /**
      * 执行任务, 默认会执行子任务如果有配置.
      *
-     * @param logITask    任务信息
+     * @param kfTask    任务信息
      * @param executeSubs 是否执行子任务
      */
-    void execute(LogITask logITask, Boolean executeSubs);
+    void execute(KfTask kfTask, Boolean executeSubs);
 
     /**
      * 停止所有正在运行的job.
@@ -91,22 +91,22 @@ public interface TaskManager {
      *
      * @return all tasks
      */
-    List<LogITask> getAllRuning();
+    List<KfTask> getAllRuning();
 
     /**
      * 获取所有任务个数
      * @param queryDTO 查询条件
      * @return 任务个数
      */
-    int pagineTaskConut(TaskPageQueryDTO queryDTO);
+    int pagineTaskConut(KfTaskPageQueryDTO queryDTO);
 
     /**
      * 分页获取相关任务
      *
-     * @param taskPageQueryDTO 任务分页查询信息
+     * @param kfTaskPageQueryDTO 任务分页查询信息
      * @return 任务List
      */
-    List<LogITask> getPagineList(TaskPageQueryDTO taskPageQueryDTO);
+    List<KfTask> getPagineList(KfTaskPageQueryDTO kfTaskPageQueryDTO);
 
     /**
      * 恢复任务 并释放锁.
@@ -123,6 +123,6 @@ public interface TaskManager {
      * @param taskCode 任务编号
      * @return 任务信息
      */
-    LogITask getByCode(String taskCode);
+    KfTask getByCode(String taskCode);
 
 }

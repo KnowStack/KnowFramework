@@ -19,7 +19,7 @@ import java.util.List;
 /**
  * @author cjm
  */
-@Service("logiSecurityOplogServiceImpl")
+@Service("kfSecurityOplogServiceImpl")
 public class OplogServiceImpl implements OplogService {
 
     @Autowired

@@ -2,10 +2,10 @@ package com.didiglobal.knowframework.job;
 
 import com.didiglobal.knowframework.job.annotation.Task;
 import com.didiglobal.knowframework.job.common.enums.TaskStatusEnum;
-import com.didiglobal.knowframework.job.common.po.LogITaskPO;
+import com.didiglobal.knowframework.job.common.po.KfTaskPO;
 import com.didiglobal.knowframework.job.core.job.Job;
 import com.didiglobal.knowframework.job.core.job.JobFactory;
-import com.didiglobal.knowframework.job.mapper.LogITaskMapper;
+import com.didiglobal.knowframework.job.mapper.KfTaskMapper;
 import com.didiglobal.knowframework.job.utils.CronExpression;
 import com.didiglobal.knowframework.job.utils.IdWorker;
 
@@ -30,16 +30,16 @@ public class TaskBeanPostProcessor implements BeanPostProcessor {
 
     private static final Logger logger = LoggerFactory.getLogger(TaskBeanPostProcessor.class);
 
-    private static Map<String, LogITaskPO> taskMap = new HashMap<>();
+    private static Map<String, KfTaskPO> taskMap = new HashMap<>();
 
     @Autowired
-    private LogITaskMapper logITaskMapper;
+    private KfTaskMapper kfTaskMapper;
 
     @Autowired
     private JobFactory jobFactory;
 
     @Autowired
-    private LogIJobProperties logIJobProperties;
+    private KfJobProperties kfJobProperties;
 
     @PostConstruct
     public void init(){
@@ -49,7 +49,7 @@ public class TaskBeanPostProcessor implements BeanPostProcessor {
     @Override
     public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {
         try {
-            if(!logIJobProperties.getEnable()){
+            if(!kfJobProperties.getEnable()){
                 return bean;
             }
 
@@ -74,14 +74,14 @@ public class TaskBeanPostProcessor implements BeanPostProcessor {
             }
 
             if(!contains(beanClass.getCanonicalName())){
-                LogITaskPO task = getNewLogTask(beanClass, taskAnnotation);
+                KfTaskPO task = getNewLogTask(beanClass, taskAnnotation);
                 task.setTaskCode(IdWorker.getIdStr());
                 task.setStatus(TaskStatusEnum.RUNNING.getValue());
-                logITaskMapper.insert(task);
+                kfTaskMapper.insert(task);
             }else {
-                LogITaskPO task = taskMap.get(beanClass.getCanonicalName());
+                KfTaskPO task = taskMap.get(beanClass.getCanonicalName());
                 task = updateLogTask(task, beanClass, taskAnnotation);
-                logITaskMapper.updateByCode(task);
+                kfTaskMapper.updateByCode(task);
             }
         }catch (Exception e){
             logger.error("class=TaskBeanPostProcessor||method=postProcessAfterInitialization||beanName={}||msg=exception",
@@ -96,42 +96,42 @@ public class TaskBeanPostProcessor implements BeanPostProcessor {
         return CronExpression.isValidExpression(schedule.cron());
     }
 
-    private LogITaskPO getNewLogTask(Class<?> beanClass, Task schedule) {
-        LogITaskPO logITaskPO = new LogITaskPO();
-        logITaskPO.setTaskName(schedule.name());
-        logITaskPO.setTaskDesc(schedule.description());
-        logITaskPO.setCron(schedule.cron());
-        logITaskPO.setClassName(beanClass.getCanonicalName());
-        logITaskPO.setParams("");
-        logITaskPO.setRetryTimes(schedule.retryTimes());
-        logITaskPO.setLastFireTime(new Timestamp(System.currentTimeMillis()));
-        logITaskPO.setTimeout(schedule.timeout());
-        logITaskPO.setSubTaskCodes("");
-        logITaskPO.setConsensual(schedule.consensual().name());
-        logITaskPO.setTaskWorkerStr("");
-        logITaskPO.setAppName(logIJobProperties.getAppName());
-        logITaskPO.setOwner(schedule.owner());
-        return logITaskPO;
+    private KfTaskPO getNewLogTask(Class<?> beanClass, Task schedule) {
+        KfTaskPO kfTaskPO = new KfTaskPO();
+        kfTaskPO.setTaskName(schedule.name());
+        kfTaskPO.setTaskDesc(schedule.description());
+        kfTaskPO.setCron(schedule.cron());
+        kfTaskPO.setClassName(beanClass.getCanonicalName());
+        kfTaskPO.setParams("");
+        kfTaskPO.setRetryTimes(schedule.retryTimes());
+        kfTaskPO.setLastFireTime(new Timestamp(System.currentTimeMillis()));
+        kfTaskPO.setTimeout(schedule.timeout());
+        kfTaskPO.setSubTaskCodes("");
+        kfTaskPO.setConsensual(schedule.consensual().name());
+        kfTaskPO.setTaskWorkerStr("");
+        kfTaskPO.setAppName( kfJobProperties.getAppName());
+        kfTaskPO.setOwner(schedule.owner());
+        return kfTaskPO;
     }
 
-    private LogITaskPO updateLogTask(LogITaskPO logITaskPO, Class<?> beanClass, Task schedule){
-        logITaskPO.setTaskName(schedule.name());
-        logITaskPO.setTaskDesc(schedule.description());
-        logITaskPO.setCron(schedule.cron());
-        logITaskPO.setClassName(beanClass.getCanonicalName());
-        logITaskPO.setParams("");
-        logITaskPO.setRetryTimes(schedule.retryTimes());
-        logITaskPO.setTimeout(schedule.timeout());
-        logITaskPO.setConsensual(schedule.consensual().name());
-        logITaskPO.setAppName(logIJobProperties.getAppName());
-        logITaskPO.setOwner(schedule.owner());
-        return logITaskPO;
+    private KfTaskPO updateLogTask(KfTaskPO kfTaskPO, Class<?> beanClass, Task schedule){
+        kfTaskPO.setTaskName(schedule.name());
+        kfTaskPO.setTaskDesc(schedule.description());
+        kfTaskPO.setCron(schedule.cron());
+        kfTaskPO.setClassName(beanClass.getCanonicalName());
+        kfTaskPO.setParams("");
+        kfTaskPO.setRetryTimes(schedule.retryTimes());
+        kfTaskPO.setTimeout(schedule.timeout());
+        kfTaskPO.setConsensual(schedule.consensual().name());
+        kfTaskPO.setAppName( kfJobProperties.getAppName());
+        kfTaskPO.setOwner(schedule.owner());
+        return kfTaskPO;
     }
 
     private boolean contains(String className) {
         if (taskMap.isEmpty()) {
-            List<LogITaskPO> logITaskPOS = logITaskMapper.selectByAppName(logIJobProperties.getAppName());
-            taskMap = logITaskPOS.stream().collect(Collectors.toMap(LogITaskPO::getClassName,
+            List<KfTaskPO> kfTaskPOS = kfTaskMapper.selectByAppName( kfJobProperties.getAppName());
+            taskMap = kfTaskPOS.stream().collect(Collectors.toMap( KfTaskPO::getClassName,
                     Function.identity()));
         }
         return taskMap.containsKey(className);

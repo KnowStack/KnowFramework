@@ -1,7 +1,7 @@
 package com.didiglobal.knowframework.security.common;
 
 import com.didiglobal.knowframework.security.common.enums.ResultCode;
-import com.didiglobal.knowframework.security.exception.LogiSecurityException;
+import com.didiglobal.knowframework.security.exception.KfSecurityException;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -87,7 +87,7 @@ public class Result<T> extends BaseResult {
         return result;
     }
 
-    public static <T> Result<T> fail(LogiSecurityException e) {
+    public static <T> Result<T> fail(KfSecurityException e) {
         String[] s = e.getMessage().split("-", 2);
         return Result.fail(Integer.parseInt(s[0]), s[1]);
     }

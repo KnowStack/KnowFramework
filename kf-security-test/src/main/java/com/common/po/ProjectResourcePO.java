@@ -9,7 +9,7 @@ import lombok.Data;
  * @author cjm
  */
 @Data
-@TableName(value = "logi_project_resource")
+@TableName(value = "kf_project_resource")
 public class ProjectResourcePO {
 
     /**

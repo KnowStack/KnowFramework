@@ -4,7 +4,7 @@ import com.didiglobal.knowframework.security.common.PagingData;
 import com.didiglobal.knowframework.security.common.Result;
 import com.didiglobal.knowframework.security.common.vo.user.UserBasicVO;
 import com.didiglobal.knowframework.security.common.vo.user.UserBriefVO;
-import com.didiglobal.knowframework.security.exception.LogiSecurityException;
+import com.didiglobal.knowframework.security.exception.KfSecurityException;
 import com.didiglobal.knowframework.security.common.dto.user.UserBriefQueryDTO;
 import com.didiglobal.knowframework.security.common.dto.user.UserDTO;
 import com.didiglobal.knowframework.security.common.dto.user.UserQueryDTO;
@@ -42,7 +42,7 @@ public interface UserService {
      * 获取用户详情（主要是获取用户所拥有的权限信息）
      * @param userId 用户id
      * @return 用户详情
-     * @throws LogiSecurityException 用户不存在
+     * @throws KfSecurityException 用户不存在
      */
     UserVO getUserDetailByUserId(Integer userId);
 
@@ -85,9 +85,9 @@ public interface UserService {
      * 根据用户id和roleName获取角色list
      * @param userId 用户id
      * @return 分配角色或者分配用户/列表信息
-     * @throws LogiSecurityException 用户id不可为null
+     * @throws KfSecurityException 用户id不可为null
      */
-    List<AssignInfoVO> getAssignDataByUserId(Integer userId) throws LogiSecurityException;
+    List<AssignInfoVO> getAssignDataByUserId(Integer userId) throws KfSecurityException;
 
     /**
      * 根据角色id获取用户list

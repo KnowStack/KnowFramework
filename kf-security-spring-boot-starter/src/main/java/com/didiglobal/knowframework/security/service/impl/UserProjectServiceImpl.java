@@ -16,7 +16,7 @@ import org.springframework.util.CollectionUtils;
 /**
  * @author cjm
  */
-@Service("logiSecurityUserProjectServiceImpl")
+@Service("kfSecurityUserProjectServiceImpl")
 public class UserProjectServiceImpl implements UserProjectService {
 
     private final static int NORMAL = 0;

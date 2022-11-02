@@ -1,6 +1,6 @@
 package com.didiglobal.knowframework.security.extend;
 
-import com.didiglobal.knowframework.security.properties.LogiSecurityProper;
+import com.didiglobal.knowframework.security.properties.KfSecurityProper;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
@@ -9,19 +9,19 @@ import org.springframework.stereotype.Component;
 /**
  * @author cjm
  */
-@Component("logiSecurityResourceExtendBeanTool")
+@Component("kfSecurityResourceExtendBeanTool")
 public class ResourceExtendBeanTool {
 
     @Autowired
     private ApplicationContext applicationContext;
 
     @Autowired
-    private LogiSecurityProper logiSecurityProper;
+    private KfSecurityProper kfSecurityProper;
 
-    private static final String DEFAULT_BEAN_NAME = "logiSecurityDefaultResourceExtendImpl";
+    private static final String DEFAULT_BEAN_NAME = "kfSecurityDefaultResourceExtendImpl";
 
     private ResourceExtend getCustomResourceExtendImplBean() {
-        String customBeanName = logiSecurityProper.getResourceExtendBeanName();
+        String customBeanName = kfSecurityProper.getResourceExtendBeanName();
         try {
             return (ResourceExtend) applicationContext.getBean(customBeanName);
         } catch (NoSuchBeanDefinitionException e) {

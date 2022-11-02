@@ -1,7 +1,7 @@
 package com.didiglobal.knowframework.job.core.job;
 
-import com.didiglobal.knowframework.job.common.domain.LogIJob;
-import com.didiglobal.knowframework.job.common.domain.LogITask;
+import com.didiglobal.knowframework.job.common.domain.KfJob;
+import com.didiglobal.knowframework.job.common.domain.KfTask;
 
 /**
  * job factory.
@@ -11,5 +11,5 @@ import com.didiglobal.knowframework.job.common.domain.LogITask;
 public interface JobFactory {
     void addJob(String className, Job job);
 
-    LogIJob newJob(LogITask logITask);
+    KfJob newJob(KfTask kfTask);
 }

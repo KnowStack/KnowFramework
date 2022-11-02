@@ -1,6 +1,6 @@
 package com.didiglobal.knowframework.job.core.consensual;
 
-import com.didiglobal.knowframework.job.common.domain.LogITask;
+import com.didiglobal.knowframework.job.common.domain.KfTask;
 import com.didiglobal.knowframework.job.core.task.TaskLockService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,9 +25,9 @@ public class RandomConsensual extends AbstractConsensual {
     }
 
     @Override
-    public boolean tryClaim(LogITask logITask) {
-        if (taskLockService.tryAcquire(logITask.getTaskCode())) {
-            logITask.setTaskCallback(taskCode -> {
+    public boolean tryClaim(KfTask kfTask) {
+        if (taskLockService.tryAcquire( kfTask.getTaskCode())) {
+            kfTask.setTaskCallback( taskCode -> {
                 logger.info("class=RandomConsensual||method=tryClaim||msg=release task lock "
                         + "taskCode {}", taskCode);
                 taskLockService.tryRelease(taskCode);

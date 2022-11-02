@@ -17,7 +17,7 @@ import java.util.List;
 /**
  * @author cjm
  */
-@Service("logiSecurityResourceTypeServiceImpl")
+@Service("kfSecurityResourceTypeServiceImpl")
 public class ResourceTypeServiceImpl implements ResourceTypeService {
 
     @Autowired

@@ -12,7 +12,6 @@ spring:
   resource-extend-bean-name: myResourceExtendImpl
   login-extend-bean-name:
 
-
 mybatis-plus:
   configuration:
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl

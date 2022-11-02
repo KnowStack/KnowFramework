@@ -31,7 +31,7 @@ public class RolePermissionDaoImpl extends BaseDaoImpl<RolePermissionPO> impleme
         }
         List<RolePermissionPO> rolePermissionPOList = CopyBeanUtil.copyList(rolePermissionList, RolePermissionPO.class);
         for(RolePermissionPO rolePermissionPO : rolePermissionPOList) {
-            rolePermissionPO.setAppName(logiSecurityProper.getAppName());
+            rolePermissionPO.setAppName( kfSecurityProper.getAppName());
             rolePermissionMapper.insert(rolePermissionPO);
         }
 

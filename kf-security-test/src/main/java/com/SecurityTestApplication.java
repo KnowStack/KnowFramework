@@ -37,8 +37,8 @@ public class SecurityTestApplication implements ApplicationRunner {
     /**
      * 权限系统导入
      * 1、生成权限导入的 json 串
-     * 2、调用 /logi-security/api/v1/permission/import 导入
-     * 3、修改数据库中的 logi_security_permission 表中，子权限点的 parent_id 为相应的父权限点id
+     * 2、调用 /kf-security/api/v1/permission/import 导入
+     * 3、修改数据库中的 kf_security_permission 表中，子权限点的 parent_id 为相应的父权限点id
      */
     public static void permissionImport(){
         List<PermissionDTO> list = new ArrayList<>();

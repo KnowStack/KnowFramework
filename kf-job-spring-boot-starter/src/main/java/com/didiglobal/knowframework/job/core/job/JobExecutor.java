@@ -1,6 +1,6 @@
 package com.didiglobal.knowframework.job.core.job;
 
-import com.didiglobal.knowframework.job.LogIJobProperties;
+import com.didiglobal.knowframework.job.KfJobProperties;
 
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.Callable;
@@ -26,7 +26,7 @@ public class JobExecutor {
      * @param properties 配置信息
      */
     @Autowired
-    public JobExecutor(LogIJobProperties properties) {
+    public JobExecutor(KfJobProperties properties) {
         this.threadPoolExecutor = new ThreadPoolExecutor(properties.getInitThreadNum(),
                 properties.getMaxThreadNum(), 10L, TimeUnit.SECONDS,
                 new ArrayBlockingQueue<>(100));

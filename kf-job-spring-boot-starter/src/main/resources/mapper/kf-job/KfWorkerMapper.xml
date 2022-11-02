@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.didiglobal.knowframework.job.mapper.KfWorkerMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.didiglobal.knowframework.job.common.po.KfWorkerPO">
+        <id column="id" property="id"/>
+        <result column="code" property="workerCode"/>
+        <result column="name" property="workerName"/>
+        <result column="cpu" property="cpu"/>
+        <result column="cpu_used" property="cpuUsed"/>
+        <result column="memory" property="memory"/>
+        <result column="memory_used" property="memoryUsed"/>
+        <result column="job_num" property="jobNum"/>
+        <result column="heartbeat" property="heartbeat"/>
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id
+        , code, name, cpu, cpu_used, memory, memory_used, jvm_heap, jvm_heap_used, job_num, heartbeat
+    </sql>
+
+</mapper>

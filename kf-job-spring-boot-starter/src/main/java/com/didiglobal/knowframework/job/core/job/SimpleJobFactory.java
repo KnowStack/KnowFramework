@@ -1,7 +1,7 @@
 package com.didiglobal.knowframework.job.core.job;
 
-import com.didiglobal.knowframework.job.common.domain.LogIJob;
-import com.didiglobal.knowframework.job.common.domain.LogITask;
+import com.didiglobal.knowframework.job.common.domain.KfJob;
+import com.didiglobal.knowframework.job.common.domain.KfTask;
 import com.didiglobal.knowframework.job.common.enums.JobStatusEnum;
 import com.didiglobal.knowframework.job.core.WorkerSingleton;
 import com.didiglobal.knowframework.job.utils.IdWorker;
@@ -33,26 +33,26 @@ public class SimpleJobFactory implements JobFactory {
     }
 
     @Override
-    public LogIJob newJob(LogITask logITask) {
-        if(null == jobMap.get(logITask.getClassName())){
+    public KfJob newJob(KfTask kfTask) {
+        if(null == jobMap.get( kfTask.getClassName())){
             return null;
         }
 
-        LogIJob logIJob = new LogIJob();
-        logIJob.setJobCode(IdWorker.getIdStr());
-        logIJob.setTaskCode(logITask.getTaskCode());
-        logIJob.setTaskId(logITask.getId());
-        logIJob.setTaskName(logITask.getTaskName());
-        logIJob.setTaskDesc(logITask.getTaskDesc());
-        logIJob.setClassName(logITask.getClassName());
-        logIJob.setWorkerCode(WorkerSingleton.getInstance().getLogIWorker().getWorkerCode());
-        logIJob.setWorkerIp(WorkerSingleton.getInstance().getLogIWorker().getIp());
-        logIJob.setTryTimes(logITask.getRetryTimes() == null ? 1 : logITask.getRetryTimes());
-        logIJob.setStatus(JobStatusEnum.STARTED.getValue());
-        logIJob.setTimeout(logITask.getTimeout());
-        logIJob.setJob(jobMap.get(logITask.getClassName()));
-        logIJob.setTaskCallback(logITask.getTaskCallback());
-        logIJob.setAppName(logITask.getAppName());
-        return logIJob;
+        KfJob kfJob = new KfJob();
+        kfJob.setJobCode(IdWorker.getIdStr());
+        kfJob.setTaskCode( kfTask.getTaskCode());
+        kfJob.setTaskId( kfTask.getId());
+        kfJob.setTaskName( kfTask.getTaskName());
+        kfJob.setTaskDesc( kfTask.getTaskDesc());
+        kfJob.setClassName( kfTask.getClassName());
+        kfJob.setWorkerCode(WorkerSingleton.getInstance().getKfWorker().getWorkerCode());
+        kfJob.setWorkerIp(WorkerSingleton.getInstance().getKfWorker().getIp());
+        kfJob.setTryTimes( kfTask.getRetryTimes() == null ? 1 : kfTask.getRetryTimes());
+        kfJob.setStatus(JobStatusEnum.STARTED.getValue());
+        kfJob.setTimeout( kfTask.getTimeout());
+        kfJob.setJob(jobMap.get( kfTask.getClassName()));
+        kfJob.setTaskCallback( kfTask.getTaskCallback());
+        kfJob.setAppName( kfTask.getAppName());
+        return kfJob;
     }
 }

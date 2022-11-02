@@ -17,7 +17,7 @@ import com.didiglobal.knowframework.security.common.vo.user.UserBriefVO;
 import com.didiglobal.knowframework.security.dao.ProjectDao;
 import com.didiglobal.knowframework.security.dao.UserDao;
 import com.didiglobal.knowframework.security.dao.UserProjectDao;
-import com.didiglobal.knowframework.security.exception.LogiSecurityException;
+import com.didiglobal.knowframework.security.exception.KfSecurityException;
 import com.didiglobal.knowframework.security.util.CopyBeanUtil;
 import com.didiglobal.knowframework.security.common.entity.user.User;
 import com.didiglobal.knowframework.security.common.entity.user.UserBrief;
@@ -46,7 +46,7 @@ import org.springframework.util.StringUtils;
 /**
  * @author cjm
  */
-@Service("logiSecurityUserServiceImpl")
+@Service("kfSecurityUserServiceImpl")
 public class UserServiceImpl implements UserService {
 
     private static final Pattern P_USER_NAME    = Pattern.compile("^[0-9a-zA-Z_]{5,50}$");
@@ -139,10 +139,10 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserVO getUserDetailByUserId(Integer userId) throws LogiSecurityException {
+    public UserVO getUserDetailByUserId(Integer userId) throws KfSecurityException {
         User user = userDao.selectByUserId(userId);
         if (user == null) {
-            throw new LogiSecurityException(ResultCode.USER_NOT_EXISTS);
+            throw new KfSecurityException(ResultCode.USER_NOT_EXISTS);
         }
         UserVO userVo = CopyBeanUtil.copy(user, UserVO.class);
 
@@ -307,9 +307,9 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<AssignInfoVO> getAssignDataByUserId(Integer userId) throws LogiSecurityException {
+    public List<AssignInfoVO> getAssignDataByUserId(Integer userId) throws KfSecurityException {
         if(userId == null) {
-            throw new LogiSecurityException(ResultCode.USER_ID_CANNOT_BE_NULL);
+            throw new KfSecurityException(ResultCode.USER_ID_CANNOT_BE_NULL);
         }
         // 获取所有角色
         List<RoleBriefVO> roleBriefVOList = roleService.getAllRoleBriefList();

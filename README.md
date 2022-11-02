@@ -138,7 +138,7 @@ Http Method：GET
 
 ## 3.kf-log
 ### 3.1 介绍
-集成了：logi-log-log、logi-log-log4j2。
+集成了：kf-log-log、kf-log-log4j2。
 ### 3.2 添加maven
 ```xml
 <dependency>
@@ -164,8 +164,8 @@ kf-log是基于slf4j封装的组件，为用户提供日志相关功能。各个
    LogGather.recordInfoLog("myKey", "this is log");
    ```
 
-### 3.3 logi-log-log4j2
-logi-log-log4j2，是基于log4j2 2.9.1封装的，支持日志发送到kafka，以及过滤重复日志功能。
+### 3.3 kf-log-log4j2
+kf-log-log4j2，是基于log4j2 2.9.1封装的，支持日志发送到kafka，以及过滤重复日志功能。
 #### 3.3.1 日志发送到kafka
 配置appender，appName设置为唯一的
 

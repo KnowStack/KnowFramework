@@ -13,7 +13,7 @@ import java.util.List;
 /**
  * @author cjm
  */
-@Service("logiSecurityRolePermissionServiceImpl")
+@Service("kfSecurityRolePermissionServiceImpl")
 public class RolePermissionServiceImpl implements RolePermissionService {
 
     @Autowired

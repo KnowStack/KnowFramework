@@ -34,7 +34,7 @@ public class UserDaoImpl extends BaseDaoImpl<UserPO> implements UserDao {
     @Override
     public int addUser(UserPO userPO) throws Exception {
         userPO.setPw(PWEncryptUtil.encode(userPO.getPw()));
-        userPO.setAppName(logiSecurityProper.getAppName());
+        userPO.setAppName( kfSecurityProper.getAppName());
         return userMapper.insert(userPO);
     }
 

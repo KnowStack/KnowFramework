@@ -1,7 +1,7 @@
 package com.didiglobal.knowframework.job.core.job;
 
-import com.didiglobal.knowframework.job.common.domain.LogIJob;
+import com.didiglobal.knowframework.job.common.domain.KfJob;
 
 public interface JobCallback {
-    void callback(LogIJob logIJob);
+    void callback(KfJob kfJob);
 }

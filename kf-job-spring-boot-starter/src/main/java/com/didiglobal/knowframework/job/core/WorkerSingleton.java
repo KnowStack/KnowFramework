@@ -1,6 +1,6 @@
 package com.didiglobal.knowframework.job.core;
 
-import com.didiglobal.knowframework.job.common.domain.LogIWorker;
+import com.didiglobal.knowframework.job.common.domain.KfWorker;
 import com.didiglobal.knowframework.job.utils.ThreadUtil;
 
 import java.net.InetAddress;
@@ -18,7 +18,7 @@ import oshi.hardware.GlobalMemory;
 public class WorkerSingleton {
     private static final int CPU_INTERVAL = 1;
     private static final Logger logger = LoggerFactory.getLogger(WorkerSingleton.class);
-    private volatile LogIWorker logIWorker;
+    private volatile KfWorker kfWorker;
 
     private WorkerSingleton() {
     }
@@ -42,19 +42,19 @@ public class WorkerSingleton {
         return Singleton.singleton;
     }
 
-    public LogIWorker getLogIWorker() {
-        return logIWorker;
+    public KfWorker getKfWorker() {
+        return kfWorker;
     }
 
-    public void setLogIWorker(LogIWorker logIWorker) {
-        this.logIWorker = logIWorker;
+    public void setKfWorker(KfWorker kfWorker) {
+        this.kfWorker = kfWorker;
     }
 
     private static class Singleton {
         static WorkerSingleton singleton = new WorkerSingleton();
 
         static {
-            LogIWorker logIWorker = new LogIWorker();
+            KfWorker kfWorker = new KfWorker();
             InetAddress inetAddress = null;
             try {
                 inetAddress = InetAddress.getLocalHost();
@@ -62,15 +62,15 @@ public class WorkerSingleton {
                 logger.error("class=SimpleWorkerFactory||method=||url=||msg=", e);
             }
 
-            logIWorker.setWorkerCode(inetAddress == null ? "INVALID_CODE"
+            kfWorker.setWorkerCode(inetAddress == null ? "INVALID_CODE"
                     : inetAddress.getHostAddress() + "_" + inetAddress.getHostName());
-            logIWorker.setWorkerName(inetAddress == null ? "INVALID_NAME" : inetAddress.getHostName());
-            logIWorker.setIp(inetAddress.getHostAddress());
-            singleton.setLogIWorker(logIWorker);
+            kfWorker.setWorkerName(inetAddress == null ? "INVALID_NAME" : inetAddress.getHostName());
+            kfWorker.setIp(inetAddress.getHostAddress());
+            singleton.setKfWorker( kfWorker );
         }
 
         public static WorkerSingleton updateWorkerMetrics() {
-            LogIWorker logIWorker = singleton.getLogIWorker();
+            KfWorker kfWorker = singleton.getKfWorker();
 
             SystemInfo systemInfo = new SystemInfo();
             // cpu
@@ -98,28 +98,28 @@ public class WorkerSingleton {
             long idle = ticks[CentralProcessor.TickType.IDLE.getIndex()]
                     - prevTicks[CentralProcessor.TickType.IDLE.getIndex()];
             long totalCpu = user + nice + csys + idle + ioWait + irq + softIrq + steal;
-            logIWorker.setCpu(processor.getLogicalProcessorCount());
-            logIWorker.setCpuUsed(totalCpu == 0 ? null : 1.0 - (idle * 1.0 / totalCpu));
+            kfWorker.setCpu(processor.getLogicalProcessorCount());
+            kfWorker.setCpuUsed(totalCpu == 0 ? null : 1.0 - (idle * 1.0 / totalCpu));
 
             // memory
             GlobalMemory memory = systemInfo.getHardware().getMemory();
             Double totalMemory = memory.getTotal() * 1.0 / 1024 / 1024;
             DecimalFormat df = new DecimalFormat("#.000");
-            logIWorker.setMemory(Double.valueOf(df.format(totalMemory)));
+            kfWorker.setMemory(Double.valueOf(df.format(totalMemory)));
             Double memoryUsed = (memory.getTotal() - memory.getAvailable()) * 1.0 / memory.getTotal();
-            logIWorker.setMemoryUsed(Double.valueOf(df.format(memoryUsed)));
+            kfWorker.setMemoryUsed(Double.valueOf(df.format(memoryUsed)));
 
             Runtime runtime = Runtime.getRuntime();
             Double jvmMemory = runtime.totalMemory() * 1.0 / 1024 / 1024;
-            logIWorker.setJvmMemory(Double.valueOf(df.format(jvmMemory)));
+            kfWorker.setJvmMemory(Double.valueOf(df.format(jvmMemory)));
             Double jvmMemoryUsed = (runtime.totalMemory() - runtime.freeMemory()) * 1.0
                     / runtime.totalMemory();
-            logIWorker.setJvmMemoryUsed(Double.valueOf(df.format(jvmMemoryUsed)));
+            kfWorker.setJvmMemoryUsed(Double.valueOf(df.format(jvmMemoryUsed)));
 
             // logIWorker.setJobNum();
 
-            logIWorker.setHeartbeat(new Timestamp(System.currentTimeMillis()));
-            singleton.setLogIWorker(logIWorker);
+            kfWorker.setHeartbeat(new Timestamp(System.currentTimeMillis()));
+            singleton.setKfWorker( kfWorker );
             return singleton;
         }
     }

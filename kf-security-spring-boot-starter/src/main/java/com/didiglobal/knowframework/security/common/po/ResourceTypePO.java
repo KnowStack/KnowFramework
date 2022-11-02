@@ -11,7 +11,7 @@ import lombok.EqualsAndHashCode;
  */
 @EqualsAndHashCode(callSuper = true)
 @Data
-@TableName(value = "logi_security_resource_type")
+@TableName(value = "kf_security_resource_type")
 public class ResourceTypePO extends BasePO {
 
     /**

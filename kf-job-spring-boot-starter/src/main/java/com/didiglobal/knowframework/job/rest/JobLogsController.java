@@ -1,8 +1,8 @@
 package com.didiglobal.knowframework.job.rest;
 
-import com.didiglobal.knowframework.job.common.dto.TaskLogPageQueryDTO;
+import com.didiglobal.knowframework.job.common.dto.KfTaskLogPageQueryDTO;
 import com.didiglobal.knowframework.job.common.PagingResult;
-import com.didiglobal.knowframework.job.common.vo.LogIJobLogVO;
+import com.didiglobal.knowframework.job.common.vo.KfJobLogVO;
 import com.didiglobal.knowframework.job.core.job.JobLogManager;
 import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,12 +25,12 @@ public class JobLogsController {
     private JobLogManager jobLogManager;
 
     @PostMapping("/list")
-    public PagingResult<LogIJobLogVO> getJobLogs(@RequestBody TaskLogPageQueryDTO pageQueryDTO) {
+    public PagingResult<KfJobLogVO> getJobLogs(@RequestBody KfTaskLogPageQueryDTO pageQueryDTO) {
         pageQueryDTO.setTaskDesc(sqlFuzzyQueryTransfer(pageQueryDTO.getTaskDesc()));
 
-        List<LogIJobLogVO> logIJobLogVOS = jobLogManager.pageJobLogs(pageQueryDTO);
+        List<KfJobLogVO> kfJobLogVOS = jobLogManager.pageJobLogs(pageQueryDTO);
         int totalCount = jobLogManager.getJobLogsCount(pageQueryDTO);
 
-        return PagingResult.buildSucc(logIJobLogVOS, totalCount, pageQueryDTO.getPage(), pageQueryDTO.getSize());
+        return PagingResult.buildSucc( kfJobLogVOS, totalCount, pageQueryDTO.getPage(), pageQueryDTO.getSize());
     }
 }

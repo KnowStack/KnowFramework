@@ -19,7 +19,7 @@ import java.util.List;
 /**
  * @author cjm
  */
-@Service("logiSecurityMessageServiceImpl")
+@Service("kfSecurityMessageServiceImpl")
 public class MessageServiceImpl implements MessageService {
 
     @Autowired

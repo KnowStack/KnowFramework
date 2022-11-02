@@ -1,9 +1,9 @@
 package com.didiglobal.knowframework.job.core.job.impl;
 
-import com.didiglobal.knowframework.job.LogIJobProperties;
+import com.didiglobal.knowframework.job.KfJobProperties;
 import com.didiglobal.knowframework.job.common.TaskResult;
-import com.didiglobal.knowframework.job.common.domain.LogIJob;
-import com.didiglobal.knowframework.job.common.domain.LogITask;
+import com.didiglobal.knowframework.job.common.domain.KfJob;
+import com.didiglobal.knowframework.job.common.domain.KfTask;
 import com.didiglobal.knowframework.job.common.enums.JobStatusEnum;
 import com.didiglobal.knowframework.job.common.enums.TaskWorkerStatusEnum;
 import com.didiglobal.knowframework.job.common.po.*;
@@ -15,9 +15,7 @@ import com.didiglobal.knowframework.job.core.task.TaskLockService;
 import com.didiglobal.knowframework.job.mapper.*;
 import com.didiglobal.knowframework.job.utils.BeanUtil;
 import com.didiglobal.knowframework.job.utils.ThreadUtil;
-import com.didiglobal.knowframework.job.common.po.*;
 import com.didiglobal.knowframework.job.core.WorkerSingleton;
-import com.didiglobal.knowframework.job.mapper.*;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import org.slf4j.Logger;
@@ -59,16 +57,16 @@ public class JobManagerImpl implements JobManager {
     private static final Long ONE_HOUR = 3600L;
 
     private JobFactory jobFactory;
-    private LogIJobMapper logIJobMapper;
-    private LogIJobLogMapper logIJobLogMapper;
-    private LogITaskMapper logITaskMapper;
-    private LogIWorkerMapper logIWorkerMapper;
+    private KfJobMapper kfJobMapper;
+    private KfJobLogMapper KFJobLogMapper;
+    private KfTaskMapper kfTaskMapper;
+    private KfWorkerMapper kfWorkerMapper;
     private JobExecutor jobExecutor;
     private TaskLockService taskLockService;
-    private LogITaskLockMapper logITaskLockMapper;
-    private LogIJobProperties logIJobProperties;
+    private KfTaskLockMapper kfTaskLockMapper;
+    private KfJobProperties kfJobProperties;
 
-    private ConcurrentHashMap<LogIJob, Future> jobFutureMap = new ConcurrentHashMap<>();
+    private ConcurrentHashMap<KfJob, Future> jobFutureMap = new ConcurrentHashMap<>();
 
     private final Cache<String, String> execuedJob = CacheBuilder.newBuilder()
             .expireAfterWrite(5, TimeUnit.MINUTES).maximumSize(1000).build();
@@ -76,60 +74,60 @@ public class JobManagerImpl implements JobManager {
     /**
      * construct
      * @param jobFactory job
-     * @param logIJobMapper mapper
-     * @param logIJobLogMapper mapper
-     * @param logITaskMapper mapper
-     * @param logIWorkerMapper logIWorkerMapper
+     * @param kfJobMapper mapper
+     * @param KFJobLogMapper mapper
+     * @param kfTaskMapper mapper
+     * @param kfWorkerMapper logIWorkerMapper
      * @param jobExecutor jobExecutor
      * @param taskLockService service
-     * @param logITaskLockMapper mapper
-     * @param logIJobProperties 配置信息
+     * @param kfTaskLockMapper mapper
+     * @param kfJobProperties 配置信息
      */
     @Autowired
     public JobManagerImpl(JobFactory jobFactory,
-                          LogIJobMapper logIJobMapper,
-                          LogIJobLogMapper logIJobLogMapper,
-                          LogITaskMapper logITaskMapper,
-                          LogIWorkerMapper logIWorkerMapper,
+                          KfJobMapper kfJobMapper,
+                          KfJobLogMapper KFJobLogMapper,
+                          KfTaskMapper kfTaskMapper,
+                          KfWorkerMapper kfWorkerMapper,
                           JobExecutor jobExecutor, TaskLockService taskLockService,
-                          LogITaskLockMapper logITaskLockMapper, LogIJobProperties logIJobProperties) {
+                          KfTaskLockMapper kfTaskLockMapper, KfJobProperties kfJobProperties) {
         this.jobFactory = jobFactory;
-        this.logIJobMapper = logIJobMapper;
-        this.logIJobLogMapper = logIJobLogMapper;
-        this.logITaskMapper = logITaskMapper;
-        this.logIWorkerMapper = logIWorkerMapper;
+        this.kfJobMapper = kfJobMapper;
+        this.KFJobLogMapper = KFJobLogMapper;
+        this.kfTaskMapper = kfTaskMapper;
+        this.kfWorkerMapper = kfWorkerMapper;
         this.jobExecutor = jobExecutor;
         this.taskLockService = taskLockService;
-        this.logITaskLockMapper = logITaskLockMapper;
-        this.logIJobProperties = logIJobProperties;
+        this.kfTaskLockMapper = kfTaskLockMapper;
+        this.kfJobProperties = kfJobProperties;
         initialize();
     }
 
     private void initialize() {
         new Thread(new JobFutureHandler(), "JobFutureHandler Thread").start();
         new Thread(new LockRenewHandler(), "LockRenewHandler Thread").start();
-        new Thread(new LogCleanHandler(this.logIJobProperties.getLogExpire()),
+        new Thread(new LogCleanHandler(this.kfJobProperties.getLogExpire()),
                 "LogCleanHandler Thread").start();
     }
 
     @Override
-    public Future<Object> start(LogITask logITask) {
+    public Future<Object> start(KfTask kfTask) {
         // 添加job信息
-        LogIJob logIJob = jobFactory.newJob(logITask);
-        if(null == logIJob){
-            logger.error("class=JobHandler||method=start||classname={}||msg=logIJob is null", logITask.getClassName());
+        KfJob kfJob = jobFactory.newJob( kfTask );
+        if(null == kfJob){
+            logger.error("class=JobHandler||method=start||classname={}||msg=logIJob is null", kfTask.getClassName());
             return null;
         }
 
-        LogIJobPO job = logIJob.getAuvJob();
-        logIJobMapper.insert(job);
+        KfJobPO job = kfJob.getAuvJob();
+        kfJobMapper.insert(job);
 
-        Future jobFuture = jobExecutor.submit(new JobHandler(logIJob, logITask));
-        jobFutureMap.put(logIJob, jobFuture);
+        Future jobFuture = jobExecutor.submit(new JobHandler( kfJob, kfTask ));
+        jobFutureMap.put( kfJob, jobFuture);
 
         // 增加auvJobLog
-        LogIJobLogPO logIJobLogPO = logIJob.getAuvJobLog();
-        logIJobLogMapper.insert(logIJobLogPO);
+        KfJobLogPO kfJobLogPO = kfJob.getAuvJobLog();
+        KFJobLogMapper.insert( kfJobLogPO );
         return jobFuture;
     }
 
@@ -140,10 +138,10 @@ public class JobManagerImpl implements JobManager {
 
     @Override
     public boolean stopByTaskCode(String taskCode) {
-        for (Map.Entry<LogIJob, Future> jobFuture : jobFutureMap.entrySet()) {
-            LogIJob logIJob = jobFuture.getKey();
-            if (Objects.equals(taskCode, logIJob.getTaskCode())) {
-                return stopJob(logIJob, jobFuture.getValue());
+        for (Map.Entry<KfJob, Future> jobFuture : jobFutureMap.entrySet()) {
+            KfJob kfJob = jobFuture.getKey();
+            if (Objects.equals(taskCode, kfJob.getTaskCode())) {
+                return stopJob( kfJob, jobFuture.getValue());
             }
         }
         return true;
@@ -151,10 +149,10 @@ public class JobManagerImpl implements JobManager {
 
     @Override
     public boolean stopByJobCode(String jobCode) {
-        for (Map.Entry<LogIJob, Future> jobFuture : jobFutureMap.entrySet()) {
-            LogIJob logIJob = jobFuture.getKey();
-            if (Objects.equals(jobCode, logIJob.getJobCode())) {
-                return stopJob(logIJob, jobFuture.getValue());
+        for (Map.Entry<KfJob, Future> jobFuture : jobFutureMap.entrySet()) {
+            KfJob kfJob = jobFuture.getKey();
+            if (Objects.equals(jobCode, kfJob.getJobCode())) {
+                return stopJob( kfJob, jobFuture.getValue());
             }
         }
         return true;
@@ -164,9 +162,9 @@ public class JobManagerImpl implements JobManager {
     public int stopAll() {
         AtomicInteger succeedNum = new AtomicInteger();
 
-        for (Map.Entry<LogIJob, Future> jobFuture : jobFutureMap.entrySet()) {
-            LogIJob logIJob = jobFuture.getKey();
-            if (stopJob(logIJob, jobFuture.getValue())) {
+        for (Map.Entry<KfJob, Future> jobFuture : jobFutureMap.entrySet()) {
+            KfJob kfJob = jobFuture.getKey();
+            if (stopJob( kfJob, jobFuture.getValue())) {
                 succeedNum.addAndGet(1);
             }
         }
@@ -175,14 +173,14 @@ public class JobManagerImpl implements JobManager {
     }
 
     @Override
-    public List<LogIJob> getJobs() {
-        List<LogIJobPO> logIJobPOS = logIJobMapper.selectByAppName(logIJobProperties.getAppName());
-        if (CollectionUtils.isEmpty(logIJobPOS)) {
+    public List<KfJob> getJobs() {
+        List<KfJobPO> kfJobPOS = kfJobMapper.selectByAppName( kfJobProperties.getAppName());
+        if (CollectionUtils.isEmpty( kfJobPOS )) {
             return null;
         }
-        List<LogIJob> logIJobDTOS = logIJobPOS.stream().map(logIJobPO -> BeanUtil.convertTo(logIJobPO, LogIJob.class))
+        List<KfJob> kfJobDTOS = kfJobPOS.stream().map( kfJobPO -> BeanUtil.convertTo( kfJobPO, KfJob.class))
                 .collect(Collectors.toList());
-        return logIJobDTOS;
+        return kfJobDTOS;
     }
 
     /**
@@ -190,13 +188,13 @@ public class JobManagerImpl implements JobManager {
      */
     class JobHandler implements Callable {
 
-        private LogIJob logIJob;
+        private KfJob kfJob;
 
-        private LogITask logITask;
+        private KfTask kfTask;
 
-        public JobHandler(LogIJob logIJob, LogITask logITask) {
-            this.logIJob  = logIJob;
-            this.logITask = logITask;
+        public JobHandler(KfJob kfJob, KfTask kfTask) {
+            this.kfJob = kfJob;
+            this.kfTask = kfTask;
         }
 
         @Override
@@ -204,56 +202,56 @@ public class JobManagerImpl implements JobManager {
             TaskResult object = null;
 
             logger.info("class=JobHandler||method=call||msg=start job {} with classname {}",
-                    logIJob.getJobCode(), logIJob.getClassName());
+                    kfJob.getJobCode(), kfJob.getClassName());
 
             try {
-                logIJob.setStartTime(new Timestamp(System.currentTimeMillis()));
-                logIJob.setStatus(JobStatusEnum.SUCCEED.getValue());
-                logIJob.setResult(new TaskResult(TaskResult.RUNNING_CODE, "task job is running!"));
-                logIJob.setError("");
+                kfJob.setStartTime(new Timestamp(System.currentTimeMillis()));
+                kfJob.setStatus(JobStatusEnum.SUCCEED.getValue());
+                kfJob.setResult(new TaskResult(TaskResult.RUNNING_CODE, "task job is running!"));
+                kfJob.setError("");
 
                 //开始执行，记录日志
-                LogIJobLogPO logIJobLogPO = logIJob.getAuvJobLog();
-                logIJobLogMapper.updateByCode(logIJobLogPO);
+                KfJobLogPO kfJobLogPO = kfJob.getAuvJobLog();
+                KFJobLogMapper.updateByCode( kfJobLogPO );
 
-                List<LogIWorkerPO>  logIWorkerPOS = logIWorkerMapper.selectByAppName(logIJobProperties.getAppName());
+                List<KfWorkerPO> kfWorkerPOS = kfWorkerMapper.selectByAppName( kfJobProperties.getAppName());
                 List<String>        workCodes     = new ArrayList<>();
 
-                if(CollectionUtils.isEmpty(logIWorkerPOS)){
-                    workCodes.add(logIJob.getWorkerIp());
+                if(CollectionUtils.isEmpty( kfWorkerPOS )){
+                    workCodes.add( kfJob.getWorkerIp());
                 }else {
-                    workCodes.addAll(logIWorkerPOS.stream().map(LogIWorkerPO::getWorkerCode).collect(Collectors.toList()));
+                    workCodes.addAll( kfWorkerPOS.stream().map( KfWorkerPO::getWorkerCode).collect(Collectors.toList()));
                 }
 
-                JobContext jobContext = new JobContext(logITask.getParams(), workCodes, logIJob.getWorkerCode());
+                JobContext jobContext = new JobContext( kfTask.getParams(), workCodes, kfJob.getWorkerCode());
 
-                object = logIJob.getJob().execute(jobContext);
+                object = kfJob.getJob().execute(jobContext);
 
-                logIJob.setResult(object);
-                logIJob.setEndTime(new Timestamp(System.currentTimeMillis()));
+                kfJob.setResult(object);
+                kfJob.setEndTime(new Timestamp(System.currentTimeMillis()));
             } catch (InterruptedException e) {
                 // 记录任务被打断 进程关闭/线程关闭
-                logIJob.setStatus(JobStatusEnum.CANCELED.getValue());
-                logIJob.setResult(new TaskResult(TaskResult.FAIL_CODE, "task job be canceld!"));
+                kfJob.setStatus(JobStatusEnum.CANCELED.getValue());
+                kfJob.setResult(new TaskResult(TaskResult.FAIL_CODE, "task job be canceld!"));
                 String error = printStackTraceAsString(e);
-                logIJob.setError(printStackTraceAsString(e));
-                logger.error("class=JobHandler||method=call||classname={}||msg={}", logIJob.getClassName(), error);
+                kfJob.setError(printStackTraceAsString(e));
+                logger.error("class=JobHandler||method=call||classname={}||msg={}", kfJob.getClassName(), error);
             } catch (Exception e) {
                 // 记录任务异常信息
-                logIJob.setStatus(JobStatusEnum.FAILED.getValue());
-                logIJob.setResult(new TaskResult(TaskResult.FAIL_CODE, "task job has exception when running!" + e));
+                kfJob.setStatus(JobStatusEnum.FAILED.getValue());
+                kfJob.setResult(new TaskResult(TaskResult.FAIL_CODE, "task job has exception when running!" + e));
                 String error = printStackTraceAsString(e);
-                logIJob.setError(printStackTraceAsString(e));
-                logger.error("class=JobHandler||method=call||classname=||msg={}", logIJob.getClassName(), error);
+                kfJob.setError(printStackTraceAsString(e));
+                logger.error("class=JobHandler||method=call||classname=||msg={}", kfJob.getClassName(), error);
             } finally {
 
                 //执行完成，记录日志
-                LogIJobLogPO logIJobLogPO = logIJob.getAuvJobLog();
-                logIJobLogMapper.updateByCode(logIJobLogPO);
+                KfJobLogPO kfJobLogPO = kfJob.getAuvJobLog();
+                KFJobLogMapper.updateByCode( kfJobLogPO );
 
                 // job callback, 释放任务锁
-                if (logIJob.getTaskCallback() != null) {
-                    logIJob.getTaskCallback().callback(logIJob.getTaskCode());
+                if (kfJob.getTaskCallback() != null) {
+                    kfJob.getTaskCallback().callback( kfJob.getTaskCode());
                 }
             }
 
@@ -313,51 +311,51 @@ public class JobManagerImpl implements JobManager {
     /**
      * 整理已完成的任务.
      *
-     * @param logIJob logIJob
+     * @param kfJob logIJob
      */
     @Transactional(rollbackFor = Exception.class)
-    public void reorganizeFinishedJob(LogIJob logIJob) {
+    public void reorganizeFinishedJob(KfJob kfJob) {
         // 移除记录
-        jobFutureMap.remove(logIJob);
+        jobFutureMap.remove( kfJob );
 
-        execuedJob.put(logIJob.getTaskCode(), logIJob.getTaskCode());
+        execuedJob.put( kfJob.getTaskCode(), kfJob.getTaskCode());
 
-        if (JobStatusEnum.CANCELED.getValue().equals(logIJob.getStatus())) {
-            logIJob.setResult(new TaskResult(TaskResult.FAIL_CODE, "task job be canceld!"));
-            logIJob.setError("task job be canceld!");
-            LogIJobLogPO logIJobLogPO = logIJob.getAuvJobLog();
-            logIJobLogMapper.updateByCode(logIJobLogPO);
+        if (JobStatusEnum.CANCELED.getValue().equals( kfJob.getStatus())) {
+            kfJob.setResult(new TaskResult(TaskResult.FAIL_CODE, "task job be canceld!"));
+            kfJob.setError("task job be canceld!");
+            KfJobLogPO kfJobLogPO = kfJob.getAuvJobLog();
+            KFJobLogMapper.updateByCode( kfJobLogPO );
         }
 
         // 删除auvJob
-        logIJobMapper.deleteByCode(logIJob.getJobCode());
+        kfJobMapper.deleteByCode( kfJob.getJobCode());
 
         // 更新任务状态
-        LogITaskPO logITaskPO = logITaskMapper.selectByCode(logIJob.getTaskCode(), logIJobProperties.getAppName());
-        List<LogITask.TaskWorker> taskWorkers = BeanUtil.convertToList(logITaskPO.getTaskWorkerStr(),
-                LogITask.TaskWorker.class);
+        KfTaskPO kfTaskPO = kfTaskMapper.selectByCode( kfJob.getTaskCode(), kfJobProperties.getAppName());
+        List<KfTask.TaskWorker> taskWorkers = BeanUtil.convertToList( kfTaskPO.getTaskWorkerStr(),
+                KfTask.TaskWorker.class);
 
         long currentTime = System.currentTimeMillis();
 
         if (!CollectionUtils.isEmpty(taskWorkers)) {
             taskWorkers.sort((o1, o2) -> o1.getLastFireTime().after(o2.getLastFireTime()) ? 1 : -1);
 
-            Iterator<LogITask.TaskWorker> iter = taskWorkers.iterator();
+            Iterator<KfTask.TaskWorker> iter = taskWorkers.iterator();
             while (iter.hasNext()) {
-                LogITask.TaskWorker taskWorker = iter.next();
+                KfTask.TaskWorker taskWorker = iter.next();
                 if (TaskWorkerStatusEnum.WAITING.getValue().equals(taskWorker.getStatus())
                         && taskWorker.getLastFireTime().getTime() + 12 * ONE_HOUR * 1000 < currentTime) {
                     iter.remove();
                 }
 
                 if (Objects.equals(taskWorker.getWorkerCode(), WorkerSingleton.getInstance()
-                        .getLogIWorker().getWorkerCode())) {
+                        .getKfWorker().getWorkerCode())) {
                     taskWorker.setStatus(TaskWorkerStatusEnum.WAITING.getValue());
                 }
             }
         }
-        logITaskPO.setTaskWorkerStr(BeanUtil.convertToJson(taskWorkers));
-        logITaskMapper.updateTaskWorkStrByCode(logITaskPO);
+        kfTaskPO.setTaskWorkerStr(BeanUtil.convertToJson(taskWorkers));
+        kfTaskMapper.updateTaskWorkStrByCode( kfTaskPO );
     }
 
     /**
@@ -377,25 +375,25 @@ public class JobManagerImpl implements JobManager {
                             + "regular time {}", JOB_INTERVAL);
 
                     // 锁续约
-                    List<LogITaskLockPO> logITaskLockPOS = logITaskLockMapper.selectByWorkerCode(WorkerSingleton
-                            .getInstance().getLogIWorker().getWorkerCode(), logIJobProperties.getAppName());
+                    List<KfTaskLockPO> kfTaskLockPOS = kfTaskLockMapper.selectByWorkerCode(WorkerSingleton
+                            .getInstance().getKfWorker().getWorkerCode(), kfJobProperties.getAppName());
 
-                    if (!CollectionUtils.isEmpty(logITaskLockPOS)) {
+                    if (!CollectionUtils.isEmpty( kfTaskLockPOS )) {
                         long current = System.currentTimeMillis() / 1000;
 
-                        for (LogITaskLockPO logITaskLockPO : logITaskLockPOS) {
-                            long exTime = (logITaskLockPO.getCreateTime().getTime() / 1000)
-                                    + logITaskLockPO.getExpireTime();
+                        for (KfTaskLockPO kfTaskLockPO : kfTaskLockPOS) {
+                            long exTime = (kfTaskLockPO.getCreateTime().getTime() / 1000)
+                                    + kfTaskLockPO.getExpireTime();
 
-                            if (null != execuedJob.getIfPresent(logITaskLockPO.getTaskCode())) {
+                            if (null != execuedJob.getIfPresent( kfTaskLockPO.getTaskCode())) {
                                 // 续约
                                 if (current < exTime && current > exTime - CHECK_BEFORE_INTERVAL) {
                                     logger.info("class=TaskLockServiceImpl||method=run||msg=update lock "
-                                                    + "expireTime id={}, expireTime={}", logITaskLockPO.getId(),
-                                            logITaskLockPO.getExpireTime());
-                                    logITaskLockMapper.update(
-                                            logITaskLockPO.getId(),
-                                            logITaskLockPO.getExpireTime() + RENEW_INTERVAL);
+                                                    + "expireTime id={}, expireTime={}", kfTaskLockPO.getId(),
+                                            kfTaskLockPO.getExpireTime());
+                                    kfTaskLockMapper.update(
+                                            kfTaskLockPO.getId(),
+                                            kfTaskLockPO.getExpireTime() + RENEW_INTERVAL);
                                 }
                                 continue;
                             }
@@ -403,32 +401,32 @@ public class JobManagerImpl implements JobManager {
                             // 否则，删除无效的锁、过期的锁
                             if(current > exTime){
                                 logger.info("class=TaskLockServiceImpl||method=run||msg=lock clean "
-                                        + "lockInfo={}", BeanUtil.convertToJson(logITaskLockPO));
-                                logITaskLockMapper.deleteById(logITaskLockPO.getId());
+                                        + "lockInfo={}", BeanUtil.convertToJson( kfTaskLockPO ));
+                                kfTaskLockMapper.deleteById( kfTaskLockPO.getId());
                             }
 
 
                             // 更新当前worker任务状态
-                            LogITaskPO logITaskPO = logITaskMapper
-                                    .selectByCode(logITaskLockPO.getTaskCode(), logIJobProperties.getAppName());
-                            if (logITaskPO != null) {
-                                List<LogITask.TaskWorker> taskWorkers = BeanUtil.convertToList(
-                                        logITaskPO.getTaskWorkerStr(), LogITask.TaskWorker.class);
+                            KfTaskPO kfTaskPO = kfTaskMapper
+                                    .selectByCode( kfTaskLockPO.getTaskCode(), kfJobProperties.getAppName());
+                            if (kfTaskPO != null) {
+                                List<KfTask.TaskWorker> taskWorkers = BeanUtil.convertToList(
+                                        kfTaskPO.getTaskWorkerStr(), KfTask.TaskWorker.class);
 
                                 if (!CollectionUtils.isEmpty(taskWorkers)) {
-                                    for (LogITask.TaskWorker taskWorker : taskWorkers) {
+                                    for (KfTask.TaskWorker taskWorker : taskWorkers) {
                                         if (Objects.equals(taskWorker.getWorkerCode(), WorkerSingleton.getInstance()
-                                                .getLogIWorker().getWorkerCode())) {
+                                                .getKfWorker().getWorkerCode())) {
                                             taskWorker.setStatus(TaskWorkerStatusEnum.WAITING.getValue());
                                         }
                                     }
                                 }
-                                logITaskPO.setTaskWorkerStr(BeanUtil.convertToJson(taskWorkers));
+                                kfTaskPO.setTaskWorkerStr(BeanUtil.convertToJson(taskWorkers));
 
                                 logger.info("class=TaskLockServiceImpl||method=run||msg=update task workers "
-                                        + "status taskInfo={}", BeanUtil.convertToJson(logITaskPO));
+                                        + "status taskInfo={}", BeanUtil.convertToJson( kfTaskPO ));
 
-                                logITaskMapper.updateTaskWorkStrByCode(logITaskPO);
+                                kfTaskMapper.updateTaskWorkStrByCode( kfTaskPO );
                             }
                         }
                     }
@@ -466,16 +464,16 @@ public class JobManagerImpl implements JobManager {
                     logger.info("class=LogCleanHandler||method=run||msg=clean auv_job_log regular"
                             + " time {}", JOB_LOG_DEL_INTERVAL );
 
-                    String    appName    = logIJobProperties.getAppName();
+                    String    appName    = kfJobProperties.getAppName();
                     Timestamp deleteTime = new Timestamp(System.currentTimeMillis() - logExpire * 24 * 3600 * 1000);
 
-                    int deleteRowTotal    = logIJobLogMapper.selectCountByAppNameAndCreateTime(appName, deleteTime);
+                    int deleteRowTotal    = KFJobLogMapper.selectCountByAppNameAndCreateTime(appName, deleteTime);
                     int deleteRowPerTimes = deleteRowTotal / 60;
                     int deleteRowReal     = 0;
 
                     for(int i = 0; i < 60; i++){
                         // 删除日志
-                        int count = logIJobLogMapper.deleteByCreateTime(deleteTime, appName, deleteRowPerTimes);
+                        int count = KFJobLogMapper.deleteByCreateTime(deleteTime, appName, deleteRowPerTimes);
                         deleteRowReal += count;
                     }
 
@@ -488,15 +486,15 @@ public class JobManagerImpl implements JobManager {
         }
     }
 
-    private boolean stopJob(LogIJob logIJob, Future future) {
+    private boolean stopJob(KfJob kfJob, Future future) {
         int tryTime = 0;
         while (tryTime < TRY_MAX_TIMES) {
             if (future.isDone()) {
-                logIJob.setStatus(JobStatusEnum.CANCELED.getValue());
-                if (logIJob.getTaskCallback() != null) {
-                    logIJob.getTaskCallback().callback(logIJob.getTaskCode());
+                kfJob.setStatus(JobStatusEnum.CANCELED.getValue());
+                if (kfJob.getTaskCallback() != null) {
+                    kfJob.getTaskCallback().callback( kfJob.getTaskCode());
                 }
-                reorganizeFinishedJob(logIJob);
+                reorganizeFinishedJob( kfJob );
                 return true;
             }
             future.cancel(true);

@@ -1,16 +1,16 @@
 package com.didiglobal.knowframework.job.core.beat;
 
-import com.didiglobal.knowframework.job.common.domain.LogITask;
-import com.didiglobal.knowframework.job.common.domain.LogIWorker;
+import com.didiglobal.knowframework.job.common.domain.KfTask;
+import com.didiglobal.knowframework.job.common.domain.KfWorker;
 import com.didiglobal.knowframework.job.core.job.JobManager;
-import com.didiglobal.knowframework.job.LogIJobProperties;
-import com.didiglobal.knowframework.job.common.po.LogITaskPO;
-import com.didiglobal.knowframework.job.common.po.LogIWorkerPO;
+import com.didiglobal.knowframework.job.KfJobProperties;
+import com.didiglobal.knowframework.job.common.po.KfTaskPO;
+import com.didiglobal.knowframework.job.common.po.KfWorkerPO;
 import com.didiglobal.knowframework.job.core.WorkerSingleton;
 import com.didiglobal.knowframework.job.core.monitor.SimpleBeatMonitor;
-import com.didiglobal.knowframework.job.mapper.LogITaskLockMapper;
-import com.didiglobal.knowframework.job.mapper.LogITaskMapper;
-import com.didiglobal.knowframework.job.mapper.LogIWorkerMapper;
+import com.didiglobal.knowframework.job.mapper.KfTaskLockMapper;
+import com.didiglobal.knowframework.job.mapper.KfTaskMapper;
+import com.didiglobal.knowframework.job.mapper.KfWorkerMapper;
 import com.didiglobal.knowframework.job.utils.BeanUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,29 +26,29 @@ public class BeatManagerImpl implements BeatManager {
     private static final Logger logger = LoggerFactory.getLogger(BeatManagerImpl.class);
 
     private JobManager jobManager;
-    private LogIWorkerMapper    logIWorkerMapper;
-    private LogITaskLockMapper  logITaskLockMapper;
-    private LogITaskMapper      logITaskMapper;
-    private LogIJobProperties   logIJobProperties;
+    private KfWorkerMapper kfWorkerMapper;
+    private KfTaskLockMapper kfTaskLockMapper;
+    private KfTaskMapper kfTaskMapper;
+    private KfJobProperties kfJobProperties;
 
     /**
      * constructor.
      *
      * @param jobManager       job manager
-     * @param logIWorkerMapper worker mapper
-     * @param logIJobProperties job 配置信息
+     * @param kfWorkerMapper worker mapper
+     * @param kfJobProperties job 配置信息
      */
     @Autowired
     public BeatManagerImpl(JobManager jobManager,
-                           LogIWorkerMapper logIWorkerMapper,
-                           LogITaskLockMapper logITaskLockMapper,
-                           LogITaskMapper      logITaskMapper,
-                           LogIJobProperties logIJobProperties) {
+                           KfWorkerMapper kfWorkerMapper,
+                           KfTaskLockMapper kfTaskLockMapper,
+                           KfTaskMapper kfTaskMapper,
+                           KfJobProperties kfJobProperties) {
         this.jobManager         = jobManager;
-        this.logIWorkerMapper   = logIWorkerMapper;
-        this.logITaskLockMapper = logITaskLockMapper;
-        this.logITaskMapper     = logITaskMapper;
-        this.logIJobProperties  = logIJobProperties;
+        this.kfWorkerMapper = kfWorkerMapper;
+        this.kfTaskLockMapper = kfTaskLockMapper;
+        this.kfTaskMapper = kfTaskMapper;
+        this.kfJobProperties = kfJobProperties;
     }
 
     @Override
@@ -58,15 +58,15 @@ public class BeatManagerImpl implements BeatManager {
 
         WorkerSingleton workerSingleton = WorkerSingleton.getInstance();
         workerSingleton.updateInstanceMetrics();
-        LogIWorker logIWorker = workerSingleton.getLogIWorker();
-        logIWorker.setJobNum(jobManager.runningJobSize());
-        logIWorker.setAppName(logIJobProperties.getAppName());
+        KfWorker kfWorker = workerSingleton.getKfWorker();
+        kfWorker.setJobNum(jobManager.runningJobSize());
+        kfWorker.setAppName( kfJobProperties.getAppName());
 
         int ret;
-        if(null == logIWorkerMapper.selectByCode(logIWorker.getWorkerCode(), logIWorker.getAppName())){
-            ret = logIWorkerMapper.insert(logIWorker.getWorker());
+        if(null == kfWorkerMapper.selectByCode( kfWorker.getWorkerCode(), kfWorker.getAppName())){
+            ret = kfWorkerMapper.insert( kfWorker.getWorker());
         }else {
-            ret = logIWorkerMapper.updateByCode(logIWorker.getWorker());
+            ret = kfWorkerMapper.updateByCode( kfWorker.getWorker());
         }
 
         return ret > 0 ? true : false;
@@ -75,28 +75,28 @@ public class BeatManagerImpl implements BeatManager {
     @Override
     public boolean stop() {
         WorkerSingleton workerSingleton = WorkerSingleton.getInstance();
-        LogIWorker logIWorker = workerSingleton.getLogIWorker();
-        logIWorkerMapper.deleteByCode(logIWorker.getWorkerCode());
-        logITaskLockMapper.deleteByWorkerCodeAndAppName(logIWorker.getWorkerCode(), logIJobProperties.getAppName());
+        KfWorker kfWorker = workerSingleton.getKfWorker();
+        kfWorkerMapper.deleteByCode( kfWorker.getWorkerCode());
+        kfTaskLockMapper.deleteByWorkerCodeAndAppName( kfWorker.getWorkerCode(), kfJobProperties.getAppName());
         return true;
     }
 
     /*********************************************** private method ***********************************************/
     private void cleanTask(String appName, String workCode){
-        List<LogITaskPO>   logITaskPOS   = logITaskMapper.selectByAppName(appName);
-        if(!CollectionUtils.isEmpty(logITaskPOS)){
-            for(LogITaskPO logITaskPO : logITaskPOS){
+        List<KfTaskPO> kfTaskPOS = kfTaskMapper.selectByAppName(appName);
+        if(!CollectionUtils.isEmpty( kfTaskPOS )){
+            for(KfTaskPO kfTaskPO : kfTaskPOS){
                 try {
-                    List<LogITask.TaskWorker> taskWorkers = BeanUtil.convertToList(logITaskPO.getTaskWorkerStr(),
-                            LogITask.TaskWorker.class);
+                    List<KfTask.TaskWorker> taskWorkers = BeanUtil.convertToList( kfTaskPO.getTaskWorkerStr(),
+                            KfTask.TaskWorker.class);
 
                     if(CollectionUtils.isEmpty(taskWorkers)){continue;}
 
                     boolean needUpdate = false;
 
-                    Iterator<LogITask.TaskWorker> iter = taskWorkers.iterator();
+                    Iterator<KfTask.TaskWorker> iter = taskWorkers.iterator();
                     while (iter.hasNext()) {
-                        LogITask.TaskWorker taskWorker = iter.next();
+                        KfTask.TaskWorker taskWorker = iter.next();
 
                         if(workCode.equals(taskWorker.getWorkerCode())){
                             iter.remove();
@@ -105,8 +105,8 @@ public class BeatManagerImpl implements BeatManager {
                     }
 
                     if(needUpdate){
-                        logITaskPO.setTaskWorkerStr(BeanUtil.convertToJson(taskWorkers));
-                        logITaskMapper.updateTaskWorkStrByCode(logITaskPO);
+                        kfTaskPO.setTaskWorkerStr(BeanUtil.convertToJson(taskWorkers));
+                        kfTaskMapper.updateTaskWorkStrByCode( kfTaskPO );
                     }
                 }catch (Exception e){
                     logger.info("class=BeatManagerImpl||method=cleanTask||msg=clean task worker error!", e);
@@ -117,17 +117,17 @@ public class BeatManagerImpl implements BeatManager {
 
     private void cleanWorker() {
         long currentTime = System.currentTimeMillis();
-        String appName   = logIJobProperties.getAppName();
+        String appName   = kfJobProperties.getAppName();
 
-        List<LogIWorkerPO> logIWorkerPOS = logIWorkerMapper.selectByAppName(appName);
-        if(CollectionUtils.isEmpty(logIWorkerPOS)){return;}
+        List<KfWorkerPO> kfWorkerPOS = kfWorkerMapper.selectByAppName(appName);
+        if(CollectionUtils.isEmpty( kfWorkerPOS )){return;}
 
-        for (LogIWorkerPO logIWorkerPO : logIWorkerPOS) {
-            if (logIWorkerPO.getHeartbeat().getTime() + 3 * SimpleBeatMonitor.INTERVAL * 1000 < currentTime) {
-                logIWorkerMapper.deleteByCode(logIWorkerPO.getWorkerCode());
-                logITaskLockMapper.deleteByWorkerCodeAndAppName(logIWorkerPO.getWorkerCode(), appName);
+        for (KfWorkerPO kfWorkerPO : kfWorkerPOS) {
+            if (kfWorkerPO.getHeartbeat().getTime() + 3 * SimpleBeatMonitor.INTERVAL * 1000 < currentTime) {
+                kfWorkerMapper.deleteByCode( kfWorkerPO.getWorkerCode());
+                kfTaskLockMapper.deleteByWorkerCodeAndAppName( kfWorkerPO.getWorkerCode(), appName);
 
-                cleanTask(appName, logIWorkerPO.getWorkerCode());
+                cleanTask(appName, kfWorkerPO.getWorkerCode());
             }
         }
     }

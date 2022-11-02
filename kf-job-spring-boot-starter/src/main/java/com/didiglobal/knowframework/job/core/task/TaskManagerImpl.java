@@ -1,19 +1,19 @@
 package com.didiglobal.knowframework.job.core.task;
 
-import com.didiglobal.knowframework.job.common.domain.LogITask;
-import com.didiglobal.knowframework.job.common.dto.LogITaskDTO;
-import com.didiglobal.knowframework.job.common.dto.TaskPageQueryDTO;
+import com.didiglobal.knowframework.job.common.domain.KfTask;
+import com.didiglobal.knowframework.job.common.dto.KfTaskDTO;
+import com.didiglobal.knowframework.job.common.dto.KfTaskPageQueryDTO;
 import com.didiglobal.knowframework.job.common.enums.TaskWorkerStatusEnum;
 import com.didiglobal.knowframework.job.core.job.JobManager;
-import com.didiglobal.knowframework.job.LogIJobProperties;
+import com.didiglobal.knowframework.job.KfJobProperties;
 import com.didiglobal.knowframework.job.common.Result;
 import com.didiglobal.knowframework.job.common.enums.TaskStatusEnum;
-import com.didiglobal.knowframework.job.common.po.LogITaskPO;
+import com.didiglobal.knowframework.job.common.po.KfTaskPO;
 import com.didiglobal.knowframework.job.core.WorkerSingleton;
 import com.didiglobal.knowframework.job.core.consensual.Consensual;
 import com.didiglobal.knowframework.job.core.consensual.ConsensualEnum;
 import com.didiglobal.knowframework.job.core.consensual.ConsensualFactory;
-import com.didiglobal.knowframework.job.mapper.LogITaskMapper;
+import com.didiglobal.knowframework.job.mapper.KfTaskMapper;
 import com.didiglobal.knowframework.job.utils.BeanUtil;
 import com.didiglobal.knowframework.job.utils.CronExpression;
 import com.didiglobal.knowframework.job.utils.ThreadUtil;
@@ -51,8 +51,8 @@ public class TaskManagerImpl implements TaskManager {
     private JobManager jobManager;
     private ConsensualFactory consensualFactory;
     private TaskLockService taskLockService;
-    private LogITaskMapper logITaskMapper;
-    private LogIJobProperties logIJobProperties;
+    private KfTaskMapper kfTaskMapper;
+    private KfJobProperties kfJobProperties;
 
 
     /**
@@ -60,53 +60,53 @@ public class TaskManagerImpl implements TaskManager {
      *
      * @param jobManager      jobManager
      * @param taskLockService taskLockService
-     * @param logITaskMapper  logITaskMapper
-     * @param logIJobProperties 配置信息
+     * @param kfTaskMapper  logITaskMapper
+     * @param kfJobProperties 配置信息
      * @param consensualFactory 一致协议工厂
      */
     public TaskManagerImpl(JobManager jobManager, ConsensualFactory consensualFactory,
-                           TaskLockService taskLockService, LogITaskMapper logITaskMapper,
-                           LogIJobProperties logIJobProperties) {
+                           TaskLockService taskLockService, KfTaskMapper kfTaskMapper,
+                           KfJobProperties kfJobProperties) {
         this.jobManager = jobManager;
         this.consensualFactory = consensualFactory;
         this.taskLockService = taskLockService;
-        this.logITaskMapper = logITaskMapper;
-        this.logIJobProperties = logIJobProperties;
+        this.kfTaskMapper = kfTaskMapper;
+        this.kfJobProperties = kfJobProperties;
     }
 
     @Override
     public Result delete(String taskCode) {
-        LogITaskPO logITaskPO = logITaskMapper.selectByCode(taskCode, logIJobProperties.getAppName());
-        if (logITaskPO == null) {
+        KfTaskPO kfTaskPO = kfTaskMapper.selectByCode(taskCode, kfJobProperties.getAppName());
+        if (kfTaskPO == null) {
             return Result.buildFail("任务不存在！");
         }
-        return Result.buildSucc(logITaskMapper.deleteByCode(taskCode, logIJobProperties.getAppName()) > 0);
+        return Result.buildSucc( kfTaskMapper.deleteByCode(taskCode, kfJobProperties.getAppName()) > 0);
     }
 
     @Override
-    public boolean update(LogITaskDTO logITaskDTO) {
-        LogITaskPO logITaskPO = BeanUtil.convertTo(logITaskDTO, LogITaskPO.class);
-        return logITaskMapper.updateByCode(logITaskPO) > 0 ? true : false;
+    public boolean update(KfTaskDTO kfTaskDTO) {
+        KfTaskPO kfTaskPO = BeanUtil.convertTo( kfTaskDTO, KfTaskPO.class);
+        return kfTaskMapper.updateByCode( kfTaskPO ) > 0 ? true : false;
     }
 
     @Override
-    public List<LogITask> nextTriggers(Long interval) {
+    public List<KfTask> nextTriggers(Long interval) {
         return nextTriggers(System.currentTimeMillis(), interval);
     }
 
     @Override
-    public List<LogITask> nextTriggers(Long fromTime, Long interval) {
-        List<LogITask> logITaskList = getAllRuning();
+    public List<KfTask> nextTriggers(Long fromTime, Long interval) {
+        List<KfTask> kfTaskList = getAllRuning();
 
-        logITaskList = logITaskList.stream().filter(taskInfo -> {
+        kfTaskList = kfTaskList.stream().filter( taskInfo -> {
             try {
                 if(ConsensualEnum.RANDOM.name().equals(taskInfo.getConsensual())){
                     Timestamp lastFireTime = taskInfo.getLastFireTime();
 
-                    List<LogITask.TaskWorker> taskWorkers = taskInfo.getTaskWorkers();
-                    for (LogITask.TaskWorker taskWorker : taskWorkers) {
+                    List<KfTask.TaskWorker> taskWorkers = taskInfo.getTaskWorkers();
+                    for (KfTask.TaskWorker taskWorker : taskWorkers) {
                         // 取到当前worker做进一步判断，如果没有找到证明没有执行过
-                        if (Objects.equals(WorkerSingleton.getInstance().getLogIWorker().getWorkerCode(),
+                        if (Objects.equals(WorkerSingleton.getInstance().getKfWorker().getWorkerCode(),
                                 taskWorker.getWorkerCode())) {
                             // 判断是否在当前worker可执行状态
                             if (!Objects.equals(taskWorker.getStatus(), TaskWorkerStatusEnum.WAITING.getValue())) {
@@ -126,12 +126,12 @@ public class TaskManagerImpl implements TaskManager {
                     Timestamp timestamp = new Timestamp(fromTime + interval * 1000);
                     return timestamp.after(taskInfo.getNextFireTime());
                 }else if(ConsensualEnum.BROADCAST.name().equals(taskInfo.getConsensual())){
-                    List<LogITask.TaskWorker> taskWorkers = taskInfo.getTaskWorkers();
+                    List<KfTask.TaskWorker> taskWorkers = taskInfo.getTaskWorkers();
                     Timestamp lastFireTime = new Timestamp(0L);
 
-                    for (LogITask.TaskWorker taskWorker : taskWorkers) {
+                    for (KfTask.TaskWorker taskWorker : taskWorkers) {
                         // 取到当前worker做进一步判断，如果没有找到证明没有执行过
-                        if (Objects.equals(WorkerSingleton.getInstance().getLogIWorker().getWorkerCode(),
+                        if (Objects.equals(WorkerSingleton.getInstance().getKfWorker().getWorkerCode(),
                                 taskWorker.getWorkerCode())) {
 
                             lastFireTime = taskWorker.getLastFireTime();
@@ -150,16 +150,16 @@ public class TaskManagerImpl implements TaskManager {
                             logger.info("class=TaskManagerImpl||method=nextTriggers||nextTime={}||fromTime={}||msg=skip broadcast duplicate trigger!",
                                     nextTime, fromTime);
 
-                            for (LogITask.TaskWorker taskWorker : taskWorkers) {
-                                if (Objects.equals(WorkerSingleton.getInstance().getLogIWorker().getWorkerCode(),
+                            for (KfTask.TaskWorker taskWorker : taskWorkers) {
+                                if (Objects.equals(WorkerSingleton.getInstance().getKfWorker().getWorkerCode(),
                                         taskWorker.getWorkerCode())) {
 
                                     taskWorker.setLastFireTime(new Timestamp(nextTime));
 
-                                    LogITaskPO logITaskPO = BeanUtil.convertTo(taskInfo, LogITaskPO.class);
-                                    logITaskPO.setTaskWorkerStr(BeanUtil.convertToJson(taskWorkers));
+                                    KfTaskPO kfTaskPO = BeanUtil.convertTo(taskInfo, KfTaskPO.class);
+                                    kfTaskPO.setTaskWorkerStr(BeanUtil.convertToJson(taskWorkers));
 
-                                    logITaskMapper.updateTaskWorkStrByCode(logITaskPO);
+                                    kfTaskMapper.updateTaskWorkStrByCode( kfTaskPO );
                                     return false;
                                 }
                             }
@@ -179,22 +179,22 @@ public class TaskManagerImpl implements TaskManager {
         }).collect(Collectors.toList());
 
         // sort
-        logITaskList.sort(Comparator.comparing(LogITask::getNextFireTime));
-        return logITaskList;
+        kfTaskList.sort(Comparator.comparing( KfTask::getNextFireTime));
+        return kfTaskList;
     }
 
     @Override
-    public void submit(List<LogITask> logITaskList) {
-        if (CollectionUtils.isEmpty(logITaskList)) {
+    public void submit(List<KfTask> kfTaskList) {
+        if (CollectionUtils.isEmpty( kfTaskList )) {
             return;
         }
-        for (LogITask logITask : logITaskList) {
+        for (KfTask kfTask : kfTaskList) {
             // 不能在本工作器执行，跳过
-            Consensual consensual = consensualFactory.getConsensual(logITask.getConsensual());
-            if (!consensual.canClaim(logITask)) {
+            Consensual consensual = consensualFactory.getConsensual( kfTask.getConsensual());
+            if (!consensual.canClaim( kfTask )) {
                 continue;
             }
-            execute(logITask, false);
+            execute( kfTask, false);
         }
     }
 
@@ -203,32 +203,32 @@ public class TaskManagerImpl implements TaskManager {
      */
     @Override
     public Result execute(String taskCode, Boolean executeSubs) {
-        LogITaskPO logITaskPO = logITaskMapper.selectByCode(taskCode, logIJobProperties.getAppName());
-        if (logITaskPO == null) {
+        KfTaskPO kfTaskPO = kfTaskMapper.selectByCode(taskCode, kfJobProperties.getAppName());
+        if (kfTaskPO == null) {
             return Result.buildFail("任务不存在！");
         }
         if (!taskLockService.tryAcquire(taskCode)) {
             return Result.buildFail("未能获取到执行锁！");
         }
 
-        LogITask logITask = logITaskPO2LogITask(logITaskPO);
-        logITask.setTaskCallback(code -> taskLockService.tryRelease(code));
-        execute(logITask, false);
+        KfTask kfTask = kfTaskPO2KfTask( kfTaskPO );
+        kfTask.setTaskCallback( code -> taskLockService.tryRelease(code));
+        execute( kfTask, false);
 
         return Result.buildSucc();
     }
 
     @Override
-    public void execute(LogITask logITask, Boolean executeSubs) {
+    public void execute(KfTask kfTask, Boolean executeSubs) {
         Timestamp lastFireTime = new Timestamp(System.currentTimeMillis());
 
-        LogITaskPO logITaskPO = BeanUtil.convertTo(logITask, LogITaskPO.class);
-        List<LogITask.TaskWorker> taskWorkers = logITask.getTaskWorkers();
+        KfTaskPO kfTaskPO = BeanUtil.convertTo( kfTask, KfTaskPO.class);
+        List<KfTask.TaskWorker> taskWorkers = kfTask.getTaskWorkers();
 
         boolean worked = false;
-        for (LogITask.TaskWorker taskWorker : taskWorkers) {
+        for (KfTask.TaskWorker taskWorker : taskWorkers) {
             if (Objects.equals(taskWorker.getWorkerCode(),
-                    WorkerSingleton.getInstance().getLogIWorker().getWorkerCode())) {
+                    WorkerSingleton.getInstance().getKfWorker().getWorkerCode())) {
                 taskWorker.setLastFireTime(lastFireTime);
                 taskWorker.setStatus(TaskWorkerStatusEnum.RUNNING.getValue());
                 worked = true;
@@ -237,19 +237,19 @@ public class TaskManagerImpl implements TaskManager {
         }
 
         if (!worked) {
-            taskWorkers.add(new LogITask.TaskWorker(TaskWorkerStatusEnum.RUNNING.getValue(),
+            taskWorkers.add(new KfTask.TaskWorker(TaskWorkerStatusEnum.RUNNING.getValue(),
                     new Timestamp(System.currentTimeMillis()),
-                    WorkerSingleton.getInstance().getLogIWorker().getWorkerCode(),
-                    WorkerSingleton.getInstance().getLogIWorker().getIp()));
+                    WorkerSingleton.getInstance().getKfWorker().getWorkerCode(),
+                    WorkerSingleton.getInstance().getKfWorker().getIp()));
         }
 
-        logITaskPO.setTaskWorkerStr(BeanUtil.convertToJson(taskWorkers));
-        logITaskPO.setLastFireTime(lastFireTime);
+        kfTaskPO.setTaskWorkerStr(BeanUtil.convertToJson(taskWorkers));
+        kfTaskPO.setLastFireTime(lastFireTime);
         // 更新任务状态，最近更新时间
-        logITaskMapper.updateByCode(logITaskPO);
+        kfTaskMapper.updateByCode( kfTaskPO );
 
         // 执行
-        executeInternal(logITask, executeSubs);
+        executeInternal( kfTask, executeSubs);
     }
 
     @Override
@@ -263,8 +263,8 @@ public class TaskManagerImpl implements TaskManager {
             return Result.buildFail("status error");
         }
 
-        LogITaskPO logITaskPO = logITaskMapper.selectByCode(taskCode, logIJobProperties.getAppName());
-        if (null == logITaskPO) {
+        KfTaskPO kfTaskPO = kfTaskMapper.selectByCode(taskCode, kfJobProperties.getAppName());
+        if (null == kfTaskPO) {
             return Result.buildFail("task 不存在");
         }
 
@@ -275,39 +275,39 @@ public class TaskManagerImpl implements TaskManager {
         }
 
         if(TaskStatusEnum.RUNNING.getValue() == status){
-            execute(logITaskPO.getTaskCode(), false);
+            execute( kfTaskPO.getTaskCode(), false);
         }
 
-        logITaskPO.setStatus(status);
+        kfTaskPO.setStatus(status);
 
-        return Result.buildSucc(logITaskMapper.updateByCode(logITaskPO) > 0);
+        return Result.buildSucc( kfTaskMapper.updateByCode( kfTaskPO ) > 0);
     }
 
     @Override
-    public List<LogITask> getAllRuning() {
-        List<LogITaskPO> logITaskPOList = logITaskMapper.selectRuningByAppName(logIJobProperties.getAppName());
-        if (CollectionUtils.isEmpty(logITaskPOList)) {
+    public List<KfTask> getAllRuning() {
+        List<KfTaskPO> kfTaskPOList = kfTaskMapper.selectRuningByAppName( kfJobProperties.getAppName());
+        if (CollectionUtils.isEmpty( kfTaskPOList )) {
             return new ArrayList<>();
         }
 
-        return logITaskPOList.stream().map(p -> logITaskPO2LogITask(p)).collect(Collectors.toList());
+        return kfTaskPOList.stream().map( p -> kfTaskPO2KfTask(p)).collect(Collectors.toList());
     }
 
     @Override
-    public List<LogITask> getPagineList(TaskPageQueryDTO queryDTO) {
-        List<LogITaskPO> logITaskPOList = logITaskMapper.pagineListByCondition(logIJobProperties.getAppName(),
+    public List<KfTask> getPagineList(KfTaskPageQueryDTO queryDTO) {
+        List<KfTaskPO> kfTaskPOList = kfTaskMapper.pagineListByCondition( kfJobProperties.getAppName(),
                 queryDTO.getTaskId(), queryDTO.getTaskDesc(), queryDTO.getClassName(), queryDTO.getTaskStatus(),
                 (queryDTO.getPage() - 1) * queryDTO.getSize(), queryDTO.getSize());
-        if (CollectionUtils.isEmpty(logITaskPOList)) {
+        if (CollectionUtils.isEmpty( kfTaskPOList )) {
             return new ArrayList<>();
         }
 
-        return logITaskPOList.stream().map(p -> logITaskPO2LogITask(p)).collect(Collectors.toList());
+        return kfTaskPOList.stream().map( p -> kfTaskPO2KfTask(p)).collect(Collectors.toList());
     }
 
     @Override
-    public int pagineTaskConut(TaskPageQueryDTO queryDTO) {
-        return logITaskMapper.pagineCountByCondition(logIJobProperties.getAppName(),
+    public int pagineTaskConut(KfTaskPageQueryDTO queryDTO) {
+        return kfTaskMapper.pagineCountByCondition( kfJobProperties.getAppName(),
                 queryDTO.getTaskId(), queryDTO.getTaskDesc(), queryDTO.getClassName(), queryDTO.getTaskStatus());
     }
 
@@ -328,16 +328,16 @@ public class TaskManagerImpl implements TaskManager {
     }
 
     @Override
-    public LogITask getByCode(String taskCode) {
-        LogITaskPO logITaskPO = logITaskMapper.selectByCode(taskCode, logIJobProperties.getAppName());
+    public KfTask getByCode(String taskCode) {
+        KfTaskPO kfTaskPO = kfTaskMapper.selectByCode(taskCode, kfJobProperties.getAppName());
 
-        return logITaskPO2LogITask(logITaskPO);
+        return kfTaskPO2KfTask( kfTaskPO );
     }
 
     /**************************************** private method ****************************************************/
-    private void executeInternal(LogITask logITask, Boolean executeSubs) {
+    private void executeInternal(KfTask kfTask, Boolean executeSubs) {
         // jobManager 将job管理起来，超时退出抛异常
-        final Future<Object> jobFuture = jobManager.start(logITask);
+        final Future<Object> jobFuture = jobManager.start( kfTask );
         if (jobFuture == null || !executeSubs) {
             return;
         }
@@ -346,29 +346,29 @@ public class TaskManagerImpl implements TaskManager {
             ThreadUtil.sleep(WAIT_INTERVAL_SECONDS, TimeUnit.SECONDS);
         }
         // 递归拉起子任务
-        if (!StringUtils.isEmpty(logITask.getSubTaskCodes())) {
-            String[] subTaskCodeArray = logITask.getSubTaskCodes().split(",");
-            List<LogITaskPO> subTasks = logITaskMapper
-                    .selectByCodes(Arrays.asList(subTaskCodeArray), logIJobProperties.getAppName());
-            List<LogITask> subLogITaskList = subTasks.stream().map(logITaskPO -> BeanUtil.convertTo(logITaskPO,
-                    LogITask.class)).collect(Collectors.toList());
-            for (LogITask subLogITask : subLogITaskList) {
-                execute(subLogITask, executeSubs);
+        if (!StringUtils.isEmpty( kfTask.getSubTaskCodes())) {
+            String[] subTaskCodeArray = kfTask.getSubTaskCodes().split(",");
+            List<KfTaskPO> subTasks = kfTaskMapper
+                    .selectByCodes(Arrays.asList(subTaskCodeArray), kfJobProperties.getAppName());
+            List<KfTask> subKfTaskList = subTasks.stream().map( logITaskPO -> BeanUtil.convertTo(logITaskPO,
+                    KfTask.class)).collect(Collectors.toList());
+            for (KfTask subKfTask : subKfTaskList) {
+                execute( subKfTask, executeSubs);
             }
         }
     }
 
     private boolean updateTaskWorker(String taskCode, String workerCode) {
-        LogITaskPO logITaskPO = logITaskMapper.selectByCode(taskCode, logIJobProperties.getAppName());
-        if (logITaskPO == null) {
+        KfTaskPO kfTaskPO = kfTaskMapper.selectByCode(taskCode, kfJobProperties.getAppName());
+        if (kfTaskPO == null) {
             return false;
         }
 
-        List<LogITask.TaskWorker> taskWorkers = BeanUtil.convertToList(logITaskPO.getTaskWorkerStr(),
-                LogITask.TaskWorker.class);
+        List<KfTask.TaskWorker> taskWorkers = BeanUtil.convertToList( kfTaskPO.getTaskWorkerStr(),
+                KfTask.TaskWorker.class);
         boolean needUpdate = false;
         if (!CollectionUtils.isEmpty(taskWorkers)) {
-            for (LogITask.TaskWorker taskWorker : taskWorkers) {
+            for (KfTask.TaskWorker taskWorker : taskWorkers) {
                 if (Objects.equals(taskWorker.getWorkerCode(), workerCode)
                         && Objects.equals(taskWorker.getStatus(), TaskWorkerStatusEnum.RUNNING.getValue())) {
                     needUpdate = true;
@@ -378,8 +378,8 @@ public class TaskManagerImpl implements TaskManager {
         }
 
         if (needUpdate) {
-            logITaskPO.setTaskWorkerStr(BeanUtil.convertToJson(taskWorkers));
-            int updateResult = logITaskMapper.updateTaskWorkStrByCode(logITaskPO);
+            kfTaskPO.setTaskWorkerStr(BeanUtil.convertToJson(taskWorkers));
+            int updateResult = kfTaskMapper.updateTaskWorkStrByCode( kfTaskPO );
             if (updateResult <= 0) {
                 return false;
             }
@@ -387,18 +387,18 @@ public class TaskManagerImpl implements TaskManager {
         return true;
     }
 
-    private LogITask logITaskPO2LogITask(LogITaskPO logITaskPO) {
-        LogITask logITask = BeanUtil.convertTo(logITaskPO, LogITask.class);
-        List<LogITask.TaskWorker> taskWorkers = Lists.newArrayList();
-        if (!StringUtils.isEmpty(logITaskPO.getTaskWorkerStr())) {
-            List<LogITask.TaskWorker> tmpTaskWorkers = BeanUtil.convertToList(
-                    logITaskPO.getTaskWorkerStr(), LogITask.TaskWorker.class);
+    private KfTask kfTaskPO2KfTask(KfTaskPO kfTaskPO) {
+        KfTask kfTask = BeanUtil.convertTo( kfTaskPO, KfTask.class);
+        List<KfTask.TaskWorker> taskWorkers = Lists.newArrayList();
+        if (!StringUtils.isEmpty( kfTaskPO.getTaskWorkerStr())) {
+            List<KfTask.TaskWorker> tmpTaskWorkers = BeanUtil.convertToList(
+                    kfTaskPO.getTaskWorkerStr(), KfTask.TaskWorker.class);
             if (!CollectionUtils.isEmpty(tmpTaskWorkers)) {
                 taskWorkers = tmpTaskWorkers;
             }
         }
-        logITask.setTaskWorkers(taskWorkers);
+        kfTask.setTaskWorkers(taskWorkers);
 
-        return logITask;
+        return kfTask;
     }
 }

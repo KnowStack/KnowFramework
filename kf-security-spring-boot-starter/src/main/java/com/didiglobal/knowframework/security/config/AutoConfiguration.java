@@ -1,6 +1,6 @@
 package com.didiglobal.knowframework.security.config;
 
-import com.didiglobal.knowframework.security.properties.LogiSecurityProper;
+import com.didiglobal.knowframework.security.properties.KfSecurityProper;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -10,19 +10,19 @@ import org.springframework.context.annotation.Configuration;
 /**
  * @author cjm
  */
-@Configuration("logiSecurityAutoConfiguration")
-@EnableConfigurationProperties(LogiSecurityProper.class)
+@Configuration("kfSecurityAutoConfiguration")
+@EnableConfigurationProperties(KfSecurityProper.class)
 @AutoConfigureAfter({DataSourceAutoConfiguration.class})
 @ComponentScan(basePackages = "com.didiglobal.knowframework.security")
 public class AutoConfiguration {
 
-    private final LogiSecurityProper proper;
+    private final KfSecurityProper proper;
 
-    public AutoConfiguration(LogiSecurityProper proper) {
+    public AutoConfiguration(KfSecurityProper proper) {
         this.proper = proper;
     }
 
-    public LogiSecurityProper getProper() {
+    public KfSecurityProper getProper() {
         return proper;
     }
 }

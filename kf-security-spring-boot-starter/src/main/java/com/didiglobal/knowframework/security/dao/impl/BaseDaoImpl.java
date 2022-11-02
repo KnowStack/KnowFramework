@@ -2,7 +2,7 @@ package com.didiglobal.knowframework.security.dao.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.didiglobal.knowframework.security.common.constant.FieldConstant;
-import com.didiglobal.knowframework.security.properties.LogiSecurityProper;
+import com.didiglobal.knowframework.security.properties.KfSecurityProper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -13,11 +13,11 @@ import org.springframework.stereotype.Component;
 public class BaseDaoImpl<T> {
 
     @Autowired
-    protected LogiSecurityProper logiSecurityProper;
+    protected KfSecurityProper kfSecurityProper;
 
     protected QueryWrapper<T> getQueryWrapperWithAppName() {
         QueryWrapper<T> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq(FieldConstant.APP_NAME, logiSecurityProper.getAppName());
+        queryWrapper.eq(FieldConstant.APP_NAME, kfSecurityProper.getAppName());
         return queryWrapper;
     }
 }

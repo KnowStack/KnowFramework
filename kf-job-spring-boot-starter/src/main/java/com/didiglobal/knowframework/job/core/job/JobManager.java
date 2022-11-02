@@ -1,7 +1,7 @@
 package com.didiglobal.knowframework.job.core.job;
 
-import com.didiglobal.knowframework.job.common.domain.LogIJob;
-import com.didiglobal.knowframework.job.common.domain.LogITask;
+import com.didiglobal.knowframework.job.common.domain.KfJob;
+import com.didiglobal.knowframework.job.common.domain.KfTask;
 
 import java.util.List;
 import java.util.concurrent.Future;
@@ -16,10 +16,10 @@ public interface JobManager {
     /**
      * 启动任务.
      *
-     * @param logITask 任务
+     * @param kfTask 任务
      * @return future
      */
-    Future<Object> start(LogITask logITask);
+    Future<Object> start(KfTask kfTask);
 
     /**
      * @return 当前运行任务大小
@@ -51,5 +51,5 @@ public interface JobManager {
      * 获取job信息
      * @return job信息List
      */
-    List<LogIJob> getJobs();
+    List<KfJob> getJobs();
 }

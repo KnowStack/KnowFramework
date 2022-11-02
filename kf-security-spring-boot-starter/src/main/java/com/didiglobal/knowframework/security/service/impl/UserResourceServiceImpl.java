@@ -11,18 +11,15 @@ import com.didiglobal.knowframework.security.common.vo.project.ProjectBriefVO;
 import com.didiglobal.knowframework.security.common.vo.resource.*;
 import com.didiglobal.knowframework.security.common.vo.user.UserBriefVO;
 import com.didiglobal.knowframework.security.dao.UserResourceDao;
-import com.didiglobal.knowframework.security.exception.LogiSecurityException;
+import com.didiglobal.knowframework.security.exception.KfSecurityException;
 import com.didiglobal.knowframework.security.extend.ResourceExtend;
 import com.didiglobal.knowframework.security.extend.ResourceExtendBeanTool;
 import com.didiglobal.knowframework.security.service.*;
 import com.didiglobal.knowframework.security.util.CopyBeanUtil;
 import com.didiglobal.knowframework.security.common.dto.project.ProjectBriefQueryDTO;
-import com.didiglobal.knowframework.security.common.dto.resource.*;
 import com.didiglobal.knowframework.security.common.dto.resource.type.ResourceTypeQueryDTO;
 import com.didiglobal.knowframework.security.common.dto.user.UserBriefQueryDTO;
 import com.didiglobal.knowframework.security.common.entity.dept.Dept;
-import com.didiglobal.knowframework.security.common.vo.resource.*;
-import com.didiglobal.knowframework.security.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -37,7 +34,7 @@ import java.util.Map;
 /**
  * @author cjm
  */
-@Service("logiSecurityUserResourceServiceImpl")
+@Service("kfSecurityUserResourceServiceImpl")
 public class UserResourceServiceImpl implements UserResourceService {
 
     @Autowired
@@ -79,7 +76,7 @@ public class UserResourceServiceImpl implements UserResourceService {
     }
 
     @Override
-    public List<MByUDataVO> getManagerByUserDataList(MByUDataQueryDTO queryDTO) throws LogiSecurityException {
+    public List<MByUDataVO> getManagerByUserDataList(MByUDataQueryDTO queryDTO) throws KfSecurityException {
         // 检查参数
         checkParam(queryDTO);
 
@@ -131,7 +128,7 @@ public class UserResourceServiceImpl implements UserResourceService {
     }
 
     @Override
-    public List<MByRDataVO> getManagerByResourceDataList(MByRDataQueryDTO queryDTO) throws LogiSecurityException {
+    public List<MByRDataVO> getManagerByResourceDataList(MByRDataQueryDTO queryDTO) throws KfSecurityException {
         checkParam(queryDTO);
         Integer projectId = queryDTO.getProjectId();
         Integer resourceTypeId = queryDTO.getResourceTypeId();
@@ -211,18 +208,18 @@ public class UserResourceServiceImpl implements UserResourceService {
     }
 
     @Override
-    public ControlLevelCode getControlLevel(ControlLevelQueryDTO queryDTO) throws LogiSecurityException {
+    public ControlLevelCode getControlLevel(ControlLevelQueryDTO queryDTO) throws KfSecurityException {
         if (queryDTO.getUserId() == null) {
-            throw new LogiSecurityException(ResultCode.USER_ID_CANNOT_BE_NULL);
+            throw new KfSecurityException(ResultCode.USER_ID_CANNOT_BE_NULL);
         }
         if (queryDTO.getProjectId() == null) {
-            throw new LogiSecurityException(ResultCode.PROJECT_ID_CANNOT_BE_NULL);
+            throw new KfSecurityException(ResultCode.PROJECT_ID_CANNOT_BE_NULL);
         }
         if (queryDTO.getResourceTypeId() == null) {
-            throw new LogiSecurityException(ResultCode.RESOURCE_TYPE_ID_CANNOT_BE_NULL);
+            throw new KfSecurityException(ResultCode.RESOURCE_TYPE_ID_CANNOT_BE_NULL);
         }
         if (queryDTO.getResourceId() == null) {
-            throw new LogiSecurityException(ResultCode.RESOURCE_ID_CANNOT_BE_NULL);
+            throw new KfSecurityException(ResultCode.RESOURCE_ID_CANNOT_BE_NULL);
         }
         Integer controlLevel = userResourceDao.selectControlLevel(queryDTO);
         if (controlLevel == null) {
@@ -245,47 +242,47 @@ public class UserResourceServiceImpl implements UserResourceService {
      * @param resourceId     具体资源id
      */
     private void checkParam(Integer controlLevel, Integer projectId,
-                            Integer resourceTypeId, Integer resourceId) throws LogiSecurityException {
+                            Integer resourceTypeId, Integer resourceId) throws KfSecurityException {
         if (projectId == null) {
             // 项目id不可为nul
-            throw new LogiSecurityException(ResultCode.PROJECT_ID_CANNOT_BE_NULL);
+            throw new KfSecurityException(ResultCode.PROJECT_ID_CANNOT_BE_NULL);
         }
         if (resourceTypeId == null && resourceId != null) {
             // 这种情况不允许出现（如果resourceId != null，则resourceTypeId必不为null）
-            throw new LogiSecurityException(ResultCode.RESOURCE_ASSIGN_ERROR);
+            throw new KfSecurityException(ResultCode.RESOURCE_ASSIGN_ERROR);
         }
         if (ControlLevelCode.getByType(controlLevel) == null) {
-            throw new LogiSecurityException(ResultCode.RESOURCE_INVALID_CONTROL_LEVEL);
+            throw new KfSecurityException(ResultCode.RESOURCE_INVALID_CONTROL_LEVEL);
         }
     }
 
-    private void checkParam(MByRDataQueryDTO queryDTO) throws LogiSecurityException {
+    private void checkParam(MByRDataQueryDTO queryDTO) throws KfSecurityException {
         checkParam(
                 queryDTO.getControlLevel(), queryDTO.getProjectId(),
                 queryDTO.getResourceTypeId(), queryDTO.getResourceId()
         );
     }
 
-    private void checkParam(MByUDataQueryDTO queryDTO) throws LogiSecurityException {
+    private void checkParam(MByUDataQueryDTO queryDTO) throws KfSecurityException {
         if (queryDTO.getUserId() == null) {
-            throw new LogiSecurityException(ResultCode.USER_ID_CANNOT_BE_NULL);
+            throw new KfSecurityException(ResultCode.USER_ID_CANNOT_BE_NULL);
         }
         if (ControlLevelCode.getByType(queryDTO.getControlLevel()) == null) {
-            throw new LogiSecurityException(ResultCode.RESOURCE_INVALID_CONTROL_LEVEL);
+            throw new KfSecurityException(ResultCode.RESOURCE_INVALID_CONTROL_LEVEL);
         }
         checkParam(queryDTO.getShowLevel(), queryDTO.getProjectId(), queryDTO.getResourceTypeId());
     }
 
-    private void checkParam(AssignToOneUserDTO assignDTO) throws LogiSecurityException {
+    private void checkParam(AssignToOneUserDTO assignDTO) throws KfSecurityException {
         if (assignDTO.getUserId() == null) {
-            throw new LogiSecurityException(ResultCode.USER_ID_CANNOT_BE_NULL);
+            throw new KfSecurityException(ResultCode.USER_ID_CANNOT_BE_NULL);
         }
         if (ControlLevelCode.getByType(assignDTO.getControlLevel()) == null) {
-            throw new LogiSecurityException(ResultCode.RESOURCE_INVALID_CONTROL_LEVEL);
+            throw new KfSecurityException(ResultCode.RESOURCE_INVALID_CONTROL_LEVEL);
         }
         if (assignDTO.getProjectId() == null && assignDTO.getResourceTypeId() != null) {
             // 资源类别id不为null，则项目id不可为null
-            throw new LogiSecurityException(ResultCode.RESOURCE_ASSIGN_ERROR_2);
+            throw new KfSecurityException(ResultCode.RESOURCE_ASSIGN_ERROR_2);
         }
     }
 
@@ -367,7 +364,7 @@ public class UserResourceServiceImpl implements UserResourceService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void assignResourcePermission(AssignToOneUserDTO assignDTO) throws LogiSecurityException {
+    public void assignResourcePermission(AssignToOneUserDTO assignDTO) throws KfSecurityException {
         // 检查参数
         checkParam(assignDTO);
         Integer userId = assignDTO.getUserId();
@@ -399,7 +396,7 @@ public class UserResourceServiceImpl implements UserResourceService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void assignResourcePermission(AssignToManyUserDTO assignDTO,
-                                         HttpServletRequest request) throws LogiSecurityException {
+                                         HttpServletRequest request) throws KfSecurityException {
         // 检查参数
         checkParam(assignDTO);
         List<Integer> userIdList = assignDTO.getUserIdList();
@@ -461,7 +458,7 @@ public class UserResourceServiceImpl implements UserResourceService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void batchAssignResourcePermission(BatchAssignDTO assignDTO,
-                                              HttpServletRequest request) throws LogiSecurityException {
+                                              HttpServletRequest request) throws KfSecurityException {
         // 检查参数
         checkParam(assignDTO);
         // 获取参数
@@ -477,23 +474,23 @@ public class UserResourceServiceImpl implements UserResourceService {
         userResourceDao.insertBatch(getUserResourceList(projectId, resourceTypeId, controlLevel, idList, userIdList));
     }
 
-    private void checkParam(BatchAssignDTO assignDTO) throws LogiSecurityException {
+    private void checkParam(BatchAssignDTO assignDTO) throws KfSecurityException {
         if (assignDTO.getUserIdList() == null) {
-            throw new LogiSecurityException(ResultCode.USER_ID_CANNOT_BE_NULL);
+            throw new KfSecurityException(ResultCode.USER_ID_CANNOT_BE_NULL);
         }
         if (assignDTO.getAssignFlag() == null) {
-            throw new LogiSecurityException(ResultCode.RESOURCE_ASSIGN_BATCH_FLAG_CANNOT_BE_NULL);
+            throw new KfSecurityException(ResultCode.RESOURCE_ASSIGN_BATCH_FLAG_CANNOT_BE_NULL);
         }
         if (assignDTO.getProjectId() == null && assignDTO.getResourceTypeId() != null) {
             // 资源类别id不为null，则项目id不可为null
-            throw new LogiSecurityException(ResultCode.RESOURCE_ASSIGN_ERROR_2);
+            throw new KfSecurityException(ResultCode.RESOURCE_ASSIGN_ERROR_2);
         }
         if (ControlLevelCode.getByType(assignDTO.getControlLevel()) == null) {
-            throw new LogiSecurityException(ResultCode.RESOURCE_INVALID_CONTROL_LEVEL);
+            throw new KfSecurityException(ResultCode.RESOURCE_INVALID_CONTROL_LEVEL);
         }
     }
 
-    private void checkParam(AssignToManyUserDTO assignDTO) throws LogiSecurityException {
+    private void checkParam(AssignToManyUserDTO assignDTO) throws KfSecurityException {
         checkParam(
                 assignDTO.getControlLevel(), assignDTO.getProjectId(),
                 assignDTO.getResourceTypeId(), assignDTO.getResourceId()
@@ -539,7 +536,7 @@ public class UserResourceServiceImpl implements UserResourceService {
     //--------------------------资源权限管理（按资源管理）begin--------------------------
 
     @Override
-    public PagingData<MByRVO> getManageByResourcePage(MByRQueryDTO queryDTO) throws LogiSecurityException {
+    public PagingData<MByRVO> getManageByResourcePage(MByRQueryDTO queryDTO) throws KfSecurityException {
         // 检查参数
         checkParam(queryDTO);
 
@@ -560,36 +557,36 @@ public class UserResourceServiceImpl implements UserResourceService {
     }
 
     private void checkParam(Integer showLevel, Integer projectId,
-                            Integer resourceTypeId) throws LogiSecurityException {
+                            Integer resourceTypeId) throws KfSecurityException {
         if (ShowLevelCode.getByType(showLevel) == null) {
             // 请输入有效的展示级别（1 <= showLevel <= 3）
-            throw new LogiSecurityException(ResultCode.RESOURCE_INVALID_SHOW_LEVEL);
+            throw new KfSecurityException(ResultCode.RESOURCE_INVALID_SHOW_LEVEL);
         }
         if (showLevel >= ShowLevelCode.RESOURCE_TYPE.getType()) {
             // 资源类别展示级别，表示查找某个项目下所有资源类别
             if (projectId == null) {
                 // 2级展示级别，项目id不可为null
-                throw new LogiSecurityException(ResultCode.RESOURCE_SHOW_LEVEL_ERROR);
+                throw new KfSecurityException(ResultCode.RESOURCE_SHOW_LEVEL_ERROR);
             }
             ProjectBriefVO projectBriefVO = projectService.getProjectBriefByProjectId(projectId);
             if (projectBriefVO == null) {
-                throw new LogiSecurityException(ResultCode.PROJECT_NOT_EXISTS);
+                throw new KfSecurityException(ResultCode.PROJECT_NOT_EXISTS);
             }
         }
         if (showLevel >= ShowLevelCode.RESOURCE.getType()) {
             // 具体资源展示级别，表示查找该项目下该资源类别对应的资源
             if (resourceTypeId == null) {
                 // 3级展示级别，项目id或资源类别id不可为null
-                throw new LogiSecurityException(ResultCode.RESOURCE_SHOW_LEVEL_ERROR_2);
+                throw new KfSecurityException(ResultCode.RESOURCE_SHOW_LEVEL_ERROR_2);
             }
             ResourceTypeVO resourceTypeVO = resourceTypeService.getResourceTypeByResourceTypeId(resourceTypeId);
             if (resourceTypeVO == null) {
-                throw new LogiSecurityException(ResultCode.RESOURCE_TYPE_NOT_EXISTS);
+                throw new KfSecurityException(ResultCode.RESOURCE_TYPE_NOT_EXISTS);
             }
         }
     }
 
-    private void checkParam(MByRQueryDTO queryDTO) throws LogiSecurityException {
+    private void checkParam(MByRQueryDTO queryDTO) throws KfSecurityException {
         checkParam(queryDTO.getShowLevel(), queryDTO.getProjectId(), queryDTO.getResourceTypeId());
     }
 

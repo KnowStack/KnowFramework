@@ -17,7 +17,7 @@ import java.util.List;
  * @author cjm
  */
 @RestController
-@Api(value = "logi-security-permission相关API接口", tags = "logi-security-权限相关API接口")
+@Api(value = "kf-security-permission相关API接口", tags = "kf-security-权限相关API接口")
 @RequestMapping(Constants.API_PREFIX_V1 + "/permission")
 public class PermissionController {
 

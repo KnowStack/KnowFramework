@@ -3,7 +3,7 @@ package com.didiglobal.knowframework.security.controller.v1;
 import com.didiglobal.knowframework.security.common.Result;
 import com.didiglobal.knowframework.security.common.constant.Constants;
 import com.didiglobal.knowframework.security.common.vo.user.UserBriefVO;
-import com.didiglobal.knowframework.security.exception.LogiSecurityException;
+import com.didiglobal.knowframework.security.exception.KfSecurityException;
 import com.didiglobal.knowframework.security.service.LoginService;
 import com.didiglobal.knowframework.security.common.dto.account.AccountLoginDTO;
 import io.swagger.annotations.Api;
@@ -18,7 +18,7 @@ import javax.servlet.http.HttpServletResponse;
  * @author cjm
  */
 @RestController
-@Api(value = "logi-security-account登录相关API接口", tags = "logi-security-登录相关API接口")
+@Api(value = "kf-security-account登录相关API接口", tags = "kf-security-登录相关API接口")
 @RequestMapping(Constants.API_PREFIX_V1 + Constants.ACCOUNT_LOGIN)
 public class LoginController {
 
@@ -31,7 +31,7 @@ public class LoginController {
         try {
             UserBriefVO userBriefVO = loginService.verifyLogin(loginDTO, request, response);
             return Result.success(userBriefVO);
-        } catch (LogiSecurityException e) {
+        } catch (KfSecurityException e) {
             return Result.fail(e);
         }
     }

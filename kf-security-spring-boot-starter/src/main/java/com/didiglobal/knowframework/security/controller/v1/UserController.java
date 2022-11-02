@@ -10,7 +10,7 @@ import com.didiglobal.knowframework.security.common.dto.user.UserQueryDTO;
 import com.didiglobal.knowframework.security.common.vo.role.AssignInfoVO;
 import com.didiglobal.knowframework.security.common.vo.user.UserBriefVO;
 import com.didiglobal.knowframework.security.common.vo.user.UserVO;
-import com.didiglobal.knowframework.security.exception.LogiSecurityException;
+import com.didiglobal.knowframework.security.exception.KfSecurityException;
 import com.didiglobal.knowframework.security.service.UserService;
 import com.didiglobal.knowframework.security.util.HttpRequestUtil;
 import com.google.common.collect.Lists;
@@ -35,7 +35,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @author cjm
  */
 @RestController
-@Api(value = "logi-security-user相关API接口", tags = "logi-security-用户相关API接口")
+@Api(value = "kf-security-user相关API接口", tags = "kf-security-用户相关API接口")
 @RequestMapping(Constants.API_PREFIX_V1 + "/user")
 public class UserController {
 
@@ -71,7 +71,7 @@ public class UserController {
         try {
             UserVO userVo = userService.getUserDetailByUserId(id);
             return Result.success(userVo);
-        } catch (LogiSecurityException e) {
+        } catch (KfSecurityException e) {
             return Result.fail(e);
         }
     }
@@ -106,7 +106,7 @@ public class UserController {
         try {
             List<AssignInfoVO> assignInfoVOList = userService.getAssignDataByUserId(userId);
             return Result.success(assignInfoVOList);
-        } catch (LogiSecurityException e) {
+        } catch (KfSecurityException e) {
             e.printStackTrace();
             return Result.fail(e);
         }

@@ -1,11 +1,11 @@
 package com.didiglobal.knowframework.job.rest;
 
-import com.didiglobal.knowframework.job.common.domain.LogITask;
-import com.didiglobal.knowframework.job.common.dto.TaskPageQueryDTO;
+import com.didiglobal.knowframework.job.common.domain.KfTask;
+import com.didiglobal.knowframework.job.common.dto.KfTaskPageQueryDTO;
 import com.didiglobal.knowframework.job.core.task.TaskManager;
 import com.didiglobal.knowframework.job.common.PagingResult;
 import com.didiglobal.knowframework.job.common.Result;
-import com.didiglobal.knowframework.job.common.vo.LogITaskVO;
+import com.didiglobal.knowframework.job.common.vo.KfLogITaskVO;
 import com.didiglobal.knowframework.job.core.consensual.ConsensualEnum;
 import com.didiglobal.knowframework.job.utils.BeanUtil;
 import io.swagger.annotations.Api;
@@ -38,15 +38,15 @@ public class TaskController {
     }
 
     @PostMapping("/list")
-    public PagingResult<LogITaskVO> getAll(@RequestBody TaskPageQueryDTO taskPageQueryDTO) {
-        taskPageQueryDTO.setTaskDesc(sqlFuzzyQueryTransfer(taskPageQueryDTO.getTaskDesc()));
-        taskPageQueryDTO.setClassName(sqlFuzzyQueryTransfer(taskPageQueryDTO.getClassName()));
+    public PagingResult<KfLogITaskVO> getAll(@RequestBody KfTaskPageQueryDTO kfTaskPageQueryDTO) {
+        kfTaskPageQueryDTO.setTaskDesc(sqlFuzzyQueryTransfer( kfTaskPageQueryDTO.getTaskDesc()));
+        kfTaskPageQueryDTO.setClassName(sqlFuzzyQueryTransfer( kfTaskPageQueryDTO.getClassName()));
 
-        List<LogITask> logITasks = taskManager.getPagineList(taskPageQueryDTO);
-        int count = taskManager.pagineTaskConut(taskPageQueryDTO);
+        List<KfTask> kfTasks = taskManager.getPagineList( kfTaskPageQueryDTO );
+        int count = taskManager.pagineTaskConut( kfTaskPageQueryDTO );
 
         return PagingResult.buildSucc(
-                logITask2LogITaskVO(logITasks), count, taskPageQueryDTO.getPage(), taskPageQueryDTO.getSize()
+                logITask2LogITaskVO( kfTasks ), count, kfTaskPageQueryDTO.getPage(), kfTaskPageQueryDTO.getSize()
         );
     }
 
@@ -56,7 +56,7 @@ public class TaskController {
     }
 
     @GetMapping("/{taskCode}/detail")
-    public Result<LogITaskVO> detail(@PathVariable String taskCode) {
+    public Result<KfLogITaskVO> detail(@PathVariable String taskCode) {
         return Result.buildSucc(logITask2LogITaskVO(taskManager.getByCode(taskCode)));
     }
 
@@ -71,24 +71,24 @@ public class TaskController {
     }
 
     /**************************************** private method ****************************************************/
-    private List<LogITaskVO> logITask2LogITaskVO(List<LogITask> logITasks) {
-        if (CollectionUtils.isEmpty(logITasks)) {
+    private List<KfLogITaskVO> logITask2LogITaskVO(List<KfTask> kfTasks) {
+        if (CollectionUtils.isEmpty( kfTasks )) {
             return new ArrayList<>();
         }
 
-        return logITasks.stream().map(l -> logITask2LogITaskVO(l)).collect(Collectors.toList());
+        return kfTasks.stream().map( l -> logITask2LogITaskVO(l)).collect(Collectors.toList());
     }
 
-    private LogITaskVO logITask2LogITaskVO(LogITask logITask) {
-        LogITaskVO logITaskVO = BeanUtil.convertTo(logITask, LogITaskVO.class);
+    private KfLogITaskVO logITask2LogITaskVO(KfTask kfTask) {
+        KfLogITaskVO kfLogITaskVO = BeanUtil.convertTo( kfTask, KfLogITaskVO.class);
 
-        if (!CollectionUtils.isEmpty(logITask.getTaskWorkers())) {
-            List<String> ips = logITask.getTaskWorkers().stream().map(w -> w.getIp()).collect(Collectors.toList());
+        if (!CollectionUtils.isEmpty( kfTask.getTaskWorkers())) {
+            List<String> ips = kfTask.getTaskWorkers().stream().map( w -> w.getIp()).collect(Collectors.toList());
 
-            logITaskVO.setRouting(ConsensualEnum.getByName(logITask.getConsensual()).getDesc());
-            logITaskVO.setWorkerIps(ips);
+            kfLogITaskVO.setRouting(ConsensualEnum.getByName( kfTask.getConsensual()).getDesc());
+            kfLogITaskVO.setWorkerIps(ips);
         }
 
-        return logITaskVO;
+        return kfLogITaskVO;
     }
 }

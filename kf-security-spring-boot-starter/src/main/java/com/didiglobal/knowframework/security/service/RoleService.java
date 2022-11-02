@@ -1,7 +1,7 @@
 package com.didiglobal.knowframework.security.service;
 
 import com.didiglobal.knowframework.security.common.PagingData;
-import com.didiglobal.knowframework.security.exception.LogiSecurityException;
+import com.didiglobal.knowframework.security.exception.KfSecurityException;
 import com.didiglobal.knowframework.security.common.vo.role.AssignInfoVO;
 import com.didiglobal.knowframework.security.common.dto.role.RoleAssignDTO;
 import com.didiglobal.knowframework.security.common.dto.role.RoleQueryDTO;
@@ -45,42 +45,42 @@ public interface RoleService {
      * 保存角色
      * @param saveDTO 角色信息
      * @param request 请求信息
-     * @throws LogiSecurityException 参数检查错误信息
+     * @throws KfSecurityException 参数检查错误信息
      */
-    void createRole(RoleSaveDTO saveDTO, HttpServletRequest request) throws LogiSecurityException;
+    void createRole(RoleSaveDTO saveDTO, HttpServletRequest request) throws KfSecurityException;
 
     /**
      * 删除角色
      * @param id 角色id
      * @param request 请求信息
-     * @throws LogiSecurityException 该角色已分配给用户，不能删除
+     * @throws KfSecurityException 该角色已分配给用户，不能删除
      */
-    void deleteRoleByRoleId(Integer id, HttpServletRequest request) throws LogiSecurityException;
+    void deleteRoleByRoleId(Integer id, HttpServletRequest request) throws KfSecurityException;
 
     /**
      * 删除角色
      * @param roleId 角色id
      * @param userId 用户id
      * @param request 请求信息
-     * @throws LogiSecurityException 该角色已分配给用户，不能删除
+     * @throws KfSecurityException 该角色已分配给用户，不能删除
      */
-    void deleteUserFromRole(Integer roleId, Integer userId, HttpServletRequest request) throws LogiSecurityException;
+    void deleteUserFromRole(Integer roleId, Integer userId, HttpServletRequest request) throws KfSecurityException;
 
     /**
      * 更新角色信息
      * @param saveDTO 角色信息
      * @param request 请求信息
-     * @throws LogiSecurityException 参数检查错误信息
+     * @throws KfSecurityException 参数检查错误信息
      */
-    void updateRole(RoleSaveDTO saveDTO, HttpServletRequest request) throws LogiSecurityException;
+    void updateRole(RoleSaveDTO saveDTO, HttpServletRequest request) throws KfSecurityException;
 
     /**
      * 分配角色给用户
      * @param assignDTO 分配信息
      * @param request 请求信息
-     * @throws LogiSecurityException 角色分配flag不可为空
+     * @throws KfSecurityException 角色分配flag不可为空
      */
-    void assignRoles(RoleAssignDTO assignDTO, HttpServletRequest request) throws LogiSecurityException;
+    void assignRoles(RoleAssignDTO assignDTO, HttpServletRequest request) throws KfSecurityException;
 
     /**
      * 根据角色id，获取分配信息

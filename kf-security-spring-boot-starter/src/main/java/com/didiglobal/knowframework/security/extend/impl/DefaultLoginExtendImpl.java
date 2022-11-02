@@ -4,7 +4,7 @@ import com.didiglobal.knowframework.security.common.Result;
 import com.didiglobal.knowframework.security.common.dto.account.AccountLoginDTO;
 import com.didiglobal.knowframework.security.common.enums.ResultCode;
 import com.didiglobal.knowframework.security.common.vo.user.UserBriefVO;
-import com.didiglobal.knowframework.security.exception.LogiSecurityException;
+import com.didiglobal.knowframework.security.exception.KfSecurityException;
 import com.didiglobal.knowframework.security.extend.LoginExtend;
 import com.didiglobal.knowframework.security.service.UserService;
 import com.didiglobal.knowframework.security.util.AESUtils;
@@ -23,7 +23,7 @@ import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.List;
 
-@Component("logiSecurityDefaultLoginExtendImpl")
+@Component("kfSecurityDefaultLoginExtendImpl")
 public class DefaultLoginExtendImpl implements LoginExtend {
 
     private static final Logger LOGGER  = LoggerFactory.getLogger(DefaultLoginExtendImpl.class);
@@ -34,10 +34,10 @@ public class DefaultLoginExtendImpl implements LoginExtend {
     @Override
     public UserBriefVO verifyLogin(AccountLoginDTO loginDTO,
                                    HttpServletRequest request,
-                                   HttpServletResponse response) throws LogiSecurityException {
+                                   HttpServletResponse response) throws KfSecurityException {
         User user = userService.getUserByUserName(loginDTO.getUserName());
         if(user == null) {
-            throw new LogiSecurityException(ResultCode.USER_NOT_EXISTS);
+            throw new KfSecurityException(ResultCode.USER_NOT_EXISTS);
         }
 
         String decodePasswd = AESUtils.decrypt(loginDTO.getPw());
@@ -45,7 +45,7 @@ public class DefaultLoginExtendImpl implements LoginExtend {
 
         if(!user.getPw().equals(loginDTO.getPw())) {
             // 密码错误
-            throw new LogiSecurityException(ResultCode.USER_CREDENTIALS_ERROR);
+            throw new KfSecurityException(ResultCode.USER_CREDENTIALS_ERROR);
         }
 
         initLoginContext(request, response, loginDTO.getUserName(), user.getId());
@@ -83,7 +83,7 @@ public class DefaultLoginExtendImpl implements LoginExtend {
         String operator = HttpRequestUtil.getOperator(request);
         User user = userService.getUserByUserName(operator);
         if(user == null) {
-            throw new LogiSecurityException(ResultCode.USER_NOT_EXISTS);
+            throw new KfSecurityException(ResultCode.USER_NOT_EXISTS);
         }
 
         initLoginContext(request, response, operator, user.getId());

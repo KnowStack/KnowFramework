@@ -16,7 +16,7 @@ import com.didiglobal.knowframework.security.common.vo.project.ProjectDeleteChec
 import com.didiglobal.knowframework.security.common.vo.user.UserBasicVO;
 import com.didiglobal.knowframework.security.common.vo.user.UserBriefVO;
 import com.didiglobal.knowframework.security.dao.ProjectDao;
-import com.didiglobal.knowframework.security.exception.LogiSecurityException;
+import com.didiglobal.knowframework.security.exception.KfSecurityException;
 import com.didiglobal.knowframework.security.extend.ResourceExtend;
 import com.didiglobal.knowframework.security.extend.ResourceExtendBeanTool;
 import com.didiglobal.knowframework.security.util.CopyBeanUtil;
@@ -55,7 +55,7 @@ import org.springframework.util.StringUtils;
 /**
  * @author cjm
  */
-@Service("logiSecurityProjectServiceImpl")
+@Service("kfSecurityProjectServiceImpl")
 public class ProjectServiceImpl implements ProjectService {
 
     @Autowired
@@ -77,10 +77,10 @@ public class ProjectServiceImpl implements ProjectService {
     private ResourceExtendBeanTool resourceExtendBeanTool;
 
     @Override
-    public ProjectVO getProjectDetailByProjectId(Integer projectId) throws LogiSecurityException {
+    public ProjectVO getProjectDetailByProjectId(Integer projectId) throws KfSecurityException {
         Project project = projectDao.selectByProjectId(projectId);
         if(project == null) {
-            throw new LogiSecurityException(ResultCode.PROJECT_NOT_EXISTS);
+            throw new KfSecurityException(ResultCode.PROJECT_NOT_EXISTS);
         }
         ProjectVO projectVO = CopyBeanUtil.copy(project, ProjectVO.class);
         // 获取成员信息
@@ -108,7 +108,7 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public ProjectVO createProject(ProjectSaveDTO saveVo, String operator) throws LogiSecurityException {
+    public ProjectVO createProject(ProjectSaveDTO saveVo, String operator) throws KfSecurityException {
         // 检查参数
         checkParam(saveVo, false);
         Project project = CopyBeanUtil.copy(saveVo, Project.class);
@@ -170,12 +170,12 @@ public class ProjectServiceImpl implements ProjectService {
     public void deleteProjectByProjectId(Integer projectId, String operator) {
         Project project = projectDao.selectByProjectId(projectId);
         if(project == null) {
-            throw new LogiSecurityException(ResultCode.PROJECT_NOT_EXISTS);
+            throw new KfSecurityException(ResultCode.PROJECT_NOT_EXISTS);
         }
 
         List<String> resources = listResourceOfProject(projectId);
         if(!CollectionUtils.isEmpty(resources)){
-            throw new LogiSecurityException(ResultCode.PROJECT_DEL_RESOURCE_NOT_NULL);
+            throw new KfSecurityException(ResultCode.PROJECT_DEL_RESOURCE_NOT_NULL);
         }
         // 删除项目与负责人的联系
         userProjectService.deleteUserProjectByProjectId(projectId);
@@ -190,9 +190,9 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void updateProject(ProjectSaveDTO saveDTO, String operator) throws LogiSecurityException {
+    public void updateProject(ProjectSaveDTO saveDTO, String operator) throws KfSecurityException {
         if(projectDao.selectByProjectId(saveDTO.getId()) == null) {
-            throw new LogiSecurityException(ResultCode.PROJECT_NOT_EXISTS);
+            throw new KfSecurityException(ResultCode.PROJECT_NOT_EXISTS);
         }
         // 检查参数
         checkParam(saveDTO, true);
@@ -290,10 +290,10 @@ public class ProjectServiceImpl implements ProjectService {
      * @return {@code Result}
      */
     @Override
-    public Result<List<UserBriefVO>> unassignedByProjectId(Integer projectId)throws LogiSecurityException {
+    public Result<List<UserBriefVO>> unassignedByProjectId(Integer projectId)throws KfSecurityException {
         if (!checkProjectExist(projectId)) {
         
-            throw new LogiSecurityException(ResultCode.PROJECT_NOT_EXISTS);
+            throw new KfSecurityException(ResultCode.PROJECT_NOT_EXISTS);
         }
         final ProjectVO projectVO = getProjectDetailByProjectId(projectId);
         //提取用户id
@@ -396,9 +396,9 @@ public class ProjectServiceImpl implements ProjectService {
      * @param saveVo 项目参数
      * @param isUpdate 创建 or 更新
      */
-    private void checkParam(ProjectSaveDTO saveVo, boolean isUpdate) throws LogiSecurityException {
+    private void checkParam(ProjectSaveDTO saveVo, boolean isUpdate) throws KfSecurityException {
         if(StringUtils.isEmpty(saveVo.getProjectName())) {
-            throw new LogiSecurityException(ResultCode.PROJECT_NAME_CANNOT_BE_BLANK);
+            throw new KfSecurityException(ResultCode.PROJECT_NAME_CANNOT_BE_BLANK);
         }
         
         
@@ -408,7 +408,7 @@ public class ProjectServiceImpl implements ProjectService {
         int count = projectDao.selectCountByProjectNameAndNotProjectId(saveVo.getProjectName(), projectId);
         if(count > 0) {
             // 项目名不可重复
-            throw new LogiSecurityException(ResultCode.PROJECT_NAME_ALREADY_EXISTS);
+            throw new KfSecurityException(ResultCode.PROJECT_NAME_ALREADY_EXISTS);
         }
     }
 

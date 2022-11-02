@@ -1,24 +1,24 @@
 package com.didiglobal.knowframework.security.extend;
 
-import com.didiglobal.knowframework.security.properties.LogiSecurityProper;
+import com.didiglobal.knowframework.security.properties.KfSecurityProper;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
 
-@Component("logiSecurityLoginExtendBeanTool")
+@Component("kfSecurityLoginExtendBeanTool")
 public class LoginExtendBeanTool {
 
     @Autowired
     private ApplicationContext applicationContext;
 
     @Autowired
-    private LogiSecurityProper logiSecurityProper;
+    private KfSecurityProper kfSecurityProper;
 
-    private static final String DEFAULT_BEAN_NAME = "logiSecurityDefaultLoginExtendImpl";
+    private static final String DEFAULT_BEAN_NAME = "kfSecurityDefaultLoginExtendImpl";
 
     private LoginExtend getCustomLoginExtendImplBean() {
-        String customBeanName = logiSecurityProper.getLoginExtendBeanName();
+        String customBeanName = kfSecurityProper.getLoginExtendBeanName();
         try {
             return (LoginExtend) applicationContext.getBean(customBeanName);
         } catch (NoSuchBeanDefinitionException e) {

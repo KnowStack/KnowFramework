@@ -1,6 +1,6 @@
 package com.didiglobal.knowframework.job.core.consensual;
 
-import com.didiglobal.knowframework.job.common.domain.LogITask;
+import com.didiglobal.knowframework.job.common.domain.KfTask;
 import org.springframework.stereotype.Service;
 
 /**
@@ -17,7 +17,7 @@ public class BroadcastConsensual extends AbstractConsensual {
     }
 
     @Override
-    public boolean tryClaim(LogITask logITask) {
+    public boolean tryClaim(KfTask kfTask) {
         return true;
     }
 }

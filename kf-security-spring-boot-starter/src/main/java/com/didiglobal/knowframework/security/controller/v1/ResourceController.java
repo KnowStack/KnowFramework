@@ -7,7 +7,7 @@ import com.didiglobal.knowframework.security.common.constant.Constants;
 import com.didiglobal.knowframework.security.common.dto.resource.*;
 import com.didiglobal.knowframework.security.common.enums.resource.ControlLevelCode;
 import com.didiglobal.knowframework.security.common.vo.resource.*;
-import com.didiglobal.knowframework.security.exception.LogiSecurityException;
+import com.didiglobal.knowframework.security.exception.KfSecurityException;
 import com.didiglobal.knowframework.security.service.ResourceTypeService;
 import com.didiglobal.knowframework.security.service.UserResourceService;
 import io.swagger.annotations.*;
@@ -21,7 +21,7 @@ import java.util.List;
  * @author cjm
  */
 @RestController
-@Api(value = "logi-security-resource相关API接口", tags = "logi-security-资源相关API接口")
+@Api(value = "kf-security-resource相关API接口", tags = "kf-security-资源相关API接口")
 @RequestMapping(Constants.API_PREFIX_V1 + "/resource")
 public class ResourceController {
 
@@ -65,7 +65,7 @@ public class ResourceController {
         try {
             List<MByUDataVO> resultList = userResourceService.getManagerByUserDataList(queryDTO);
             return Result.success(resultList);
-        } catch (LogiSecurityException e) {
+        } catch (KfSecurityException e) {
             e.printStackTrace();
             return Result.fail(e);
         }
@@ -77,7 +77,7 @@ public class ResourceController {
         try {
             List<MByRDataVO> resultList = userResourceService.getManagerByResourceDataList(queryDTO);
             return Result.success(resultList);
-        } catch (LogiSecurityException e) {
+        } catch (KfSecurityException e) {
             e.printStackTrace();
             return Result.fail(e);
         }
@@ -89,7 +89,7 @@ public class ResourceController {
         try {
             PagingData<MByRVO> pagingData = userResourceService.getManageByResourcePage(queryDTO);
             return PagingResult.success(pagingData);
-        } catch (LogiSecurityException e) {
+        } catch (KfSecurityException e) {
             e.printStackTrace();
             return PagingResult.fail(e);
         }
@@ -107,7 +107,7 @@ public class ResourceController {
     public Result<String> mbrAssign(@RequestBody AssignToManyUserDTO assignDTO, HttpServletRequest request) {
         try {
             userResourceService.assignResourcePermission(assignDTO, request);
-        } catch (LogiSecurityException e) {
+        } catch (KfSecurityException e) {
             e.printStackTrace();
             return Result.fail(e);
         }
@@ -120,7 +120,7 @@ public class ResourceController {
         try {
             userResourceService.assignResourcePermission(assignDTO);
             return Result.success();
-        } catch (LogiSecurityException e) {
+        } catch (KfSecurityException e) {
             e.printStackTrace();
             return Result.fail(e);
         }
@@ -135,7 +135,7 @@ public class ResourceController {
         try {
             userResourceService.batchAssignResourcePermission(assignDTO, request);
             return Result.success();
-        } catch (LogiSecurityException e) {
+        } catch (KfSecurityException e) {
             e.printStackTrace();
             return Result.fail(e);
         }
@@ -147,7 +147,7 @@ public class ResourceController {
         try {
             ControlLevelCode controlLevel = userResourceService.getControlLevel(queryDTO);
             return Result.success(controlLevel.getType());
-        } catch (LogiSecurityException e) {
+        } catch (KfSecurityException e) {
             return Result.fail(e);
         }
     }

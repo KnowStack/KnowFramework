@@ -12,7 +12,7 @@ import com.didiglobal.knowframework.security.common.vo.role.RoleBriefVO;
 import com.didiglobal.knowframework.security.common.vo.role.RoleDeleteCheckVO;
 import com.didiglobal.knowframework.security.common.vo.user.UserBriefVO;
 import com.didiglobal.knowframework.security.dao.RoleDao;
-import com.didiglobal.knowframework.security.exception.LogiSecurityException;
+import com.didiglobal.knowframework.security.exception.KfSecurityException;
 import com.didiglobal.knowframework.security.service.*;
 import com.didiglobal.knowframework.security.util.CopyBeanUtil;
 import com.didiglobal.knowframework.security.util.HttpRequestUtil;
@@ -41,7 +41,7 @@ import javax.servlet.http.HttpServletRequest;
 /**
  * @author cjm
  */
-@Service("logiSecurityRoleServiceImpl")
+@Service("kfecurityRoleServiceImpl")
 public class RoleServiceImpl implements RoleService {
 
     @Autowired
@@ -122,7 +122,7 @@ public class RoleServiceImpl implements RoleService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void createRole(RoleSaveDTO roleSaveDTO, HttpServletRequest request) throws LogiSecurityException {
+    public void createRole(RoleSaveDTO roleSaveDTO, HttpServletRequest request) throws KfSecurityException {
         // 检查参数
         checkParam(roleSaveDTO, false);
         // 保存角色信息
@@ -144,7 +144,7 @@ public class RoleServiceImpl implements RoleService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void deleteRoleByRoleId(Integer roleId, HttpServletRequest request) throws LogiSecurityException {
+    public void deleteRoleByRoleId(Integer roleId, HttpServletRequest request) throws KfSecurityException {
         Role role = roleDao.selectByRoleId(roleId);
         if(role == null) {
             return;
@@ -152,7 +152,7 @@ public class RoleServiceImpl implements RoleService {
         // 检查该角色是否和用户绑定
         List<Integer> userIdList = userRoleService.getUserIdListByRoleId(roleId);
         if(!userIdList.isEmpty()) {
-            throw new LogiSecurityException(ResultCode.ROLE_USER_AUTHED);
+            throw new KfSecurityException(ResultCode.ROLE_USER_AUTHED);
         }
         // 删除角色与权限的关联
         rolePermissionService.deleteRolePermissionByRoleId(roleId);
@@ -165,7 +165,7 @@ public class RoleServiceImpl implements RoleService {
     }
 
     @Override
-    public void deleteUserFromRole(Integer roleId, Integer userId, HttpServletRequest request) throws LogiSecurityException {
+    public void deleteUserFromRole(Integer roleId, Integer userId, HttpServletRequest request) throws KfSecurityException {
         Role role = roleDao.selectByRoleId(roleId);
         if(role == null) {return;}
 
@@ -185,9 +185,9 @@ public class RoleServiceImpl implements RoleService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void updateRole(RoleSaveDTO saveDTO, HttpServletRequest request) throws LogiSecurityException {
+    public void updateRole(RoleSaveDTO saveDTO, HttpServletRequest request) throws KfSecurityException {
         if(roleDao.selectByRoleId(saveDTO.getId()) == null) {
-            throw new LogiSecurityException(ResultCode.ROLE_NOT_EXISTS);
+            throw new KfSecurityException(ResultCode.ROLE_NOT_EXISTS);
         }
         checkParam(saveDTO, true);
         // 更新角色基本信息
@@ -207,10 +207,10 @@ public class RoleServiceImpl implements RoleService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void assignRoles(RoleAssignDTO assignDTO, HttpServletRequest request) throws LogiSecurityException {
+    public void assignRoles(RoleAssignDTO assignDTO, HttpServletRequest request) throws KfSecurityException {
         String operator = HttpRequestUtil.getOperator(request);
         if(assignDTO.getFlag() == null) {
-            throw new LogiSecurityException(ResultCode.ROLE_ASSIGN_FLAG_IS_NULL);
+            throw new KfSecurityException(ResultCode.ROLE_ASSIGN_FLAG_IS_NULL);
         }
         if(Boolean.TRUE.equals(assignDTO.getFlag())) {
             // N个角色分配给1个用户
@@ -417,22 +417,22 @@ public class RoleServiceImpl implements RoleService {
      * 添加或者修改时候检查参数
      * @param saveDTO 角色信息
      * @param isUpdate 是创建还是更新
-     * @throws LogiSecurityException 校验错误
+     * @throws KfSecurityException 校验错误
      */
-    private void checkParam(RoleSaveDTO saveDTO, boolean isUpdate) throws LogiSecurityException {
+    private void checkParam(RoleSaveDTO saveDTO, boolean isUpdate) throws KfSecurityException {
         if(StringUtils.isEmpty(saveDTO.getRoleName())) {
-            throw new LogiSecurityException(ResultCode.ROLE_NAME_CANNOT_BE_BLANK);
+            throw new KfSecurityException(ResultCode.ROLE_NAME_CANNOT_BE_BLANK);
         }
         
         if(CollectionUtils.isEmpty(saveDTO.getPermissionIdList())) {
-            throw new LogiSecurityException(ResultCode.ROLE_PERMISSION_CANNOT_BE_NULL);
+            throw new KfSecurityException(ResultCode.ROLE_PERMISSION_CANNOT_BE_NULL);
         }
         // 如果是更新操作，则判断项目名重复的时候要排除old信息
         Integer roleId = isUpdate ? saveDTO.getId() : null;
         int count = roleDao.selectCountByRoleNameAndNotRoleId(saveDTO.getRoleName(), roleId);
         if(count > 0) {
             // 角色名不可重复
-            throw new LogiSecurityException(ResultCode.ROLE_NAME_ALREADY_EXISTS);
+            throw new KfSecurityException(ResultCode.ROLE_NAME_ALREADY_EXISTS);
         }
     }
 }

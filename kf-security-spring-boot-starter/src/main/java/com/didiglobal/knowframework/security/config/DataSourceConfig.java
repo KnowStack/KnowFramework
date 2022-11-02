@@ -5,7 +5,7 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.core.config.GlobalConfig;
 import com.baomidou.mybatisplus.extension.plugins.MybatisPlusInterceptor;
 import com.baomidou.mybatisplus.extension.plugins.inner.PaginationInnerInterceptor;
-import com.didiglobal.knowframework.security.properties.LogiSecurityProper;
+import com.didiglobal.knowframework.security.properties.KfSecurityProper;
 import com.zaxxer.hikari.HikariDataSource;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.context.annotation.Bean;
@@ -17,7 +17,7 @@ import javax.sql.DataSource;
  * @author cjm
  * 数据源、mybatis-plus配置
  */
-@Configuration("logiSecurityDataSourceConfig")
+@Configuration("kfSecurityDataSourceConfig")
 @MapperScan("com.didiglobal.knowframework.security.dao.mapper")
 public class DataSourceConfig {
 
@@ -31,8 +31,8 @@ public class DataSourceConfig {
         return globalConfig;
     }
 
-    @Bean("logiSecurityDataSource")
-    public DataSource dataSource(LogiSecurityProper proper) {
+    @Bean("kfSecurityDataSource")
+    public DataSource dataSource(KfSecurityProper proper) {
         HikariDataSource dataSource = new HikariDataSource();
         dataSource.setUsername(proper.getUsername());
         dataSource.setPassword(proper.getPassword());
@@ -43,7 +43,7 @@ public class DataSourceConfig {
 
     /*------------------以下是mybatis-plus的配置------------------------*/
 
-    @Bean("logiSecurityMybatisPlusInterceptor")
+    @Bean("kfSecurityMybatisPlusInterceptor")
     public MybatisPlusInterceptor mybatisPlusInterceptor() {
         MybatisPlusInterceptor interceptor = new MybatisPlusInterceptor();
         interceptor.addInnerInterceptor(new PaginationInnerInterceptor(DbType.MARIADB));

@@ -11,7 +11,7 @@ import com.didiglobal.knowframework.security.common.vo.role.AssignInfoVO;
 import com.didiglobal.knowframework.security.common.vo.role.RoleBriefVO;
 import com.didiglobal.knowframework.security.common.vo.role.RoleDeleteCheckVO;
 import com.didiglobal.knowframework.security.common.vo.role.RoleVO;
-import com.didiglobal.knowframework.security.exception.LogiSecurityException;
+import com.didiglobal.knowframework.security.exception.KfSecurityException;
 import com.didiglobal.knowframework.security.service.RoleService;
 import io.swagger.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +24,7 @@ import java.util.List;
  * @author cjm
  */
 @RestController
-@Api(value = "logi-security-role相关API接口", tags = "logi-security-角色相关API接口")
+@Api(value = "kf-security-role相关API接口", tags = "kf-security-角色相关API接口")
 @RequestMapping(Constants.API_PREFIX_V1 + "/role")
 public class RoleController {
 
@@ -45,7 +45,7 @@ public class RoleController {
         try {
             roleService.updateRole(saveDTO, request);
             return Result.success();
-        } catch (LogiSecurityException e) {
+        } catch (KfSecurityException e) {
             return Result.fail(e);
         }
     }
@@ -56,7 +56,7 @@ public class RoleController {
         try {
             roleService.createRole(saveDTO, request);
             return Result.success();
-        } catch (LogiSecurityException e) {
+        } catch (KfSecurityException e) {
             return Result.fail(e);
         }
     }
@@ -74,7 +74,7 @@ public class RoleController {
     public Result<String> deleteUser(@PathVariable Integer id, @PathVariable Integer userId, HttpServletRequest request) {
         try {
             roleService.deleteUserFromRole(id, userId, request);
-        } catch (LogiSecurityException e) {
+        } catch (KfSecurityException e) {
             return Result.fail(e);
         }
         return Result.success();
@@ -86,7 +86,7 @@ public class RoleController {
     public Result<String> delete(@PathVariable Integer id, HttpServletRequest request) {
         try {
             roleService.deleteRoleByRoleId(id, request);
-        } catch (LogiSecurityException e) {
+        } catch (KfSecurityException e) {
             return Result.fail(e);
         }
         return Result.success();
@@ -105,7 +105,7 @@ public class RoleController {
         try {
             roleService.assignRoles(assignDTO, request);
             return Result.success();
-        } catch (LogiSecurityException e) {
+        } catch (KfSecurityException e) {
             return Result.fail(e);
         }
     }

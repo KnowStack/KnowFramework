@@ -1,10 +1,10 @@
 package com.didiglobal.knowframework.job.core.consensual;
 
-import com.didiglobal.knowframework.job.common.domain.LogITask;
-import com.didiglobal.knowframework.job.common.domain.LogIWorker;
-import com.didiglobal.knowframework.job.common.po.LogIWorkerBlacklistPO;
+import com.didiglobal.knowframework.job.common.domain.KfTask;
+import com.didiglobal.knowframework.job.common.domain.KfWorker;
+import com.didiglobal.knowframework.job.common.po.KfWorkerBlacklistPO;
 import com.didiglobal.knowframework.job.core.WorkerSingleton;
-import com.didiglobal.knowframework.job.mapper.LogIWorkerBlacklistMapper;
+import com.didiglobal.knowframework.job.mapper.KfWorkerBlacklistMapper;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 
@@ -31,7 +31,7 @@ public abstract class AbstractConsensual implements Consensual {
     private static final Logger logger = LoggerFactory.getLogger(AbstractConsensual.class);
 
     @Autowired
-    private LogIWorkerBlacklistMapper logIWorkerBlacklistMapper;
+    private KfWorkerBlacklistMapper kfWorkerBlacklistMapper;
 
     private static final String BLACKLIST_KEY = "BlacklistKey";
 
@@ -39,29 +39,29 @@ public abstract class AbstractConsensual implements Consensual {
             .expireAfterWrite(2, TimeUnit.MINUTES).build();
 
     @Override
-    public boolean canClaim(LogITask logITask) {
+    public boolean canClaim(KfTask kfTask) {
         if (inBlacklist()) {
             return false;
         }
-        return tryClaim(logITask);
+        return tryClaim( kfTask );
     }
 
-    public abstract boolean tryClaim(LogITask logITask);
+    public abstract boolean tryClaim(KfTask kfTask);
 
     //###################################### private ################################################
 
     private boolean inBlacklist() {
         Set<String> blacklist = blacklist();
-        LogIWorker logIWorker = WorkerSingleton.getInstance().getLogIWorker();
-        return blacklist.contains(logIWorker.getWorkerCode());
+        KfWorker kfWorker = WorkerSingleton.getInstance().getKfWorker();
+        return blacklist.contains( kfWorker.getWorkerCode());
     }
 
     private Set<String> blacklist() {
         Set<String> blacklist = new HashSet<>();
         try {
             blacklist = blacklistCache.get(BLACKLIST_KEY, () -> {
-                List<LogIWorkerBlacklistPO> logIWorkerBlacklistPOS = logIWorkerBlacklistMapper.selectAll();
-                return logIWorkerBlacklistPOS.stream().map(LogIWorkerBlacklistPO::getWorkerCode)
+                List<KfWorkerBlacklistPO> kfWorkerBlacklistPOS = kfWorkerBlacklistMapper.selectAll();
+                return kfWorkerBlacklistPOS.stream().map( KfWorkerBlacklistPO::getWorkerCode)
                         .collect(Collectors.toSet());
             });
         } catch (ExecutionException e) {

@@ -3,7 +3,7 @@ package com.didiglobal.knowframework.security.extend;
 import com.didiglobal.knowframework.security.common.Result;
 import com.didiglobal.knowframework.security.common.dto.account.AccountLoginDTO;
 import com.didiglobal.knowframework.security.common.vo.user.UserBriefVO;
-import com.didiglobal.knowframework.security.exception.LogiSecurityException;
+import com.didiglobal.knowframework.security.exception.KfSecurityException;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -21,9 +21,9 @@ public interface LoginExtend {
      * @param loginDTO 登陆信息
      * @param request 请求信息
      * @return token
-     * @throws LogiSecurityException 登录错误
+     * @throws KfSecurityException 登录错误
      */
-    UserBriefVO verifyLogin(AccountLoginDTO loginDTO, HttpServletRequest request, HttpServletResponse response) throws LogiSecurityException;
+    UserBriefVO verifyLogin(AccountLoginDTO loginDTO, HttpServletRequest request, HttpServletResponse response) throws KfSecurityException;
 
     /**
      * 登出接口

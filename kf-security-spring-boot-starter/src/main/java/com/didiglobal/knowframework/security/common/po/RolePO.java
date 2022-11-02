@@ -11,7 +11,7 @@ import lombok.EqualsAndHashCode;
  */
 @EqualsAndHashCode(callSuper = true)
 @Data
-@TableName(value = "logi_security_role")
+@TableName(value = "kf_security_role")
 public class RolePO extends BasePO {
 
     /**

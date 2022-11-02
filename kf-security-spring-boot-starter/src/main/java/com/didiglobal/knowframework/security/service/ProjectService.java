@@ -6,7 +6,7 @@ import com.didiglobal.knowframework.security.common.vo.project.ProjectBriefVO;
 import com.didiglobal.knowframework.security.common.vo.project.ProjectBriefVOWithUser;
 import com.didiglobal.knowframework.security.common.vo.project.ProjectDeleteCheckVO;
 import com.didiglobal.knowframework.security.common.vo.user.UserBriefVO;
-import com.didiglobal.knowframework.security.exception.LogiSecurityException;
+import com.didiglobal.knowframework.security.exception.KfSecurityException;
 import com.didiglobal.knowframework.security.common.dto.project.ProjectBriefQueryDTO;
 import com.didiglobal.knowframework.security.common.dto.project.ProjectQueryDTO;
 import com.didiglobal.knowframework.security.common.dto.project.ProjectSaveDTO;
@@ -25,19 +25,19 @@ public interface ProjectService {
      *
      * @param saveDTO 项目信息
      * @param operator 请求信息
-     * @throws LogiSecurityException 项目相关的错误信息
+     * @throws KfSecurityException 项目相关的错误信息
      * @return 项目信息
      */
-    ProjectVO createProject(ProjectSaveDTO saveDTO, String operator) throws LogiSecurityException;
+    ProjectVO createProject(ProjectSaveDTO saveDTO, String operator) throws KfSecurityException;
 
     /**
      * 获取项目详情，通过项目id
      *
      * @param projectId 项目id
      * @return ProjectVo 项目信息
-     * @throws LogiSecurityException 项目不存在
+     * @throws KfSecurityException 项目不存在
      */
-    ProjectVO getProjectDetailByProjectId(Integer projectId) throws LogiSecurityException;
+    ProjectVO getProjectDetailByProjectId(Integer projectId) throws KfSecurityException;
 
     /**
      * 根据项目id获取项目简要信息
@@ -77,9 +77,9 @@ public interface ProjectService {
      *
      * @param saveDTO 项目信息
      * @param operator 请求信息
-     * @throws LogiSecurityException 项目相关的错误信息
+     * @throws KfSecurityException 项目相关的错误信息
      */
-    void updateProject(ProjectSaveDTO saveDTO, String operator) throws LogiSecurityException;
+    void updateProject(ProjectSaveDTO saveDTO, String operator) throws KfSecurityException;
 
     /**
      * 更改项目运行状态，旧状态取反
@@ -161,7 +161,7 @@ public interface ProjectService {
      * @param projectId projectId
      * @return {@code Result}
      */
-    Result<List<UserBriefVO>> unassignedByProjectId(Integer projectId)throws LogiSecurityException;
+    Result<List<UserBriefVO>> unassignedByProjectId(Integer projectId)throws KfSecurityException;
     
     /**
      * 获取user下绑定的项目

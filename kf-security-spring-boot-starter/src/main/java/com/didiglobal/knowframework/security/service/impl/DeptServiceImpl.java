@@ -4,7 +4,7 @@ import com.didiglobal.knowframework.security.common.enums.ResultCode;
 import com.didiglobal.knowframework.security.common.vo.dept.DeptBriefVO;
 import com.didiglobal.knowframework.security.common.vo.dept.DeptTreeVO;
 import com.didiglobal.knowframework.security.dao.DeptDao;
-import com.didiglobal.knowframework.security.exception.LogiSecurityException;
+import com.didiglobal.knowframework.security.exception.KfSecurityException;
 import com.didiglobal.knowframework.security.service.DeptService;
 import com.didiglobal.knowframework.security.util.CopyBeanUtil;
 import com.didiglobal.knowframework.security.util.MathUtil;
@@ -22,7 +22,7 @@ import java.util.*;
 /**
  * @author cjm
  */
-@Service("logiSecurityDeptServiceImpl")
+@Service("kfSecurityDeptServiceImpl")
 public class DeptServiceImpl implements DeptService {
 
     @Autowired
@@ -49,7 +49,7 @@ public class DeptServiceImpl implements DeptService {
                 // 如果parent为null，则需要查看下数据库部门表的数据是否有误
                 // 1.可能出现了本来该是父节点的节点（有其他子节点的parent为它），但该节点parent为其他子节点的情况（数据异常）
                 // 2.也可能是level填写错了（因为前面根据level大小排序）
-                throw new LogiSecurityException(ResultCode.DEPT_DATA_ERROR);
+                throw new KfSecurityException(ResultCode.DEPT_DATA_ERROR);
             }
             parent.getChildList().add(deptTreeVO);
             parentMap.put(deptTreeVO.getId(), deptTreeVO);

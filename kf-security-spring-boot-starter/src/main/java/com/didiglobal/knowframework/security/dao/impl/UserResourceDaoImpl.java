@@ -64,7 +64,7 @@ public class UserResourceDaoImpl extends BaseDaoImpl<UserResourcePO> implements 
     @Override
     public void insert(UserResource userResource) {
         UserResourcePO userResourcePO = CopyBeanUtil.copy(userResource, UserResourcePO.class);
-        userResourcePO.setAppName(logiSecurityProper.getAppName());
+        userResourcePO.setAppName( kfSecurityProper.getAppName());
         userResourceMapper.insert(userResourcePO);
     }
 
@@ -75,7 +75,7 @@ public class UserResourceDaoImpl extends BaseDaoImpl<UserResourcePO> implements 
         }
         List<UserResourcePO> userResourcePOList = CopyBeanUtil.copyList(userResourceList, UserResourcePO.class);
         for(UserResourcePO userResourcePO : userResourcePOList) {
-            userResourcePO.setAppName(logiSecurityProper.getAppName());
+            userResourcePO.setAppName( kfSecurityProper.getAppName());
             userResourceMapper.insert(userResourcePO);
         }
 

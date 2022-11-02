@@ -24,7 +24,7 @@ import java.util.List;
  * @author cjm
  */
 @RestController
-@Api(value = "logi-security-config相关API接口", tags = "logi-security-配置相关API接口")
+@Api(value = "kf-security-config相关API接口", tags = "kf-security-配置相关API接口")
 @RequestMapping(Constants.API_PREFIX_V1 + "/config")
 public class ConfigController {
 

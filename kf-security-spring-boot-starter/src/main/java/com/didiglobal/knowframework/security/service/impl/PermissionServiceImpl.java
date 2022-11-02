@@ -4,7 +4,7 @@ import com.didiglobal.knowframework.security.common.entity.Permission;
 import com.didiglobal.knowframework.security.common.enums.ResultCode;
 import com.didiglobal.knowframework.security.common.vo.permission.PermissionTreeVO;
 import com.didiglobal.knowframework.security.dao.PermissionDao;
-import com.didiglobal.knowframework.security.exception.LogiSecurityException;
+import com.didiglobal.knowframework.security.exception.KfSecurityException;
 import com.didiglobal.knowframework.security.service.PermissionService;
 import com.didiglobal.knowframework.security.service.RolePermissionService;
 import com.didiglobal.knowframework.security.util.CopyBeanUtil;
@@ -19,7 +19,7 @@ import java.util.*;
 /**
  * @author cjm
  */
-@Service("logiSecurityPermissionServiceImpl")
+@Service("kfSecurityPermissionServiceImpl")
 public class PermissionServiceImpl implements PermissionService {
 
     @Autowired
@@ -28,7 +28,7 @@ public class PermissionServiceImpl implements PermissionService {
     @Autowired
     private RolePermissionService rolePermissionService;
 
-    private PermissionTreeVO buildPermissionTree(Set<Integer> permissionHasSet) throws LogiSecurityException {
+    private PermissionTreeVO buildPermissionTree(Set<Integer> permissionHasSet) throws KfSecurityException {
         // 获取全部权限，根据level小到大排序
         List<Permission> permissionList = permissionDao.selectAllAndAscOrderByLevel();
 
@@ -49,7 +49,7 @@ public class PermissionServiceImpl implements PermissionService {
                 // 如果parent为null，则需要查看下数据库权限表的数据是否有误
                 // 1.可能出现了本来该是父节点的节点（有其他子节点的parent为它），但该节点parent为其他子节点的情况（数据异常）
                 // 2.也可能是level填写错了（因为前面根据level大小排序）
-                throw new LogiSecurityException(ResultCode.PERMISSION_DATA_ERROR);
+                throw new KfSecurityException(ResultCode.PERMISSION_DATA_ERROR);
             }
             // 父权限拥有，子权限才肯定拥有
             permissionTreeVO.setHas(parent.getHas() && permissionHasSet.contains(permission.getId()));
@@ -64,7 +64,7 @@ public class PermissionServiceImpl implements PermissionService {
         PermissionTreeVO permissionTreeVO = null;
         try {
             permissionTreeVO = buildPermissionTree(new HashSet<>(permissionHasList));
-        } catch (LogiSecurityException e) {
+        } catch (KfSecurityException e) {
             e.printStackTrace();
         }
         return permissionTreeVO;

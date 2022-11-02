@@ -108,7 +108,7 @@ public class UserProjectDaoImpl extends BaseDaoImpl<UserProjectPO> implements Us
 
     private int addUserProject(UserProject userProject){
         UserProjectPO userProjectPO = CopyBeanUtil.copy(userProject, UserProjectPO.class);
-        userProjectPO.setAppName(logiSecurityProper.getAppName());
+        userProjectPO.setAppName( kfSecurityProper.getAppName());
 
         return userProjectMapper.insert(userProjectPO);
     }

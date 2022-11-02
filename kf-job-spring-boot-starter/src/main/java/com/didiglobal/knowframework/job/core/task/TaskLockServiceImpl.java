@@ -1,10 +1,10 @@
 package com.didiglobal.knowframework.job.core.task;
 
-import com.didiglobal.knowframework.job.common.dto.LogITaskLockDTO;
-import com.didiglobal.knowframework.job.LogIJobProperties;
-import com.didiglobal.knowframework.job.common.po.LogITaskLockPO;
+import com.didiglobal.knowframework.job.common.dto.KfTaskLockDTO;
+import com.didiglobal.knowframework.job.KfJobProperties;
+import com.didiglobal.knowframework.job.common.po.KfTaskLockPO;
 import com.didiglobal.knowframework.job.core.WorkerSingleton;
-import com.didiglobal.knowframework.job.mapper.LogITaskLockMapper;
+import com.didiglobal.knowframework.job.mapper.KfTaskLockMapper;
 import com.didiglobal.knowframework.job.utils.BeanUtil;
 
 import java.sql.Timestamp;
@@ -28,72 +28,72 @@ public class TaskLockServiceImpl implements TaskLockService {
     // 每次申请锁的默认过期时间
     private static final Long EXPIRE_TIME_SECONDS = 300L;
 
-    private LogITaskLockMapper logITaskLockMapper;
-    private LogIJobProperties logIJobProperties;
+    private KfTaskLockMapper kfTaskLockMapper;
+    private KfJobProperties kfJobProperties;
 
     /**
      * constructor
-     * @param logITaskLockMapper mapper
-     * @param logIJobProperties 配置信息
+     * @param kfTaskLockMapper mapper
+     * @param kfJobProperties 配置信息
      */
     @Autowired
-    public TaskLockServiceImpl(LogITaskLockMapper logITaskLockMapper, LogIJobProperties logIJobProperties) {
-        this.logITaskLockMapper = logITaskLockMapper;
-        this.logIJobProperties = logIJobProperties;
+    public TaskLockServiceImpl(KfTaskLockMapper kfTaskLockMapper, KfJobProperties kfJobProperties) {
+        this.kfTaskLockMapper = kfTaskLockMapper;
+        this.kfJobProperties = kfJobProperties;
     }
 
     @Override
     public Boolean tryAcquire(String taskCode) {
-        return tryAcquire(taskCode, WorkerSingleton.getInstance().getLogIWorker().getWorkerCode(),
+        return tryAcquire(taskCode, WorkerSingleton.getInstance().getKfWorker().getWorkerCode(),
                 EXPIRE_TIME_SECONDS);
     }
 
     @Override
     public Boolean tryAcquire(String taskCode, String workerCode, Long expireTime) {
-        List<LogITaskLockPO> logITaskLockPOList =
-                logITaskLockMapper.selectByTaskCode(taskCode, logIJobProperties.getAppName());
+        List<KfTaskLockPO> kfTaskLockPOList =
+                kfTaskLockMapper.selectByTaskCode(taskCode, kfJobProperties.getAppName());
 
         boolean hasLock = false;
         //1、taskCode没有任何worker占有
-        if (CollectionUtils.isEmpty(logITaskLockPOList)) {
+        if (CollectionUtils.isEmpty( kfTaskLockPOList )) {
             hasLock = false;
         } else {
             //2、taskCode有被worker占有
             long current = System.currentTimeMillis() / 1000;
 
             //3、taskCode的worker是否有没有过期
-            List<LogITaskLockPO> noExpireTaskLock = logITaskLockPOList.stream().filter(logITaskLockPO -> logITaskLockPO.getCreateTime()
-                    .getTime() / 1000 + logITaskLockPO.getExpireTime() >= current).collect(Collectors.toList());
+            List<KfTaskLockPO> noExpireTaskLock = kfTaskLockPOList.stream().filter( kfTaskLockPO -> kfTaskLockPO.getCreateTime()
+                    .getTime() / 1000 + kfTaskLockPO.getExpireTime() >= current).collect(Collectors.toList());
 
             if(!CollectionUtils.isEmpty(noExpireTaskLock)){
-                for(LogITaskLockPO logITaskLockPO : noExpireTaskLock){
-                    if(workerCode.equals(logITaskLockPO.getWorkerCode())){
+                for(KfTaskLockPO kfTaskLockPO : noExpireTaskLock){
+                    if(workerCode.equals( kfTaskLockPO.getWorkerCode())){
                         hasLock = true;
                     }
                 }
             }
 
             //4、taskCode的worker是否有过期
-            List<LogITaskLockPO> expireTaskLock = logITaskLockPOList.stream().filter(logITaskLockPO -> logITaskLockPO.getCreateTime()
-                    .getTime() / 1000 + logITaskLockPO.getExpireTime() < current).collect(Collectors.toList());
+            List<KfTaskLockPO> expireTaskLock = kfTaskLockPOList.stream().filter( kfTaskLockPO -> kfTaskLockPO.getCreateTime()
+                    .getTime() / 1000 + kfTaskLockPO.getExpireTime() < current).collect(Collectors.toList());
 
             if(!CollectionUtils.isEmpty(expireTaskLock)){
-                for(LogITaskLockPO logITaskLockPO : expireTaskLock){
-                    logITaskLockMapper.deleteByWorkerCodeAndAppName(logITaskLockPO.getWorkerCode(), logIJobProperties.getAppName());
+                for(KfTaskLockPO kfTaskLockPO : expireTaskLock){
+                    kfTaskLockMapper.deleteByWorkerCodeAndAppName( kfTaskLockPO.getWorkerCode(), kfJobProperties.getAppName());
                 }
             }
         }
 
         if (!hasLock) {
-            LogITaskLockPO taskLock = new LogITaskLockPO();
+            KfTaskLockPO taskLock = new KfTaskLockPO();
             taskLock.setTaskCode(taskCode);
             taskLock.setWorkerCode(workerCode);
             taskLock.setExpireTime(expireTime);
             taskLock.setCreateTime(new Timestamp(System.currentTimeMillis()));
             taskLock.setUpdateTime(new Timestamp(System.currentTimeMillis()));
-            taskLock.setAppName(logIJobProperties.getAppName());
+            taskLock.setAppName( kfJobProperties.getAppName());
             try {
-                return logITaskLockMapper.insert(taskLock) > 0 ? true : false;
+                return kfTaskLockMapper.insert(taskLock) > 0 ? true : false;
             } catch (Exception e) {
                 if (e.getMessage().contains("Duplicate")) {
                     logger.info("class=TaskLockServiceImpl||method=tryAcquire||taskCode={}||msg=duplicate key", taskCode);
@@ -110,40 +110,40 @@ public class TaskLockServiceImpl implements TaskLockService {
 
     @Override
     public Boolean tryRelease(String taskCode) {
-        return tryRelease(taskCode, WorkerSingleton.getInstance().getLogIWorker().getWorkerCode());
+        return tryRelease(taskCode, WorkerSingleton.getInstance().getKfWorker().getWorkerCode());
     }
 
     @Override
     public Boolean tryRelease(String taskCode, String workerCode) {
-        List<LogITaskLockPO> logITaskLockPOList = logITaskLockMapper.selectByTaskCodeAndWorkerCode(taskCode,
-                workerCode, logIJobProperties.getAppName());
-        if (CollectionUtils.isEmpty(logITaskLockPOList)) {
+        List<KfTaskLockPO> kfTaskLockPOList = kfTaskLockMapper.selectByTaskCodeAndWorkerCode(taskCode,
+                workerCode, kfJobProperties.getAppName());
+        if (CollectionUtils.isEmpty( kfTaskLockPOList )) {
             logger.error("class=TaskLockServiceImpl||method=tryRelease||msg=taskCode={}, "
                     + "workerCode={}", taskCode, workerCode);
             return false;
         }
         long current = System.currentTimeMillis() / 1000;
-        List<Long> taskLockIdList = logITaskLockPOList.stream().filter(logITaskLockPO ->
-                        logITaskLockPO.getCreateTime().getTime() / 1000 + logITaskLockPO.getExpireTime() < current)
-                .map(LogITaskLockPO::getId)
+        List<Long> taskLockIdList = kfTaskLockPOList.stream().filter( kfTaskLockPO ->
+                        kfTaskLockPO.getCreateTime().getTime() / 1000 + kfTaskLockPO.getExpireTime() < current)
+                .map( KfTaskLockPO::getId)
                 .collect(Collectors.toList());
 
         if (CollectionUtils.isEmpty(taskLockIdList)) {
             return true;
         }
 
-        int result = logITaskLockMapper.deleteByIds(taskLockIdList);
+        int result = kfTaskLockMapper.deleteByIds(taskLockIdList);
         return result > 0 ? true : false;
     }
 
     @Override
-    public List<LogITaskLockDTO> getAll() {
-        List<LogITaskLockPO> logITaskLockPOS = logITaskLockMapper.selectByAppName(logIJobProperties.getAppName());
-        if (CollectionUtils.isEmpty(logITaskLockPOS)) {
+    public List<KfTaskLockDTO> getAll() {
+        List<KfTaskLockPO> kfTaskLockPOS = kfTaskLockMapper.selectByAppName( kfJobProperties.getAppName());
+        if (CollectionUtils.isEmpty( kfTaskLockPOS )) {
             return null;
         }
-        return logITaskLockPOS.stream().map(logITaskLockPO -> BeanUtil.convertTo(logITaskLockPO,
-                LogITaskLockDTO.class)).collect(Collectors.toList());
+        return kfTaskLockPOS.stream().map( kfTaskLockPO -> BeanUtil.convertTo( kfTaskLockPO,
+                KfTaskLockDTO.class)).collect(Collectors.toList());
     }
 
     @Override

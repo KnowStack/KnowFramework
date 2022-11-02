@@ -38,7 +38,7 @@ public class ConfigDaoImpl extends BaseDaoImpl<ConfigPO> implements ConfigDao {
 
     @Override
     public int insert(ConfigPO param) {
-        param.setAppName(logiSecurityProper.getAppName());
+        param.setAppName( kfSecurityProper.getAppName());
         return configMapper.insert(param);
     }
 

@@ -2,7 +2,7 @@ package com.didiglobal.knowframework.security.service.impl;
 
 import com.didiglobal.knowframework.security.common.Result;
 import com.didiglobal.knowframework.security.common.vo.user.UserBriefVO;
-import com.didiglobal.knowframework.security.exception.LogiSecurityException;
+import com.didiglobal.knowframework.security.exception.KfSecurityException;
 import com.didiglobal.knowframework.security.extend.LoginExtendBeanTool;
 import com.didiglobal.knowframework.security.service.LoginService;
 import com.didiglobal.knowframework.security.common.dto.account.AccountLoginDTO;
@@ -20,7 +20,7 @@ public class LoginServiceImpl implements LoginService {
     private LoginExtendBeanTool loginExtendBeanTool;
 
     @Override
-    public UserBriefVO verifyLogin(AccountLoginDTO loginDTO, HttpServletRequest request, HttpServletResponse response) throws LogiSecurityException {
+    public UserBriefVO verifyLogin(AccountLoginDTO loginDTO, HttpServletRequest request, HttpServletResponse response) throws KfSecurityException {
         return loginExtendBeanTool.getLoginExtendImpl().verifyLogin(loginDTO, request, response);
     }
 

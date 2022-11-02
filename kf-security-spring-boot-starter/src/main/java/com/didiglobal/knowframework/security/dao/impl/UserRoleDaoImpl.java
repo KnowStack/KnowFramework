@@ -56,7 +56,7 @@ public class UserRoleDaoImpl extends BaseDaoImpl<UserRolePO> implements UserRole
         if(!CollectionUtils.isEmpty(userRoleList)) {
             List<UserRolePO> userRolePOList = CopyBeanUtil.copyList(userRoleList, UserRolePO.class);
             for(UserRolePO userRolePO : userRolePOList) {
-                userRolePO.setAppName(logiSecurityProper.getAppName());
+                userRolePO.setAppName( kfSecurityProper.getAppName());
                 userRoleMapper.insert(userRolePO);
             }
         }

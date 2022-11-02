@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
  * @author cjm
  */
 @RestController
-@Api(value = "logi-security-common相关API接口", tags = "logi-security-common相关API接口")
+@Api(value = "kf-security-common相关API接口", tags = "kf-security-common相关API接口")
 @RequestMapping(Constants.API_PREFIX_V1 + "/common")
 public class CommonController {
 

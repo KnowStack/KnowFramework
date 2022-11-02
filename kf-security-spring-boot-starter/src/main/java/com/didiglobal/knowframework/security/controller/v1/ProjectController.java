@@ -9,7 +9,7 @@ import com.didiglobal.knowframework.security.common.dto.project.ProjectSaveDTO;
 import com.didiglobal.knowframework.security.common.vo.project.ProjectBriefVO;
 import com.didiglobal.knowframework.security.common.vo.project.ProjectDeleteCheckVO;
 import com.didiglobal.knowframework.security.common.vo.user.UserBriefVO;
-import com.didiglobal.knowframework.security.exception.LogiSecurityException;
+import com.didiglobal.knowframework.security.exception.KfSecurityException;
 import com.didiglobal.knowframework.security.service.ProjectService;
 import com.didiglobal.knowframework.security.util.HttpRequestUtil;
 import com.didiglobal.knowframework.security.common.vo.project.ProjectVO;
@@ -24,7 +24,7 @@ import java.util.List;
  * @author cjm
  */
 @RestController
-@Api(value = "logi-security-project相关API接口", tags = "logi-security-项目相关API接口")
+@Api(value = "kf-security-project相关API接口", tags = "kf-security-项目相关API接口")
 @RequestMapping(Constants.API_PREFIX_V1 + "/project")
 public class ProjectController {
 
@@ -38,7 +38,7 @@ public class ProjectController {
         try {
             ProjectVO projectVO = projectService.getProjectDetailByProjectId(id);
             return Result.success(projectVO);
-        } catch (LogiSecurityException e) {
+        } catch (KfSecurityException e) {
             return Result.fail(e);
         }
     }
@@ -63,7 +63,7 @@ public class ProjectController {
     public Result<String> update(@RequestBody ProjectSaveDTO saveDTO, HttpServletRequest request) {
         try {
             projectService.updateProject(saveDTO, HttpRequestUtil.getOperator(request));
-        } catch (LogiSecurityException e) {
+        } catch (KfSecurityException e) {
             e.printStackTrace();
             return Result.fail(e);
         }
@@ -76,7 +76,7 @@ public class ProjectController {
         try {
             ProjectVO projectVO = projectService.createProject(saveDTO, HttpRequestUtil.getOperator(request));
             return Result.success(projectVO);
-        } catch (LogiSecurityException e) {
+        } catch (KfSecurityException e) {
             e.printStackTrace();
             return Result.fail(e);
         }
@@ -118,7 +118,7 @@ public class ProjectController {
     public Result<String> addProjectOwner(@PathVariable Integer id, @PathVariable Integer ownerId, HttpServletRequest request) {
         try {
             projectService.addProjectOwner(id, ownerId, HttpRequestUtil.getOperator(request));
-        } catch (LogiSecurityException e) {
+        } catch (KfSecurityException e) {
             return Result.fail(e);
         }
         return Result.success();
@@ -130,7 +130,7 @@ public class ProjectController {
     public Result<String> deleteProjectOwner(@PathVariable Integer id, @PathVariable Integer ownerId, HttpServletRequest request) {
         try {
             projectService.delProjectOwner(id, ownerId, HttpRequestUtil.getOperator(request));
-        } catch (LogiSecurityException e) {
+        } catch (KfSecurityException e) {
             return Result.fail(e);
         }
         return Result.success();
@@ -142,7 +142,7 @@ public class ProjectController {
     public Result<String> addProjectUser(@PathVariable Integer id, @PathVariable Integer userId, HttpServletRequest request) {
         try {
             projectService.addProjectUser(id, userId, HttpRequestUtil.getOperator(request));
-        } catch (LogiSecurityException e) {
+        } catch (KfSecurityException e) {
             return Result.fail(e);
         }
         return Result.success();
@@ -154,7 +154,7 @@ public class ProjectController {
     public Result<String> deleteProjectUser(@PathVariable Integer id, @PathVariable Integer userId, HttpServletRequest request) {
         try {
             projectService.delProjectUser(id, userId, HttpRequestUtil.getOperator(request));
-        } catch (LogiSecurityException e) {
+        } catch (KfSecurityException e) {
             return Result.fail(e);
         }
         return Result.success();
@@ -166,7 +166,7 @@ public class ProjectController {
     public Result<List<UserBriefVO>> unassigned(@RequestParam("id") Integer id) {
         try {
             return projectService.unassignedByProjectId(id);
-        } catch (LogiSecurityException e) {
+        } catch (KfSecurityException e) {
             return Result.fail(e);
         }
     }

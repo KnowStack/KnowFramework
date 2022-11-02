@@ -3,7 +3,7 @@ package com.service.impl;
 import com.didiglobal.knowframework.security.common.Result;
 import com.didiglobal.knowframework.security.common.dto.account.AccountLoginDTO;
 import com.didiglobal.knowframework.security.common.vo.user.UserBriefVO;
-import com.didiglobal.knowframework.security.exception.LogiSecurityException;
+import com.didiglobal.knowframework.security.exception.KfSecurityException;
 import com.didiglobal.knowframework.security.extend.LoginExtend;
 import org.springframework.stereotype.Component;
 import javax.servlet.http.HttpServletRequest;
@@ -15,14 +15,12 @@ import java.util.List;
 public class LoginExtendImpl implements LoginExtend {
 
     @Override
-    public UserBriefVO verifyLogin(AccountLoginDTO loginDTO, HttpServletRequest request, HttpServletResponse response) throws LogiSecurityException {
-        System.out.println("LoginExtendImpl.verifyLogin()");
+    public UserBriefVO verifyLogin(AccountLoginDTO loginDTO, HttpServletRequest request, HttpServletResponse response) throws KfSecurityException {
         return new UserBriefVO();
     }
 
     @Override
     public Result<Boolean> logout(HttpServletRequest request, HttpServletResponse response) {
-        System.out.println("LoginExtendImpl.logout()");
         return Result.buildSucc(Boolean.FALSE);
     }
 

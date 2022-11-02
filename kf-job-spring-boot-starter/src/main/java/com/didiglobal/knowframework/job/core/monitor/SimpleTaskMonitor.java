@@ -1,6 +1,6 @@
 package com.didiglobal.knowframework.job.core.monitor;
 
-import com.didiglobal.knowframework.job.common.domain.LogITask;
+import com.didiglobal.knowframework.job.common.domain.KfTask;
 import com.didiglobal.knowframework.job.core.task.TaskManager;
 import com.didiglobal.knowframework.job.utils.ThreadUtil;
 
@@ -71,9 +71,9 @@ public class SimpleTaskMonitor implements TaskMonitor {
                     logger.info("class=TaskMonitorExecutor||method=run||msg=fetch tasks at regular {}",
                             SCAN_INTERVAL_SLEEP_SECONDS);
 
-                    List<LogITask> logITaskList = taskManager.nextTriggers(INTERVAL_SECONDS);
+                    List<KfTask> kfTaskList = taskManager.nextTriggers(INTERVAL_SECONDS);
 
-                    if (logITaskList == null || logITaskList.size() == 0) {
+                    if (kfTaskList == null || kfTaskList.size() == 0) {
                         logger.info("class=TaskMonitorExecutor||method=run||msg=no tasks need run!");
                         ThreadUtil.sleep(INTERVAL_SECONDS, TimeUnit.SECONDS);
                         continue;
@@ -81,9 +81,9 @@ public class SimpleTaskMonitor implements TaskMonitor {
 
                     // 未到执行时间，等待
                     logger.info("class=TaskMonitorExecutor||method=run||msg=fetch tasks {}",
-                            logITaskList.stream().map(LogITask::getTaskName).collect(Collectors.toList()));
+                            kfTaskList.stream().map( KfTask::getTaskName).collect(Collectors.toList()));
 
-                    Long firstFireTime = logITaskList.stream().findFirst().get().getNextFireTime().getTime();
+                    Long firstFireTime = kfTaskList.stream().findFirst().get().getNextFireTime().getTime();
                     Long nowTime = System.currentTimeMillis();
                     if (nowTime < firstFireTime) {
                         Long between = firstFireTime - nowTime;
@@ -92,11 +92,11 @@ public class SimpleTaskMonitor implements TaskMonitor {
 
                     logger.info("class=TaskMonitorExecutor||method=run||msg=start tasks={}, "
                                     + "firstFireTime={}, nowTime={}",
-                            logITaskList.stream().map(LogITask::getTaskName).collect(Collectors.toList()),
+                            kfTaskList.stream().map( KfTask::getTaskName).collect(Collectors.toList()),
                             firstFireTime, nowTime);
 
                     // 提交任务
-                    taskManager.submit(logITaskList);
+                    taskManager.submit( kfTaskList );
                 } catch (Exception e) {
                     logger.error("class=TaskMonitorExecutor||method=run||msg=exception!", e);
                 }
