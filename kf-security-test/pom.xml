@@ -21,7 +21,7 @@
         <dependency>
             <groupId>io.github.knowframework</groupId>
             <artifactId>kf-security-spring-boot-starter</artifactId>
-            <version>2.10.16</version>
+            <version>1.0.0</version>
         </dependency>
 
         <dependency>

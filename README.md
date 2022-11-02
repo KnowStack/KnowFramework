@@ -20,7 +20,7 @@ kf-security 提供项目大多都需要基础的一些功能（用户、角色�
 <dependency>
     <groupId>io.github.knowframework</groupId>
     <artifactId>kf-security-spring-boot-starter</artifactId>
-    <version>1.6.3</version>
+    <version>1.0.0</version>
 </dependency>
 ```
 #### 1.3.2 配置文件
@@ -56,7 +56,7 @@ kf-security相关界面并没提供【角色权限元数据、资源类别数据
 <dependency>
     <groupId>io.github.knowframework</groupId>
     <artifactId>kf-job-spring-boot-starter</artifactId>
-    <version>2.0.0</version>
+    <version>1.0.0</version>
 </dependency>
 ```
 #### 2.3.2 配置信息
@@ -144,7 +144,7 @@ Http Method：GET
 <dependency>
 	<groupId>io.github.knowframework</groupId>
 	<artifactId>kf-log</artifactId>
-	<version>2.0.0</version>
+	<version>1.0.0</version>
 </dependency>
 ```
 ### 3.2 kf-log
@@ -232,7 +232,7 @@ Arius内部指标采集和计算的工具包。
 <dependency>
     <groupId>io.github.knowframework</groupId>
     <artifactId>kf-metrices</artifactId>
-    <version>1.0.4</version>
+    <version>1.0.0</version>
 </dependency>
 ```
 ## 5.kf-dsl-prase
@@ -242,7 +242,7 @@ Arius内部指标采集和计算的工具包。
 <dependency>
     <groupId>io.github.knowframework</groupId>
     <artifactId>kf-dsl-prase</artifactId>
-    <version>1.0.7</version>
+    <version>1.0.0</version>
 </dependency>
 ```
 ## 6.kf-elasticsearch-client
@@ -251,7 +251,7 @@ Arius内部指标采集和计算的工具包。
 <dependency>
     <groupId>io.github.knowframework</groupId>
     <artifactId>kf-elasticsearch-client</artifactId>
-    <version>1.0.1</version>
+    <version>1.0.0</version>
 </dependency>
 ```
 ## 7.kf-elasticsearch-sql
@@ -260,7 +260,7 @@ Arius内部指标采集和计算的工具包。
 <dependency>
     <groupId>io.github.knowframework</groupId>
     <artifactId>kf-elasticsearch-sql</artifactId>
-    <version>1.0.4</version>
+    <version>1.0.0</version>
 </dependency>
 ```
 
