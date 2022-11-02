@@ -8,7 +8,6 @@ import com.didiglobal.knowframework.elasticsearch.client.parser.dsl.parser.Parse
 import com.didiglobal.knowframework.elasticsearch.client.parser.dsl.parser.ParserType;
 import com.didiglobal.knowframework.elasticsearch.client.parser.dsl.parser.logic.*;
 import com.didiglobal.knowframework.elasticsearch.client.parser.dsl.ast.common.multi.NodeMap;
-import com.didiglobal.logi.elasticsearch.client.parser.dsl.parser.logic.*;
 import com.didiglobal.knowframework.elasticsearch.client.parser.dsl.parser.script.ScriptParser;
 
 public class QueryParser extends DslParser {

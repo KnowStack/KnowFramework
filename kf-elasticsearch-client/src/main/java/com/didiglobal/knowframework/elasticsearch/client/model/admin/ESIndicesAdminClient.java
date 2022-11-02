@@ -24,7 +24,6 @@ import com.didiglobal.knowframework.elasticsearch.client.request.ingest.*;
 import com.didiglobal.knowframework.elasticsearch.client.request.security.*;
 import com.didiglobal.knowframework.elasticsearch.client.response.dcdr.*;
 import com.didiglobal.knowframework.elasticsearch.client.response.security.*;
-import com.didiglobal.logi.elasticsearch.client.request.dcdr.*;
 import com.didiglobal.knowframework.elasticsearch.client.request.index.catindices.ESIndicesCatIndicesRequestBuilder;
 import com.didiglobal.knowframework.elasticsearch.client.request.index.clearcache.ESIndicesClearCacheRequest;
 import com.didiglobal.knowframework.elasticsearch.client.request.index.clearcache.ESIndicesClearCacheRequestBuilder;
@@ -66,9 +65,6 @@ import com.didiglobal.knowframework.elasticsearch.client.request.index.updatemap
 import com.didiglobal.knowframework.elasticsearch.client.request.index.updatemapping.ESIndicesUpdateMappingRequestBuilder;
 import com.didiglobal.knowframework.elasticsearch.client.request.index.updatesettings.ESIndicesUpdateSettingsRequest;
 import com.didiglobal.knowframework.elasticsearch.client.request.index.updatesettings.ESIndicesUpdateSettingsRequestBuilder;
-import com.didiglobal.logi.elasticsearch.client.request.ingest.*;
-import com.didiglobal.logi.elasticsearch.client.request.security.*;
-import com.didiglobal.logi.elasticsearch.client.response.dcdr.*;
 import com.didiglobal.knowframework.elasticsearch.client.response.indices.clearcache.ESIndicesClearCacheResponse;
 import com.didiglobal.knowframework.elasticsearch.client.response.indices.closeindex.ESIndicesCloseIndexResponse;
 import com.didiglobal.knowframework.elasticsearch.client.response.indices.deletebyquery.ESIndicesDeleteByQueryResponse;
@@ -92,7 +88,6 @@ import com.didiglobal.knowframework.elasticsearch.client.response.indices.update
 import com.didiglobal.knowframework.elasticsearch.client.response.ingest.ESDeletePipelineResponse;
 import com.didiglobal.knowframework.elasticsearch.client.response.ingest.ESGetPipelineResponse;
 import com.didiglobal.knowframework.elasticsearch.client.response.ingest.ESPutPipelineResponse;
-import com.didiglobal.logi.elasticsearch.client.response.security.*;
 import org.elasticsearch.action.ActionFuture;
 import org.elasticsearch.action.ActionListener;
 import org.elasticsearch.client.AdminClient;

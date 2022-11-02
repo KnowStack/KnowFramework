@@ -20,8 +20,8 @@ import com.didiglobal.knowframework.elasticsearch.client.parser.sql.EsExportPara
 import com.didiglobal.knowframework.elasticsearch.client.parser.sql.EsSqlFormatVisitor;
 import com.didiglobal.knowframework.elasticsearch.client.parser.sql.SqlDangerousTagVisitor;
 import com.didiglobal.knowframework.elasticsearch.client.parser.util.Utils;
-import com.didiglobal.logi.log.ILog;
-import com.didiglobal.logi.log.LogFactory;
+import com.didiglobal.knowframework.log.ILog;
+import com.didiglobal.knowframework.log.LogFactory;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import org.apache.commons.lang3.StringUtils;

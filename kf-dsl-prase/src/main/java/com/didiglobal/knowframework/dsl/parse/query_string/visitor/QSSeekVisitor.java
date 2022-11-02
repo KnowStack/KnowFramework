@@ -1,6 +1,5 @@
 package com.didiglobal.knowframework.dsl.parse.query_string.visitor;
 
-
 import com.didiglobal.knowframework.dsl.parse.query_string.ast.QSFieldNode;
 import com.didiglobal.knowframework.dsl.parse.query_string.ast.QSValueNode;
 import com.didiglobal.knowframework.dsl.parse.query_string.ast.op.*;
@@ -9,8 +8,6 @@ import com.didiglobal.knowframework.dsl.parse.query_string.ast.op.common.QSSingl
 import com.didiglobal.knowframework.dsl.parse.query_string.ast.op.logic.QSANDNode;
 import com.didiglobal.knowframework.dsl.parse.query_string.ast.op.logic.QSORNode;
 import com.didiglobal.knowframework.dsl.parse.query_string.ast.op.logic.QSParenNode;
-import com.didiglobal.logi.dsl.parse.query_string.ast.op.*;
-
 
 public class QSSeekVisitor implements QSVisitor {
     @Override

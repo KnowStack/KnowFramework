@@ -5,12 +5,8 @@ import com.didiglobal.knowframework.dsl.parse.dsl.ast.common.logic.*;
 import com.didiglobal.knowframework.dsl.parse.dsl.ast.query.*;
 import com.didiglobal.knowframework.dsl.parse.dsl.ast.root.*;
 import com.didiglobal.knowframework.dsl.parse.dsl.ast.DslNode;
-import com.didiglobal.logi.dsl.parse.dsl.ast.common.logic.*;
 import com.didiglobal.knowframework.dsl.parse.dsl.ast.common.script.Script;
 import com.didiglobal.knowframework.dsl.parse.dsl.ast.common.value.QueryStringValueNode;
-import com.didiglobal.logi.dsl.parse.dsl.ast.aggr.*;
-import com.didiglobal.logi.dsl.parse.dsl.ast.query.*;
-import com.didiglobal.logi.dsl.parse.dsl.ast.root.*;
 
 public abstract class BaseVisitor implements Visitor {
     @Override

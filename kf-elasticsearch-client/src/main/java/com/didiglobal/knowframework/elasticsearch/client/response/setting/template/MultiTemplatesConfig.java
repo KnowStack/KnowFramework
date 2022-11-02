@@ -12,8 +12,8 @@ import com.alibaba.fastjson.JSONObject;
 import com.didiglobal.knowframework.elasticsearch.client.model.type.ESVersion;
 import com.didiglobal.knowframework.elasticsearch.client.response.setting.common.MappingConfig;
 import com.didiglobal.knowframework.elasticsearch.client.response.setting.common.TypeDefine;
-import com.didiglobal.logi.log.ILog;
-import com.didiglobal.logi.log.LogFactory;
+import com.didiglobal.knowframework.log.ILog;
+import com.didiglobal.knowframework.log.LogFactory;
 
 public class MultiTemplatesConfig implements Serializable {
     private final ILog LOGGER = LogFactory.getLog(MultiTemplatesConfig.class);

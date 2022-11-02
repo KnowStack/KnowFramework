@@ -13,4 +13,4 @@ spring:
     max-thread-num: 20
     log-expire: 5 # 日志保存天数，以天为单位
     app_name: arius_test03
-    claim-strategy: com.didiglobal.logi.job.core.consensual.RandomConsensual
+    claim-strategy: com.didiglobal.knowframework.job.core.consensual.RandomConsensual

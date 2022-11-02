@@ -18,8 +18,8 @@ import com.didiglobal.knowframework.elasticsearch.client.parser.dsl.ast.common.m
 import com.didiglobal.knowframework.elasticsearch.client.parser.dsl.ast.common.value.QueryStringValueNode;
 import com.didiglobal.knowframework.elasticsearch.client.parser.dsl.ast.common.value.StringListNode;
 import com.didiglobal.knowframework.elasticsearch.client.parser.dsl.ast.common.value.ValueNode;
-import com.didiglobal.logi.log.ILog;
-import com.didiglobal.logi.log.LogFactory;
+import com.didiglobal.knowframework.log.ILog;
+import com.didiglobal.knowframework.log.LogFactory;
 
 import java.util.HashSet;
 import java.util.Set;

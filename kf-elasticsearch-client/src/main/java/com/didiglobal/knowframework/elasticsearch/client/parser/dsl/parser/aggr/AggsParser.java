@@ -14,7 +14,6 @@ import com.didiglobal.knowframework.elasticsearch.client.parser.dsl.ast.common.k
 import com.didiglobal.knowframework.elasticsearch.client.parser.dsl.ast.common.key.StringNode;
 import com.didiglobal.knowframework.elasticsearch.client.parser.dsl.ast.common.multi.NodeMap;
 import com.didiglobal.knowframework.elasticsearch.client.parser.dsl.ast.common.value.ValueNode;
-import com.didiglobal.logi.elasticsearch.client.parser.dsl.parser.logic.*;
 import com.didiglobal.knowframework.elasticsearch.client.parser.dsl.parser.root.SortParser;
 import com.didiglobal.knowframework.elasticsearch.client.parser.dsl.parser.script.ScriptParser;
 

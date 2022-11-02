@@ -11,25 +11,25 @@ import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spring.web.plugins.Docket;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
-@Configuration("logiSecuritySwaggerConfig")
+@Configuration("knowFrameworkSecuritySwaggerConfig")
 @EnableSwagger2
 public class SwaggerConfig {
 
-    @Bean("logiSecurityCreateRestApi")
+    @Bean("knowFrameworkSecurityCreateRestApi")
     public Docket createRestApi() {
         return new Docket(DocumentationType.SWAGGER_2)
-                .groupName("logi-security")
+                .groupName("knowFramework-security")
                 .apiInfo(apiInfo())
                 .select()
                 // swagger要扫描的包路径
-                .apis(RequestHandlerSelectors.basePackage("com.didiglobal.logi.security.controller"))
+                .apis(RequestHandlerSelectors.basePackage("com.didiglobal.knowframework.security.controller"))
                 .paths(PathSelectors.any())
                 .build();
     }
 
     private ApiInfo apiInfo() {
         return new ApiInfoBuilder()
-                .title("logi-security在线文档")
+                .title("knowFramework-security在线文档")
                 .description(("用户、项目、角色、部门、界面权限、资源权限、操作日志、消息通知"))
                 // 作者信息
                 .contact(new Contact("home","",""))

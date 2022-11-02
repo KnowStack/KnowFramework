@@ -5,7 +5,6 @@ import com.didiglobal.knowframework.elasticsearch.client.parser.query_string.ast
 import com.didiglobal.knowframework.elasticsearch.client.parser.query_string.ast.QSNode;
 import com.didiglobal.knowframework.elasticsearch.client.parser.query_string.ast.QSValueNode;
 import com.didiglobal.knowframework.elasticsearch.client.parser.query_string.ast.op.*;
-import com.didiglobal.logi.elasticsearch.client.parser.query_string.ast.op.*;
 import com.didiglobal.knowframework.elasticsearch.client.parser.query_string.ast.op.common.QSBinaryOpNode;
 import com.didiglobal.knowframework.elasticsearch.client.parser.query_string.ast.op.common.QSSingleOpNode;
 import com.didiglobal.knowframework.elasticsearch.client.parser.query_string.ast.op.logic.QSANDNode;

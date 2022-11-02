@@ -3,14 +3,10 @@ package com.didiglobal.knowframework.elasticsearch.client.parser.dsl.visitor.bas
 import com.didiglobal.knowframework.elasticsearch.client.parser.dsl.ast.DslNode;
 import com.didiglobal.knowframework.elasticsearch.client.parser.dsl.ast.aggr.*;
 import com.didiglobal.knowframework.elasticsearch.client.parser.dsl.ast.common.logic.*;
-import com.didiglobal.knowframework.elasticsearch.client.parser.dsl.ast.query.*;
-import com.didiglobal.knowframework.elasticsearch.client.parser.dsl.ast.root.*;
-import com.didiglobal.logi.elasticsearch.client.parser.dsl.ast.aggr.*;
-import com.didiglobal.logi.elasticsearch.client.parser.dsl.ast.common.logic.*;
 import com.didiglobal.knowframework.elasticsearch.client.parser.dsl.ast.common.script.Script;
 import com.didiglobal.knowframework.elasticsearch.client.parser.dsl.ast.common.value.QueryStringValueNode;
-import com.didiglobal.logi.elasticsearch.client.parser.dsl.ast.query.*;
-import com.didiglobal.logi.elasticsearch.client.parser.dsl.ast.root.*;
+import com.didiglobal.knowframework.elasticsearch.client.parser.dsl.ast.query.*;
+import com.didiglobal.knowframework.elasticsearch.client.parser.dsl.ast.root.*;
 
 public abstract class BaseVisitor implements Visitor {
     @Override

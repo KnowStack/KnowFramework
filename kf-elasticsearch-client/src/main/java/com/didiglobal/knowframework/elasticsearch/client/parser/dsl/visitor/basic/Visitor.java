@@ -2,14 +2,10 @@ package com.didiglobal.knowframework.elasticsearch.client.parser.dsl.visitor.bas
 
 import com.didiglobal.knowframework.elasticsearch.client.parser.dsl.ast.DslNode;
 import com.didiglobal.knowframework.elasticsearch.client.parser.dsl.ast.aggr.*;
-import com.didiglobal.knowframework.elasticsearch.client.parser.dsl.ast.common.logic.*;
-import com.didiglobal.knowframework.elasticsearch.client.parser.dsl.ast.query.*;
-import com.didiglobal.knowframework.elasticsearch.client.parser.dsl.ast.root.*;
-import com.didiglobal.logi.elasticsearch.client.parser.dsl.ast.aggr.*;
 import com.didiglobal.knowframework.elasticsearch.client.parser.dsl.ast.common.key.FieldNode;
 import com.didiglobal.knowframework.elasticsearch.client.parser.dsl.ast.common.key.IdentityNode;
 import com.didiglobal.knowframework.elasticsearch.client.parser.dsl.ast.common.key.StringNode;
-import com.didiglobal.logi.elasticsearch.client.parser.dsl.ast.common.logic.*;
+import com.didiglobal.knowframework.elasticsearch.client.parser.dsl.ast.common.logic.*;
 import com.didiglobal.knowframework.elasticsearch.client.parser.dsl.ast.common.multi.NodeList;
 import com.didiglobal.knowframework.elasticsearch.client.parser.dsl.ast.common.multi.NodeMap;
 import com.didiglobal.knowframework.elasticsearch.client.parser.dsl.ast.common.script.Script;
@@ -17,8 +13,8 @@ import com.didiglobal.knowframework.elasticsearch.client.parser.dsl.ast.common.v
 import com.didiglobal.knowframework.elasticsearch.client.parser.dsl.ast.common.value.ObjectNode;
 import com.didiglobal.knowframework.elasticsearch.client.parser.dsl.ast.common.value.QueryStringValueNode;
 import com.didiglobal.knowframework.elasticsearch.client.parser.dsl.ast.common.value.StringListNode;
-import com.didiglobal.logi.elasticsearch.client.parser.dsl.ast.query.*;
-import com.didiglobal.logi.elasticsearch.client.parser.dsl.ast.root.*;
+import com.didiglobal.knowframework.elasticsearch.client.parser.dsl.ast.query.*;
+import com.didiglobal.knowframework.elasticsearch.client.parser.dsl.ast.root.*;
 
 public interface Visitor {
     public void visit(DslNode node);

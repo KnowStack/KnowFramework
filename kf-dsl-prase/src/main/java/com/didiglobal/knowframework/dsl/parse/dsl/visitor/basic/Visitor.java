@@ -1,15 +1,11 @@
 package com.didiglobal.knowframework.dsl.parse.dsl.visitor.basic;
 
-import com.didiglobal.knowframework.dsl.parse.dsl.ast.aggr.*;
-import com.didiglobal.knowframework.dsl.parse.dsl.ast.common.logic.*;
-import com.didiglobal.knowframework.dsl.parse.dsl.ast.query.*;
-import com.didiglobal.knowframework.dsl.parse.dsl.ast.root.*;
 import com.didiglobal.knowframework.dsl.parse.dsl.ast.DslNode;
-import com.didiglobal.logi.dsl.parse.dsl.ast.aggr.*;
+import com.didiglobal.knowframework.dsl.parse.dsl.ast.aggr.*;
 import com.didiglobal.knowframework.dsl.parse.dsl.ast.common.key.FieldNode;
 import com.didiglobal.knowframework.dsl.parse.dsl.ast.common.key.IdentityNode;
 import com.didiglobal.knowframework.dsl.parse.dsl.ast.common.key.StringNode;
-import com.didiglobal.logi.dsl.parse.dsl.ast.common.logic.*;
+import com.didiglobal.knowframework.dsl.parse.dsl.ast.common.logic.*;
 import com.didiglobal.knowframework.dsl.parse.dsl.ast.common.multi.NodeList;
 import com.didiglobal.knowframework.dsl.parse.dsl.ast.common.multi.NodeMap;
 import com.didiglobal.knowframework.dsl.parse.dsl.ast.common.script.Script;
@@ -17,8 +13,8 @@ import com.didiglobal.knowframework.dsl.parse.dsl.ast.common.value.JsonNode;
 import com.didiglobal.knowframework.dsl.parse.dsl.ast.common.value.ObjectNode;
 import com.didiglobal.knowframework.dsl.parse.dsl.ast.common.value.QueryStringValueNode;
 import com.didiglobal.knowframework.dsl.parse.dsl.ast.common.value.StringListNode;
-import com.didiglobal.logi.dsl.parse.dsl.ast.query.*;
-import com.didiglobal.logi.dsl.parse.dsl.ast.root.*;
+import com.didiglobal.knowframework.dsl.parse.dsl.ast.query.*;
+import com.didiglobal.knowframework.dsl.parse.dsl.ast.root.*;
 
 public interface Visitor {
     public void visit(DslNode node);

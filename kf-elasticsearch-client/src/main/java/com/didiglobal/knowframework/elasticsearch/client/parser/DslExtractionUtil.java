@@ -1,8 +1,8 @@
 package com.didiglobal.knowframework.elasticsearch.client.parser;
 
 import com.didiglobal.knowframework.elasticsearch.client.parser.bean.ExtractResult;
-import com.didiglobal.logi.log.ILog;
-import com.didiglobal.logi.log.LogFactory;
+import com.didiglobal.knowframework.log.ILog;
+import com.didiglobal.knowframework.log.LogFactory;
 
 /**
  * 查询模板提取工具

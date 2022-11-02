@@ -19,8 +19,8 @@ import com.didiglobal.knowframework.dsl.parse.dsl.ast.root.Fields;
 import com.didiglobal.knowframework.dsl.parse.dsl.ast.root.Source;
 import com.didiglobal.knowframework.dsl.parse.dsl.visitor.basic.OutputVisitor;
 import com.didiglobal.knowframework.dsl.parse.query_string.visitor.QSFormatVisitor;
-import com.didiglobal.logi.log.ILog;
-import com.didiglobal.logi.log.LogFactory;
+import com.didiglobal.knowframework.log.ILog;
+import com.didiglobal.knowframework.log.LogFactory;
 
 import java.util.*;
 

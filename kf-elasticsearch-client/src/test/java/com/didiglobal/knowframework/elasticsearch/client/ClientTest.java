@@ -39,8 +39,8 @@ import com.didiglobal.knowframework.elasticsearch.client.response.ingest.ESPutPi
 import com.didiglobal.knowframework.elasticsearch.client.response.query.query.ESQueryResponse;
 import com.didiglobal.knowframework.elasticsearch.client.response.setting.common.TypeConfig;
 import com.didiglobal.knowframework.elasticsearch.client.response.setting.template.TemplateConfig;
-import com.didiglobal.logi.elasticsearch.client.gateway.document.*;
-import com.didiglobal.logi.elasticsearch.client.gateway.search.*;
+import com.didiglobal.knowframework.elasticsearch.client.gateway.document.*;
+import com.didiglobal.knowframework.elasticsearch.client.gateway.search.*;
 import com.google.common.collect.Lists;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;

@@ -1,10 +1,10 @@
 package com.service.impl;
 
-import com.didiglobal.logi.security.common.Result;
-import com.didiglobal.logi.security.common.dto.account.AccountLoginDTO;
-import com.didiglobal.logi.security.common.vo.user.UserBriefVO;
-import com.didiglobal.logi.security.exception.LogiSecurityException;
-import com.didiglobal.logi.security.extend.LoginExtend;
+import com.didiglobal.knowframework.security.common.Result;
+import com.didiglobal.knowframework.security.common.dto.account.AccountLoginDTO;
+import com.didiglobal.knowframework.security.common.vo.user.UserBriefVO;
+import com.didiglobal.knowframework.security.exception.LogiSecurityException;
+import com.didiglobal.knowframework.security.extend.LoginExtend;
 import org.springframework.stereotype.Component;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;

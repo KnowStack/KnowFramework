@@ -14,9 +14,8 @@ import com.didiglobal.knowframework.elasticsearch.client.request.query.clearScro
 import com.didiglobal.knowframework.elasticsearch.client.request.query.scroll.ESQueryScrollRequest;
 import com.didiglobal.knowframework.elasticsearch.client.request.query.sql.ESSQLRequest;
 import com.didiglobal.knowframework.elasticsearch.client.response.cluster.ESClusterVersionResponse;
-import com.didiglobal.logi.elasticsearch.client.model.*;
-import com.didiglobal.logi.log.ILog;
-import com.didiglobal.logi.log.LogFactory;
+import com.didiglobal.knowframework.log.ILog;
+import com.didiglobal.knowframework.log.LogFactory;
 import com.google.common.collect.Lists;
 import org.apache.http.Header;
 import org.apache.http.HttpHost;

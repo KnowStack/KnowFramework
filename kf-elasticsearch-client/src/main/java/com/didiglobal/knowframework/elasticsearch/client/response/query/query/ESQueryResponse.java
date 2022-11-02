@@ -6,8 +6,8 @@ import com.didiglobal.knowframework.elasticsearch.client.model.ESActionResponse;
 import com.didiglobal.knowframework.elasticsearch.client.response.query.query.aggs.ESAggrMap;
 import com.didiglobal.knowframework.elasticsearch.client.response.query.query.hits.ESHit;
 import com.didiglobal.knowframework.elasticsearch.client.response.query.query.hits.ESHits;
-import com.didiglobal.logi.log.ILog;
-import com.didiglobal.logi.log.LogFactory;
+import com.didiglobal.knowframework.log.ILog;
+import com.didiglobal.knowframework.log.LogFactory;
 
 import java.util.ArrayList;
 import java.util.HashMap;

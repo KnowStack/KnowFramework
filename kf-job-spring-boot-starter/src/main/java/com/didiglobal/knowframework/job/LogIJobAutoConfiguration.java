@@ -25,7 +25,7 @@ import org.springframework.transaction.PlatformTransactionManager;
 @ConditionalOnClass({Scheduler.class, PlatformTransactionManager.class})
 @EnableConfigurationProperties({LogIJobProperties.class})
 @AutoConfigureAfter({DataSourceAutoConfiguration.class})
-@ComponentScan(basePackages = "com.didiglobal.logi.job")
+@ComponentScan(basePackages = "com.didiglobal.knowframework.job")
 public class LogIJobAutoConfiguration {
 
     /**

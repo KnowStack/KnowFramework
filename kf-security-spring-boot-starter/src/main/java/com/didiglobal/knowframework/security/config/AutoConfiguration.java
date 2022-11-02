@@ -13,7 +13,7 @@ import org.springframework.context.annotation.Configuration;
 @Configuration("logiSecurityAutoConfiguration")
 @EnableConfigurationProperties(LogiSecurityProper.class)
 @AutoConfigureAfter({DataSourceAutoConfiguration.class})
-@ComponentScan(basePackages = "com.didiglobal.logi.security")
+@ComponentScan(basePackages = "com.didiglobal.knowframework.security")
 public class AutoConfiguration {
 
     private final LogiSecurityProper proper;

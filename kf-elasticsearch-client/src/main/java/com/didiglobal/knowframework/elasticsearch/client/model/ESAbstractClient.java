@@ -43,9 +43,6 @@ import com.didiglobal.knowframework.elasticsearch.client.request.query.sql.ESSQL
 import com.didiglobal.knowframework.elasticsearch.client.response.batch.ESBatchResponse;
 import com.didiglobal.knowframework.elasticsearch.client.response.cat.ESCatResponse;
 import com.didiglobal.knowframework.elasticsearch.client.response.query.query.ESQueryResponse;
-import com.didiglobal.logi.elasticsearch.client.gateway.document.*;
-import com.didiglobal.logi.elasticsearch.client.gateway.search.*;
-import com.didiglobal.logi.elasticsearch.client.model.admin.*;
 import org.elasticsearch.action.*;
 import org.elasticsearch.action.support.PlainActionFuture;
 import org.elasticsearch.client.ElasticsearchClient;

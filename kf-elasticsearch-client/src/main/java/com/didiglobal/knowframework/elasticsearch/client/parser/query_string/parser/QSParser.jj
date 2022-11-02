@@ -6,7 +6,7 @@ options {
 
 PARSER_BEGIN(QSParser)
 
-package com.didiglobal.logi.elasticsearch.client.parser.query_string.parser;
+package com.didiglobal.knowframework.elasticsearch.client.parser.query_string.parser;
 import QSNode;
 import java.io.StringReader;
 

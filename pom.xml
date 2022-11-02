@@ -15,7 +15,6 @@
         <module>kf-security-test</module>
         <module>kf-security-spring-boot-starter</module>
         <module>kf-log</module>
-        <module>kf-dsl-prase</module>
         <module>kf-metrices</module>
         <module>kf-elasticsearch-client</module>
         <module>kf-elasticsearch-sql</module>

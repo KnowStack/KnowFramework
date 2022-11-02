@@ -4,8 +4,8 @@ import com.didiglobal.knowframework.elasticsearch.client.gateway.search.response
 import com.didiglobal.knowframework.elasticsearch.client.gateway.search.response.src.Hits;
 import com.didiglobal.knowframework.elasticsearch.client.model.ESActionResponse;
 import com.didiglobal.knowframework.elasticsearch.client.utils.XContentParserUtils;
-import com.didiglobal.logi.log.ILog;
-import com.didiglobal.logi.log.LogFactory;
+import com.didiglobal.knowframework.log.ILog;
+import com.didiglobal.knowframework.log.LogFactory;
 import org.elasticsearch.common.xcontent.*;
 import org.elasticsearch.common.xcontent.XContentParser.Token;
 import org.elasticsearch.rest.BytesRestResponse;

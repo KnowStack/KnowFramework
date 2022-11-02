@@ -12,8 +12,8 @@ import com.didiglobal.knowframework.elasticsearch.client.parser.dsl.ast.common.v
 import com.didiglobal.knowframework.elasticsearch.client.parser.dsl.ast.query.Regexp;
 import com.didiglobal.knowframework.elasticsearch.client.parser.dsl.ast.query.Wildcard;
 import com.didiglobal.knowframework.elasticsearch.client.parser.dsl.visitor.basic.OutputVisitor;
-import com.didiglobal.logi.log.ILog;
-import com.didiglobal.logi.log.LogFactory;
+import com.didiglobal.knowframework.log.ILog;
+import com.didiglobal.knowframework.log.LogFactory;
 import com.google.common.collect.Sets;
 import org.apache.commons.lang3.StringUtils;
 

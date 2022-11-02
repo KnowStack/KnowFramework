@@ -10,8 +10,6 @@ import com.didiglobal.knowframework.security.common.vo.resource.*;
 import com.didiglobal.knowframework.security.exception.LogiSecurityException;
 import com.didiglobal.knowframework.security.service.ResourceTypeService;
 import com.didiglobal.knowframework.security.service.UserResourceService;
-import com.didiglobal.logi.security.common.dto.resource.*;
-import com.didiglobal.logi.security.common.vo.resource.*;
 import io.swagger.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;

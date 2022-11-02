@@ -1,8 +1,8 @@
 package com.didiglobal.knowframework.dsl.parse;
 
 import com.didiglobal.knowframework.dsl.parse.bean.ExtractResult;
-import com.didiglobal.logi.log.ILog;
-import com.didiglobal.logi.log.LogFactory;
+import com.didiglobal.knowframework.log.ILog;
+import com.didiglobal.knowframework.log.LogFactory;
 
 
 /**

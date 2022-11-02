@@ -4,7 +4,6 @@ package com.didiglobal.knowframework.elasticsearch.client.parser.query_string.vi
 import com.didiglobal.knowframework.elasticsearch.client.parser.query_string.ast.QSFieldNode;
 import com.didiglobal.knowframework.elasticsearch.client.parser.query_string.ast.QSValueNode;
 import com.didiglobal.knowframework.elasticsearch.client.parser.query_string.ast.op.*;
-import com.didiglobal.logi.elasticsearch.client.parser.query_string.ast.op.*;
 import com.didiglobal.knowframework.elasticsearch.client.parser.query_string.ast.op.logic.QSANDNode;
 import com.didiglobal.knowframework.elasticsearch.client.parser.query_string.ast.op.logic.QSORNode;
 import com.didiglobal.knowframework.elasticsearch.client.parser.query_string.ast.op.logic.QSParenNode;
