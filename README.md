@@ -18,7 +18,7 @@ kf-security 提供项目大多都需要基础的一些功能（用户、角色�
 #### 1.3.1 添加Maven
 ```xml
 <dependency>
-    <groupId>io.github.knowframework</groupId>
+    <groupId>io.github.knowstack</groupId>
     <artifactId>kf-security-spring-boot-starter</artifactId>
     <version>1.0.0</version>
 </dependency>
@@ -54,7 +54,7 @@ kf-security相关界面并没提供【角色权限元数据、资源类别数据
 #### 2.3.1 添加Maven
 ```xml
 <dependency>
-    <groupId>io.github.knowframework</groupId>
+    <groupId>io.github.knowstack</groupId>
     <artifactId>kf-job-spring-boot-starter</artifactId>
     <version>1.0.0</version>
 </dependency>
@@ -142,7 +142,7 @@ Http Method：GET
 ### 3.2 添加maven
 ```xml
 <dependency>
-	<groupId>io.github.knowframework</groupId>
+	<groupId>io.github.knowstack</groupId>
 	<artifactId>kf-log</artifactId>
 	<version>1.0.0</version>
 </dependency>
@@ -230,7 +230,7 @@ Arius内部指标采集和计算的工具包。
 ### 4.1 添加Maven
 ```xml
 <dependency>
-    <groupId>io.github.knowframework</groupId>
+    <groupId>io.github.knowstack</groupId>
     <artifactId>kf-metrices</artifactId>
     <version>1.0.0</version>
 </dependency>
@@ -240,7 +240,7 @@ Arius内部指标采集和计算的工具包。
 ### 5.1 添加Maven
 ```xml
 <dependency>
-    <groupId>io.github.knowframework</groupId>
+    <groupId>io.github.knowstack</groupId>
     <artifactId>kf-dsl-prase</artifactId>
     <version>1.0.0</version>
 </dependency>
@@ -249,7 +249,7 @@ Arius内部指标采集和计算的工具包。
 ### 6.1 添加Maven
 ```xml
 <dependency>
-    <groupId>io.github.knowframework</groupId>
+    <groupId>io.github.knowstack</groupId>
     <artifactId>kf-elasticsearch-client</artifactId>
     <version>1.0.0</version>
 </dependency>
@@ -258,7 +258,7 @@ Arius内部指标采集和计算的工具包。
 ### 7.1 添加Maven
 ```xml
 <dependency>
-    <groupId>io.github.knowframework</groupId>
+    <groupId>io.github.knowstack</groupId>
     <artifactId>kf-elasticsearch-sql</artifactId>
     <version>1.0.0</version>
 </dependency>
@@ -272,7 +272,7 @@ Arius内部指标采集和计算的工具包。
 
 ```
 <dependency>
-	<groupId>io.github.knowframework</groupId>
+	<groupId>io.github.knowstack</groupId>
 	<artifactId>kf-observability</artifactId>
 	<version>1.0.0</version>
 </dependency>

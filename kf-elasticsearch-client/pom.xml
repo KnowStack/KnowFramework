@@ -5,7 +5,7 @@
 
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>io.github.knowframework</groupId>
+    <groupId>io.github.knowstack</groupId>
     <artifactId>kf-elasticsearch-client</artifactId>
     <version>1.0.0</version>
 
@@ -92,7 +92,7 @@
             <version>3.4</version>
         </dependency>
         <dependency>
-            <groupId>io.github.knowframework</groupId>
+            <groupId>io.github.knowstack</groupId>
             <artifactId>kf-log</artifactId>
             <version>1.0.0</version>
         </dependency>

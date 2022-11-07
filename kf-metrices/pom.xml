@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <version>1.0.0</version>
-    <groupId>io.github.knowframework</groupId>
+    <groupId>io.github.knowstack</groupId>
     <artifactId>kf-metrices</artifactId>
     <packaging>jar</packaging>
     <name>${project.groupId}:${project.artifactId}</name>
