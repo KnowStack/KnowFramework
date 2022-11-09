@@ -32,6 +32,15 @@
         <developerConnection>scm:git:ssh://github.com/KnowStack/know-framework.git</developerConnection>
     </scm>
 
+    <!-- 开发者信息 -->
+    <developers>
+        <developer>
+            <name>zhaoqingrong</name>
+            <email>zhaoqingrong@didiglobal.com</email>
+            <timezone>+8</timezone>
+        </developer>
+    </developers>
+
     <!-- 许可证信息 -->
     <licenses>
         <license>
@@ -235,6 +244,37 @@
 
         </dependencies>
     </dependencyManagement>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-gpg-plugin</artifactId>
+                <version>1.5</version>
+                <executions>
+                    <execution>
+                        <id>sign-artifacts</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>sign</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.sonatype.plugins</groupId>
+                <artifactId>nexus-staging-maven-plugin</artifactId>
+                <version>1.6.7</version>
+                <extensions>true</extensions>
+                <configuration>
+                    <serverId>ossrh</serverId>
+                    <nexusUrl>https://s01.oss.sonatype.org/</nexusUrl>
+                    <autoReleaseAfterClose>true</autoReleaseAfterClose>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 
     <distributionManagement>
         <snapshotRepository>
