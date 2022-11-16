@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import com.didiglobal.knowframework.job.common.Result;
 
+import static com.didiglobal.knowframework.job.common.CommonUtil.sqlFuzzyQueryTransfer;
+
 /**
  * job 的启动、暂停、job信息、job日志相关操作.
  *
@@ -25,6 +27,8 @@ public class JobLogsController {
 
     @PostMapping("/list")
     public PagingResult<LogIJobLogVO> getJobLogs(@RequestBody TaskLogPageQueryDTO pageQueryDTO) {
+        pageQueryDTO.setTaskDesc(sqlFuzzyQueryTransfer(pageQueryDTO.getTaskDesc()));
+
         List<LogIJobLogVO> logIJobLogVOS = jobLogManager.pageJobLogs(pageQueryDTO);
         int totalCount = jobLogManager.getJobLogsCount(pageQueryDTO);
 

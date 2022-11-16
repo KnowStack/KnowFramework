@@ -42,11 +42,12 @@ public interface LogIJobLogMapper {
             + "update_time=#{updateTime}, app_name=#{appName} where job_code=#{jobCode}")
     int updateByCode(LogIJobLogPO logIJobLogPO);
 
-    @Delete("delete from logi_job_log where create_time<=#{createTime} and app_name=#{appName}")
-    int deleteByCreateTime(@Param("createTime") Timestamp createTime, @Param("appName") String appName);
+    @Delete("delete from logi_job_log where create_time<=#{createTime} and app_name=#{appName} limit #{limits}")
+    int deleteByCreateTime(@Param("createTime") Timestamp createTime, @Param("appName") String appName,
+                           @Param("limits") Integer limits);
 
-    @Select("select count(1) from logi_job_log where app_name=#{appName} and task_code=#{taskCode}")
-    int selectCountByAppName(@Param("appName") String appName, @Param("taskCode") String taskCode);
+    @Select("select count(1) from logi_job_log where app_name=#{appName} and create_time<=#{createTime}")
+    int selectCountByAppNameAndCreateTime(@Param("appName") String appName, @Param("createTime") Timestamp createTime);
 
     List<LogIJobLogPO> pagineListByCondition(@Param("appName") String appName,
                                              @Param("taskId") Long taskId,

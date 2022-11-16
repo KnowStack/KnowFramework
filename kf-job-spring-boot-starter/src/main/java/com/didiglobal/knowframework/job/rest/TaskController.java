@@ -19,6 +19,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static com.didiglobal.knowframework.job.common.CommonUtil.sqlFuzzyQueryTransfer;
+
 /**
  * task controller.
  *
@@ -39,6 +41,9 @@ public class TaskController {
 
     @PostMapping("/list")
     public PagingResult<LogITaskVO> getAll(@RequestBody TaskPageQueryDTO taskPageQueryDTO) {
+        taskPageQueryDTO.setTaskDesc(sqlFuzzyQueryTransfer(taskPageQueryDTO.getTaskDesc()));
+        taskPageQueryDTO.setClassName(sqlFuzzyQueryTransfer(taskPageQueryDTO.getClassName()));
+
         List<LogITask> logITasks = taskManager.getPagineList(taskPageQueryDTO);
         int count = taskManager.pagineTaskConut(taskPageQueryDTO);
 

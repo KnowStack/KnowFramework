@@ -472,7 +472,7 @@ public class JobManagerImpl implements JobManager {
      */
     class LogCleanHandler implements Runnable {
         // 每小时执行一次
-        private static final long JOB_INTERVAL = 3600L;
+        private static final long JOB_LOG_DEL_INTERVAL = 3600L;
         // 日志保存时间[默认保存7天]
         private Integer logExpire = 7;
 
@@ -487,17 +487,26 @@ public class JobManagerImpl implements JobManager {
             while (true) {
                 try {
                     // 间隔一段时间执行一次
-                    ThreadUtil.sleep(JOB_INTERVAL, TimeUnit.SECONDS);
+                    ThreadUtil.sleep( JOB_LOG_DEL_INTERVAL, TimeUnit.SECONDS);
 
                     logger.info("class=LogCleanHandler||method=run||msg=clean auv_job_log regular"
-                            + " time {}", JOB_INTERVAL);
+                            + " time {}", JOB_LOG_DEL_INTERVAL );
 
-                    // 删除日志
-                    int count = logIJobLogMapper.deleteByCreateTime(
-                            new Timestamp(System.currentTimeMillis() - logExpire * 24 * 3600 * 1000), logIJobProperties.getAppName()
-                    );
+                    String    appName    = logIJobProperties.getAppName();
+                    Timestamp deleteTime = new Timestamp(System.currentTimeMillis() - logExpire * 24 * 3600 * 1000);
 
-                    logger.info("class=LogCleanHandler||method=run||msg=clean log count={}", count);
+                    int deleteRowTotal    = logIJobLogMapper.selectCountByAppNameAndCreateTime(appName, deleteTime);
+                    int deleteRowPerTimes = deleteRowTotal / 60;
+                    int deleteRowReal     = 0;
+
+                    for(int i = 0; i < 60; i++){
+                        // 删除日志
+                        int count = logIJobLogMapper.deleteByCreateTime(deleteTime, appName, deleteRowPerTimes);
+                        deleteRowReal += count;
+                    }
+
+                    logger.info("class=LogCleanHandler||method=run||msg=clean log deleteRowTotal={}, deleteRowReal={}",
+                            deleteRowTotal, deleteRowReal);
                 } catch (Exception e) {
                     logger.error("class=LogCleanHandler||method=run||msg=exception", e);
                 }
