@@ -10,31 +10,44 @@ import java.util.Map;
 public class HttpUtils {
 
     // 连接超时时间, 单位: ms
-    private static int CONNECT_TIME_OUT = 15000;
+    private static final Integer CONNECT_TIME_OUT = 15000;
 
     // 读取超时时间, 单位: ms
-    private static int READ_TIME_OUT = 3000;
+    private int readTimeout;
 
-    private static final String METHOD_GET = "GET";
-    private static final String METHOD_POST = "POST";
-    private static final String METHOD_PUT = "PUT";
-    private static final String METHOD_DELETE = "DELETE";
+    private final String METHOD_GET = "GET";
+    private final String METHOD_POST = "POST";
+    private final String METHOD_PUT = "PUT";
+    private final String METHOD_DELETE = "DELETE";
 
-    private static final String CHARSET_UTF8 = "UTF-8";
+    private final String CHARSET_UTF8 = "UTF-8";
 
-    public static String get(String url, Map<String, String> params, String userName, String password) throws Exception {
+    private static HttpUtils instance;
+
+    private HttpUtils(int readTimeout) {
+        this.readTimeout = readTimeout;
+    }
+
+    public static synchronized HttpUtils getInstance(int readTimeout) {
+        if(null == instance) {
+            instance = new HttpUtils(readTimeout);
+        }
+        return instance;
+    }
+
+    public String get(String url, Map<String, String> params, String userName, String password) throws Exception {
         return sendRequest(url, METHOD_GET, params, null, null, userName, password);
     }
 
-    public static String get(String url, Map<String, String> params) throws Exception {
+    public String get(String url, Map<String, String> params) throws Exception {
         return sendRequest(url, METHOD_GET, params, null, null, null, null);
     }
 
-    public static String get(String url, Map<String, String> params, Map<String, String> headers) throws Exception {
+    public String get(String url, Map<String, String> params, Map<String, String> headers) throws Exception {
         return sendRequest(url, METHOD_GET, params, headers, null, null, null);
     }
 
-    public static String get(String url, Map<String, String> params, Map<String, String> headers, String content, String userName, String password) throws Exception {
+    public String get(String url, Map<String, String> params, Map<String, String> headers, String content, String userName, String password) throws Exception {
         InputStream in = null;
         try {
             if (content != null && !content.isEmpty()) {
@@ -46,7 +59,7 @@ public class HttpUtils {
         return sendRequest(url, METHOD_GET, params, headers, in, userName, password);
     }
 
-    public static String postForString(String url, String content, Map<String, String> headers, String userName, String password) throws Exception {
+    public String postForString(String url, String content, Map<String, String> headers, String userName, String password) throws Exception {
         InputStream in = null;
         try {
             if (content != null && !content.isEmpty()) {
@@ -58,7 +71,7 @@ public class HttpUtils {
         return sendRequest(url, METHOD_POST, null, headers, in, userName, password);
     }
 
-    public static String putForString(String url, String content, Map<String, String> headers, String user, String password) throws Exception {
+    public String putForString(String url, String content, Map<String, String> headers, String user, String password) throws Exception {
         InputStream in = null;
         try {
             if (content != null && !content.isEmpty()) {
@@ -70,7 +83,7 @@ public class HttpUtils {
         return sendRequest(url, METHOD_PUT, null, headers, in, user, password);
     }
 
-    public static String deleteForString(String url, String content, Map<String, String> headers) throws Exception {
+    public String deleteForString(String url, String content, Map<String, String> headers) throws Exception {
         InputStream in = null;
         try {
             if (content != null && !content.isEmpty()) {
@@ -90,13 +103,13 @@ public class HttpUtils {
      * @return 返回响应内容的文本
      * @throws Exception http 响应 code 非 200, 或发生其他异常均抛出异常
      */
-    private static String sendRequest(String url,
-                                      String method,
-                                      Map<String, String> params,
-                                      Map<String, String> headers,
-                                      InputStream bodyStream,
-                                      String userName,
-                                      String password) throws Exception {
+    private String sendRequest(String url,
+                               String method,
+                               Map<String, String> params,
+                               Map<String, String> headers,
+                               InputStream bodyStream,
+                               String userName,
+                               String password) throws Exception {
         HttpURLConnection conn = null;
 
         try {
@@ -127,7 +140,7 @@ public class HttpUtils {
         }
     }
 
-    private static String setUrlParams(String url, Map<String, String> params) {
+    private String setUrlParams(String url, Map<String, String> params) {
         if (url == null || params == null || params.isEmpty()) {
             return url;
         }
@@ -139,22 +152,22 @@ public class HttpUtils {
         return sb.deleteCharAt(sb.length() - 1).toString();
     }
 
-    private static void setConnProperties(HttpURLConnection conn,
-                                          String method,
-                                          Map<String, String> headers) throws Exception {
+    private void setConnProperties(HttpURLConnection conn,
+                                   String method,
+                                   Map<String, String> headers) throws Exception {
         setConnProperties(conn, method, headers, null, null);
     }
 
-    private static void setConnProperties(HttpURLConnection conn,
-                                          String method,
-                                          Map<String, String> headers,
-                                          String userName,
-                                          String password) throws Exception {
+    private void setConnProperties(HttpURLConnection conn,
+                                   String method,
+                                   Map<String, String> headers,
+                                   String userName,
+                                   String password) throws Exception {
         // 设置连接超时时间
         conn.setConnectTimeout(CONNECT_TIME_OUT);
 
         // 设置读取超时时间
-        conn.setReadTimeout(READ_TIME_OUT);
+        conn.setReadTimeout(readTimeout);
 
         // 设置请求方法
         if (method != null && !method.isEmpty()) {
@@ -180,12 +193,12 @@ public class HttpUtils {
     /**
      * BASE64编码
      */
-    private static String encryptBASE64(String username,String password) {
+    private String encryptBASE64(String username,String password) {
         byte[] key = (username+":"+password).getBytes();
         return  new String(Base64.encodeBase64(key));
     }
 
-    private static String handleResponseBodyToString(InputStream in) throws Exception {
+    private String handleResponseBodyToString(InputStream in) throws Exception {
         ByteArrayOutputStream bytesOut = null;
         try {
             bytesOut = new ByteArrayOutputStream();
@@ -196,7 +209,7 @@ public class HttpUtils {
         }
     }
 
-    private static void copyStreamAndClose(InputStream in, OutputStream out) {
+    private void copyStreamAndClose(InputStream in, OutputStream out) {
         try {
             byte[] buf = new byte[1024];
             int len = -1;
@@ -212,7 +225,7 @@ public class HttpUtils {
         }
     }
 
-    private static void closeConnection(HttpURLConnection conn) {
+    private void closeConnection(HttpURLConnection conn) {
         if (conn != null) {
             try {
                 conn.disconnect();
@@ -222,7 +235,7 @@ public class HttpUtils {
         }
     }
 
-    private static void closeStream(Closeable stream) {
+    private void closeStream(Closeable stream) {
         if (stream != null) {
             try {
                 stream.close();

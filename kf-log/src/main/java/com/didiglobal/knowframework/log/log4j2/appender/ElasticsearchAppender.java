@@ -34,10 +34,11 @@ public class ElasticsearchAppender extends AbstractAppender {
     private static final String           COMMA             = ",";
     private static final String TYPE_NAME_DEFAULT_VALUE = "type";
     private static final String THRESHOLD_DEFAULT_VALUE = "all";
-    private static final Integer BUFFER_SIZE_DEFAULT_VALUE = 1000;
+    private static final Integer BUFFER_SIZE_DEFAULT_VALUE = 100;
     private static final Integer NUMBER_OF_SHARDS_DEFAULT_VALUE = 1;
     private static final Integer NUMBER_OF_REPLICAS_DEFAULT_VALUE = 1;
     private static final Integer LOG_EXPIRE_DEFAULT_VALUE = 7;
+    private static final Integer REQUEST_TIME_OUT_MILLIS_DEFAULT_VALUE = 3000;
 
     /**
      * elasticsearch address
@@ -98,6 +99,10 @@ public class ElasticsearchAppender extends AbstractAppender {
      */
     private String extendsMappingClass;
     /**
+     * elasticsearch 请求超时时间 单位：毫秒
+     */
+    private Integer requestTimeoutMillis;
+    /**
      * http 请求前缀
      */
     private String requestUrlPrefix;
@@ -107,6 +112,8 @@ public class ElasticsearchAppender extends AbstractAppender {
 
     private volatile Boolean sendLogEvent2ElasticsearchRunnableSwitch;
     private volatile Boolean elasticsearchLogCleanRunnableSwitch;
+
+    private HttpUtils httpUtils;
 
     public ElasticsearchAppender(
             String name,
@@ -123,7 +130,8 @@ public class ElasticsearchAppender extends AbstractAppender {
             String threshold,
             Integer bufferSize,
             Integer logExpire,
-            String extendsMappingClass
+            String extendsMappingClass,
+            Integer requestTimeoutMillis
     ) {
         super(name, filter, layout);
         this.address = address;
@@ -138,8 +146,10 @@ public class ElasticsearchAppender extends AbstractAppender {
         this.bufferSize = getBufferSize(bufferSize);
         this.logExpire = getLogExpire(logExpire);
         this.extendsMappingClass = extendsMappingClass;
+        this.requestTimeoutMillis = getRequestTimeoutMillis(requestTimeoutMillis);
         //初始化缓冲区
         this.buffer = new LinkedBlockingQueue<>(bufferSize);
+        this.httpUtils = HttpUtils.getInstance(requestTimeoutMillis);
         //初始化 requestUrlPrefix
         this.requestUrlPrefix = String.format("http://%s:%d", this.address, this.port);
         //校验 index 是否已创建，如未创建，则进行创建 创建 时 采用 给 定 elasticsearch mappings.
@@ -162,7 +172,15 @@ public class ElasticsearchAppender extends AbstractAppender {
             sendLogEvent2ElasticsearchRunnableSwitch = Boolean.TRUE;
             elasticsearchLogCleanRunnableSwitch = Boolean.TRUE;
             threadPool.execute(new SendLogEvent2ElasticsearchRunnable());
-            threadPool.execute(new ElasticsearchLogCleanRunnable(this.indexName, this.requestUrlPrefix, this.user, this.password));
+            threadPool.execute(new ElasticsearchLogCleanRunnable(this.indexName, this.requestUrlPrefix, this.user, this.password, this.httpUtils));
+        }
+    }
+
+    private Integer getRequestTimeoutMillis(Integer requestTimeoutMillis) {
+        if(null == requestTimeoutMillis || 0 >= requestTimeoutMillis) {
+            return REQUEST_TIME_OUT_MILLIS_DEFAULT_VALUE;
+        } else {
+            return requestTimeoutMillis;
         }
     }
 
@@ -200,7 +218,7 @@ public class ElasticsearchAppender extends AbstractAppender {
     private void createElasticsearchIndex() throws Exception {
         String paramString = getIndexCreateParam();
         String url = this.requestUrlPrefix + "/" + indexName;
-        HttpUtils.putForString(url, paramString, null, this.user, this.password);
+        this.httpUtils.putForString(url, paramString, null, this.user, this.password);
         //此处，由于可能存在并发创建索引情况，但并发创建时，仅一个将创建索引成功，其他都将创建失败，因而无须对 response 进行进一步判断
     }
 
@@ -311,7 +329,7 @@ public class ElasticsearchAppender extends AbstractAppender {
     private boolean elasticsearchIndexExists() {
         String url = this.requestUrlPrefix + "/_cat/indices/" + indexName;
         try {
-            HttpUtils.get(url, null, this.user, this.password);
+            this.httpUtils.get(url, null, this.user, this.password);
             return true;
         } catch (Exception ex) {
             return false;
@@ -345,12 +363,14 @@ public class ElasticsearchAppender extends AbstractAppender {
         private String requestUrlPrefix;
         private String userName;
         private String password;
+        private HttpUtils httpUtils;
 
-        public ElasticsearchLogCleanRunnable(String indexName, String requestUrlPrefix, String userName, String password) {
+        public ElasticsearchLogCleanRunnable(String indexName, String requestUrlPrefix, String userName, String password, HttpUtils httpUtils) {
             this.indexName = indexName;
             this.requestUrlPrefix = requestUrlPrefix;
             this.userName = userName;
             this.password = password;
+            this.httpUtils = httpUtils;
         }
 
         @Override
@@ -379,7 +399,7 @@ public class ElasticsearchAppender extends AbstractAppender {
         private void deleteByCreateTime(Long createTime) throws Exception {
             String paramString = getIndexDeleteParam(createTime);
             String url = this.requestUrlPrefix + "/" + indexName + "/_delete_by_query";
-            HttpUtils.postForString(url, paramString, null, this.userName, this.password);
+            this.httpUtils.postForString(url, paramString, null, this.userName, this.password);
         }
 
         private String getIndexDeleteParam(Long createTime) {
@@ -447,6 +467,7 @@ public class ElasticsearchAppender extends AbstractAppender {
             @PluginAttribute("bufferSize") int bufferSize,
             @PluginAttribute("logExpire") int logExpire,
             @PluginAttribute("extendsMappingClass") String extendsMappingClass,
+            @PluginAttribute("requestTimeoutMillis") int requestTimeoutMillis,
             @PluginElement("Filter") final Filter filter,
             @PluginElement("Layout") Layout<? extends Serializable> layout
     ) {
@@ -472,7 +493,8 @@ public class ElasticsearchAppender extends AbstractAppender {
                 threshold,
                 bufferSize,
                 logExpire,
-                extendsMappingClass
+                extendsMappingClass,
+                requestTimeoutMillis
         );
     }
 
@@ -675,7 +697,7 @@ public class ElasticsearchAppender extends AbstractAppender {
     public void batchInsert(List<Map<String, Object>> elementList) throws Exception {
         String paramString = getBulkRequestParam(elementList);
         String url = this.requestUrlPrefix + "/_bulk";
-        HttpUtils.postForString(url, paramString, null, user, password);
+        this.httpUtils.postForString(url, paramString, null, user, password);
     }
 
     private String getBulkRequestParam(List<Map<String, Object>> elementList) {
