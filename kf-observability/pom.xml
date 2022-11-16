@@ -6,11 +6,11 @@
     <modelVersion>4.0.0</modelVersion>
 
     <version>1.0.0</version>
-    <groupId>io.github.zqrferrari</groupId>
-    <artifactId>logi-observability</artifactId>
+    <groupId>io.github.knowstack</groupId>
+    <artifactId>kf-observability</artifactId>
     <packaging>jar</packaging>
     <name>${project.groupId}:${project.artifactId}</name>
-    <description>logi-observability包</description>
+    <description>kf-observability包</description>
 
     <properties>
         <maven.compiler.source>8</maven.compiler.source>
@@ -139,7 +139,7 @@
         </dependency>
 
         <dependency>
-            <groupId>io.github.zqrferrari</groupId>
+            <groupId>io.github.knowstack</groupId>
             <artifactId>know-metrics</artifactId>
             <version>1.0.0</version>
         </dependency>

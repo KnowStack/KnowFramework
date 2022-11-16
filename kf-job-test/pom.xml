@@ -3,23 +3,23 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
-        <artifactId>logi-common</artifactId>
-        <groupId>io.github.zqrferrari</groupId>
+        <artifactId>know-framework</artifactId>
+        <groupId>io.github.knowstack</groupId>
         <version>1.0.0</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>logi-job-test</artifactId>
+    <artifactId>kf-job-test</artifactId>
 
     <properties>
         <maven.deploy.skip>true</maven.deploy.skip>
     </properties>
 
     <dependencies>
-        <!-- logi-job 依赖 -->
+        <!-- kf-job 依赖 -->
         <dependency>
-            <groupId>io.github.zqrferrari</groupId>
-            <artifactId>logi-job-spring-boot-starter</artifactId>
+            <groupId>io.github.knowstack</groupId>
+            <artifactId>kf-job-spring-boot-starter</artifactId>
             <version>2.0.0</version>
         </dependency>
 

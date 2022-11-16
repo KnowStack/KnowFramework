@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.didiglobal.logi.job.mapper.LogITaskLockMapper">
+<mapper namespace="com.didiglobal.knowframework.job.mapper.LogITaskLockMapper">
 
     <!-- 通用查询映射结果 -->
-    <resultMap id="BaseResultMap" type="com.didiglobal.logi.job.common.po.LogITaskLockPO">
+    <resultMap id="BaseResultMap" type="com.didiglobal.knowframework.job.common.po.LogITaskLockPO">
         <id column="id" property="id"/>
         <result column="task_code" property="taskCode"/>
         <result column="woker_code" property="workerCode"/>
