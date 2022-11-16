@@ -14,7 +14,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Configuration package="org.apache.logging.log4j.core,com.didiglobal.logi.log.log4j2.appender" >
 	<Appenders>
-    <ElasticsearchAppender name="esAppender" address="116.85.23.222" port="18303" user="elastic" password="Didiyun@888" indexName="index_observability" typeName="type" threshold="all" bufferSize="1000" numberOfShards="1" numberOfReplicas="1" logExpire="7" extendsMappingClass="com.didiglobal.logi.job.examples.MyExtendsElasticsearchMappings">
+    <ElasticsearchAppender name="esAppender" address="116.85.23.222" port="18303" user="elastic" password="Didiyun@888" indexName="index_observability" typeName="type" threshold="all" bufferSize="1000" numberOfShards="1" numberOfReplicas="1" logExpire="7" extendsMappingClass="com.didiglobal.logi.job.examples.MyExtendsElasticsearchMappings" requestTimeoutMillis="3000">
     </ElasticsearchAppender>
 	</Appenders>
 	<Loggers>
@@ -50,6 +50,8 @@
 - numberOfReplicas：程序自动创建索引时，索引的分片的副本数，选填，默认值为`1`。
 
 - logExpire：Metric/Log/Trace数据过期阈值（单位：日），选填，默认值为`7`。
+
+- requestTimeoutMillis：Elasticsearch 客户端请求超时时间（单位：毫秒），选填，默认值为`3000`。
 
 - extendsMappingClass：自定义索引 schema 扩展字段接口实现类的完整类名（含包名），自定义类须实现ExtendsElasticsearchMappings 接口，选填。使用场景：如在 Observability 组件中存在自定义指标上报，则需要配置该项值，使用示例：
 
