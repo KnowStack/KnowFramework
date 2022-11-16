@@ -4,42 +4,35 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>io.github.knowstack</groupId>
-    <artifactId>know-framework</artifactId>
+    <groupId>io.github.zqrferrari</groupId>
+    <artifactId>logi-common</artifactId>
     <version>1.0.0</version>
     <packaging>pom</packaging>
 
     <modules>
-        <module>kf-job-spring-boot-starter</module>
-        <module>kf-dsl-prase</module>
-        <module>kf-security-test</module>
-        <module>kf-security-spring-boot-starter</module>
-        <module>kf-log</module>
-        <module>kf-metrices</module>
-        <module>kf-elasticsearch-client</module>
-        <module>kf-elasticsearch-sql</module>
-        <module>kf-observability</module>
+        <module>logi-job-spring-boot-starter</module>
+        <module>logi-job-test</module>
+        <module>logi-security-test</module>
+        <module>logi-security-spring-boot-starter</module>
+        <module>logi-log</module>
+        <module>logi-dsl-prase</module>
+        <module>logi-metrices</module>
+        <module>logi-elasticsearch-client</module>
+        <module>logi-elasticsearch-sql</module>
+        <module>logi-observability</module>
+        <module>know-metrics</module>
     </modules>
 
     <description>提供公共maven依赖</description>
     <name>${project.groupId}:${project.artifactId}</name>
 
-    <url>https://github.com/KnowStack/know-framework</url>
+    <url>https://github.com/didi/LogiCommon</url>
 
     <scm>
-        <url>https://github.com/KnowStack/know-framework.git</url>
-        <connection>scm:git:git://github.com/KnowStack/know-framework.git</connection>
-        <developerConnection>scm:git:ssh://github.com/KnowStack/know-framework.git</developerConnection>
+        <url>https://github.com/didi/LogiCommon.git</url>
+        <connection>scm:git:git://github.com/didi/LogiCommon.git</connection>
+        <developerConnection>scm:git:ssh://github.com/didi/LogiCommon.git</developerConnection>
     </scm>
-
-    <!-- 开发者信息 -->
-    <developers>
-        <developer>
-            <name>zhaoqingrong</name>
-            <email>zhaoqingrong@didiglobal.com</email>
-            <timezone>+8</timezone>
-        </developer>
-    </developers>
 
     <!-- 许可证信息 -->
     <licenses>
@@ -56,7 +49,7 @@
         <java.version>1.8</java.version>
         <maven.compiler.source>${java.version}</maven.compiler.source>
         <maven.compiler.target>${java.version}</maven.compiler.target>
-        <kf.version>1.0-SNAPSHOT</kf.version>
+        <logi.version>1.0-SNAPSHOT</logi.version>
         <spring-boot.version>2.2.13.RELEASE</spring-boot.version>
         <mybatis.version>2.2.0</mybatis.version>
         <mybatis-plus.version>3.4.2</mybatis-plus.version>
@@ -72,7 +65,7 @@
         <lombok.version>1.18.16</lombok.version>
         <jackson.version>2.12.4</jackson.version>
         <oshi-core.version>5.3.6</oshi-core.version>
-        <fastjson.version>1.2.76</fastjson.version>
+        <fastjson.version>1.2.83</fastjson.version>
         <servlet.version>4.0.1</servlet.version>
     </properties>
 
@@ -102,7 +95,7 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-starter-web</artifactId>
                 <version>${spring-boot.version}</version>
-                <!-- 这些排除的依赖，记得给 kf-common的child pom 加上 -->
+                <!-- 这些排除的依赖，记得给 logi-common的child pom 加上 -->
                 <exclusions>
                     <exclusion>
                         <groupId>com.fasterxml.jackson.core</groupId>
@@ -211,70 +204,8 @@
             </dependency>
             <!-- ======servlet===== -->
 
-            <dependency>
-                <groupId>org.springframework.data</groupId>
-                <artifactId>spring-data-elasticsearch</artifactId>
-                <version>4.0.9.RELEASE</version>
-            </dependency>
-            <dependency>
-                <groupId>org.elasticsearch.client</groupId>
-                <artifactId>transport</artifactId>
-                <version>7.6.2</version>
-            </dependency>
-            <dependency>
-                <groupId>org.elasticsearch.plugin</groupId>
-                <artifactId>transport-netty4-client</artifactId>
-                <version>7.6.2</version>
-            </dependency>
-            <dependency>
-                <groupId>org.elasticsearch.client</groupId>
-                <artifactId>elasticsearch-rest-high-level-client</artifactId>
-                <version>7.6.2</version>
-            </dependency>
-            <dependency>
-                <groupId>org.elasticsearch</groupId>
-                <artifactId>elasticsearch</artifactId>
-                <version>7.6.2</version>
-            </dependency>
-            <dependency>
-                <groupId>org.elasticsearch.client</groupId>
-                <artifactId>elasticsearch-rest-client</artifactId>
-                <version>7.6.2</version>
-            </dependency>
-
         </dependencies>
     </dependencyManagement>
-
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-gpg-plugin</artifactId>
-                <version>1.5</version>
-                <executions>
-                    <execution>
-                        <id>sign-artifacts</id>
-                        <phase>verify</phase>
-                        <goals>
-                            <goal>sign</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-
-            <plugin>
-                <groupId>org.sonatype.plugins</groupId>
-                <artifactId>nexus-staging-maven-plugin</artifactId>
-                <version>1.6.7</version>
-                <extensions>true</extensions>
-                <configuration>
-                    <serverId>ossrh</serverId>
-                    <nexusUrl>https://s01.oss.sonatype.org/</nexusUrl>
-                    <autoReleaseAfterClose>true</autoReleaseAfterClose>
-                </configuration>
-            </plugin>
-        </plugins>
-    </build>
 
     <distributionManagement>
         <snapshotRepository>
