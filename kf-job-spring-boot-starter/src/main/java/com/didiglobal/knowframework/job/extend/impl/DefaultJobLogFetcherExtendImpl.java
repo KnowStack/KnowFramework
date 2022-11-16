@@ -18,21 +18,22 @@ public class DefaultJobLogFetcherExtendImpl implements JobLogFetcherExtend {
 
     private LogIJobProperties logIJobProperties;
 
-    private int                connectTimeout = 2 * 60000;
     private int                socketTimeout  = 2 * 60000;
     private int from = 0;
     private int size = 10000;
+    private HttpUtils httpUtils;
 
     @Autowired
     public DefaultJobLogFetcherExtendImpl(LogIJobProperties logIJobProperties) {
         this.logIJobProperties = logIJobProperties;
+        this.httpUtils = HttpUtils.getInstance(socketTimeout);
     }
 
     @Override
     public List<String> getLogsByTraceIdFromExternalSystem(String traceId) throws Exception {
         String paramString = getSearchParam(traceId);
         String url = String.format("http://%s:%d", logIJobProperties.getElasticsearchAddress(), logIJobProperties.getElasticsearchPort()) + "/" + logIJobProperties.getElasticsearchIndexName() + "/_search";
-        String response = HttpUtils.get(url, null, null, paramString, logIJobProperties.getElasticsearchUser(), logIJobProperties.getElasticsearchPassword());
+        String response = this.httpUtils.get(url, null, null, paramString, logIJobProperties.getElasticsearchUser(), logIJobProperties.getElasticsearchPassword());
         if(StringUtils.isNotBlank(response)) {
             try {
                 List<String> searchResult = getSearchResult(response);

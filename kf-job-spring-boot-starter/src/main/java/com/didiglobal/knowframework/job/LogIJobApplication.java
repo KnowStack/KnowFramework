@@ -9,7 +9,7 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-@ComponentScan(basePackages = "com.didiglobal.logi.job")
+@ComponentScan(basePackages = "com.didiglobal.knowframework.job")
 public class LogIJobApplication {
 
     /**
