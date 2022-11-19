@@ -685,7 +685,7 @@ public class LinuxProcessMetricsServiceImpl extends LinuxMetricsService implemen
                 "当前jvm进程S0C", PID);
         if (!lines.isEmpty() && 2 == lines.size() && StringUtils.isNotBlank(lines.get(1))) {
             String[] properties = lines.get(1).split("\\s+");
-            if(19 == properties.length) {
+            if(12 <= properties.length) {
                 return Double.parseDouble(properties[0]) * 1024;
             } else {
                 LOGGER.error(
@@ -705,7 +705,7 @@ public class LinuxProcessMetricsServiceImpl extends LinuxMetricsService implemen
                 "当前jvm进程S1C", PID);
         if (!lines.isEmpty() && 2 == lines.size() && StringUtils.isNotBlank(lines.get(1))) {
             String[] properties = lines.get(1).split("\\s+");
-            if(19 == properties.length) {
+            if(12 <= properties.length) {
                 return Double.parseDouble(properties[1]) * 1024;
             } else {
                 LOGGER.error(
@@ -725,7 +725,7 @@ public class LinuxProcessMetricsServiceImpl extends LinuxMetricsService implemen
                 "当前jvm进程S0U", PID);
         if (!lines.isEmpty() && 2 == lines.size() && StringUtils.isNotBlank(lines.get(1))) {
             String[] properties = lines.get(1).split("\\s+");
-            if(19 == properties.length) {
+            if(12 <= properties.length) {
                 return Double.parseDouble(properties[2]) * 1024;
             } else {
                 LOGGER.error(
@@ -745,7 +745,7 @@ public class LinuxProcessMetricsServiceImpl extends LinuxMetricsService implemen
                 "当前jvm进程S1U", PID);
         if (!lines.isEmpty() && 2 == lines.size() && StringUtils.isNotBlank(lines.get(1))) {
             String[] properties = lines.get(1).split("\\s+");
-            if(19 == properties.length) {
+            if(12 <= properties.length) {
                 return Double.parseDouble(properties[3]) * 1024;
             } else {
                 LOGGER.error(
@@ -765,7 +765,7 @@ public class LinuxProcessMetricsServiceImpl extends LinuxMetricsService implemen
                 "当前jvm进程EC", PID);
         if (!lines.isEmpty() && 2 == lines.size() && StringUtils.isNotBlank(lines.get(1))) {
             String[] properties = lines.get(1).split("\\s+");
-            if(19 == properties.length) {
+            if(12 <= properties.length) {
                 return Double.parseDouble(properties[4]) * 1024;
             } else {
                 LOGGER.error(
@@ -785,7 +785,7 @@ public class LinuxProcessMetricsServiceImpl extends LinuxMetricsService implemen
                 "当前jvm进程EU", PID);
         if (!lines.isEmpty() && 2 == lines.size() && StringUtils.isNotBlank(lines.get(1))) {
             String[] properties = lines.get(1).split("\\s+");
-            if(19 == properties.length) {
+            if(12 <= properties.length) {
                 return Double.parseDouble(properties[5]) * 1024;
             } else {
                 LOGGER.error(
@@ -805,7 +805,7 @@ public class LinuxProcessMetricsServiceImpl extends LinuxMetricsService implemen
                 "当前jvm进程OC", PID);
         if (!lines.isEmpty() && 2 == lines.size() && StringUtils.isNotBlank(lines.get(1))) {
             String[] properties = lines.get(1).split("\\s+");
-            if(19 == properties.length) {
+            if(12 <= properties.length) {
                 return Double.parseDouble(properties[6]) * 1024;
             } else {
                 LOGGER.error(
@@ -825,7 +825,7 @@ public class LinuxProcessMetricsServiceImpl extends LinuxMetricsService implemen
                 "当前jvm进程OU", PID);
         if (!lines.isEmpty() && 2 == lines.size() && StringUtils.isNotBlank(lines.get(1))) {
             String[] properties = lines.get(1).split("\\s+");
-            if(19 == properties.length) {
+            if(12 <= properties.length) {
                 return Double.parseDouble(properties[7]) * 1024;
             } else {
                 LOGGER.error(
@@ -845,7 +845,7 @@ public class LinuxProcessMetricsServiceImpl extends LinuxMetricsService implemen
                 "当前jvm进程MC", PID);
         if (!lines.isEmpty() && 2 == lines.size() && StringUtils.isNotBlank(lines.get(1))) {
             String[] properties = lines.get(1).split("\\s+");
-            if(19 == properties.length) {
+            if(12 <= properties.length) {
                 return Double.parseDouble(properties[8]) * 1024;
             } else {
                 LOGGER.error(
@@ -865,7 +865,7 @@ public class LinuxProcessMetricsServiceImpl extends LinuxMetricsService implemen
                 "当前jvm进程MU", PID);
         if (!lines.isEmpty() && 2 == lines.size() && StringUtils.isNotBlank(lines.get(1))) {
             String[] properties = lines.get(1).split("\\s+");
-            if(19 == properties.length) {
+            if(12 <= properties.length) {
                 return Double.parseDouble(properties[9]) * 1024;
             } else {
                 LOGGER.error(
@@ -885,7 +885,7 @@ public class LinuxProcessMetricsServiceImpl extends LinuxMetricsService implemen
                 "当前jvm进程CCSC", PID);
         if (!lines.isEmpty() && 2 == lines.size() && StringUtils.isNotBlank(lines.get(1))) {
             String[] properties = lines.get(1).split("\\s+");
-            if(19 == properties.length) {
+            if(12 <= properties.length) {
                 return Double.parseDouble(properties[10]) * 1024;
             } else {
                 LOGGER.error(
@@ -905,7 +905,7 @@ public class LinuxProcessMetricsServiceImpl extends LinuxMetricsService implemen
                 "当前jvm进程CCSU", PID);
         if (!lines.isEmpty() && 2 == lines.size() && StringUtils.isNotBlank(lines.get(1))) {
             String[] properties = lines.get(1).split("\\s+");
-            if(19 == properties.length) {
+            if(12 <= properties.length) {
                 return Double.parseDouble(properties[11]) * 1024;
             } else {
                 LOGGER.error(
