@@ -208,11 +208,17 @@ public class LinuxProcessMetricsServiceImpl extends LinuxMetricsService implemen
     }
 
     private Double getProcCpuSysOnly() {
-        List<String> lines = getOutputByCmd("pidstat -p %d 1 1 | awk 'NR==4{print $5}'", "当前进程系统态cpu使用率", PID);
-        if (!lines.isEmpty() && StringUtils.isNotBlank(lines.get(0))) {
-            return Double.parseDouble(lines.get(0));
-        } else {
-            LOGGER.error("class=LinuxProcMetricsService||method=getProcCpuSysOnly()||msg=data is null");
+        try {
+            List<String> lines = getOutputByCmd("pidstat -p %d 1 1 | awk 'NR==4'", "当前进程系统态cpu使用率", PID);
+            String[] columns = lines.get(0).split("\\s+");
+            if(columns.length == 9) {
+                return Double.parseDouble(columns[4]);
+            } else if(columns.length == 10) {
+                return Double.parseDouble(columns[5]);
+            }
+            return 0.0d;
+        } catch (Exception ex) {
+            LOGGER.error("class=LinuxProcMetricsService||method=getProcCpuSysOnly()||msg="+ex.getMessage());
             return 0.0d;
         }
     }
@@ -228,11 +234,18 @@ public class LinuxProcessMetricsServiceImpl extends LinuxMetricsService implemen
     }
 
     private Double getProcCpuUserOnly() {
-        List<String> lines = getOutputByCmd("pidstat -p %d 1 1 | awk 'NR==4{print $4}'", "当前进程用户态cpu使用率", PID);
-        if (!lines.isEmpty() && StringUtils.isNotBlank(lines.get(0))) {
-            return Double.parseDouble(lines.get(0));
-        } else {
-            LOGGER.error("class=LinuxProcMetricsService||method=getProcCpuUserOnly||msg=data is null");
+
+        try {
+            List<String> lines = getOutputByCmd("pidstat -p %d 1 1 | awk 'NR==4'", "当前进程用户态cpu使用率", PID);
+            String[] columns = lines.get(0).split("\\s+");
+            if(columns.length == 9) {
+                return Double.parseDouble(columns[3]);
+            } else if(columns.length == 10) {
+                return Double.parseDouble(columns[4]);
+            }
+            return 0.0d;
+        } catch (Exception ex) {
+            LOGGER.error("class=LinuxProcMetricsService||method=getProcCpuUserOnly||msg="+ex.getMessage());
             return 0.0d;
         }
     }
