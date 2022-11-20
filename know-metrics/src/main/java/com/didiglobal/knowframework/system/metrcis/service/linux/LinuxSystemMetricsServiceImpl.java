@@ -557,12 +557,13 @@ public class LinuxSystemMetricsServiceImpl extends LinuxMetricsService implement
     }
 
     private Double getSystemLoad1Only() {
-        List<String> lines = getOutputByCmd("sar -q 1 1 | grep ':' | awk '{print $4}'", "系统近1分钟平均负载", null);
-        if (!lines.isEmpty() && StringUtils.isNotBlank(lines.get(0))) {
-            Double systemLoad1 = Double.parseDouble(lines.get(0));
-            return MathUtil.divideWith2Digit(systemLoad1, getSystemCpuCores());
-        } else {
-            LOGGER.error("class=LinuxSystemMetricsService()||method=getSystemLoad1Only||msg=获取系统近1分钟平均负载失败");
+        try {
+            List<String> lines = getOutputByCmd("sar -q 1 1", "系统近1分钟平均负载", null);
+            String average = lines.get(4);
+            String[] columns = average.split("\\s+");
+            return Double.valueOf(columns[3]);
+        } catch (Exception ex) {
+            LOGGER.error("class=LinuxSystemMetricsService()||method=getSystemLoad1Only||msg="+ex.getMessage());
             return 0.0d;
         }
     }
