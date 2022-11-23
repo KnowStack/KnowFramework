@@ -5,8 +5,10 @@ import com.didiglobal.knowframework.observability.ObservabilityInitializer;
 import io.opentelemetry.api.common.Attributes;
 import io.opentelemetry.api.common.AttributesBuilder;
 import io.opentelemetry.api.metrics.Meter;
+import io.opentelemetry.api.metrics.ObservableDoubleMeasurement;
 import org.apache.commons.collections4.MapUtils;
 import java.util.Map;
+import java.util.function.Consumer;
 
 public abstract class BaseMetricInitializer implements ObservabilityInitializer {
 
@@ -24,45 +26,33 @@ public abstract class BaseMetricInitializer implements ObservabilityInitializer 
      * @param metricName 指标名
      * @param metricDescription 指标描述
      * @param metricUnit 参考 MetricUnit 常量类
-     * @param metricValue 指标值
-     * @param tags 指标相关属性值
+     * @param meter 指标获取接口实例
      */
-    public void registerMetric(String metricName, String metricDescription, String metricUnit, Double metricValue, Map<String, String> tags) {
-        AttributesBuilder attributesBuilder = Attributes.builder();
-        if(MapUtils.isNotEmpty(tags)) {
-            for(Map.Entry<String, String> entry : tags.entrySet()) {
-                String key = entry.getKey();
-                String value = entry.getValue();
-                attributesBuilder.put(key, value);
-            }
-        }
-        meter
+    public void registerMetric(String metricName, String metricDescription, String metricUnit, com.didiglobal.knowframework.observability.conponent.metrics.Meter meter) {
+        this.meter
                 .gaugeBuilder(metricName)
                 .setDescription(metricDescription)
                 .setUnit(metricUnit)
                 .buildWithCallback(
-                        result -> result.record(
-                                metricValue,
-                                attributesBuilder.build()
-                        )
-                );
-    }
-
-    /**
-     * @param metricName 指标名
-     * @param metricDescription 指标描述
-     * @param metricUnit 参考 MetricUnit 常量类
-     * @param metricValue 指标值
-     */
-    public void registerMetric(String metricName, String metricDescription, String metricUnit, Double metricValue) {
-        meter
-                .gaugeBuilder(metricName)
-                .setDescription(metricDescription)
-                .setUnit(metricUnit)
-                .buildWithCallback(
-                        result -> result.record(
-                                metricValue
-                        )
+                        new Consumer<ObservableDoubleMeasurement>() {
+                            @Override
+                            public void accept(ObservableDoubleMeasurement observableDoubleMeasurement) {
+                                Metric metric = meter.getMetric();
+                                Double metricValue = metric.getValue();
+                                Map<String, String> tags = metric.getTags();
+                                if(MapUtils.isNotEmpty(tags)) {
+                                    AttributesBuilder attributesBuilder = Attributes.builder();
+                                    for(Map.Entry<String, String> entry : tags.entrySet()) {
+                                        String key = entry.getKey();
+                                        String value = entry.getValue();
+                                        attributesBuilder.put(key, value);
+                                    }
+                                    observableDoubleMeasurement.record(metricValue, attributesBuilder.build());
+                                } else {
+                                    observableDoubleMeasurement.record(metricValue);
+                                }
+                            }
+                        }
                 );
     }
 
