@@ -163,6 +163,14 @@ public class ElasticsearchAppender extends AbstractAppender {
             verifyAndCreateElasticsearchIndexIfNotExists();
         } catch (Exception ex) {
             //索引创建失败，elasticsearch appender 实例化流程终止
+            LOGGER.error(
+                    String.format(
+                            "class=%s||method=%s||msg=%s",
+                            this.getClass().getName(),
+                            "ElasticsearchAppender()",
+                            "invoke function verifyAndCreateElasticsearchIndexIfNotExists() failed, cause by:" + ex.getMessage()
+                    )
+            );
             return;
         }
         //构建 elasticsearch 缓冲区刷写线程
@@ -405,7 +413,18 @@ public class ElasticsearchAppender extends AbstractAppender {
                 try {
                     deleteByCreateTime(System.currentTimeMillis() - logExpire * 24 * 3600 * 1000);
                 } catch (Exception ex) {
-
+                    LOGGER.error(
+                            String.format(
+                                    "class=%s||method=%s||msg=%s",
+                                    this.getClass().getName(),
+                                    "run()",
+                                    String.format(
+                                            "invoke function deleteByCreateTime(%d) failed, cause by:%s",
+                                            System.currentTimeMillis() - logExpire * 24 * 3600 * 1000,
+                                            ex.getMessage()
+                                    )
+                            )
+                    );
                 }
             }
         }
@@ -710,6 +729,17 @@ public class ElasticsearchAppender extends AbstractAppender {
                 batchInsert(elementList);
             } catch (Exception ex) {
                 //ignore
+                LOGGER.error(
+                        String.format(
+                                "class=%s||method=%s||msg=%s",
+                                this.getClass().getName(),
+                                "flushBuffer()",
+                                String.format(
+                                        "invoke function batchInsert() failed, cause by:%s",
+                                        ex.getMessage()
+                                )
+                        )
+                );
             }
         }
     }
@@ -717,7 +747,26 @@ public class ElasticsearchAppender extends AbstractAppender {
     public void batchInsert(List<Map<String, Object>> elementList) throws Exception {
         String paramString = getBulkRequestParam(elementList);
         String url = this.requestUrlPrefix + "/_bulk";
-        this.httpUtils.postForString(url, paramString, null, user, password);
+        String response = this.httpUtils.postForString(url, paramString, null, user, password);
+        if(StringUtils.isBlank(response)) {
+            throw new Exception(
+                    "response is null"
+            );
+        }
+        Boolean errorsExists = Boolean.TRUE;
+        try {
+            JSONObject responseObject = JSON.parseObject(response);
+            errorsExists = responseObject.getBoolean("errors");
+        } catch (Exception ex) {
+            throw new Exception(
+                    "parse response failed, response is:" + response
+            );
+        }
+        if(errorsExists.equals(Boolean.TRUE)) {
+            throw new Exception(
+                    "insert into elasticsearch failed"
+            );
+        }
     }
 
     private String getBulkRequestParam(List<Map<String, Object>> elementList) {
