@@ -14,7 +14,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Configuration package="org.apache.logging.log4j.core,com.didiglobal.logi.log.log4j2.appender" >
 	<Appenders>
-    <ElasticsearchAppender name="esAppender" address="116.85.23.222" port="18303" user="elastic" password="Didiyun@888" indexName="index_observability" typeName="type" threshold="all" bufferSize="1000" numberOfShards="1" numberOfReplicas="1" logExpire="7" extendsMappingClass="com.didiglobal.logi.job.examples.MyExtendsElasticsearchMappings" requestTimeoutMillis="3000">
+    <ElasticsearchAppender name="esAppender" address="116.85.23.222" port="18303" user="elastic" password="Didiyun@888" indexName="index_observability" typeName="type" threshold="all" bufferSize="1000" numberOfShards="1" numberOfReplicas="1" logExpire="7" extendsMappingClass="com.didiglobal.logi.job.examples.MyExtendsElasticsearchMappings" requestTimeoutMillis="3000" discardWhenBufferIsFull="true">
     </ElasticsearchAppender>
 	</Appenders>
 	<Loggers>
@@ -53,6 +53,8 @@
 
 - requestTimeoutMillis：Elasticsearch 客户端请求超时时间（单位：毫秒），选填，默认值为`3000`。
 
+- discardWhenBufferIsFull：当 Buffer 满时，是否丢弃待添加日志，true：丢弃，false：不丢弃，选填，默认值为`true`。
+
 - extendsMappingClass：自定义索引 schema 扩展字段接口实现类的完整类名（含包名），自定义类须实现ExtendsElasticsearchMappings 接口，选填。使用场景：如在 Observability 组件中存在自定义指标上报，则需要配置该项值，使用示例：
 
   ```java
@@ -74,3 +76,7 @@
   
   }
   ```
+
+# 3. 添加 ElasticsearchAppender 监控指标配置
+
+在 observability.properties 配置文件的`observability.initializer.classes`配置项设置配置值为`com.didiglobal.knowframework.log.log4j2.appender.ElasticsearchAppenderMetricsInitializer`。
