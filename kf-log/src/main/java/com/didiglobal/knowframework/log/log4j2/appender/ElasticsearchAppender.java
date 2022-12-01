@@ -106,6 +106,10 @@ public class ElasticsearchAppender extends AbstractAppender {
      * http 请求前缀
      */
     private String requestUrlPrefix;
+    /**
+     * buffer 满时是否丢弃日志
+     */
+    private Boolean discardWhenBufferIsFull;
 
     private volatile CompletableFuture<?> availableFuture = new CompletableFuture<>();
     private volatile CompletableFuture<?> notAvailableFuture = new CompletableFuture<>();
@@ -131,7 +135,8 @@ public class ElasticsearchAppender extends AbstractAppender {
             Integer bufferSize,
             Integer logExpire,
             String extendsMappingClass,
-            Integer requestTimeoutMillis
+            Integer requestTimeoutMillis,
+            Boolean discardWhenBufferIsFull
     ) {
         super(name, filter, layout);
         this.address = address;
@@ -147,6 +152,7 @@ public class ElasticsearchAppender extends AbstractAppender {
         this.logExpire = getLogExpire(logExpire);
         this.extendsMappingClass = extendsMappingClass;
         this.requestTimeoutMillis = getRequestTimeoutMillis(requestTimeoutMillis);
+        this.discardWhenBufferIsFull = getDiscardWhenBufferIsFull(discardWhenBufferIsFull);
         //初始化缓冲区
         this.buffer = new LinkedBlockingQueue<>(bufferSize);
         this.httpUtils = HttpUtils.getInstance(requestTimeoutMillis);
@@ -173,6 +179,14 @@ public class ElasticsearchAppender extends AbstractAppender {
             elasticsearchLogCleanRunnableSwitch = Boolean.TRUE;
             threadPool.execute(new SendLogEvent2ElasticsearchRunnable());
             threadPool.execute(new ElasticsearchLogCleanRunnable(this.indexName, this.requestUrlPrefix, this.user, this.password, this.httpUtils));
+        }
+    }
+
+    private Boolean getDiscardWhenBufferIsFull(Boolean discardWhenBufferIsFull) {
+        if(null == discardWhenBufferIsFull) {
+            return Boolean.TRUE;
+        } else {
+            return discardWhenBufferIsFull;
         }
     }
 
@@ -468,6 +482,7 @@ public class ElasticsearchAppender extends AbstractAppender {
             @PluginAttribute("logExpire") int logExpire,
             @PluginAttribute("extendsMappingClass") String extendsMappingClass,
             @PluginAttribute("requestTimeoutMillis") int requestTimeoutMillis,
+            @PluginAttribute("discardWhenBufferIsFull") boolean discardWhenBufferIsFull,
             @PluginElement("Filter") final Filter filter,
             @PluginElement("Layout") Layout<? extends Serializable> layout
     ) {
@@ -494,7 +509,8 @@ public class ElasticsearchAppender extends AbstractAppender {
                 bufferSize,
                 logExpire,
                 extendsMappingClass,
-                requestTimeoutMillis
+                requestTimeoutMillis,
+                discardWhenBufferIsFull
         );
     }
 
@@ -531,11 +547,15 @@ public class ElasticsearchAppender extends AbstractAppender {
             while (true) {
                 boolean successful = buffer.offer(element);
                 if(!successful) {// the buffer is full
-                    resetUnavailable();
-                    try {
-                        availableFuture.get(50, TimeUnit.MILLISECONDS);
-                    } catch (Exception ex) {
-                        //ignore
+                    if(this.discardWhenBufferIsFull) {//写入失败丢弃
+                        break;
+                    } else {
+                        resetUnavailable();
+                        try {
+                            availableFuture.get(50, TimeUnit.MILLISECONDS);
+                        } catch (Exception ex) {
+                            //ignore
+                        }
                     }
                 } else {
                     if(!notAvailableFuture.isDone()) {
