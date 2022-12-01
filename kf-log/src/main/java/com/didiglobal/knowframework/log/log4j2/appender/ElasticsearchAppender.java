@@ -566,7 +566,8 @@ public class ElasticsearchAppender extends AbstractAppender {
             while (true) {
                 boolean successful = buffer.offer(element);
                 if(!successful) {// the buffer is full
-                    if(this.discardWhenBufferIsFull) {//写入失败丢弃
+                    if(this.discardWhenBufferIsFull) {//写入失败 丢弃
+                        ElasticsearchAppenderMetricsInitializer.logEventDiscardNumberIncr();
                         break;
                     } else {
                         resetUnavailable();
@@ -728,6 +729,7 @@ public class ElasticsearchAppender extends AbstractAppender {
             try {
                 batchInsert(elementList);
             } catch (Exception ex) {
+                ElasticsearchAppenderMetricsInitializer.logEventInsertFailedNumberIncr(elementList.size());
                 //ignore
                 LOGGER.error(
                         String.format(
