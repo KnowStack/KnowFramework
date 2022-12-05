@@ -1,1 +1,2019 @@
-{  "annotations": {    "list": [      {        "builtIn": 1,        "datasource": {          "type": "datasource",          "uid": "grafana"        },        "enable": true,        "hide": true,        "iconColor": "rgba(0, 211, 255, 1)",        "name": "Annotations & Alerts",        "target": {          "limit": 100,          "matchAny": false,          "tags": [],          "type": "dashboard"        },        "type": "dashboard"      }    ]  },  "editable": true,  "fiscalYearStartMonth": 0,  "graphTooltip": 0,  "id": 1,  "iteration": 1669732908373,  "links": [],  "liveNow": false,  "panels": [    {      "aliasColors": {},      "bars": false,      "dashLength": 10,      "dashes": false,      "datasource": {        "type": "elasticsearch",        "uid": "ggA07MK4k"      },      "fieldConfig": {        "defaults": {          "links": []        },        "overrides": []      },      "fill": 1,      "fillGradient": 0,      "gridPos": {        "h": 8,        "w": 12,        "x": 0,        "y": 0      },      "hiddenSeries": false,      "id": 2,      "legend": {        "avg": false,        "current": false,        "max": false,        "min": false,        "show": true,        "total": false,        "values": false      },      "lines": true,      "linewidth": 1,      "nullPointMode": "null",      "options": {        "alertThreshold": true      },      "percentage": false,      "pluginVersion": "8.5.9",      "pointradius": 2,      "points": false,      "renderer": "flot",      "seriesOverrides": [],      "spaceLength": 10,      "stack": false,      "steppedLine": false,      "targets": [        {          "alias": "源时钟与本地时钟的时间差",          "bucketAggs": [            {              "field": "logMills",              "id": "2",              "settings": {                "interval": "1m",                "min_doc_count": 0,                "trimEdges": 0              },              "type": "date_histogram"            }          ],          "metrics": [            {              "field": "metricValue",              "id": "1",              "meta": {},              "settings": {},              "type": "max"            }          ],          "query": "logType : \"METRIC\" AND metricName: \"system.ntp.offset.gap\" AND hostName : $hostname",          "refId": "A",          "timeField": "logMills"        }      ],      "thresholds": [],      "timeRegions": [],      "title": "源时钟与本地时钟的时间差（单位：秒）",      "tooltip": {        "shared": true,        "sort": 0,        "value_type": "individual"      },      "type": "graph",      "xaxis": {        "mode": "time",        "show": true,        "values": []      },      "yaxes": [        {          "format": "s",          "logBase": 1,          "show": true        },        {          "format": "short",          "logBase": 1,          "show": true        }      ],      "yaxis": {        "align": false      }    },    {      "aliasColors": {},      "bars": false,      "dashLength": 10,      "dashes": false,      "datasource": {        "type": "elasticsearch",        "uid": "ggA07MK4k"      },      "fieldConfig": {        "defaults": {          "links": []        },        "overrides": []      },      "fill": 1,      "fillGradient": 0,      "gridPos": {        "h": 8,        "w": 12,        "x": 12,        "y": 0      },      "hiddenSeries": false,      "id": 4,      "legend": {        "avg": false,        "current": false,        "max": false,        "min": false,        "show": true,        "total": false,        "values": false      },      "lines": true,      "linewidth": 1,      "nullPointMode": "null",      "options": {        "alertThreshold": true      },      "percentage": false,      "pluginVersion": "8.5.9",      "pointradius": 2,      "points": false,      "renderer": "flot",      "seriesOverrides": [],      "spaceLength": 10,      "stack": false,      "steppedLine": false,      "targets": [        {          "alias": "系统CPU核数",          "bucketAggs": [            {              "field": "logMills",              "id": "2",              "settings": {                "interval": "1m",                "min_doc_count": 0,                "trimEdges": 0              },              "type": "date_histogram"            }          ],          "metrics": [            {              "field": "metricValue",              "id": "1",              "meta": {},              "settings": {},              "type": "max"            }          ],          "query": "logType : \"METRIC\" AND metricName: \"system.cpu.cores\" AND hostName : $hostname",          "refId": "A",          "timeField": "logMills"        }      ],      "thresholds": [],      "timeRegions": [],      "title": "系统CPU核数",      "tooltip": {        "shared": true,        "sort": 0,        "value_type": "individual"      },      "type": "graph",      "xaxis": {        "mode": "time",        "show": true,        "values": []      },      "yaxes": [        {          "format": "short",          "logBase": 1,          "show": true        },        {          "format": "short",          "logBase": 1,          "show": true        }      ],      "yaxis": {        "align": false      }    },    {      "aliasColors": {},      "bars": false,      "dashLength": 10,      "dashes": false,      "datasource": {        "type": "elasticsearch",        "uid": "ggA07MK4k"      },      "fieldConfig": {        "defaults": {          "links": []        },        "overrides": []      },      "fill": 1,      "fillGradient": 0,      "gridPos": {        "h": 8,        "w": 12,        "x": 0,        "y": 8      },      "hiddenSeries": false,      "id": 6,      "legend": {        "avg": false,        "current": false,        "max": false,        "min": false,        "show": true,        "total": false,        "values": false      },      "lines": true,      "linewidth": 1,      "nullPointMode": "null",      "options": {        "alertThreshold": true      },      "percentage": false,      "pluginVersion": "8.5.9",      "pointradius": 2,      "points": false,      "renderer": "flot",      "seriesOverrides": [],      "spaceLength": 10,      "stack": false,      "steppedLine": false,      "targets": [        {          "alias": "系统CPU使用率",          "bucketAggs": [            {              "field": "logMills",              "id": "2",              "settings": {                "interval": "1m",                "min_doc_count": 0,                "trimEdges": 0              },              "type": "date_histogram"            }          ],          "metrics": [            {              "field": "metricValue",              "id": "1",              "meta": {},              "settings": {},              "type": "max"            }          ],          "query": "logType : \"METRIC\" AND metricName: \"system.cpu.util\" AND hostName : $hostname",          "refId": "A",          "timeField": "logMills"        }      ],      "thresholds": [],      "timeRegions": [],      "title": "系统CPU使用率(单位：%)",      "tooltip": {        "shared": true,        "sort": 0,        "value_type": "individual"      },      "type": "graph",      "xaxis": {        "mode": "time",        "show": true,        "values": []      },      "yaxes": [        {          "format": "short",          "logBase": 1,          "show": true        },        {          "format": "short",          "logBase": 1,          "show": true        }      ],      "yaxis": {        "align": false      }    },    {      "aliasColors": {},      "bars": false,      "dashLength": 10,      "dashes": false,      "datasource": {        "type": "elasticsearch",        "uid": "ggA07MK4k"      },      "fieldConfig": {        "defaults": {          "links": []        },        "overrides": []      },      "fill": 1,      "fillGradient": 0,      "gridPos": {        "h": 8,        "w": 12,        "x": 12,        "y": 8      },      "hiddenSeries": false,      "id": 10,      "legend": {        "avg": false,        "current": false,        "max": false,        "min": false,        "show": true,        "total": false,        "values": false      },      "lines": true,      "linewidth": 1,      "nullPointMode": "null",      "options": {        "alertThreshold": true      },      "percentage": false,      "pluginVersion": "8.5.9",      "pointradius": 2,      "points": false,      "renderer": "flot",      "seriesOverrides": [],      "spaceLength": 10,      "stack": false,      "steppedLine": false,      "targets": [        {          "alias": "虚拟CPU等待实际CPU时间的百分比",          "bucketAggs": [            {              "field": "logMills",              "id": "2",              "settings": {                "interval": "1m",                "min_doc_count": 0,                "trimEdges": 0              },              "type": "date_histogram"            }          ],          "metrics": [            {              "field": "metricValue",              "id": "1",              "meta": {},              "settings": {},              "type": "max"            }          ],          "query": "logType : \"METRIC\" AND metricName: \"system.cpu.steal\" AND hostName : $hostname",          "refId": "A",          "timeField": "logMills"        }      ],      "thresholds": [],      "timeRegions": [],      "title": "虚拟CPU等待实际CPU时间的百分比（单位：%）",      "tooltip": {        "shared": true,        "sort": 0,        "value_type": "individual"      },      "type": "graph",      "xaxis": {        "mode": "time",        "show": true,        "values": []      },      "yaxes": [        {          "format": "short",          "logBase": 1,          "show": true        },        {          "format": "short",          "logBase": 1,          "show": true        }      ],      "yaxis": {        "align": false      }    },    {      "aliasColors": {},      "bars": false,      "dashLength": 10,      "dashes": false,      "datasource": {        "type": "elasticsearch",        "uid": "ggA07MK4k"      },      "fieldConfig": {        "defaults": {          "links": []        },        "overrides": []      },      "fill": 1,      "fillGradient": 0,      "gridPos": {        "h": 8,        "w": 12,        "x": 0,        "y": 16      },      "hiddenSeries": false,      "id": 8,      "legend": {        "avg": false,        "current": false,        "max": false,        "min": false,        "show": true,        "total": false,        "values": false      },      "lines": true,      "linewidth": 1,      "nullPointMode": "null",      "options": {        "alertThreshold": true      },      "percentage": false,      "pluginVersion": "8.5.9",      "pointradius": 2,      "points": false,      "renderer": "flot",      "seriesOverrides": [],      "spaceLength": 10,      "stack": false,      "steppedLine": false,      "targets": [        {          "alias": "系统近1分钟平均负载",          "bucketAggs": [            {              "field": "logMills",              "id": "2",              "settings": {                "interval": "1m",                "min_doc_count": 0,                "trimEdges": 0              },              "type": "date_histogram"            }          ],          "metrics": [            {              "field": "metricValue",              "id": "1",              "meta": {},              "settings": {},              "type": "max"            }          ],          "query": "logType : \"METRIC\" AND metricName: \"system.cpu.load.1\" AND hostName : $hostname",          "refId": "A",          "timeField": "logMills"        }      ],      "thresholds": [],      "timeRegions": [],      "title": "系统近1分钟平均负载",      "tooltip": {        "shared": true,        "sort": 0,        "value_type": "individual"      },      "type": "graph",      "xaxis": {        "mode": "time",        "show": true,        "values": []      },      "yaxes": [        {          "format": "short",          "logBase": 1,          "show": true        },        {          "format": "short",          "logBase": 1,          "show": true        }      ],      "yaxis": {        "align": false      }    },    {      "aliasColors": {},      "bars": false,      "dashLength": 10,      "dashes": false,      "datasource": {        "type": "elasticsearch",        "uid": "ggA07MK4k"      },      "fieldConfig": {        "defaults": {          "links": []        },        "overrides": []      },      "fill": 1,      "fillGradient": 0,      "gridPos": {        "h": 8,        "w": 12,        "x": 12,        "y": 16      },      "hiddenSeries": false,      "id": 12,      "legend": {        "avg": false,        "current": false,        "max": false,        "min": false,        "show": true,        "total": false,        "values": false      },      "lines": true,      "linewidth": 1,      "nullPointMode": "null",      "options": {        "alertThreshold": true      },      "percentage": false,      "pluginVersion": "8.5.9",      "pointradius": 2,      "points": false,      "renderer": "flot",      "seriesOverrides": [],      "spaceLength": 10,      "stack": false,      "steppedLine": false,      "targets": [        {          "alias": "系统内存总大小",          "bucketAggs": [            {              "field": "logMills",              "id": "2",              "settings": {                "interval": "1m",                "min_doc_count": 0,                "trimEdges": 0              },              "type": "date_histogram"            }          ],          "metrics": [            {              "field": "metricValue",              "id": "1",              "meta": {},              "settings": {},              "type": "min"            }          ],          "query": "logType : \"METRIC\" AND metricName: \"system.memory.total\" AND hostName : $hostname",          "refId": "A",          "timeField": "logMills"        },        {          "alias": "系统空闲内存大小",          "bucketAggs": [            {              "field": "logMills",              "id": "2",              "settings": {                "interval": "1m",                "min_doc_count": 0,                "trimEdges": 0              },              "type": "date_histogram"            }          ],          "metrics": [            {              "field": "metricValue",              "id": "1",              "meta": {},              "settings": {},              "type": "min"            }          ],          "query": "logType : \"METRIC\" AND metricName: \"system.memory.free\" AND hostName : $hostname",          "refId": "B",          "timeField": "logMills"        },        {          "alias": "块设备占用的缓存页",          "bucketAggs": [            {              "field": "logMills",              "id": "2",              "settings": {                "interval": "1m",                "min_doc_count": 0,                "trimEdges": 0              },              "type": "date_histogram"            }          ],          "metrics": [            {              "field": "metricValue",              "id": "1",              "meta": {},              "settings": {},              "type": "max"            }          ],          "query": "logType : \"METRIC\" AND metricName: \"system.memory.buffered\" AND hostName : $hostname",          "refId": "C",          "timeField": "logMills"        },        {          "alias": "普通文件所占用的缓存页",          "bucketAggs": [            {              "field": "logMills",              "id": "2",              "settings": {                "interval": "1m",                "min_doc_count": 0,                "trimEdges": 0              },              "type": "date_histogram"            }          ],          "metrics": [            {              "field": "metricValue",              "id": "1",              "meta": {},              "settings": {},              "type": "max"            }          ],          "query": "logType : \"METRIC\" AND metricName: \"system.memory.cached\" AND hostName : $hostname",          "refId": "D",          "timeField": "logMills"        },        {          "alias": "系统已用swap大小",          "bucketAggs": [            {              "field": "logMills",              "id": "2",              "settings": {                "interval": "1m",                "min_doc_count": 0,                "trimEdges": 0              },              "type": "date_histogram"            }          ],          "metrics": [            {              "field": "metricValue",              "id": "1",              "meta": {},              "settings": {},              "type": "max"            }          ],          "query": "logType : \"METRIC\" AND metricName: \"system.memory.swap.used\" AND hostName : $hostname",          "refId": "E",          "timeField": "logMills"        }      ],      "thresholds": [],      "timeRegions": [],      "title": "系统内存信息概览",      "tooltip": {        "shared": true,        "sort": 0,        "value_type": "individual"      },      "type": "graph",      "xaxis": {        "mode": "time",        "show": true,        "values": []      },      "yaxes": [        {          "format": "decbytes",          "logBase": 1,          "show": true        },        {          "format": "short",          "logBase": 1,          "show": true        }      ],      "yaxis": {        "align": false      }    },    {      "aliasColors": {},      "bars": false,      "dashLength": 10,      "dashes": false,      "datasource": {        "type": "elasticsearch",        "uid": "ggA07MK4k"      },      "fieldConfig": {        "defaults": {          "links": []        },        "overrides": []      },      "fill": 1,      "fillGradient": 0,      "gridPos": {        "h": 8,        "w": 12,        "x": 0,        "y": 24      },      "hiddenSeries": false,      "id": 26,      "legend": {        "avg": false,        "current": false,        "max": false,        "min": false,        "show": true,        "total": false,        "values": false      },      "lines": true,      "linewidth": 1,      "nullPointMode": "null",      "options": {        "alertThreshold": true      },      "percentage": false,      "pluginVersion": "8.5.9",      "pointradius": 2,      "points": false,      "renderer": "flot",      "seriesOverrides": [],      "spaceLength": 10,      "stack": false,      "steppedLine": false,      "targets": [        {          "bucketAggs": [            {              "fake": true,              "field": "deviceName",              "id": "3",              "settings": {                "min_doc_count": 1,                "order": "desc",                "orderBy": "1",                "size": "0"              },              "type": "terms"            },            {              "field": "logMills",              "id": "2",              "settings": {                "interval": "1m",                "min_doc_count": 0,                "trimEdges": 0              },              "type": "date_histogram"            }          ],          "metrics": [            {              "field": "metricValue",              "id": "1",              "meta": {},              "settings": {},              "type": "max"            }          ],          "query": "logType : \"METRIC\" AND metricName: \"system.io.util\" AND hostName : $hostname",          "refId": "A",          "timeField": "logMills"        }      ],      "thresholds": [],      "timeRegions": [],      "title": "设备I/O请求的时间百分比（单位：%）",      "tooltip": {        "shared": true,        "sort": 0,        "value_type": "individual"      },      "type": "graph",      "xaxis": {        "mode": "time",        "show": true,        "values": []      },      "yaxes": [        {          "format": "short",          "logBase": 1,          "show": true        },        {          "format": "short",          "logBase": 1,          "show": true        }      ],      "yaxis": {        "align": false      }    },    {      "aliasColors": {},      "bars": false,      "dashLength": 10,      "dashes": false,      "datasource": {        "type": "elasticsearch",        "uid": "ggA07MK4k"      },      "fieldConfig": {        "defaults": {          "links": []        },        "overrides": []      },      "fill": 1,      "fillGradient": 0,      "gridPos": {        "h": 8,        "w": 12,        "x": 12,        "y": 24      },      "hiddenSeries": false,      "id": 28,      "legend": {        "avg": false,        "current": false,        "max": false,        "min": false,        "show": true,        "total": false,        "values": false      },      "lines": true,      "linewidth": 1,      "nullPointMode": "null",      "options": {        "alertThreshold": true      },      "percentage": false,      "pluginVersion": "8.5.9",      "pointradius": 2,      "points": false,      "renderer": "flot",      "seriesOverrides": [],      "spaceLength": 10,      "stack": false,      "steppedLine": false,      "targets": [        {          "bucketAggs": [            {              "fake": true,              "field": "deviceName",              "id": "3",              "settings": {                "min_doc_count": 1,                "order": "desc",                "orderBy": "1",                "size": "0"              },              "type": "terms"            },            {              "field": "logMills",              "id": "2",              "settings": {                "interval": "1m",                "min_doc_count": 0,                "trimEdges": 0              },              "type": "date_histogram"            }          ],          "metrics": [            {              "field": "metricValue",              "id": "1",              "meta": {},              "settings": {},              "type": "max"            }          ],          "query": "logType : \"METRIC\" AND metricName: \"system.io.avgqusz\" AND hostName : $hostname",          "refId": "A",          "timeField": "logMills"        }      ],      "thresholds": [],      "timeRegions": [],      "title": "设备平均IO队列长度",      "tooltip": {        "shared": true,        "sort": 0,        "value_type": "individual"      },      "type": "graph",      "xaxis": {        "mode": "time",        "show": true,        "values": []      },      "yaxes": [        {          "format": "short",          "logBase": 1,          "show": true        },        {          "format": "short",          "logBase": 1,          "show": true        }      ],      "yaxis": {        "align": false      }    },    {      "aliasColors": {},      "bars": false,      "dashLength": 10,      "dashes": false,      "datasource": {        "type": "elasticsearch",        "uid": "ggA07MK4k"      },      "fieldConfig": {        "defaults": {          "links": []        },        "overrides": []      },      "fill": 1,      "fillGradient": 0,      "gridPos": {        "h": 8,        "w": 12,        "x": 0,        "y": 32      },      "hiddenSeries": false,      "id": 24,      "legend": {        "avg": false,        "current": false,        "max": false,        "min": false,        "show": true,        "total": false,        "values": false      },      "lines": true,      "linewidth": 1,      "nullPointMode": "null",      "options": {        "alertThreshold": true      },      "percentage": false,      "pluginVersion": "8.5.9",      "pointradius": 2,      "points": false,      "renderer": "flot",      "seriesOverrides": [],      "spaceLength": 10,      "stack": false,      "steppedLine": false,      "targets": [        {          "bucketAggs": [            {              "fake": true,              "field": "diskPath",              "id": "3",              "settings": {                "min_doc_count": 1,                "order": "desc",                "orderBy": "1",                "size": "0"              },              "type": "terms"            },            {              "field": "logMills",              "id": "2",              "settings": {                "interval": "1m",                "min_doc_count": 0,                "trimEdges": 0              },              "type": "date_histogram"            }          ],          "metrics": [            {              "field": "metricValue",              "id": "1",              "meta": {},              "settings": {},              "type": "min"            }          ],          "query": "logType : \"METRIC\" AND metricName: \"system.disk.total\" AND hostName : $hostname",          "refId": "A",          "timeField": "logMills"        }      ],      "thresholds": [],      "timeRegions": [],      "title": "磁盘各分区总量大小",      "tooltip": {        "shared": true,        "sort": 0,        "value_type": "individual"      },      "type": "graph",      "xaxis": {        "mode": "time",        "show": true,        "values": []      },      "yaxes": [        {          "format": "decbytes",          "logBase": 1,          "show": true        },        {          "format": "short",          "logBase": 1,          "show": true        }      ],      "yaxis": {        "align": false      }    },    {      "aliasColors": {},      "bars": false,      "dashLength": 10,      "dashes": false,      "datasource": {        "type": "elasticsearch",        "uid": "ggA07MK4k"      },      "fieldConfig": {        "defaults": {          "links": []        },        "overrides": []      },      "fill": 1,      "fillGradient": 0,      "gridPos": {        "h": 8,        "w": 12,        "x": 12,        "y": 32      },      "hiddenSeries": false,      "id": 22,      "legend": {        "avg": false,        "current": false,        "max": false,        "min": false,        "show": true,        "total": false,        "values": false      },      "lines": true,      "linewidth": 1,      "nullPointMode": "null",      "options": {        "alertThreshold": true      },      "percentage": false,      "pluginVersion": "8.5.9",      "pointradius": 2,      "points": false,      "renderer": "flot",      "seriesOverrides": [],      "spaceLength": 10,      "stack": false,      "steppedLine": false,      "targets": [        {          "bucketAggs": [            {              "fake": true,              "field": "diskPath",              "id": "3",              "settings": {                "min_doc_count": 1,                "order": "desc",                "orderBy": "1",                "size": "0"              },              "type": "terms"            },            {              "field": "logMills",              "id": "2",              "settings": {                "interval": "1m",                "min_doc_count": 0,                "trimEdges": 0              },              "type": "date_histogram"            }          ],          "metrics": [            {              "field": "metricValue",              "id": "1",              "meta": {},              "settings": {},              "type": "min"            }          ],          "query": "logType : \"METRIC\" AND metricName: \"system.disk.free\" AND hostName : $hostname",          "refId": "A",          "timeField": "logMills"        }      ],      "thresholds": [],      "timeRegions": [],      "title": "磁盘各分区余量大小",      "tooltip": {        "shared": true,        "sort": 0,        "value_type": "individual"      },      "type": "graph",      "xaxis": {        "mode": "time",        "show": true,        "values": []      },      "yaxes": [        {          "format": "decbytes",          "logBase": 1,          "show": true        },        {          "format": "short",          "logBase": 1,          "show": true        }      ],      "yaxis": {        "align": false      }    },    {      "aliasColors": {},      "bars": false,      "dashLength": 10,      "dashes": false,      "datasource": {        "type": "elasticsearch",        "uid": "ggA07MK4k"      },      "fieldConfig": {        "defaults": {          "links": []        },        "overrides": []      },      "fill": 1,      "fillGradient": 0,      "gridPos": {        "h": 8,        "w": 12,        "x": 0,        "y": 40      },      "hiddenSeries": false,      "id": 30,      "legend": {        "avg": false,        "current": false,        "max": false,        "min": false,        "show": true,        "total": false,        "values": false      },      "lines": true,      "linewidth": 1,      "nullPointMode": "null",      "options": {        "alertThreshold": true      },      "percentage": false,      "pluginVersion": "8.5.9",      "pointradius": 2,      "points": false,      "renderer": "flot",      "seriesOverrides": [],      "spaceLength": 10,      "stack": false,      "steppedLine": false,      "targets": [        {          "alias": "系统可以打开的最大文件句柄数",          "bucketAggs": [            {              "field": "logMills",              "id": "2",              "settings": {                "interval": "1m",                "min_doc_count": 0,                "trimEdges": 0              },              "type": "date_histogram"            }          ],          "metrics": [            {              "field": "metricValue",              "id": "1",              "meta": {},              "settings": {},              "type": "min"            }          ],          "query": "logType : \"METRIC\" AND metricName: \"system.fd.files.max\" AND hostName : $hostname",          "refId": "A",          "timeField": "logMills"        }      ],      "thresholds": [],      "timeRegions": [],      "title": "系统可以打开的最大文件句柄数",      "tooltip": {        "shared": true,        "sort": 0,        "value_type": "individual"      },      "type": "graph",      "xaxis": {        "mode": "time",        "show": true,        "values": []      },      "yaxes": [        {          "format": "short",          "logBase": 1,          "show": true        },        {          "format": "short",          "logBase": 1,          "show": true        }      ],      "yaxis": {        "align": false      }    },    {      "aliasColors": {},      "bars": false,      "dashLength": 10,      "dashes": false,      "datasource": {        "type": "elasticsearch",        "uid": "ggA07MK4k"      },      "fieldConfig": {        "defaults": {          "links": []        },        "overrides": []      },      "fill": 1,      "fillGradient": 0,      "gridPos": {        "h": 8,        "w": 12,        "x": 12,        "y": 40      },      "hiddenSeries": false,      "id": 32,      "legend": {        "avg": false,        "current": false,        "max": false,        "min": false,        "show": true,        "total": false,        "values": false      },      "lines": true,      "linewidth": 1,      "nullPointMode": "null",      "options": {        "alertThreshold": true      },      "percentage": false,      "pluginVersion": "8.5.9",      "pointradius": 2,      "points": false,      "renderer": "flot",      "seriesOverrides": [],      "spaceLength": 10,      "stack": false,      "steppedLine": false,      "targets": [        {          "alias": "系统使用文件句柄占已分配百分比",          "bucketAggs": [            {              "field": "logMills",              "id": "2",              "settings": {                "interval": "1m",                "min_doc_count": 0,                "trimEdges": 0              },              "type": "date_histogram"            }          ],          "metrics": [            {              "field": "metricValue",              "id": "1",              "meta": {},              "settings": {},              "type": "max"            }          ],          "query": "logType : \"METRIC\" AND metricName: \"system.fd.files.used.percent\" AND hostName : $hostname",          "refId": "A",          "timeField": "logMills"        }      ],      "thresholds": [],      "timeRegions": [],      "title": "系统使用文件句柄占已分配百分比（单位：%）",      "tooltip": {        "shared": true,        "sort": 0,        "value_type": "individual"      },      "type": "graph",      "xaxis": {        "mode": "time",        "show": true,        "values": []      },      "yaxes": [        {          "format": "short",          "logBase": 1,          "show": true        },        {          "format": "short",          "logBase": 1,          "show": true        }      ],      "yaxis": {        "align": false      }    },    {      "aliasColors": {},      "bars": false,      "dashLength": 10,      "dashes": false,      "datasource": {        "type": "elasticsearch",        "uid": "ggA07MK4k"      },      "fieldConfig": {        "defaults": {          "links": []        },        "overrides": []      },      "fill": 1,      "fillGradient": 0,      "gridPos": {        "h": 8,        "w": 12,        "x": 0,        "y": 48      },      "hiddenSeries": false,      "id": 34,      "legend": {        "avg": false,        "current": false,        "max": false,        "min": false,        "show": true,        "total": false,        "values": false      },      "lines": true,      "linewidth": 1,      "nullPointMode": "null",      "options": {        "alertThreshold": true      },      "percentage": false,      "pluginVersion": "8.5.9",      "pointradius": 2,      "points": false,      "renderer": "flot",      "seriesOverrides": [],      "spaceLength": 10,      "stack": false,      "steppedLine": false,      "targets": [        {          "bucketAggs": [            {              "fake": true,              "field": "deviceName",              "id": "3",              "settings": {                "min_doc_count": 1,                "order": "desc",                "orderBy": "1",                "size": "0"              },              "type": "terms"            },            {              "field": "logMills",              "id": "2",              "settings": {                "interval": "1m",                "min_doc_count": 0,                "trimEdges": 0              },              "type": "date_histogram"            }          ],          "metrics": [            {              "field": "metricValue",              "id": "1",              "meta": {},              "settings": {},              "type": "max"            }          ],          "query": "logType : \"METRIC\" AND metricName: \"system.net.card.receive.bytes.per.second\" AND hostName : $hostname",          "refId": "A",          "timeField": "logMills"        }      ],      "thresholds": [],      "timeRegions": [],      "title": "各网卡设备每秒下行流量",      "tooltip": {        "shared": true,        "sort": 0,        "value_type": "individual"      },      "type": "graph",      "xaxis": {        "mode": "time",        "show": true,        "values": []      },      "yaxes": [        {          "format": "decbytes",          "logBase": 1,          "show": true        },        {          "format": "short",          "logBase": 1,          "show": true        }      ],      "yaxis": {        "align": false      }    },    {      "aliasColors": {},      "bars": false,      "dashLength": 10,      "dashes": false,      "datasource": {        "type": "elasticsearch",        "uid": "ggA07MK4k"      },      "fieldConfig": {        "defaults": {          "links": []        },        "overrides": []      },      "fill": 1,      "fillGradient": 0,      "gridPos": {        "h": 8,        "w": 12,        "x": 12,        "y": 48      },      "hiddenSeries": false,      "id": 36,      "legend": {        "avg": false,        "current": false,        "max": false,        "min": false,        "show": true,        "total": false,        "values": false      },      "lines": true,      "linewidth": 1,      "nullPointMode": "null",      "options": {        "alertThreshold": true      },      "percentage": false,      "pluginVersion": "8.5.9",      "pointradius": 2,      "points": false,      "renderer": "flot",      "seriesOverrides": [],      "spaceLength": 10,      "stack": false,      "steppedLine": false,      "targets": [        {          "bucketAggs": [            {              "fake": true,              "field": "deviceName",              "id": "3",              "settings": {                "min_doc_count": 1,                "order": "desc",                "orderBy": "1",                "size": "0"              },              "type": "terms"            },            {              "field": "logMills",              "id": "2",              "settings": {                "interval": "1m",                "min_doc_count": 0,                "trimEdges": 0              },              "type": "date_histogram"            }          ],          "metrics": [            {              "field": "metricValue",              "id": "1",              "meta": {},              "settings": {},              "type": "max"            }          ],          "query": "logType : \"METRIC\" AND metricName: \"system.net.card.send.bytes.per.second\" AND hostName : $hostname",          "refId": "A",          "timeField": "logMills"        }      ],      "thresholds": [],      "timeRegions": [],      "title": "各网卡设备每秒上行流量",      "tooltip": {        "shared": true,        "sort": 0,        "value_type": "individual"      },      "type": "graph",      "xaxis": {        "mode": "time",        "show": true,        "values": []      },      "yaxes": [        {          "format": "decbytes",          "logBase": 1,          "show": true        },        {          "format": "short",          "logBase": 1,          "show": true        }      ],      "yaxis": {        "align": false      }    },    {      "aliasColors": {},      "bars": false,      "dashLength": 10,      "dashes": false,      "datasource": {        "type": "elasticsearch",        "uid": "ggA07MK4k"      },      "fieldConfig": {        "defaults": {          "links": []        },        "overrides": []      },      "fill": 1,      "fillGradient": 0,      "gridPos": {        "h": 8,        "w": 12,        "x": 0,        "y": 56      },      "hiddenSeries": false,      "id": 40,      "legend": {        "avg": false,        "current": false,        "max": false,        "min": false,        "show": true,        "total": false,        "values": false      },      "lines": true,      "linewidth": 1,      "nullPointMode": "null",      "options": {        "alertThreshold": true      },      "percentage": false,      "pluginVersion": "8.5.9",      "pointradius": 2,      "points": false,      "renderer": "flot",      "seriesOverrides": [],      "spaceLength": 10,      "stack": false,      "steppedLine": false,      "targets": [        {          "alias": "系统网络每秒上行流量",          "bucketAggs": [            {              "field": "logMills",              "id": "2",              "settings": {                "interval": "1m",                "min_doc_count": 0,                "trimEdges": 0              },              "type": "date_histogram"            }          ],          "metrics": [            {              "field": "metricValue",              "id": "1",              "meta": {},              "settings": {},              "type": "max"            }          ],          "query": "logType : \"METRIC\" AND metricName: \"system.net.work.send.bytes.per.second\" AND hostName : $hostname",          "refId": "A",          "timeField": "logMills"        },        {          "alias": "系统网络每秒下行流量",          "bucketAggs": [            {              "field": "logMills",              "id": "2",              "settings": {                "interval": "1m",                "min_doc_count": 0,                "trimEdges": 0              },              "type": "date_histogram"            }          ],          "metrics": [            {              "field": "metricValue",              "id": "1",              "meta": {},              "settings": {},              "type": "max"            }          ],          "query": "logType : \"METRIC\" AND metricName: \"system.net.work.receive.bytes.per.second\" AND hostName : $hostname",          "refId": "B",          "timeField": "logMills"        }      ],      "thresholds": [],      "timeRegions": [],      "title": "系统网络每秒上、下行流量",      "tooltip": {        "shared": true,        "sort": 0,        "value_type": "individual"      },      "type": "graph",      "xaxis": {        "mode": "time",        "show": true,        "values": []      },      "yaxes": [        {          "format": "decbytes",          "logBase": 1,          "show": true        },        {          "format": "short",          "logBase": 1,          "show": true        }      ],      "yaxis": {        "align": false      }    },    {      "aliasColors": {},      "bars": false,      "dashLength": 10,      "dashes": false,      "datasource": {        "type": "elasticsearch",        "uid": "ggA07MK4k"      },      "fieldConfig": {        "defaults": {          "links": []        },        "overrides": []      },      "fill": 1,      "fillGradient": 0,      "gridPos": {        "h": 8,        "w": 12,        "x": 12,        "y": 56      },      "hiddenSeries": false,      "id": 42,      "legend": {        "avg": false,        "current": false,        "max": false,        "min": false,        "show": true,        "total": false,        "values": false      },      "lines": true,      "linewidth": 1,      "nullPointMode": "null",      "options": {        "alertThreshold": true      },      "percentage": false,      "pluginVersion": "8.5.9",      "pointradius": 2,      "points": false,      "renderer": "flot",      "seriesOverrides": [],      "spaceLength": 10,      "stack": false,      "steppedLine": false,      "targets": [        {          "alias": "系统tcp连接数",          "bucketAggs": [            {              "field": "logMills",              "id": "2",              "settings": {                "interval": "1m",                "min_doc_count": 0,                "trimEdges": 0              },              "type": "date_histogram"            }          ],          "metrics": [            {              "field": "metricValue",              "id": "1",              "meta": {},              "settings": {},              "type": "max"            }          ],          "query": "logType : \"METRIC\" AND metricName: \"system.net.work.tcp.connection.num\" AND hostName : $hostname",          "refId": "A",          "timeField": "logMills"        }      ],      "thresholds": [],      "timeRegions": [],      "title": "系统tcp连接数",      "tooltip": {        "shared": true,        "sort": 0,        "value_type": "individual"      },      "type": "graph",      "xaxis": {        "mode": "time",        "show": true,        "values": []      },      "yaxes": [        {          "format": "short",          "logBase": 1,          "show": true        },        {          "format": "short",          "logBase": 1,          "show": true        }      ],      "yaxis": {        "align": false      }    }  ],  "schemaVersion": 36,  "style": "dark",  "tags": [],  "templating": {    "list": [      {        "current": {          "selected": false,          "text": "10-255-0-245",          "value": "10-255-0-245"        },        "datasource": {          "type": "elasticsearch",          "uid": "ggA07MK4k"        },        "definition": "{\"find\":\"terms\",\"field\":\"hostName\"}",        "hide": 0,        "includeAll": false,        "label": "主机名",        "multi": false,        "name": "hostname",        "options": [],        "query": "{\"find\":\"terms\",\"field\":\"hostName\"}",        "refresh": 1,        "regex": "",        "skipUrlSync": false,        "sort": 0,        "tagValuesQuery": "",        "tagsQuery": "",        "type": "query",        "useTags": false      }    ]  },  "time": {    "from": "now-6h",    "to": "now"  },  "timepicker": {    "refresh_intervals": [      "5s",      "10s",      "30s",      "1m",      "5m",      "15m",      "30m",      "1h",      "2h",      "1d"    ]  },  "timezone": "",  "title": "metrics-system",  "uid": "YBofbJN4k",  "version": 2,  "weekStart": ""}
+{
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": {
+          "type": "datasource",
+          "uid": "grafana"
+        },
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "target": {
+          "limit": 100,
+          "matchAny": false,
+          "tags": [],
+          "type": "dashboard"
+        },
+        "type": "dashboard"
+      }
+    ]
+  },
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 0,
+  "id": 1,
+  "iteration": 1670235624922,
+  "links": [],
+  "liveNow": false,
+  "panels": [
+    {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": {
+        "type": "elasticsearch",
+        "uid": "ggA07MK4k"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "links": []
+        },
+        "overrides": []
+      },
+      "fill": 1,
+      "fillGradient": 0,
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 0
+      },
+      "hiddenSeries": false,
+      "id": 2,
+      "legend": {
+        "avg": false,
+        "current": false,
+        "max": false,
+        "min": false,
+        "show": true,
+        "total": false,
+        "values": false
+      },
+      "lines": true,
+      "linewidth": 1,
+      "nullPointMode": "null",
+      "options": {
+        "alertThreshold": true
+      },
+      "percentage": false,
+      "pluginVersion": "8.5.9",
+      "pointradius": 2,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "alias": "源时钟与本地时钟的时间差",
+          "bucketAggs": [
+            {
+              "field": "logMills",
+              "id": "2",
+              "settings": {
+                "interval": "1m",
+                "min_doc_count": 0,
+                "trimEdges": 0
+              },
+              "type": "date_histogram"
+            }
+          ],
+          "metrics": [
+            {
+              "field": "metricValue",
+              "id": "1",
+              "meta": {},
+              "settings": {},
+              "type": "max"
+            }
+          ],
+          "query": "logType : \"METRIC\" AND metricName: \"system.ntp.offset.gap\" AND hostName : $hostname",
+          "refId": "A",
+          "timeField": "logMills"
+        }
+      ],
+      "thresholds": [],
+      "timeRegions": [],
+      "title": "源时钟与本地时钟的时间差（单位：秒）",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "mode": "time",
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "format": "s",
+          "logBase": 1,
+          "show": true
+        },
+        {
+          "format": "short",
+          "logBase": 1,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false
+      }
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": {
+        "type": "elasticsearch",
+        "uid": "ggA07MK4k"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "links": []
+        },
+        "overrides": []
+      },
+      "fill": 1,
+      "fillGradient": 0,
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 0
+      },
+      "hiddenSeries": false,
+      "id": 4,
+      "legend": {
+        "avg": false,
+        "current": false,
+        "max": false,
+        "min": false,
+        "show": true,
+        "total": false,
+        "values": false
+      },
+      "lines": true,
+      "linewidth": 1,
+      "nullPointMode": "null",
+      "options": {
+        "alertThreshold": true
+      },
+      "percentage": false,
+      "pluginVersion": "8.5.9",
+      "pointradius": 2,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "alias": "系统CPU核数",
+          "bucketAggs": [
+            {
+              "field": "logMills",
+              "id": "2",
+              "settings": {
+                "interval": "1m",
+                "min_doc_count": 0,
+                "trimEdges": 0
+              },
+              "type": "date_histogram"
+            }
+          ],
+          "metrics": [
+            {
+              "field": "metricValue",
+              "id": "1",
+              "meta": {},
+              "settings": {},
+              "type": "max"
+            }
+          ],
+          "query": "logType : \"METRIC\" AND metricName: \"system.cpu.cores\" AND hostName : $hostname",
+          "refId": "A",
+          "timeField": "logMills"
+        }
+      ],
+      "thresholds": [],
+      "timeRegions": [],
+      "title": "系统CPU核数",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "mode": "time",
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "format": "short",
+          "logBase": 1,
+          "show": true
+        },
+        {
+          "format": "short",
+          "logBase": 1,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false
+      }
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": {
+        "type": "elasticsearch",
+        "uid": "ggA07MK4k"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "links": []
+        },
+        "overrides": []
+      },
+      "fill": 1,
+      "fillGradient": 0,
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 8
+      },
+      "hiddenSeries": false,
+      "id": 6,
+      "legend": {
+        "avg": false,
+        "current": false,
+        "max": false,
+        "min": false,
+        "show": true,
+        "total": false,
+        "values": false
+      },
+      "lines": true,
+      "linewidth": 1,
+      "nullPointMode": "null",
+      "options": {
+        "alertThreshold": true
+      },
+      "percentage": false,
+      "pluginVersion": "8.5.9",
+      "pointradius": 2,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "alias": "系统CPU使用率",
+          "bucketAggs": [
+            {
+              "field": "logMills",
+              "id": "2",
+              "settings": {
+                "interval": "1m",
+                "min_doc_count": 0,
+                "trimEdges": 0
+              },
+              "type": "date_histogram"
+            }
+          ],
+          "metrics": [
+            {
+              "field": "metricValue",
+              "id": "1",
+              "meta": {},
+              "settings": {},
+              "type": "max"
+            }
+          ],
+          "query": "logType : \"METRIC\" AND metricName: \"system.cpu.util\" AND hostName : $hostname",
+          "refId": "A",
+          "timeField": "logMills"
+        }
+      ],
+      "thresholds": [],
+      "timeRegions": [],
+      "title": "系统CPU使用率(单位：%)",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "mode": "time",
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "format": "short",
+          "logBase": 1,
+          "show": true
+        },
+        {
+          "format": "short",
+          "logBase": 1,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false
+      }
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": {
+        "type": "elasticsearch",
+        "uid": "ggA07MK4k"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "links": []
+        },
+        "overrides": []
+      },
+      "fill": 1,
+      "fillGradient": 0,
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 8
+      },
+      "hiddenSeries": false,
+      "id": 10,
+      "legend": {
+        "avg": false,
+        "current": false,
+        "max": false,
+        "min": false,
+        "show": true,
+        "total": false,
+        "values": false
+      },
+      "lines": true,
+      "linewidth": 1,
+      "nullPointMode": "null",
+      "options": {
+        "alertThreshold": true
+      },
+      "percentage": false,
+      "pluginVersion": "8.5.9",
+      "pointradius": 2,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "alias": "虚拟CPU等待实际CPU时间的百分比",
+          "bucketAggs": [
+            {
+              "field": "logMills",
+              "id": "2",
+              "settings": {
+                "interval": "1m",
+                "min_doc_count": 0,
+                "trimEdges": 0
+              },
+              "type": "date_histogram"
+            }
+          ],
+          "metrics": [
+            {
+              "field": "metricValue",
+              "id": "1",
+              "meta": {},
+              "settings": {},
+              "type": "max"
+            }
+          ],
+          "query": "logType : \"METRIC\" AND metricName: \"system.cpu.steal\" AND hostName : $hostname",
+          "refId": "A",
+          "timeField": "logMills"
+        }
+      ],
+      "thresholds": [],
+      "timeRegions": [],
+      "title": "虚拟CPU等待实际CPU时间的百分比（单位：%）",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "mode": "time",
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "format": "short",
+          "logBase": 1,
+          "show": true
+        },
+        {
+          "format": "short",
+          "logBase": 1,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false
+      }
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": {
+        "type": "elasticsearch",
+        "uid": "ggA07MK4k"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "links": []
+        },
+        "overrides": []
+      },
+      "fill": 1,
+      "fillGradient": 0,
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 16
+      },
+      "hiddenSeries": false,
+      "id": 8,
+      "legend": {
+        "avg": false,
+        "current": false,
+        "max": false,
+        "min": false,
+        "show": true,
+        "total": false,
+        "values": false
+      },
+      "lines": true,
+      "linewidth": 1,
+      "nullPointMode": "null",
+      "options": {
+        "alertThreshold": true
+      },
+      "percentage": false,
+      "pluginVersion": "8.5.9",
+      "pointradius": 2,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "alias": "系统近1分钟平均负载",
+          "bucketAggs": [
+            {
+              "field": "logMills",
+              "id": "2",
+              "settings": {
+                "interval": "1m",
+                "min_doc_count": 0,
+                "trimEdges": 0
+              },
+              "type": "date_histogram"
+            }
+          ],
+          "metrics": [
+            {
+              "field": "metricValue",
+              "id": "1",
+              "meta": {},
+              "settings": {},
+              "type": "max"
+            }
+          ],
+          "query": "logType : \"METRIC\" AND metricName: \"system.cpu.load.1\" AND hostName : $hostname",
+          "refId": "A",
+          "timeField": "logMills"
+        }
+      ],
+      "thresholds": [],
+      "timeRegions": [],
+      "title": "系统近1分钟平均负载",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "mode": "time",
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "format": "short",
+          "logBase": 1,
+          "show": true
+        },
+        {
+          "format": "short",
+          "logBase": 1,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false
+      }
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": {
+        "type": "elasticsearch",
+        "uid": "ggA07MK4k"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "links": []
+        },
+        "overrides": []
+      },
+      "fill": 1,
+      "fillGradient": 0,
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 16
+      },
+      "hiddenSeries": false,
+      "id": 12,
+      "legend": {
+        "avg": false,
+        "current": false,
+        "max": false,
+        "min": false,
+        "show": true,
+        "total": false,
+        "values": false
+      },
+      "lines": true,
+      "linewidth": 1,
+      "nullPointMode": "null",
+      "options": {
+        "alertThreshold": true
+      },
+      "percentage": false,
+      "pluginVersion": "8.5.9",
+      "pointradius": 2,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "alias": "系统内存总大小",
+          "bucketAggs": [
+            {
+              "field": "logMills",
+              "id": "2",
+              "settings": {
+                "interval": "1m",
+                "min_doc_count": 0,
+                "trimEdges": 0
+              },
+              "type": "date_histogram"
+            }
+          ],
+          "metrics": [
+            {
+              "field": "metricValue",
+              "id": "1",
+              "meta": {},
+              "settings": {},
+              "type": "min"
+            }
+          ],
+          "query": "logType : \"METRIC\" AND metricName: \"system.memory.total\" AND hostName : $hostname",
+          "refId": "A",
+          "timeField": "logMills"
+        },
+        {
+          "alias": "系统空闲内存大小",
+          "bucketAggs": [
+            {
+              "field": "logMills",
+              "id": "2",
+              "settings": {
+                "interval": "1m",
+                "min_doc_count": 0,
+                "trimEdges": 0
+              },
+              "type": "date_histogram"
+            }
+          ],
+          "metrics": [
+            {
+              "field": "metricValue",
+              "id": "1",
+              "meta": {},
+              "settings": {},
+              "type": "min"
+            }
+          ],
+          "query": "logType : \"METRIC\" AND metricName: \"system.memory.free\" AND hostName : $hostname",
+          "refId": "B",
+          "timeField": "logMills"
+        },
+        {
+          "alias": "块设备占用的缓存页",
+          "bucketAggs": [
+            {
+              "field": "logMills",
+              "id": "2",
+              "settings": {
+                "interval": "1m",
+                "min_doc_count": 0,
+                "trimEdges": 0
+              },
+              "type": "date_histogram"
+            }
+          ],
+          "metrics": [
+            {
+              "field": "metricValue",
+              "id": "1",
+              "meta": {},
+              "settings": {},
+              "type": "max"
+            }
+          ],
+          "query": "logType : \"METRIC\" AND metricName: \"system.memory.buffered\" AND hostName : $hostname",
+          "refId": "C",
+          "timeField": "logMills"
+        },
+        {
+          "alias": "普通文件所占用的缓存页",
+          "bucketAggs": [
+            {
+              "field": "logMills",
+              "id": "2",
+              "settings": {
+                "interval": "1m",
+                "min_doc_count": 0,
+                "trimEdges": 0
+              },
+              "type": "date_histogram"
+            }
+          ],
+          "metrics": [
+            {
+              "field": "metricValue",
+              "id": "1",
+              "meta": {},
+              "settings": {},
+              "type": "max"
+            }
+          ],
+          "query": "logType : \"METRIC\" AND metricName: \"system.memory.cached\" AND hostName : $hostname",
+          "refId": "D",
+          "timeField": "logMills"
+        },
+        {
+          "alias": "系统已用swap大小",
+          "bucketAggs": [
+            {
+              "field": "logMills",
+              "id": "2",
+              "settings": {
+                "interval": "1m",
+                "min_doc_count": 0,
+                "trimEdges": 0
+              },
+              "type": "date_histogram"
+            }
+          ],
+          "metrics": [
+            {
+              "field": "metricValue",
+              "id": "1",
+              "meta": {},
+              "settings": {},
+              "type": "max"
+            }
+          ],
+          "query": "logType : \"METRIC\" AND metricName: \"system.memory.swap.used\" AND hostName : $hostname",
+          "refId": "E",
+          "timeField": "logMills"
+        }
+      ],
+      "thresholds": [],
+      "timeRegions": [],
+      "title": "系统内存信息概览",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "mode": "time",
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "format": "decbytes",
+          "logBase": 1,
+          "show": true
+        },
+        {
+          "format": "short",
+          "logBase": 1,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false
+      }
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": {
+        "type": "elasticsearch",
+        "uid": "ggA07MK4k"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "links": []
+        },
+        "overrides": []
+      },
+      "fill": 1,
+      "fillGradient": 0,
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 24
+      },
+      "hiddenSeries": false,
+      "id": 26,
+      "legend": {
+        "avg": false,
+        "current": false,
+        "max": false,
+        "min": false,
+        "show": true,
+        "total": false,
+        "values": false
+      },
+      "lines": true,
+      "linewidth": 1,
+      "nullPointMode": "null",
+      "options": {
+        "alertThreshold": true
+      },
+      "percentage": false,
+      "pluginVersion": "8.5.9",
+      "pointradius": 2,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "bucketAggs": [
+            {
+              "fake": true,
+              "field": "deviceName",
+              "id": "3",
+              "settings": {
+                "min_doc_count": 1,
+                "order": "desc",
+                "orderBy": "1",
+                "size": "0"
+              },
+              "type": "terms"
+            },
+            {
+              "field": "logMills",
+              "id": "2",
+              "settings": {
+                "interval": "1m",
+                "min_doc_count": 0,
+                "trimEdges": 0
+              },
+              "type": "date_histogram"
+            }
+          ],
+          "metrics": [
+            {
+              "field": "metricValue",
+              "id": "1",
+              "meta": {},
+              "settings": {},
+              "type": "max"
+            }
+          ],
+          "query": "logType : \"METRIC\" AND metricName: \"system.io.util\" AND hostName : $hostname",
+          "refId": "A",
+          "timeField": "logMills"
+        }
+      ],
+      "thresholds": [],
+      "timeRegions": [],
+      "title": "设备I/O请求的时间百分比（单位：%）",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "mode": "time",
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "format": "short",
+          "logBase": 1,
+          "show": true
+        },
+        {
+          "format": "short",
+          "logBase": 1,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false
+      }
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": {
+        "type": "elasticsearch",
+        "uid": "ggA07MK4k"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "links": []
+        },
+        "overrides": []
+      },
+      "fill": 1,
+      "fillGradient": 0,
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 24
+      },
+      "hiddenSeries": false,
+      "id": 28,
+      "legend": {
+        "avg": false,
+        "current": false,
+        "max": false,
+        "min": false,
+        "show": true,
+        "total": false,
+        "values": false
+      },
+      "lines": true,
+      "linewidth": 1,
+      "nullPointMode": "null",
+      "options": {
+        "alertThreshold": true
+      },
+      "percentage": false,
+      "pluginVersion": "8.5.9",
+      "pointradius": 2,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "bucketAggs": [
+            {
+              "fake": true,
+              "field": "deviceName",
+              "id": "3",
+              "settings": {
+                "min_doc_count": 1,
+                "order": "desc",
+                "orderBy": "1",
+                "size": "0"
+              },
+              "type": "terms"
+            },
+            {
+              "field": "logMills",
+              "id": "2",
+              "settings": {
+                "interval": "1m",
+                "min_doc_count": 0,
+                "trimEdges": 0
+              },
+              "type": "date_histogram"
+            }
+          ],
+          "metrics": [
+            {
+              "field": "metricValue",
+              "id": "1",
+              "meta": {},
+              "settings": {},
+              "type": "max"
+            }
+          ],
+          "query": "logType : \"METRIC\" AND metricName: \"system.io.avgqusz\" AND hostName : $hostname",
+          "refId": "A",
+          "timeField": "logMills"
+        }
+      ],
+      "thresholds": [],
+      "timeRegions": [],
+      "title": "设备平均IO队列长度",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "mode": "time",
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "format": "short",
+          "logBase": 1,
+          "show": true
+        },
+        {
+          "format": "short",
+          "logBase": 1,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false
+      }
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": {
+        "type": "elasticsearch",
+        "uid": "ggA07MK4k"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "links": []
+        },
+        "overrides": []
+      },
+      "fill": 1,
+      "fillGradient": 0,
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 32
+      },
+      "hiddenSeries": false,
+      "id": 24,
+      "legend": {
+        "avg": false,
+        "current": false,
+        "max": false,
+        "min": false,
+        "show": true,
+        "total": false,
+        "values": false
+      },
+      "lines": true,
+      "linewidth": 1,
+      "nullPointMode": "null",
+      "options": {
+        "alertThreshold": true
+      },
+      "percentage": false,
+      "pluginVersion": "8.5.9",
+      "pointradius": 2,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "bucketAggs": [
+            {
+              "fake": true,
+              "field": "diskPath",
+              "id": "3",
+              "settings": {
+                "min_doc_count": 1,
+                "order": "desc",
+                "orderBy": "1",
+                "size": "0"
+              },
+              "type": "terms"
+            },
+            {
+              "field": "logMills",
+              "id": "2",
+              "settings": {
+                "interval": "1m",
+                "min_doc_count": 0,
+                "trimEdges": 0
+              },
+              "type": "date_histogram"
+            }
+          ],
+          "metrics": [
+            {
+              "field": "metricValue",
+              "id": "1",
+              "meta": {},
+              "settings": {},
+              "type": "min"
+            }
+          ],
+          "query": "logType : \"METRIC\" AND metricName: \"system.disk.total\" AND hostName : $hostname",
+          "refId": "A",
+          "timeField": "logMills"
+        }
+      ],
+      "thresholds": [],
+      "timeRegions": [],
+      "title": "磁盘各分区总量大小",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "mode": "time",
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "format": "decbytes",
+          "logBase": 1,
+          "show": true
+        },
+        {
+          "format": "short",
+          "logBase": 1,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false
+      }
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": {
+        "type": "elasticsearch",
+        "uid": "ggA07MK4k"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "links": []
+        },
+        "overrides": []
+      },
+      "fill": 1,
+      "fillGradient": 0,
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 32
+      },
+      "hiddenSeries": false,
+      "id": 22,
+      "legend": {
+        "avg": false,
+        "current": false,
+        "max": false,
+        "min": false,
+        "show": true,
+        "total": false,
+        "values": false
+      },
+      "lines": true,
+      "linewidth": 1,
+      "nullPointMode": "null",
+      "options": {
+        "alertThreshold": true
+      },
+      "percentage": false,
+      "pluginVersion": "8.5.9",
+      "pointradius": 2,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "bucketAggs": [
+            {
+              "fake": true,
+              "field": "diskPath",
+              "id": "3",
+              "settings": {
+                "min_doc_count": 1,
+                "order": "desc",
+                "orderBy": "1",
+                "size": "0"
+              },
+              "type": "terms"
+            },
+            {
+              "field": "logMills",
+              "id": "2",
+              "settings": {
+                "interval": "1m",
+                "min_doc_count": 0,
+                "trimEdges": 0
+              },
+              "type": "date_histogram"
+            }
+          ],
+          "metrics": [
+            {
+              "field": "metricValue",
+              "id": "1",
+              "meta": {},
+              "settings": {},
+              "type": "min"
+            }
+          ],
+          "query": "logType : \"METRIC\" AND metricName: \"system.disk.free\" AND hostName : $hostname",
+          "refId": "A",
+          "timeField": "logMills"
+        }
+      ],
+      "thresholds": [],
+      "timeRegions": [],
+      "title": "磁盘各分区余量大小",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "mode": "time",
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "format": "decbytes",
+          "logBase": 1,
+          "show": true
+        },
+        {
+          "format": "short",
+          "logBase": 1,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false
+      }
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": {
+        "type": "elasticsearch",
+        "uid": "ggA07MK4k"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "links": []
+        },
+        "overrides": []
+      },
+      "fill": 1,
+      "fillGradient": 0,
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 40
+      },
+      "hiddenSeries": false,
+      "id": 30,
+      "legend": {
+        "avg": false,
+        "current": false,
+        "max": false,
+        "min": false,
+        "show": true,
+        "total": false,
+        "values": false
+      },
+      "lines": true,
+      "linewidth": 1,
+      "nullPointMode": "null",
+      "options": {
+        "alertThreshold": true
+      },
+      "percentage": false,
+      "pluginVersion": "8.5.9",
+      "pointradius": 2,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "alias": "系统可以打开的最大文件句柄数",
+          "bucketAggs": [
+            {
+              "field": "logMills",
+              "id": "2",
+              "settings": {
+                "interval": "1m",
+                "min_doc_count": 0,
+                "trimEdges": 0
+              },
+              "type": "date_histogram"
+            }
+          ],
+          "metrics": [
+            {
+              "field": "metricValue",
+              "id": "1",
+              "meta": {},
+              "settings": {},
+              "type": "min"
+            }
+          ],
+          "query": "logType : \"METRIC\" AND metricName: \"system.fd.files.max\" AND hostName : $hostname",
+          "refId": "A",
+          "timeField": "logMills"
+        }
+      ],
+      "thresholds": [],
+      "timeRegions": [],
+      "title": "系统可以打开的最大文件句柄数",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "mode": "time",
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "format": "short",
+          "logBase": 1,
+          "show": true
+        },
+        {
+          "format": "short",
+          "logBase": 1,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false
+      }
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": {
+        "type": "elasticsearch",
+        "uid": "ggA07MK4k"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "links": []
+        },
+        "overrides": []
+      },
+      "fill": 1,
+      "fillGradient": 0,
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 40
+      },
+      "hiddenSeries": false,
+      "id": 32,
+      "legend": {
+        "avg": false,
+        "current": false,
+        "max": false,
+        "min": false,
+        "show": true,
+        "total": false,
+        "values": false
+      },
+      "lines": true,
+      "linewidth": 1,
+      "nullPointMode": "null",
+      "options": {
+        "alertThreshold": true
+      },
+      "percentage": false,
+      "pluginVersion": "8.5.9",
+      "pointradius": 2,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "alias": "系统使用文件句柄占已分配百分比",
+          "bucketAggs": [
+            {
+              "field": "logMills",
+              "id": "2",
+              "settings": {
+                "interval": "1m",
+                "min_doc_count": 0,
+                "trimEdges": 0
+              },
+              "type": "date_histogram"
+            }
+          ],
+          "metrics": [
+            {
+              "field": "metricValue",
+              "id": "1",
+              "meta": {},
+              "settings": {},
+              "type": "max"
+            }
+          ],
+          "query": "logType : \"METRIC\" AND metricName: \"system.fd.files.used.percent\" AND hostName : $hostname",
+          "refId": "A",
+          "timeField": "logMills"
+        }
+      ],
+      "thresholds": [],
+      "timeRegions": [],
+      "title": "系统使用文件句柄占已分配百分比（单位：%）",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "mode": "time",
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "format": "short",
+          "logBase": 1,
+          "show": true
+        },
+        {
+          "format": "short",
+          "logBase": 1,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false
+      }
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": {
+        "type": "elasticsearch",
+        "uid": "ggA07MK4k"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "links": []
+        },
+        "overrides": []
+      },
+      "fill": 1,
+      "fillGradient": 0,
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 48
+      },
+      "hiddenSeries": false,
+      "id": 34,
+      "legend": {
+        "avg": false,
+        "current": false,
+        "max": false,
+        "min": false,
+        "show": true,
+        "total": false,
+        "values": false
+      },
+      "lines": true,
+      "linewidth": 1,
+      "nullPointMode": "null",
+      "options": {
+        "alertThreshold": true
+      },
+      "percentage": false,
+      "pluginVersion": "8.5.9",
+      "pointradius": 2,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "bucketAggs": [
+            {
+              "fake": true,
+              "field": "deviceName",
+              "id": "3",
+              "settings": {
+                "min_doc_count": 1,
+                "order": "desc",
+                "orderBy": "1",
+                "size": "0"
+              },
+              "type": "terms"
+            },
+            {
+              "field": "logMills",
+              "id": "2",
+              "settings": {
+                "interval": "1m",
+                "min_doc_count": 0,
+                "trimEdges": 0
+              },
+              "type": "date_histogram"
+            }
+          ],
+          "metrics": [
+            {
+              "field": "metricValue",
+              "id": "1",
+              "meta": {},
+              "settings": {},
+              "type": "max"
+            }
+          ],
+          "query": "logType : \"METRIC\" AND metricName: \"system.net.card.receive.bytes.per.second\" AND hostName : $hostname",
+          "refId": "A",
+          "timeField": "logMills"
+        }
+      ],
+      "thresholds": [],
+      "timeRegions": [],
+      "title": "各网卡设备每秒下行流量",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "mode": "time",
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "format": "decbytes",
+          "logBase": 1,
+          "show": true
+        },
+        {
+          "format": "short",
+          "logBase": 1,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false
+      }
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": {
+        "type": "elasticsearch",
+        "uid": "ggA07MK4k"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "links": []
+        },
+        "overrides": []
+      },
+      "fill": 1,
+      "fillGradient": 0,
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 48
+      },
+      "hiddenSeries": false,
+      "id": 36,
+      "legend": {
+        "avg": false,
+        "current": false,
+        "max": false,
+        "min": false,
+        "show": true,
+        "total": false,
+        "values": false
+      },
+      "lines": true,
+      "linewidth": 1,
+      "nullPointMode": "null",
+      "options": {
+        "alertThreshold": true
+      },
+      "percentage": false,
+      "pluginVersion": "8.5.9",
+      "pointradius": 2,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "bucketAggs": [
+            {
+              "fake": true,
+              "field": "deviceName",
+              "id": "3",
+              "settings": {
+                "min_doc_count": 1,
+                "order": "desc",
+                "orderBy": "1",
+                "size": "0"
+              },
+              "type": "terms"
+            },
+            {
+              "field": "logMills",
+              "id": "2",
+              "settings": {
+                "interval": "1m",
+                "min_doc_count": 0,
+                "trimEdges": 0
+              },
+              "type": "date_histogram"
+            }
+          ],
+          "metrics": [
+            {
+              "field": "metricValue",
+              "id": "1",
+              "meta": {},
+              "settings": {},
+              "type": "max"
+            }
+          ],
+          "query": "logType : \"METRIC\" AND metricName: \"system.net.card.send.bytes.per.second\" AND hostName : $hostname",
+          "refId": "A",
+          "timeField": "logMills"
+        }
+      ],
+      "thresholds": [],
+      "timeRegions": [],
+      "title": "各网卡设备每秒上行流量",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "mode": "time",
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "format": "decbytes",
+          "logBase": 1,
+          "show": true
+        },
+        {
+          "format": "short",
+          "logBase": 1,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false
+      }
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": {
+        "type": "elasticsearch",
+        "uid": "ggA07MK4k"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "links": []
+        },
+        "overrides": []
+      },
+      "fill": 1,
+      "fillGradient": 0,
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 56
+      },
+      "hiddenSeries": false,
+      "id": 40,
+      "legend": {
+        "avg": false,
+        "current": false,
+        "max": false,
+        "min": false,
+        "show": true,
+        "total": false,
+        "values": false
+      },
+      "lines": true,
+      "linewidth": 1,
+      "nullPointMode": "null",
+      "options": {
+        "alertThreshold": true
+      },
+      "percentage": false,
+      "pluginVersion": "8.5.9",
+      "pointradius": 2,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "alias": "系统网络每秒上行流量",
+          "bucketAggs": [
+            {
+              "field": "logMills",
+              "id": "2",
+              "settings": {
+                "interval": "1m",
+                "min_doc_count": 0,
+                "trimEdges": 0
+              },
+              "type": "date_histogram"
+            }
+          ],
+          "metrics": [
+            {
+              "field": "metricValue",
+              "id": "1",
+              "meta": {},
+              "settings": {},
+              "type": "max"
+            }
+          ],
+          "query": "logType : \"METRIC\" AND metricName: \"system.net.work.send.bytes.per.second\" AND hostName : $hostname",
+          "refId": "A",
+          "timeField": "logMills"
+        },
+        {
+          "alias": "系统网络每秒下行流量",
+          "bucketAggs": [
+            {
+              "field": "logMills",
+              "id": "2",
+              "settings": {
+                "interval": "1m",
+                "min_doc_count": 0,
+                "trimEdges": 0
+              },
+              "type": "date_histogram"
+            }
+          ],
+          "metrics": [
+            {
+              "field": "metricValue",
+              "id": "1",
+              "meta": {},
+              "settings": {},
+              "type": "max"
+            }
+          ],
+          "query": "logType : \"METRIC\" AND metricName: \"system.net.work.receive.bytes.per.second\" AND hostName : $hostname",
+          "refId": "B",
+          "timeField": "logMills"
+        }
+      ],
+      "thresholds": [],
+      "timeRegions": [],
+      "title": "系统网络每秒上、下行流量",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "mode": "time",
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "format": "decbytes",
+          "logBase": 1,
+          "show": true
+        },
+        {
+          "format": "short",
+          "logBase": 1,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false
+      }
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": {
+        "type": "elasticsearch",
+        "uid": "ggA07MK4k"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "links": []
+        },
+        "overrides": []
+      },
+      "fill": 1,
+      "fillGradient": 0,
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 56
+      },
+      "hiddenSeries": false,
+      "id": 42,
+      "legend": {
+        "avg": false,
+        "current": false,
+        "max": false,
+        "min": false,
+        "show": true,
+        "total": false,
+        "values": false
+      },
+      "lines": true,
+      "linewidth": 1,
+      "nullPointMode": "null",
+      "options": {
+        "alertThreshold": true
+      },
+      "percentage": false,
+      "pluginVersion": "8.5.9",
+      "pointradius": 2,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "alias": "系统tcp连接数",
+          "bucketAggs": [
+            {
+              "field": "logMills",
+              "id": "2",
+              "settings": {
+                "interval": "1m",
+                "min_doc_count": 0,
+                "trimEdges": 0
+              },
+              "type": "date_histogram"
+            }
+          ],
+          "metrics": [
+            {
+              "field": "metricValue",
+              "id": "1",
+              "meta": {},
+              "settings": {},
+              "type": "max"
+            }
+          ],
+          "query": "logType : \"METRIC\" AND metricName: \"system.net.work.tcp.connection.num\" AND hostName : $hostname",
+          "refId": "A",
+          "timeField": "logMills"
+        }
+      ],
+      "thresholds": [],
+      "timeRegions": [],
+      "title": "系统tcp连接数",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "mode": "time",
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "format": "short",
+          "logBase": 1,
+          "show": true
+        },
+        {
+          "format": "short",
+          "logBase": 1,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false
+      }
+    }
+  ],
+  "schemaVersion": 36,
+  "style": "dark",
+  "tags": [],
+  "templating": {
+    "list": [
+      {
+        "current": {
+          "selected": false,
+          "text": "10-255-0-245",
+          "value": "10-255-0-245"
+        },
+        "datasource": {
+          "type": "elasticsearch",
+          "uid": "ggA07MK4k"
+        },
+        "definition": "{\"find\":\"terms\",\"field\":\"hostName\"}",
+        "hide": 0,
+        "includeAll": false,
+        "label": "主机名",
+        "multi": false,
+        "name": "hostname",
+        "options": [],
+        "query": "{\"find\":\"terms\",\"field\":\"hostName\"}",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "tagValuesQuery": "",
+        "tagsQuery": "",
+        "type": "query",
+        "useTags": false
+      }
+    ]
+  },
+  "time": {
+    "from": "now-6h",
+    "to": "now"
+  },
+  "timepicker": {
+    "refresh_intervals": [
+      "5s",
+      "10s",
+      "30s",
+      "1m",
+      "5m",
+      "15m",
+      "30m",
+      "1h",
+      "2h",
+      "1d"
+    ]
+  },
+  "timezone": "",
+  "title": "metrics-system",
+  "uid": "YBofbJN4k",
+  "version": 2,
+  "weekStart": ""
+}

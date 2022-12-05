@@ -1,0 +1,212 @@
+{
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": {
+          "type": "grafana",
+          "uid": "-- Grafana --"
+        },
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "target": {
+          "limit": 100,
+          "matchAny": false,
+          "tags": [],
+          "type": "dashboard"
+        },
+        "type": "dashboard"
+      }
+    ]
+  },
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 0,
+  "id": 6,
+  "iteration": 1670235641537,
+  "links": [],
+  "liveNow": false,
+  "panels": [
+    {
+      "datasource": {
+        "type": "elasticsearch",
+        "uid": "ggA07MK4k"
+      },
+      "description": "TraceExplor",
+      "gridPos": {
+        "h": 19,
+        "w": 19,
+        "x": 0,
+        "y": 0
+      },
+      "id": 2,
+      "options": {
+        "dedupStrategy": "none",
+        "enableLogDetails": true,
+        "prettifyLogMessage": false,
+        "showCommonLabels": false,
+        "showLabels": false,
+        "showTime": false,
+        "sortOrder": "Descending",
+        "wrapLogMessage": false
+      },
+      "targets": [
+        {
+          "alias": "",
+          "bucketAggs": [],
+          "datasource": {
+            "type": "elasticsearch",
+            "uid": "ggA07MK4k"
+          },
+          "metrics": [
+            {
+              "id": "1",
+              "settings": {
+                "limit": "500"
+              },
+              "type": "logs"
+            }
+          ],
+          "query": "traceId : $traceId* AND applicationName : $applicationName AND logType : TRACE",
+          "refId": "A",
+          "timeField": "logMills"
+        }
+      ],
+      "title": "TraceExplor",
+      "transformations": [
+        {
+          "id": "filterFieldsByName",
+          "options": {
+            "include": {
+              "names": [
+                "logMills",
+                "JobClassName",
+                "TaskName",
+                "applicationName",
+                "className",
+                "component",
+                "endEpochNanos",
+                "hostName",
+                "httpHost",
+                "httpMethod",
+                "httpScheme",
+                "httpTarget",
+                "ip",
+                "methodName",
+                "parentSpanId",
+                "spanId",
+                "spanKind",
+                "spanName",
+                "spentNanos",
+                "sqlStatement",
+                "sqlType",
+                "startEpochNanos",
+                "statusData",
+                "traceId",
+                "tracerName"
+              ]
+            }
+          }
+        },
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {},
+            "indexByName": {
+              "JobClassName": 2,
+              "TaskName": 3,
+              "applicationName": 4,
+              "className": 5,
+              "component": 6,
+              "endEpochNanos": 7,
+              "hostName": 8,
+              "httpHost": 9,
+              "httpMethod": 10,
+              "httpScheme": 11,
+              "httpTarget": 12,
+              "ip": 13,
+              "logMills": 1,
+              "methodName": 14,
+              "parentSpanId": 15,
+              "spanId": 16,
+              "spanKind": 17,
+              "spanName": 0,
+              "spentNanos": 18,
+              "sqlStatement": 19,
+              "sqlType": 20,
+              "startEpochNanos": 21,
+              "statusData": 22,
+              "traceId": 23,
+              "tracerName": 24
+            },
+            "renameByName": {}
+          }
+        }
+      ],
+      "type": "logs"
+    }
+  ],
+  "schemaVersion": 36,
+  "style": "dark",
+  "tags": [],
+  "templating": {
+    "list": [
+      {
+        "current": {
+          "selected": false,
+          "text": "arius-admin",
+          "value": "arius-admin"
+        },
+        "datasource": {
+          "type": "elasticsearch",
+          "uid": "ggA07MK4k"
+        },
+        "definition": "{\"find\":\"terms\",\"field\":\"applicationName\"}",
+        "hide": 0,
+        "includeAll": false,
+        "label": "应用名",
+        "multi": false,
+        "name": "applicationName",
+        "options": [],
+        "query": "{\"find\":\"terms\",\"field\":\"applicationName\"}",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "type": "query"
+      },
+      {
+        "current": {
+          "selected": false,
+          "text": "",
+          "value": ""
+        },
+        "hide": 0,
+        "label": "traceId",
+        "name": "traceId",
+        "options": [
+          {
+            "selected": true,
+            "text": "",
+            "value": ""
+          }
+        ],
+        "query": "",
+        "skipUrlSync": false,
+        "type": "textbox"
+      }
+    ]
+  },
+  "time": {
+    "from": "now-6h",
+    "to": "now"
+  },
+  "timepicker": {},
+  "timezone": "",
+  "title": "traceExplor",
+  "uid": "6fU3J4KVk",
+  "version": 5,
+  "weekStart": ""
+}

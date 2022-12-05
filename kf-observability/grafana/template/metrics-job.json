@@ -1,1 +1,629 @@
-{  "annotations": {    "list": [      {        "builtIn": 1,        "datasource": {          "type": "datasource",          "uid": "grafana"        },        "enable": true,        "hide": true,        "iconColor": "rgba(0, 211, 255, 1)",        "name": "Annotations & Alerts",        "target": {          "limit": 100,          "matchAny": false,          "tags": [],          "type": "dashboard"        },        "type": "dashboard"      }    ]  },  "editable": true,  "fiscalYearStartMonth": 0,  "graphTooltip": 0,  "id": 5,  "iteration": 1669732885553,  "links": [],  "liveNow": false,  "panels": [    {      "datasource": {        "type": "elasticsearch",        "uid": "ggA07MK4k"      },      "fieldConfig": {        "defaults": {          "color": {            "mode": "thresholds"          },          "mappings": [            {              "options": {                "match": "null",                "result": {                  "text": "N/A"                }              },              "type": "special"            }          ],          "thresholds": {            "mode": "absolute",            "steps": [              {                "color": "green",                "value": null              },              {                "color": "red",                "value": 80              }            ]          },          "unit": "none"        },        "overrides": []      },      "gridPos": {        "h": 8,        "w": 12,        "x": 0,        "y": 0      },      "id": 10,      "links": [],      "maxDataPoints": 100,      "options": {        "colorMode": "none",        "graphMode": "none",        "justifyMode": "auto",        "orientation": "horizontal",        "reduceOptions": {          "calcs": [            "lastNotNull"          ],          "fields": "",          "values": false        },        "textMode": "auto"      },      "pluginVersion": "8.5.9",      "targets": [        {          "alias": "进程启动以来执行超时的任务数",          "bucketAggs": [            {              "field": "logMills",              "id": "2",              "settings": {                "interval": "1m",                "min_doc_count": 0,                "trimEdges": 0              },              "type": "date_histogram"            }          ],          "metrics": [            {              "field": "metricValue",              "id": "1",              "meta": {},              "settings": {},              "type": "max"            }          ],          "query": "logType : \"METRIC\" AND metricName: \"job.thread.pool.task.timeout.number\" AND hostName : $hostname AND applicationName : $applicationName",          "refId": "A",          "timeField": "logMills"        }      ],      "title": "进程启动以来执行超时的任务数",      "type": "stat"    },    {      "datasource": {        "type": "elasticsearch",        "uid": "ggA07MK4k"      },      "fieldConfig": {        "defaults": {          "color": {            "mode": "thresholds"          },          "mappings": [            {              "options": {                "match": "null",                "result": {                  "text": "N/A"                }              },              "type": "special"            }          ],          "thresholds": {            "mode": "absolute",            "steps": [              {                "color": "green",                "value": null              },              {                "color": "red",                "value": 80              }            ]          },          "unit": "none"        },        "overrides": []      },      "gridPos": {        "h": 8,        "w": 12,        "x": 12,        "y": 0      },      "id": 2,      "links": [],      "maxDataPoints": 100,      "options": {        "colorMode": "none",        "graphMode": "none",        "justifyMode": "auto",        "orientation": "horizontal",        "reduceOptions": {          "calcs": [            "lastNotNull"          ],          "fields": "",          "values": false        },        "textMode": "auto"      },      "pluginVersion": "8.5.9",      "targets": [        {          "alias": "进程启动以来因执行调度任务的线程池队列满导致待执行的定时任务提交时被拒绝的定时任务数量",          "bucketAggs": [            {              "field": "logMills",              "id": "2",              "settings": {                "interval": "1m",                "min_doc_count": 0,                "trimEdges": 0              },              "type": "date_histogram"            }          ],          "metrics": [            {              "field": "metricValue",              "id": "1",              "meta": {},              "settings": {},              "type": "max"            }          ],          "query": "logType : \"METRIC\" AND metricName: \"job.rejected.task.number\" AND hostName : $hostname AND applicationName : $applicationName",          "refId": "A",          "timeField": "logMills"        }      ],      "title": "进程启动以来因执行调度任务的线程池队列满导致待执行的定时任务提交时被拒绝的定时任务数量",      "type": "stat"    },    {      "aliasColors": {},      "bars": false,      "dashLength": 10,      "dashes": false,      "datasource": {        "type": "elasticsearch",        "uid": "ggA07MK4k"      },      "fieldConfig": {        "defaults": {          "links": []        },        "overrides": []      },      "fill": 1,      "fillGradient": 0,      "gridPos": {        "h": 8,        "w": 12,        "x": 0,        "y": 8      },      "hiddenSeries": false,      "id": 4,      "legend": {        "avg": false,        "current": false,        "max": false,        "min": false,        "show": true,        "total": false,        "values": false      },      "lines": true,      "linewidth": 1,      "nullPointMode": "null",      "options": {        "alertThreshold": true      },      "percentage": false,      "pluginVersion": "8.5.9",      "pointradius": 2,      "points": false,      "renderer": "flot",      "seriesOverrides": [],      "spaceLength": 10,      "stack": false,      "steppedLine": false,      "targets": [        {          "alias": "执行定时任务的线程池的当前队列大小",          "bucketAggs": [            {              "field": "logMills",              "id": "2",              "settings": {                "interval": "1m",                "min_doc_count": 0,                "trimEdges": 0              },              "type": "date_histogram"            }          ],          "metrics": [            {              "field": "metricValue",              "id": "1",              "meta": {},              "settings": {},              "type": "max"            }          ],          "query": "logType : \"METRIC\" AND metricName: \"job.thread.pool.queue.size\" AND hostName : $hostname AND applicationName : $applicationName",          "refId": "A",          "timeField": "logMills"        }      ],      "thresholds": [],      "timeRegions": [],      "title": "执行定时任务的线程池的当前队列大小",      "tooltip": {        "shared": true,        "sort": 0,        "value_type": "individual"      },      "type": "graph",      "xaxis": {        "mode": "time",        "show": true,        "values": []      },      "yaxes": [        {          "format": "short",          "logBase": 1,          "show": true        },        {          "format": "short",          "logBase": 1,          "show": true        }      ],      "yaxis": {        "align": false      }    },    {      "aliasColors": {},      "bars": false,      "dashLength": 10,      "dashes": false,      "datasource": {        "type": "elasticsearch",        "uid": "ggA07MK4k"      },      "fieldConfig": {        "defaults": {          "links": []        },        "overrides": []      },      "fill": 1,      "fillGradient": 0,      "gridPos": {        "h": 8,        "w": 12,        "x": 12,        "y": 8      },      "hiddenSeries": false,      "id": 8,      "legend": {        "avg": false,        "current": false,        "max": false,        "min": false,        "show": true,        "total": false,        "values": false      },      "lines": true,      "linewidth": 1,      "nullPointMode": "null",      "options": {        "alertThreshold": true      },      "percentage": false,      "pluginVersion": "8.5.9",      "pointradius": 2,      "points": false,      "renderer": "flot",      "seriesOverrides": [],      "spaceLength": 10,      "stack": false,      "steppedLine": false,      "targets": [        {          "alias": "正在执行的任务数",          "bucketAggs": [            {              "field": "logMills",              "id": "2",              "settings": {                "interval": "1m",                "min_doc_count": 0,                "trimEdges": 0              },              "type": "date_histogram"            }          ],          "metrics": [            {              "field": "metricValue",              "id": "1",              "meta": {},              "settings": {},              "type": "max"            }          ],          "query": "logType : \"METRIC\" AND metricName: \"job.thread.pool.task.running.size\" AND hostName : $hostname AND applicationName : $applicationName",          "refId": "A",          "timeField": "logMills"        }      ],      "thresholds": [],      "timeRegions": [],      "title": "正在执行的任务数",      "tooltip": {        "shared": true,        "sort": 0,        "value_type": "individual"      },      "type": "graph",      "xaxis": {        "mode": "time",        "show": true,        "values": []      },      "yaxes": [        {          "format": "short",          "logBase": 1,          "show": true        },        {          "format": "short",          "logBase": 1,          "show": true        }      ],      "yaxis": {        "align": false      }    },    {      "aliasColors": {},      "bars": false,      "dashLength": 10,      "dashes": false,      "datasource": {        "type": "elasticsearch",        "uid": "ggA07MK4k"      },      "fieldConfig": {        "defaults": {          "links": []        },        "overrides": []      },      "fill": 1,      "fillGradient": 0,      "gridPos": {        "h": 8,        "w": 12,        "x": 0,        "y": 16      },      "hiddenSeries": false,      "id": 6,      "legend": {        "avg": false,        "current": false,        "max": false,        "min": false,        "show": true,        "total": false,        "values": false      },      "lines": true,      "linewidth": 1,      "nullPointMode": "null",      "options": {        "alertThreshold": true      },      "percentage": false,      "pluginVersion": "8.5.9",      "pointradius": 2,      "points": false,      "renderer": "flot",      "seriesOverrides": [],      "spaceLength": 10,      "stack": false,      "steppedLine": false,      "targets": [        {          "alias": "执行定时任务的线程池的最大线程数",          "bucketAggs": [            {              "field": "logMills",              "id": "2",              "settings": {                "interval": "1m",                "min_doc_count": 0,                "trimEdges": 0              },              "type": "date_histogram"            }          ],          "metrics": [            {              "field": "metricValue",              "id": "1",              "meta": {},              "settings": {},              "type": "max"            }          ],          "query": "logType : \"METRIC\" AND metricName: \"job.thread.pool.thread.size.max\" AND hostName : $hostname AND applicationName : $applicationName",          "refId": "A",          "timeField": "logMills"        }      ],      "thresholds": [],      "timeRegions": [],      "title": "执行定时任务的线程池的最大线程数",      "tooltip": {        "shared": true,        "sort": 0,        "value_type": "individual"      },      "type": "graph",      "xaxis": {        "mode": "time",        "show": true,        "values": []      },      "yaxes": [        {          "format": "short",          "logBase": 1,          "show": true        },        {          "format": "short",          "logBase": 1,          "show": true        }      ],      "yaxis": {        "align": false      }    }  ],  "schemaVersion": 36,  "style": "dark",  "tags": [],  "templating": {    "list": [      {        "current": {          "selected": false,          "text": "arius-admin",          "value": "arius-admin"        },        "datasource": {          "type": "elasticsearch",          "uid": "ggA07MK4k"        },        "definition": "{\"find\":\"terms\",\"field\":\"applicationName\"}",        "hide": 0,        "includeAll": false,        "label": "应用名",        "multi": false,        "name": "applicationName",        "options": [],        "query": "{\"find\":\"terms\",\"field\":\"applicationName\"}",        "refresh": 1,        "regex": "",        "skipUrlSync": false,        "sort": 0,        "tagValuesQuery": "",        "tagsQuery": "",        "type": "query",        "useTags": false      },      {        "current": {          "selected": false,          "text": "All",          "value": "$__all"        },        "datasource": {          "type": "elasticsearch",          "uid": "ggA07MK4k"        },        "definition": "{\"find\":\"terms\",\"field\":\"hostName\"}",        "hide": 0,        "includeAll": true,        "label": "主机名",        "multi": false,        "name": "hostname",        "options": [],        "query": "{\"find\":\"terms\",\"field\":\"hostName\"}",        "refresh": 1,        "regex": "",        "skipUrlSync": false,        "sort": 0,        "tagValuesQuery": "",        "tagsQuery": "",        "type": "query",        "useTags": false      }    ]  },  "time": {    "from": "now-6h",    "to": "now"  },  "timepicker": {    "refresh_intervals": [      "5s",      "10s",      "30s",      "1m",      "5m",      "15m",      "30m",      "1h",      "2h",      "1d"    ]  },  "timezone": "",  "title": "metrics-job",  "uid": "jMzchBHVz",  "version": 1,  "weekStart": ""}
+{
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": {
+          "type": "datasource",
+          "uid": "grafana"
+        },
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "target": {
+          "limit": 100,
+          "matchAny": false,
+          "tags": [],
+          "type": "dashboard"
+        },
+        "type": "dashboard"
+      }
+    ]
+  },
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 0,
+  "id": 5,
+  "iteration": 1670235533263,
+  "links": [],
+  "liveNow": false,
+  "panels": [
+    {
+      "datasource": {
+        "type": "elasticsearch",
+        "uid": "ggA07MK4k"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [
+            {
+              "options": {
+                "match": "null",
+                "result": {
+                  "text": "N/A"
+                }
+              },
+              "type": "special"
+            }
+          ],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "none"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 0
+      },
+      "id": 10,
+      "links": [],
+      "maxDataPoints": 100,
+      "options": {
+        "colorMode": "none",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "horizontal",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "auto"
+      },
+      "pluginVersion": "8.5.9",
+      "targets": [
+        {
+          "alias": "进程启动以来执行超时的任务数",
+          "bucketAggs": [
+            {
+              "field": "logMills",
+              "id": "2",
+              "settings": {
+                "interval": "1m",
+                "min_doc_count": 0,
+                "trimEdges": 0
+              },
+              "type": "date_histogram"
+            }
+          ],
+          "metrics": [
+            {
+              "field": "metricValue",
+              "id": "1",
+              "meta": {},
+              "settings": {},
+              "type": "max"
+            }
+          ],
+          "query": "logType : \"METRIC\" AND metricName: \"job.thread.pool.task.timeout.number\" AND hostName : $hostname AND applicationName : $applicationName",
+          "refId": "A",
+          "timeField": "logMills"
+        }
+      ],
+      "title": "进程启动以来执行超时的任务数",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "elasticsearch",
+        "uid": "ggA07MK4k"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [
+            {
+              "options": {
+                "match": "null",
+                "result": {
+                  "text": "N/A"
+                }
+              },
+              "type": "special"
+            }
+          ],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "none"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 0
+      },
+      "id": 2,
+      "links": [],
+      "maxDataPoints": 100,
+      "options": {
+        "colorMode": "none",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "horizontal",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "auto"
+      },
+      "pluginVersion": "8.5.9",
+      "targets": [
+        {
+          "alias": "进程启动以来因执行调度任务的线程池队列满导致待执行的定时任务提交时被拒绝的定时任务数量",
+          "bucketAggs": [
+            {
+              "field": "logMills",
+              "id": "2",
+              "settings": {
+                "interval": "1m",
+                "min_doc_count": 0,
+                "trimEdges": 0
+              },
+              "type": "date_histogram"
+            }
+          ],
+          "metrics": [
+            {
+              "field": "metricValue",
+              "id": "1",
+              "meta": {},
+              "settings": {},
+              "type": "max"
+            }
+          ],
+          "query": "logType : \"METRIC\" AND metricName: \"job.rejected.task.number\" AND hostName : $hostname AND applicationName : $applicationName",
+          "refId": "A",
+          "timeField": "logMills"
+        }
+      ],
+      "title": "进程启动以来因执行调度任务的线程池队列满导致待执行的定时任务提交时被拒绝的定时任务数量",
+      "type": "stat"
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": {
+        "type": "elasticsearch",
+        "uid": "ggA07MK4k"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "links": []
+        },
+        "overrides": []
+      },
+      "fill": 1,
+      "fillGradient": 0,
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 8
+      },
+      "hiddenSeries": false,
+      "id": 4,
+      "legend": {
+        "avg": false,
+        "current": false,
+        "max": false,
+        "min": false,
+        "show": true,
+        "total": false,
+        "values": false
+      },
+      "lines": true,
+      "linewidth": 1,
+      "nullPointMode": "null",
+      "options": {
+        "alertThreshold": true
+      },
+      "percentage": false,
+      "pluginVersion": "8.5.9",
+      "pointradius": 2,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "alias": "执行定时任务的线程池的当前队列大小",
+          "bucketAggs": [
+            {
+              "field": "logMills",
+              "id": "2",
+              "settings": {
+                "interval": "1m",
+                "min_doc_count": 0,
+                "trimEdges": 0
+              },
+              "type": "date_histogram"
+            }
+          ],
+          "metrics": [
+            {
+              "field": "metricValue",
+              "id": "1",
+              "meta": {},
+              "settings": {},
+              "type": "max"
+            }
+          ],
+          "query": "logType : \"METRIC\" AND metricName: \"job.thread.pool.queue.size\" AND hostName : $hostname AND applicationName : $applicationName",
+          "refId": "A",
+          "timeField": "logMills"
+        }
+      ],
+      "thresholds": [],
+      "timeRegions": [],
+      "title": "执行定时任务的线程池的当前队列大小",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "mode": "time",
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "format": "short",
+          "logBase": 1,
+          "show": true
+        },
+        {
+          "format": "short",
+          "logBase": 1,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false
+      }
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": {
+        "type": "elasticsearch",
+        "uid": "ggA07MK4k"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "links": []
+        },
+        "overrides": []
+      },
+      "fill": 1,
+      "fillGradient": 0,
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 8
+      },
+      "hiddenSeries": false,
+      "id": 8,
+      "legend": {
+        "avg": false,
+        "current": false,
+        "max": false,
+        "min": false,
+        "show": true,
+        "total": false,
+        "values": false
+      },
+      "lines": true,
+      "linewidth": 1,
+      "nullPointMode": "null",
+      "options": {
+        "alertThreshold": true
+      },
+      "percentage": false,
+      "pluginVersion": "8.5.9",
+      "pointradius": 2,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "alias": "正在执行的任务数",
+          "bucketAggs": [
+            {
+              "field": "logMills",
+              "id": "2",
+              "settings": {
+                "interval": "1m",
+                "min_doc_count": 0,
+                "trimEdges": 0
+              },
+              "type": "date_histogram"
+            }
+          ],
+          "metrics": [
+            {
+              "field": "metricValue",
+              "id": "1",
+              "meta": {},
+              "settings": {},
+              "type": "max"
+            }
+          ],
+          "query": "logType : \"METRIC\" AND metricName: \"job.thread.pool.task.running.size\" AND hostName : $hostname AND applicationName : $applicationName",
+          "refId": "A",
+          "timeField": "logMills"
+        }
+      ],
+      "thresholds": [],
+      "timeRegions": [],
+      "title": "正在执行的任务数",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "mode": "time",
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "format": "short",
+          "logBase": 1,
+          "show": true
+        },
+        {
+          "format": "short",
+          "logBase": 1,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false
+      }
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": {
+        "type": "elasticsearch",
+        "uid": "ggA07MK4k"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "links": []
+        },
+        "overrides": []
+      },
+      "fill": 1,
+      "fillGradient": 0,
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 16
+      },
+      "hiddenSeries": false,
+      "id": 6,
+      "legend": {
+        "avg": false,
+        "current": false,
+        "max": false,
+        "min": false,
+        "show": true,
+        "total": false,
+        "values": false
+      },
+      "lines": true,
+      "linewidth": 1,
+      "nullPointMode": "null",
+      "options": {
+        "alertThreshold": true
+      },
+      "percentage": false,
+      "pluginVersion": "8.5.9",
+      "pointradius": 2,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "alias": "执行定时任务的线程池的最大线程数",
+          "bucketAggs": [
+            {
+              "field": "logMills",
+              "id": "2",
+              "settings": {
+                "interval": "1m",
+                "min_doc_count": 0,
+                "trimEdges": 0
+              },
+              "type": "date_histogram"
+            }
+          ],
+          "metrics": [
+            {
+              "field": "metricValue",
+              "id": "1",
+              "meta": {},
+              "settings": {},
+              "type": "max"
+            }
+          ],
+          "query": "logType : \"METRIC\" AND metricName: \"job.thread.pool.thread.size.max\" AND hostName : $hostname AND applicationName : $applicationName",
+          "refId": "A",
+          "timeField": "logMills"
+        }
+      ],
+      "thresholds": [],
+      "timeRegions": [],
+      "title": "执行定时任务的线程池的最大线程数",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "mode": "time",
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "format": "short",
+          "logBase": 1,
+          "show": true
+        },
+        {
+          "format": "short",
+          "logBase": 1,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false
+      }
+    }
+  ],
+  "schemaVersion": 36,
+  "style": "dark",
+  "tags": [],
+  "templating": {
+    "list": [
+      {
+        "current": {
+          "selected": false,
+          "text": "arius-admin",
+          "value": "arius-admin"
+        },
+        "datasource": {
+          "type": "elasticsearch",
+          "uid": "ggA07MK4k"
+        },
+        "definition": "{\"find\":\"terms\",\"field\":\"applicationName\"}",
+        "hide": 0,
+        "includeAll": false,
+        "label": "应用名",
+        "multi": false,
+        "name": "applicationName",
+        "options": [],
+        "query": "{\"find\":\"terms\",\"field\":\"applicationName\"}",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "tagValuesQuery": "",
+        "tagsQuery": "",
+        "type": "query",
+        "useTags": false
+      },
+      {
+        "current": {
+          "selected": false,
+          "text": "All",
+          "value": "$__all"
+        },
+        "datasource": {
+          "type": "elasticsearch",
+          "uid": "ggA07MK4k"
+        },
+        "definition": "{\"find\":\"terms\",\"field\":\"hostName\"}",
+        "hide": 0,
+        "includeAll": true,
+        "label": "主机名",
+        "multi": false,
+        "name": "hostname",
+        "options": [],
+        "query": "{\"find\":\"terms\",\"field\":\"hostName\"}",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "tagValuesQuery": "",
+        "tagsQuery": "",
+        "type": "query",
+        "useTags": false
+      }
+    ]
+  },
+  "time": {
+    "from": "now-6h",
+    "to": "now"
+  },
+  "timepicker": {
+    "refresh_intervals": [
+      "5s",
+      "10s",
+      "30s",
+      "1m",
+      "5m",
+      "15m",
+      "30m",
+      "1h",
+      "2h",
+      "1d"
+    ]
+  },
+  "timezone": "",
+  "title": "metrics-job",
+  "uid": "jMzchBHVz",
+  "version": 1,
+  "weekStart": ""
+}
