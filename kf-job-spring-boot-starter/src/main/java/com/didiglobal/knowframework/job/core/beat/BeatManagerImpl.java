@@ -52,7 +52,7 @@ public class BeatManagerImpl implements BeatManager {
 
     @Override
     public boolean beat() {
-        logger.info("class=BeatManagerImpl||method=beat||msg=beat beat!!!");
+        logger.debug("class=BeatManagerImpl||method=beat||msg=beat beat!!!");
         cleanWorker();
 
         WorkerSingleton workerSingleton = WorkerSingleton.getInstance();

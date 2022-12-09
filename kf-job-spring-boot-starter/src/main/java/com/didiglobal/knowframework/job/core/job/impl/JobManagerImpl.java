@@ -302,7 +302,7 @@ public class JobManagerImpl implements JobManager {
                     // 间隔一段时间执行一次
                     ThreadUtil.sleep(JOB_FUTURE_CLEAN_INTERVAL, TimeUnit.SECONDS);
 
-                    logger.info("class=JobFutureHandler||method=run||msg=check running jobs at regular "
+                    logger.debug("class=JobFutureHandler||method=run||msg=check running jobs at regular "
                             + "time {}", JOB_FUTURE_CLEAN_INTERVAL);
 
                     // 定时轮询任务，检查状态并处理
@@ -399,7 +399,7 @@ public class JobManagerImpl implements JobManager {
         public void run() {
             while (true) {
                 try {
-                    logger.info("class=LockRenewHandler||method=run||msg=check need renew lock at "
+                    logger.debug("class=LockRenewHandler||method=run||msg=check need renew lock at "
                             + "regular time {}", JOB_INTERVAL);
 
                     // 锁续约
