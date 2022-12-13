@@ -110,7 +110,7 @@ public class TaskManagerImpl implements TaskManager {
                                 taskWorker.getWorkerCode())) {
                             // 判断是否在当前worker可执行状态
                             if (!Objects.equals(taskWorker.getStatus(), TaskWorkerStatusEnum.WAITING.getValue())) {
-                                logger.info("class=TaskManagerImpl||method=nextTriggers||msg=has task running! "
+                                logger.debug("class=TaskManagerImpl||method=nextTriggers||msg=has task running! "
                                                 + "taskCode={}, workerCode={}", taskInfo.getTaskCode(),
                                         taskWorker.getWorkerCode());
                                 return false;

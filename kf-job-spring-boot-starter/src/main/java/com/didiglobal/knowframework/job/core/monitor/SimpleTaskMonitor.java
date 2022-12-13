@@ -68,13 +68,13 @@ public class SimpleTaskMonitor implements TaskMonitor {
         public void run() {
             while (true) {
                 try {
-                    logger.info("class=TaskMonitorExecutor||method=run||msg=fetch tasks at regular {}",
+                    logger.debug("class=TaskMonitorExecutor||method=run||msg=fetch tasks at regular {}",
                             SCAN_INTERVAL_SLEEP_SECONDS);
 
                     List<LogITask> logITaskList = taskManager.nextTriggers(INTERVAL_SECONDS);
 
                     if (logITaskList == null || logITaskList.size() == 0) {
-                        logger.info("class=TaskMonitorExecutor||method=run||msg=no tasks need run!");
+                        logger.debug("class=TaskMonitorExecutor||method=run||msg=no tasks need run!");
                         ThreadUtil.sleep(INTERVAL_SECONDS, TimeUnit.SECONDS);
                         continue;
                     }
