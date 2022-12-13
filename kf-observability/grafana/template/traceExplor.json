@@ -32,7 +32,7 @@
     {
       "datasource": {
         "type": "elasticsearch",
-        "uid": "ggA07MK4k"
+        "uid": "elasticsearch-observability"
       },
       "description": "TraceExplor",
       "gridPos": {
@@ -58,7 +58,7 @@
           "bucketAggs": [],
           "datasource": {
             "type": "elasticsearch",
-            "uid": "ggA07MK4k"
+            "uid": "elasticsearch-observability"
           },
           "metrics": [
             {
@@ -161,7 +161,7 @@
         },
         "datasource": {
           "type": "elasticsearch",
-          "uid": "ggA07MK4k"
+          "uid": "elasticsearch-observability"
         },
         "definition": "{\"find\":\"terms\",\"field\":\"applicationName\"}",
         "hide": 0,
