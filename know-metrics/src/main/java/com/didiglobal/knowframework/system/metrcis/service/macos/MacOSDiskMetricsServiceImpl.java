@@ -17,7 +17,7 @@ public class MacOSDiskMetricsServiceImpl implements DiskMetricsService {
     @Override
     public Map<String, Long> getBytesTotal() {
         Map<String, Long> map = new HashMap<>();
-        map.put("/", 1024l);
+        map.put("/", 1024L);
         return map;
     }
 

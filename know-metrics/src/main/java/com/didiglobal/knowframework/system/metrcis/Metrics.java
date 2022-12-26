@@ -24,9 +24,7 @@ public class Metrics {
                     "class=Metrics||method=getMetricsServiceFactory||errMsg=os={%s} not support",
                     osName), ExceptionCodeEnum.SYSTEM_NOT_SUPPORT.getCode());
         } else if (osName.contains(OSTypeEnum.WINDOWS.getDesc())) {
-            throw new MetricsException(String.format(
-                    "class=Metrics||method=getMetricsServiceFactory||errMsg=os={%s} not support",
-                    osName), ExceptionCodeEnum.SYSTEM_NOT_SUPPORT.getCode());
+            return new MacOSMetricsServiceFactory();
         } else if (osName.contains(OSTypeEnum.MAC_OS.getDesc())) {
             return new MacOSMetricsServiceFactory();
         } else {
