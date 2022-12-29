@@ -113,6 +113,7 @@ public class UserServiceImpl implements UserService {
                 .collect(Collectors.toMap(ProjectBriefVO::getId, i -> i));
         //转换为userid-》project
         final Map<Integer, Set<ProjectBriefVO>> userId2ProjectListMap = userProjectList.stream()
+                .filter(i->projectId2ProjectMap.containsKey(i.getProjectId()))
                 .collect(Collectors.groupingBy(UserProjectPO::getUserId
                         , Collectors.mapping(i -> projectId2ProjectMap.get(i.getProjectId()),
                                 Collectors.toSet())
@@ -127,14 +128,14 @@ public class UserServiceImpl implements UserService {
         for (User user : userList) {
             UserVO userVo = CopyBeanUtil.copy(user, UserVO.class);
             // 设置角色信息
-            userVo.setRoleList(userId2RoleListMap.get(user.getId()));
+            userVo.setRoleList(userId2RoleListMap.getOrDefault(user.getId(),Collections.emptyList()));
             userVo.setUpdateTime(user.getUpdateTime());
             userVo.setCreateTime(user.getCreateTime());
             // 隐私信息处理
             privacyProcessing(userVo);
             userVOList.add(userVo);
             //设置应用信息
-            userVo.setProjectList(Lists.newArrayList(userId2ProjectListMap.get(user.getId())));
+            userVo.setProjectList(Lists.newArrayList(userId2ProjectListMap.getOrDefault(user.getId(),Collections.emptySet())));
         }
         return new PagingData<>(userVOList, pageInfo);
     }

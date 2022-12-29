@@ -12,9 +12,12 @@ import com.didiglobal.knowframework.security.common.entity.project.Project;
 import com.didiglobal.knowframework.security.common.entity.project.ProjectBrief;
 import com.didiglobal.knowframework.security.dao.mapper.ProjectMapper;
 import com.didiglobal.knowframework.security.util.CopyBeanUtil;
+
+import java.util.Collections;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
 /**
@@ -109,6 +112,9 @@ public class ProjectDaoImpl extends BaseDaoImpl<ProjectPO> implements ProjectDao
      */
     @Override
     public List<Project> selectProjectBriefByProjectIds(List<Integer> projectIds) {
+        if (CollectionUtils.isEmpty(projectIds)) {
+            return Collections.emptyList();
+        }
         QueryWrapper<ProjectPO> projectWrapper = getQueryWrapperWithAppName();
         projectWrapper.select(FieldConstant.ID, FieldConstant.PROJECT_NAME,FieldConstant.PROJECT_CODE);
         projectWrapper.in(FieldConstant.ID, projectIds);

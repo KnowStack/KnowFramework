@@ -130,7 +130,7 @@ public class RoleServiceImpl implements RoleService {
             List<Integer> userIdList = roleId2UserIdListMap.get(role.getId());
             // 获取该角色已分配给的用户数
             roleVO.setAuthedUserCnt(userIdList.size());
-            roleVO.setAuthedUsers(roleId2UserNameListMap.get(role.getId()));
+            roleVO.setAuthedUsers(roleId2UserNameListMap.getOrDefault(role.getId(),Collections.emptyList()));
             roleVO.setCreateTime(role.getCreateTime());
             roleVO.setUpdateTime(role.getUpdateTime());
             roleVOList.add(roleVO);
