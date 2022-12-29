@@ -12,6 +12,7 @@ import com.didiglobal.knowframework.security.common.vo.role.RoleVO;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author cjm
@@ -115,4 +116,11 @@ public interface RoleService {
      * @return 角色简要信息List
      */
     List<RoleBriefVO> getRoleBriefListByUserId(Integer userId);
+    /**
+     * > 通过 userIds 获取 userId 到角色简要列表的映射
+     *
+     * @param userId 用户编号
+     * @return userId 到 RoleBriefVO 列表的映射
+     */
+    Map</**userId**/Integer,List<RoleBriefVO>> getRoleBriefListByUserIds(List<Integer> userId);
 }

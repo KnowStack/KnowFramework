@@ -9,6 +9,7 @@ import com.didiglobal.knowframework.security.common.dto.user.UserDTO;
 import com.didiglobal.knowframework.security.common.dto.user.UserQueryDTO;
 import com.didiglobal.knowframework.security.common.enums.ResultCode;
 import com.didiglobal.knowframework.security.common.po.UserPO;
+import com.didiglobal.knowframework.security.common.po.UserProjectPO;
 import com.didiglobal.knowframework.security.common.vo.project.ProjectBriefVO;
 import com.didiglobal.knowframework.security.common.vo.role.AssignInfoVO;
 import com.didiglobal.knowframework.security.common.vo.role.RoleBriefVO;
@@ -30,12 +31,8 @@ import com.didiglobal.knowframework.security.service.RoleService;
 import com.didiglobal.knowframework.security.service.UserRoleService;
 import com.didiglobal.knowframework.security.service.UserService;
 import com.google.common.collect.Lists;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
+
+import java.util.*;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -101,32 +98,46 @@ public class UserServiceImpl implements UserService {
         }
 
         IPage<User> pageInfo = userDao.selectPageByUserIdList(queryDTO, userIdList);
-        List<UserVO> userVOList = new ArrayList<>();
+        List<UserVO> userVOList = Lists.newArrayList();
+        //获取角色列表的信息
+        final List<Integer> userIds = pageInfo.getRecords().stream().map(User::getId)
+                .collect(Collectors.toList());
+        //获取项目列表：全部的userId
+        final List<UserProjectPO> userProjectList = userProjectDao.selectProjectListByUserIdList(userIds);
+
+        final List<Integer> projectIds = userProjectList.stream().map(UserProjectPO::getProjectId)
+                .distinct().collect(Collectors.toList());
+        final List<ProjectBriefVO> projects = CopyBeanUtil.copyList(projectDao.selectProjectBriefByProjectIds(projectIds),
+                ProjectBriefVO.class);
+        final Map<Integer, ProjectBriefVO> projectId2ProjectMap = projects.stream()
+                .collect(Collectors.toMap(ProjectBriefVO::getId, i -> i));
+        //转换为userid-》project
+        final Map<Integer, Set<ProjectBriefVO>> userId2ProjectListMap = userProjectList.stream()
+                .collect(Collectors.groupingBy(UserProjectPO::getUserId
+                        , Collectors.mapping(i -> projectId2ProjectMap.get(i.getProjectId()),
+                                Collectors.toSet())
+                ));
+        //获取全量的角色信息
+        final Map<Integer, List<RoleBriefVO>> userId2RoleListMap = roleService.getRoleBriefListByUserIds(
+                userIds);
+
         List<User> userList = pageInfo.getRecords();
 
         // 提前获取所有部门
         for (User user : userList) {
             UserVO userVo = CopyBeanUtil.copy(user, UserVO.class);
             // 设置角色信息
-            userVo.setRoleList(roleService.getRoleBriefListByUserId(userVo.getId()));
+            userVo.setRoleList(userId2RoleListMap.get(user.getId()));
             userVo.setUpdateTime(user.getUpdateTime());
             userVo.setCreateTime(user.getCreateTime());
             // 隐私信息处理
             privacyProcessing(userVo);
             userVOList.add(userVo);
             //设置应用信息
-            final List<ProjectBriefVO> projectBriefVOS = userProjectDao.selectProjectIdListByUserIdList(
-                    Collections.singletonList(userVo.getId()))
-                .stream()
-                .map(projectDao::selectByProjectId)
-                .map(project -> CopyBeanUtil.copy(project, ProjectBriefVO.class))
-                .filter(Objects::nonNull)
-                .collect(Collectors.toList());
-            userVo.setProjectList(projectBriefVOS);
+            userVo.setProjectList(Lists.newArrayList(userId2ProjectListMap.get(user.getId())));
         }
         return new PagingData<>(userVOList, pageInfo);
     }
-
     @Override
     public PagingData<UserBriefVO> getUserBriefPage(UserBriefQueryDTO queryDTO) {
         // 查找合适的部门idList
@@ -197,6 +208,20 @@ public class UserServiceImpl implements UserService {
                 return userVO;
             })
             .collect(Collectors.toList());
+        //获取项目列表：全部的userId
+        final List<UserProjectPO> userProjectList = userProjectDao.selectProjectListByUserIdList(ids);
+
+        final List<Integer> projectIds = userProjectList.stream().map(UserProjectPO::getProjectId)
+                .distinct().collect(Collectors.toList());
+        final List<ProjectBriefVO> projects = CopyBeanUtil.copyList(projectDao.selectProjectBriefByProjectIds(projectIds),
+                ProjectBriefVO.class);
+        final Map<Integer, ProjectBriefVO> projectId2ProjectMap = projects.stream()
+                .collect(Collectors.toMap(ProjectBriefVO::getId, i -> i));
+        //转换为userid-》project
+        final Map<Integer, Set<ProjectBriefVO>> userId2ProjectListMap = userProjectList.stream()
+                .collect(Collectors.groupingBy(UserProjectPO::getUserId
+                        , Collectors.mapping(i -> projectId2ProjectMap.get(i.getProjectId()),
+                                Collectors.toSet())));
         for (UserVO userVO : userVOS) {
             // 根据用户id获取角色List
             List<RoleBriefVO> roleBriefVOList = roleService.getRoleBriefListByUserId(
@@ -213,14 +238,7 @@ public class UserServiceImpl implements UserService {
             userVO.setPermissionTreeVO(
                 permissionService.buildPermissionTreeWithHas(hasPermissionIdList));
             //设置应用信息
-            final List<ProjectBriefVO> projectBriefVOS = userProjectDao.selectProjectIdListByUserIdList(
-                    Collections.singletonList(userVO.getId()))
-                .stream()
-                .map(projectDao::selectByProjectId)
-                .map(project -> CopyBeanUtil.copy(project, ProjectBriefVO.class))
-                .filter(Objects::nonNull)
-                .collect(Collectors.toList());
-            userVO.setProjectList(projectBriefVOS);
+            userVO.setProjectList(Lists.newArrayList(userId2ProjectListMap.get(userVO.getId())));
         }
         
         return Result.buildSucc(userVOS);

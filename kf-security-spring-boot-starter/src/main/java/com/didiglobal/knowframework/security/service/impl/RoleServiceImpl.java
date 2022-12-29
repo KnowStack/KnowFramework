@@ -105,10 +105,7 @@ public class RoleServiceImpl implements RoleService {
         List<Integer> roleIds = pageInfo.getRecords().stream().map(Role::getId).collect(Collectors.toList());
         // 获取全量的 userId 和 roleId 的关系
         List<UserRole> userRoles = userRoleService.getByRoleIds(roleIds);
-        // 转换
-        Map<Integer, List<Integer>> roleId2UserIdListMap = userRoles.stream().collect(
-                Collectors.groupingBy(UserRole::getRoleId,
-                        Collectors.mapping(UserRole::getUserId, Collectors.toList())));
+
         // 获取全量的用户信息
         List<Integer> userIds = userRoles.stream().map(UserRole::getUserId).distinct().collect(Collectors.toList());
         // 获取全量的用户简要信息
@@ -116,15 +113,24 @@ public class RoleServiceImpl implements RoleService {
         // 转换为 map
         Map<Integer, String> userId2usernameMap = userBasicVOS.stream().collect(
                 Collectors.toMap(UserBasicVO::getId, UserBasicVO::getUserName));
+        // 转换
+        Map<Integer/*roleId*/,/*userId*/ List<Integer>> roleId2UserIdListMap =
+                userRoles.stream().collect(
+                        Collectors.groupingBy(UserRole::getRoleId,
+                                Collectors.mapping(UserRole::getUserId,
+                                        Collectors.toList())));
+        Map<Integer/*roleId*/,/*userNames*/ List<String>> roleId2UserNameListMap =
+                userRoles.stream().collect(
+                        Collectors.groupingBy(UserRole::getRoleId,
+                                Collectors.mapping(i->userId2usernameMap.get(i.getUserId()),
+                                        Collectors.toList())));
         List<RoleVO> roleVOList = new ArrayList<>();
         for(Role role : pageInfo.getRecords()) {
             RoleVO roleVO = CopyBeanUtil.copy(role, RoleVO.class);
             List<Integer> userIdList = roleId2UserIdListMap.get(role.getId());
-            List<String> userNames = userIdList.stream().map(userId2usernameMap::get).collect(Collectors.toList());
-
             // 获取该角色已分配给的用户数
             roleVO.setAuthedUserCnt(userIdList.size());
-            roleVO.setAuthedUsers(userNames);
+            roleVO.setAuthedUsers(roleId2UserNameListMap.get(role.getId()));
             roleVO.setCreateTime(role.getCreateTime());
             roleVO.setUpdateTime(role.getUpdateTime());
             roleVOList.add(roleVO);
@@ -306,6 +312,23 @@ public class RoleServiceImpl implements RoleService {
         }
         List<RoleBrief> roleBriefList =  roleDao.selectBriefListByRoleIdList(roleIdList);
         return CopyBeanUtil.copyList(roleBriefList, RoleBriefVO.class);
+    }
+
+    @Override
+    public Map<Integer, List<RoleBriefVO>> getRoleBriefListByUserIds(List<Integer> userId) {
+        List<UserRole> userRoleList = userRoleService.getRoleIdListByUserIds(userId);
+        //获取全量角色id
+        final List<Integer> roleIds = userRoleList.stream().map(UserRole::getRoleId)
+                .collect(Collectors.toList());
+        //获取角色信息
+        final List<RoleBriefVO> roleBriefs = CopyBeanUtil.copyList(
+                roleDao.selectBriefListByRoleIdList(roleIds), RoleBriefVO.class);
+        //转换
+        final Map<Integer, RoleBriefVO> roleId2RoleMap = roleBriefs.stream()
+                .collect(Collectors.toMap(RoleBriefVO::getId, i -> i));
+        return userRoleList.stream()
+                .collect(Collectors.groupingBy(UserRole::getUserId,
+                        Collectors.mapping(i -> roleId2RoleMap.get(i.getRoleId()), Collectors.toList())));
     }
 
     @Override

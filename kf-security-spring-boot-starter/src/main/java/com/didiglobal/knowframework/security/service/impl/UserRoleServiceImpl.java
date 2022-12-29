@@ -84,6 +84,11 @@ public class UserRoleServiceImpl implements UserRoleService {
         return CopyBeanUtil.copyList(userRoleDao.selectByRoleIds(roleIds),UserRole.class);
     }
 
+    @Override
+    public List<UserRole> getRoleIdListByUserIds(List<Integer> userId) {
+        return CopyBeanUtil.copyList(userRoleDao.getRoleIdListByUserIds(userId),UserRole.class);
+    }
+
 
     private List<UserRole> getUserRoleList(boolean isUserId, Integer id, List<Integer> idList) {
         List<UserRole> result = new ArrayList<>();

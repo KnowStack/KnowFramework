@@ -57,4 +57,11 @@ public interface UserRoleService {
      * @return UserRole 对象的列表。
      */
     List<UserRole> getByRoleIds(List<Integer> roleIds);
+    /**
+     * 通过用户 ID 列表获取用户角色列表
+     *
+     * @param userId 用户编号
+     * @return 列表<用户角色>
+     */
+    List<UserRole> getRoleIdListByUserIds(List<Integer> userId);
 }

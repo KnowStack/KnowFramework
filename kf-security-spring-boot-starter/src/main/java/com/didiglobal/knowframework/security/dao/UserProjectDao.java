@@ -2,6 +2,7 @@ package com.didiglobal.knowframework.security.dao;
 
 import com.didiglobal.knowframework.security.common.dto.user.UserProjectDTO;
 import com.didiglobal.knowframework.security.common.entity.UserProject;
+import com.didiglobal.knowframework.security.common.po.UserProjectPO;
 
 import java.util.List;
 
@@ -23,6 +24,14 @@ public interface UserProjectDao {
      * @return 项目idList
      */
     List<Integer> selectProjectIdListByUserIdList(List<Integer> userIdList);
+
+    /**
+     * 项目列表,用户id列表
+     *
+     * @param userIdList 用户id列表
+     * @return {@link List}<{@link UserProjectPO}>
+     */
+    List<UserProjectPO> selectProjectListByUserIdList(List<Integer> userIdList);
 
     /**
      * 批量插入用户与项目的关联信息

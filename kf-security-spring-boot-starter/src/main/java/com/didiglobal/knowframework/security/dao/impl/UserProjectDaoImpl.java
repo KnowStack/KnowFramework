@@ -9,6 +9,7 @@ import com.didiglobal.knowframework.security.dao.mapper.UserProjectMapper;
 import com.didiglobal.knowframework.security.util.CopyBeanUtil;
 import com.didiglobal.knowframework.security.common.dto.user.UserProjectDTO;
 
+import java.util.Collections;
 import java.util.Objects;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -102,6 +103,16 @@ public class UserProjectDaoImpl extends BaseDaoImpl<UserProjectPO> implements Us
         queryWrapper.eq(FieldConstant.PROJECT_ID, projectId);
         queryWrapper.eq(FieldConstant.USER_TYPE, userType);
         userProjectMapper.delete(queryWrapper);
+    }
+
+    @Override
+    public List<UserProjectPO> selectProjectListByUserIdList(List<Integer> userIdList) {
+        if (CollectionUtils.isEmpty(userIdList)) {
+            return Collections.emptyList();
+        }
+        QueryWrapper<UserProjectPO> queryWrapper = getQueryWrapperWithAppName();
+        queryWrapper.in(FieldConstant.USER_ID, userIdList);
+        return userProjectMapper.selectList(queryWrapper);
     }
     
     /**************************************************** private method ****************************************************/

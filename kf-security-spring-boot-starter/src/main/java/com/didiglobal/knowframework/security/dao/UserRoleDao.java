@@ -51,4 +51,12 @@ public interface UserRoleDao {
      * @return UserRole 对象的列表。
      */
     List<UserRolePO> selectByRoleIds(List<Integer> roleIds);
+
+    /**
+     * 通过用户id获取角色id列表
+     *
+     * @param userIds 用户ID列表
+     * @return 列表<UserRolePO>
+     */
+    List<UserRolePO> getRoleIdListByUserIds(List<Integer> userIds);
 }
