@@ -87,6 +87,25 @@ public interface TaskManager {
     Result<Boolean> updateTaskStatus(String taskCode, int status);
 
     /**
+     * 拷贝一个任务
+     * @param sourceTaskCode
+     * @param workerIps
+     * @param param
+     * @return
+     */
+    Result<Boolean> copy(String sourceTaskCode, String taskDesc, List<String> workerIps, String param);
+
+
+    /**
+     * 编辑任务
+     * @param taskCode
+     * @param workerIps
+     * @param param
+     * @return
+     */
+    Result<Boolean> updateWorkIpsParam(String taskCode, List<String> workerIps, String param);
+
+    /**
      * 获取所有任务.
      *
      * @return all tasks

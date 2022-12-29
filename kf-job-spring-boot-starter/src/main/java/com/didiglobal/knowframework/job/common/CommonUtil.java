@@ -16,4 +16,8 @@ public class CommonUtil {
         }
         return str;
     }
+
+    public static boolean isCopyTask(String taskCode){
+        return taskCode.contains("-");
+    }
 }

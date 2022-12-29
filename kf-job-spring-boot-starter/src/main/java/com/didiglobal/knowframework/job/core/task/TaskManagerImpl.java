@@ -1,12 +1,14 @@
 package com.didiglobal.knowframework.job.core.task;
 
 import com.alibaba.fastjson.JSON;
+import com.didiglobal.knowframework.job.common.po.LogIWorkerPO;
 import com.didiglobal.knowframework.job.core.WorkerSingleton;
 import com.didiglobal.knowframework.job.core.consensual.Consensual;
 import com.didiglobal.knowframework.job.core.consensual.ConsensualEnum;
 import com.didiglobal.knowframework.job.core.consensual.ConsensualFactory;
 import com.didiglobal.knowframework.job.core.job.JobManager;
 import com.didiglobal.knowframework.job.core.monitor.SimpleTaskMonitor;
+import com.didiglobal.knowframework.job.core.worker.WorkerManager;
 import com.didiglobal.knowframework.job.utils.BeanUtil;
 import com.didiglobal.knowframework.job.LogIJobProperties;
 import com.didiglobal.knowframework.job.common.Result;
@@ -33,6 +35,8 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
+import static com.didiglobal.knowframework.job.common.CommonUtil.isCopyTask;
+
 /**
  * task manager impl.
  *
@@ -44,11 +48,12 @@ public class TaskManagerImpl implements TaskManager {
 
     private static final long WAIT_INTERVAL_SECONDS = 10L;
 
-    private static final Long TASK_TIME_OUT_DEFAULT_VALUE = 0l;
+    private static final Long TASK_TIME_OUT_DEFAULT_VALUE = 0L;
     private static final ConsensualEnum TASK_CONSENSUAL_DEFAULT_VALUE = ConsensualEnum.RANDOM;
     private static final String OWNER_DEFAULT_VALUE = "system";
     private static final Integer RETRY_TIMES_DEFAULT_VALUE = 0;
 
+    private WorkerManager workerManager;
     private JobManager jobManager;
     private ConsensualFactory consensualFactory;
     private TaskLockService taskLockService;
@@ -64,9 +69,10 @@ public class TaskManagerImpl implements TaskManager {
      * @param logIJobProperties 配置信息
      * @param consensualFactory 一致协议工厂
      */
-    public TaskManagerImpl(JobManager jobManager, ConsensualFactory consensualFactory,
+    public TaskManagerImpl(WorkerManager workerManager, JobManager jobManager, ConsensualFactory consensualFactory,
                            TaskLockService taskLockService, LogITaskMapper logITaskMapper,
                            LogIJobProperties logIJobProperties) {
+        this.workerManager      = workerManager;
         this.jobManager = jobManager;
         this.consensualFactory = consensualFactory;
         this.taskLockService = taskLockService;
@@ -224,8 +230,9 @@ public class TaskManagerImpl implements TaskManager {
 
         LogITaskPO logITaskPO = BeanUtil.convertTo(logITask, LogITaskPO.class);
         List<LogITask.TaskWorker> taskWorkers = logITask.getTaskWorkers();
+        boolean copyTask    = isCopyTask(logITask.getTaskCode());
+        boolean worked      = false;
 
-        boolean worked = false;
         for (LogITask.TaskWorker taskWorker : taskWorkers) {
             if (Objects.equals(taskWorker.getWorkerCode(),
                     WorkerSingleton.getInstance().getLogIWorker().getWorkerCode())) {
@@ -236,7 +243,7 @@ public class TaskManagerImpl implements TaskManager {
             }
         }
 
-        if (!worked) {
+        if (!copyTask && !worked) {
             taskWorkers.add(new LogITask.TaskWorker(TaskWorkerStatusEnum.RUNNING.getValue(),
                     new Timestamp(System.currentTimeMillis()),
                     WorkerSingleton.getInstance().getLogIWorker().getWorkerCode(),
@@ -456,6 +463,62 @@ public class TaskManagerImpl implements TaskManager {
     private boolean contains(String className) {
         LogITaskPO logITaskPO = logITaskMapper.selectByAppNameAndClassName(logIJobProperties.getAppName(), className);
         return null != logITaskPO;
+    }
+
+    @Override
+    public Result<Boolean> copy(String sourceTaskCode, String newTaskDesc, List<String> workerIps, String param) {
+        LogITaskPO logITaskPO = logITaskMapper.selectByCode(sourceTaskCode, logIJobProperties.getAppName());
+        if(null == logITaskPO){
+            return Result.buildFail("task 不存在");
+        }
+
+        if(CollectionUtils.isEmpty(workerIps)){
+            return Result.buildFail("workerIps 为空");
+        }
+
+        Map<String, LogIWorkerPO> logIWorkerMap = workerManager.mapAllWorkers();
+        List<LogITask.TaskWorker> taskWorkers   = new ArrayList<>();
+
+        for(String ip : workerIps){
+            LogITask.TaskWorker worker = new LogITask.TaskWorker();
+            worker.setStatus(TaskWorkerStatusEnum.WAITING.getValue());
+            worker.setIp(ip);
+            worker.setWorkerCode(logIWorkerMap.getOrDefault(ip, new LogIWorkerPO()).getWorkerCode());
+            taskWorkers.add(worker);
+        }
+
+        logITaskPO.setTaskDesc(newTaskDesc);
+        logITaskPO.setTaskCode(sourceTaskCode + "-" + IdWorker.getIdStr());
+        logITaskPO.setTaskWorkerStr(BeanUtil.convertToJson(taskWorkers));
+        logITaskPO.setParams(param);
+
+        return Result.buildSucc(logITaskMapper.insert(logITaskPO) > 0);
+    }
+
+    @Override
+    public Result<Boolean> updateWorkIpsParam(String taskCode, List<String> workerIps, String param){
+        LogITaskPO logITaskPO = logITaskMapper.selectByCode(taskCode, logIJobProperties.getAppName());
+        if(null == logITaskPO){
+            return Result.buildFail("task 不存在");
+        }
+
+        if(!CollectionUtils.isEmpty(workerIps)){
+            Map<String, LogIWorkerPO> logIWorkerMap = workerManager.mapAllWorkers();
+            List<LogITask.TaskWorker> taskWorkers   = new ArrayList<>();
+
+            for(String ip : workerIps){
+                LogITask.TaskWorker worker = new LogITask.TaskWorker();
+                worker.setStatus(TaskWorkerStatusEnum.WAITING.getValue());
+                worker.setIp(ip);
+                worker.setWorkerCode(logIWorkerMap.getOrDefault(ip, new LogIWorkerPO()).getWorkerCode());
+                taskWorkers.add(worker);
+            }
+
+            logITaskPO.setTaskWorkerStr(BeanUtil.convertToJson(taskWorkers));
+        }
+
+        logITaskPO.setParams(param);
+        return Result.buildSucc(logITaskMapper.updateByCode(logITaskPO) > 0);
     }
 
     /**************************************** private method ****************************************************/

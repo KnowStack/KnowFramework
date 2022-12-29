@@ -10,7 +10,7 @@ import lombok.Data;
  * @author cjm
  */
 @Data
-@ApiModel(description = "分页查找条件信息")
+@ApiModel(description = "任务日志分页查找条件信息")
 public class TaskLogPageQueryDTO {
 
     @ApiModelProperty(value = "当前页", dataType = "Integer", required = true)

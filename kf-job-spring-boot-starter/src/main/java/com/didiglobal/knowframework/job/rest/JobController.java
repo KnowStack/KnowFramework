@@ -5,6 +5,9 @@ import com.didiglobal.knowframework.job.core.job.JobManager;
 import com.didiglobal.knowframework.log.ILog;
 import com.didiglobal.knowframework.log.LogFactory;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,7 +18,7 @@ import org.springframework.web.bind.annotation.*;
  */
 @RestController
 @RequestMapping(Constants.V1 + "/logi-job/job")
-@Api(tags = "logi-job 执行生成的 job 相关接口")
+@Api(tags = "logi-job 执行生成的作业相关接口")
 public class JobController {
     private static final ILog logger     = LogFactory.getLog(JobController.class);
 
@@ -23,11 +26,13 @@ public class JobController {
     private JobManager jobManager;
 
     @PostMapping("/{jobCode}/stop")
+    @ApiOperation(value = "停止一个作业的执行", notes = "")
     public Result<Boolean> stop(@PathVariable String jobCode) {
         return Result.buildSucc(jobManager.stopByJobCode(jobCode));
     }
 
     @GetMapping("/runningJobs")
+    @ApiOperation(value = "获取所有在执行的作业", notes = "")
     public Result getRunningJobs() {
         return Result.buildSucc(jobManager.getJobs());
     }

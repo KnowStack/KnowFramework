@@ -1,10 +1,10 @@
 package com.didiglobal.knowframework.job.core.task;
 
+import com.didiglobal.knowframework.job.common.vo.LogITaskLockVO;
 import com.didiglobal.knowframework.job.core.WorkerSingleton;
 import com.didiglobal.knowframework.job.utils.BeanUtil;
 import com.didiglobal.knowframework.job.LogIJobProperties;
 import com.didiglobal.knowframework.job.common.po.LogITaskLockPO;
-import com.didiglobal.knowframework.job.common.dto.LogITaskLockDTO;
 import com.didiglobal.knowframework.job.mapper.LogITaskLockMapper;
 
 import java.sql.Timestamp;
@@ -136,13 +136,13 @@ public class TaskLockServiceImpl implements TaskLockService {
     }
 
     @Override
-    public List<LogITaskLockDTO> getAll() {
+    public List<LogITaskLockVO> getAll() {
         List<LogITaskLockPO> logITaskLockPOS = logITaskLockMapper.selectByAppName(logIJobProperties.getAppName());
         if (CollectionUtils.isEmpty(logITaskLockPOS)) {
             return null;
         }
         return logITaskLockPOS.stream().map(logITaskLockPO -> BeanUtil.convertTo(logITaskLockPO,
-                LogITaskLockDTO.class)).collect(Collectors.toList());
+                LogITaskLockVO.class)).collect(Collectors.toList());
     }
 
     @Override

@@ -50,7 +50,7 @@ public class Sequence {
         StringBuilder mpid = new StringBuilder();
         mpid.append(datacenterId);
         String name = ManagementFactory.getRuntimeMXBean().getName();
-        if (StringUtils.isEmpty(name)) {
+        if (!StringUtils.isEmpty(name)) {
             mpid.append(name.split("@")[0]);
         }
 

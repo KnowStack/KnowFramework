@@ -67,6 +67,9 @@ public class LogITaskVO {
     @ApiModelProperty(value = "阻塞策略")
     private String blockPolicy = "单机串行";
 
+    @ApiModelProperty(value = "是否可以删除，1：可以，0：不可以")
+    private Integer del;
+
     @ApiModelProperty(value = "任务被调度时间")
     private Timestamp createTime;
 

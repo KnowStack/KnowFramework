@@ -26,6 +26,7 @@ public class JobLogsController {
     private JobLogManager jobLogManager;
 
     @PostMapping("/list")
+    @ApiOperation(value = "分页获取作业执行日志", notes = "")
     public PagingResult<LogIJobLogVO> getJobLogs(@RequestBody TaskLogPageQueryDTO pageQueryDTO) {
         pageQueryDTO.setTaskDesc(sqlFuzzyQueryTransfer(pageQueryDTO.getTaskDesc()));
 

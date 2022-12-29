@@ -1,5 +1,6 @@
 package com.didiglobal.knowframework.job.core.worker;
 
+import com.didiglobal.knowframework.job.common.Result;
 import com.didiglobal.knowframework.job.utils.BeanUtil;
 import com.didiglobal.knowframework.job.LogIJobProperties;
 import com.didiglobal.knowframework.job.common.domain.LogIWorker;
@@ -11,7 +12,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 public class WorkerManagerImpl implements WorkerManager {
@@ -42,6 +46,27 @@ public class WorkerManagerImpl implements WorkerManager {
             }
         }
         return logIWorkerList;
+    }
+    @Override
+    public Result<List<String>> listAllWorkerIps() {
+        List<LogIWorkerPO> logIWorkerPOS = logIWorkerMapper.selectByAppName(logIJobProperties.getAppName());
+
+        if(CollectionUtils.isEmpty(logIWorkerPOS)){
+            return Result.buildFail("获取不到 worker！");
+        }else {
+            return Result.buildSucc(new ArrayList<>(logIWorkerPOS.stream().map(LogIWorkerPO::getIp).collect(Collectors.toSet())));
+        }
+    }
+
+    @Override
+    public Map<String, LogIWorkerPO> mapAllWorkers(){
+        List<LogIWorkerPO> logIWorkerPOS = logIWorkerMapper.selectByAppName(logIJobProperties.getAppName());
+
+        if(CollectionUtils.isEmpty(logIWorkerPOS)){
+            return new HashMap<>();
+        }else {
+            return logIWorkerPOS.stream().collect(Collectors.toMap(LogIWorkerPO::getIp, l -> l,(l1, l2)->l1));
+        }
     }
 
 }
