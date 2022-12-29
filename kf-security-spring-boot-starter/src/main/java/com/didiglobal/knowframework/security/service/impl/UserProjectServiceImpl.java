@@ -98,7 +98,7 @@ public class UserProjectServiceImpl implements UserProjectService {
             return;
         }
         // 插入新的关联信息
-        saveUserProject(projectId, userIdList);
+        saveUserProject(projectId, filterUserIdList);
     
     }
     

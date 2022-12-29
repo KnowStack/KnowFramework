@@ -230,7 +230,7 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Override
     public void addProjectUser(Integer projectId, Integer userId, String operator) {
-        userProjectService.saveUserProject(projectId, new ArrayList<>(userId));
+        userProjectService.saveUserProject(projectId, Collections.singletonList(userId));
 
         oplogService.saveOplog( new OplogDTO(operator,
                 OplogConstant.PM_P, OplogConstant.PM, projectId.toString(), "增加项目用户：" + userId));
@@ -238,7 +238,7 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Override
     public void delProjectUser(Integer projectId, Integer userId, String operator) {
-        userProjectService.delUserProject(projectId, new ArrayList<>(userId));
+        userProjectService.delUserProject(projectId, Collections.singletonList(userId));
 
         oplogService.saveOplog( new OplogDTO(operator,
                 OplogConstant.PM_D,  OplogConstant.PM, projectId.toString(), "删除项目用户：" + userId));
@@ -246,7 +246,7 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Override
     public void addProjectOwner(Integer projectId, Integer ownerId, String operator) {
-        userProjectService.saveOwnerProject(projectId, new ArrayList<>(ownerId));
+        userProjectService.saveOwnerProject(projectId, Collections.singletonList(ownerId));
 
         oplogService.saveOplog( new OplogDTO(operator,
                 OplogConstant.PM_A, OplogConstant.PM, projectId.toString(), "增加项目负责人：" + ownerId));
@@ -254,7 +254,7 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Override
     public void delProjectOwner(Integer projectId, Integer ownerId, String operator) {
-        userProjectService.delOwnerProject(projectId, new ArrayList<>(ownerId));
+        userProjectService.delOwnerProject(projectId, Collections.singletonList(ownerId));
 
         oplogService.saveOplog( new OplogDTO(operator,
                 OplogConstant.PM_D, OplogConstant.PM,  projectId.toString(), "删除项目负责人：" + ownerId));
