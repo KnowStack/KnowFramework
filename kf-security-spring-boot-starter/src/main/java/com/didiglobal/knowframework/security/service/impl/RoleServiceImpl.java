@@ -127,7 +127,7 @@ public class RoleServiceImpl implements RoleService {
         List<RoleVO> roleVOList = new ArrayList<>();
         for(Role role : pageInfo.getRecords()) {
             RoleVO roleVO = CopyBeanUtil.copy(role, RoleVO.class);
-            List<Integer> userIdList = roleId2UserIdListMap.get(role.getId());
+            List<Integer> userIdList = roleId2UserIdListMap.getOrDefault(role.getId(),Collections.emptyList());
             // 获取该角色已分配给的用户数
             roleVO.setAuthedUserCnt(userIdList.size());
             roleVO.setAuthedUsers(roleId2UserNameListMap.getOrDefault(role.getId(),Collections.emptyList()));
