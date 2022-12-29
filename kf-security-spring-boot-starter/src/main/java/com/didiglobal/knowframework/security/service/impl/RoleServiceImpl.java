@@ -4,12 +4,14 @@ import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.didiglobal.knowframework.security.common.PagingData;
 import com.didiglobal.knowframework.security.common.constant.OplogConstant;
+import com.didiglobal.knowframework.security.common.entity.UserRole;
 import com.didiglobal.knowframework.security.common.enums.ResultCode;
 import com.didiglobal.knowframework.security.common.enums.message.MessageCode;
 import com.didiglobal.knowframework.security.common.vo.permission.PermissionTreeVO;
 import com.didiglobal.knowframework.security.common.vo.role.AssignInfoVO;
 import com.didiglobal.knowframework.security.common.vo.role.RoleBriefVO;
 import com.didiglobal.knowframework.security.common.vo.role.RoleDeleteCheckVO;
+import com.didiglobal.knowframework.security.common.vo.user.UserBasicVO;
 import com.didiglobal.knowframework.security.common.vo.user.UserBriefVO;
 import com.didiglobal.knowframework.security.dao.RoleDao;
 import com.didiglobal.knowframework.security.exception.KfSecurityException;
@@ -99,16 +101,26 @@ public class RoleServiceImpl implements RoleService {
     @Override
     public PagingData<RoleVO> getRolePage(RoleQueryDTO queryDTO) {
         IPage<Role> pageInfo = roleDao.selectPage(queryDTO);
+        // 获取全量 rolIds
+        List<Integer> roleIds = pageInfo.getRecords().stream().map(Role::getId).collect(Collectors.toList());
+        // 获取全量的 userId 和 roleId 的关系
+        List<UserRole> userRoles = userRoleService.getByRoleIds(roleIds);
+        // 转换
+        Map<Integer, List<Integer>> roleId2UserIdListMap = userRoles.stream().collect(
+                Collectors.groupingBy(UserRole::getRoleId,
+                        Collectors.mapping(UserRole::getUserId, Collectors.toList())));
+        // 获取全量的用户信息
+        List<Integer> userIds = userRoles.stream().map(UserRole::getUserId).distinct().collect(Collectors.toList());
+        // 获取全量的用户简要信息
+        List<UserBasicVO> userBasicVOS = userService.getUserBasicListByUserIdList(userIds);
+        // 转换为 map
+        Map<Integer, String> userId2usernameMap = userBasicVOS.stream().collect(
+                Collectors.toMap(UserBasicVO::getId, UserBasicVO::getUserName));
         List<RoleVO> roleVOList = new ArrayList<>();
         for(Role role : pageInfo.getRecords()) {
             RoleVO roleVO = CopyBeanUtil.copy(role, RoleVO.class);
-
-            // 获取授予用户数
-            List<Integer>     userIdList      = userRoleService.getUserIdListByRoleId(role.getId());
-            List<UserBriefVO> userBriefVOList = userService.getUserBriefListByUserIdList(userIdList);
-            List<String>      userNames       = CollectionUtils.isEmpty(userBriefVOList)
-                    ? new ArrayList<>()
-                    : userBriefVOList.stream().map(UserBriefVO::getUserName).collect(Collectors.toList());
+            List<Integer> userIdList = roleId2UserIdListMap.get(role.getId());
+            List<String> userNames = userIdList.stream().map(userId2usernameMap::get).collect(Collectors.toList());
 
             // 获取该角色已分配给的用户数
             roleVO.setAuthedUserCnt(userIdList.size());

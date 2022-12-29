@@ -12,6 +12,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -82,5 +83,15 @@ public class UserRoleDaoImpl extends BaseDaoImpl<UserRolePO> implements UserRole
         QueryWrapper<UserRolePO> queryWrapper = getQueryWrapperWithAppName();
         queryWrapper.eq(FieldConstant.ROLE_ID, roleId);
         return userRoleMapper.selectCount(queryWrapper);
+    }
+
+    @Override
+    public List<UserRolePO> selectByRoleIds(List<Integer> roleIds) {
+        if (CollectionUtils.isEmpty(roleIds)) {
+            return Collections.emptyList();
+        }
+        QueryWrapper<UserRolePO> queryWrapper = getQueryWrapperWithAppName();
+        queryWrapper.in(FieldConstant.ROLE_ID, roleIds);
+        return userRoleMapper.selectList(queryWrapper);
     }
 }

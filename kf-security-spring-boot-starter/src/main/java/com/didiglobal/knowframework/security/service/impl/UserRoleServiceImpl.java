@@ -3,6 +3,7 @@ package com.didiglobal.knowframework.security.service.impl;
 import com.didiglobal.knowframework.security.common.entity.UserRole;
 import com.didiglobal.knowframework.security.dao.UserRoleDao;
 import com.didiglobal.knowframework.security.service.UserRoleService;
+import com.didiglobal.knowframework.security.util.CopyBeanUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
@@ -77,6 +78,12 @@ public class UserRoleServiceImpl implements UserRoleService {
     public int deleteByUserIdOrRoleId(Integer userId, Integer roleId){
         return userRoleDao.deleteByUserIdOrRoleId(userId, roleId);
     }
+
+    @Override
+    public List<UserRole> getByRoleIds(List<Integer> roleIds) {
+        return CopyBeanUtil.copyList(userRoleDao.selectByRoleIds(roleIds),UserRole.class);
+    }
+
 
     private List<UserRole> getUserRoleList(boolean isUserId, Integer id, List<Integer> idList) {
         List<UserRole> result = new ArrayList<>();

@@ -1,5 +1,7 @@
 package com.didiglobal.knowframework.security.service;
 
+import com.didiglobal.knowframework.security.common.entity.UserRole;
+
 import java.util.List;
 
 /**
@@ -48,4 +50,11 @@ public interface UserRoleService {
      * @param roleId 角色id
      */
     int deleteByUserIdOrRoleId(Integer userId, Integer roleId);
+    /**
+     * 获取角色 ID 在给定角色 ID 列表中的所有用户角色。
+     *
+     * @param roleIds 角色 ID 列表。
+     * @return UserRole 对象的列表。
+     */
+    List<UserRole> getByRoleIds(List<Integer> roleIds);
 }

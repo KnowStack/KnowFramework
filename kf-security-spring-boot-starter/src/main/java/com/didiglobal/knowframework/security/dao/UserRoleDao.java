@@ -1,6 +1,7 @@
 package com.didiglobal.knowframework.security.dao;
 
 import com.didiglobal.knowframework.security.common.entity.UserRole;
+import com.didiglobal.knowframework.security.common.po.UserRolePO;
 
 import java.util.List;
 
@@ -42,4 +43,12 @@ public interface UserRoleDao {
      * @return 角色授予用户数
      */
     int selectCountByRoleId(Integer roleId);
+
+    /**
+     * 选择角色 ID 在给定角色 ID 列表中的所有用户角色。
+     *
+     * @param roleIds 角色ID列表
+     * @return UserRole 对象的列表。
+     */
+    List<UserRolePO> selectByRoleIds(List<Integer> roleIds);
 }
