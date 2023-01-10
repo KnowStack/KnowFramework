@@ -54,7 +54,7 @@ public class Observability {
     private static final String PROPERTIES_KEY_METRIC_EXPORT_INTERVAL_MS = "metric.export.interval.ms";
     private static final String PROPERTIES_KEY_OBSERVABILITY_INITIALIZER_CLASSES = "observability.initializer.classes";
     private static final String APPLICATION_NAME_DEFAULT_VALUE = "application.default";
-    private static final Long METRIC_EXPORT_INTERVAL_MS_DEFAULT_VALUE = 1000 * 60l;
+    private static final Long METRIC_EXPORT_INTERVAL_MS_DEFAULT_VALUE = 1000 * 60L;
     private static final String OBSERVABILITY_INITIALIZER_CLASSES_DEFAULT_VALUE = "";
 
     static {
