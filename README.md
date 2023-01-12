@@ -1,5 +1,5 @@
 # 项目概述
-KnowFramework是滴滴基于开源技术组件构建Paas服务体系过程中，沉淀的业务无关的通用技术能力组件库。组件设计遵从简单易用，轻量高效，低耦合、高扩展的设计理念，核心组件如下：
+KnowFramework是滴滴基于开源技术组件构建Paas服务体系过程中沉淀的业务无关通用技术能力组件库。组件设计遵从简单易用，轻量高效，低耦合、高扩展的设计理念，核心组件如下：
 - 基于 open-telemetry 规范构建的可观性 SDK 组件库：[kf-observability](./kf-observability)
 - 基于quarz+mysql构建的分布式定时调度组件库：[kf-job](./kf-job-spring-boot-starter)
 - 基于资源、权限、角色构建的权限管控组件库：[kf-security](./kf-security-spring-boot-starter)
@@ -8,7 +8,7 @@ KnowFramework是滴滴基于开源技术组件构建Paas服务体系过程中，
 ## [1. kf-observability](./kf-observability)
 ### 1.1 介绍
 
-基于 open-telemetry 规范的可观性 SDK 组件库，基于Grafana生态，为业务应用提供低门槛的Metrics+Log+Trace观测能力。详情参见：[kf-observability](./kf-observability)/[README.md](./kf-observability/README.md)
+遵从open-telemetry 规范的可观性SDK组件库，融入Grafana生态，为业务应用提供低门槛的Metrics+Log+Trace观测能力。详情参见：[kf-observability](./kf-observability)/[README.md](./kf-observability/README.md)
 
 ### 1.2 功能支持
 
@@ -50,7 +50,7 @@ KnowFramework是滴滴基于开源技术组件构建Paas服务体系过程中，
 
 ## [3. kf-security](./kf-security-spring-boot-starter)
 ### 3.1 介绍
-kf-security 提供PaaS平台基础的一些功能（用户、角色、权限、登录、注册、操作记录），详情参见：[kf-security-spring-boot-starter](./kf-security-spring-boot-starter)/[README.md](./kf-security-spring-boot-starter/README.md)
+kf-security 提供PaaS平台基础功能（用户、角色、权限、登录、注册、操作记录），详情参见：[kf-security-spring-boot-starter](./kf-security-spring-boot-starter)/[README.md](./kf-security-spring-boot-starter/README.md)
 ### 3.2 功能支持
 主要提供：用户、项目、角色、部门、界面权限、资源权限、操作日志、消息通知
 - 用户模块：提供了注册、登录、认证功能，以及用户信息的展示等基础功能；
@@ -65,7 +65,7 @@ kf-security 提供PaaS平台基础的一些功能（用户、角色、权限、�
 ## [4. kf-log](./kf-log)
 
 ### 4.1 介绍
-know-framework的日志组件，集成了：kf-log:ILog、kf-log：log4j2。详情参见：[kf-log](./kf-log)/[README.md](./kf-log/README.md)
+know-framework日志组件，集成了：kf-log:ILog、kf-log：log4j2。详情参见：[kf-log](./kf-log)/[README.md](./kf-log/README.md)
 
 ### 4.2 功能支持
 - ILog：
