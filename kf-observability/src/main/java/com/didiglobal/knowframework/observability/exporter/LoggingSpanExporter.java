@@ -1,6 +1,7 @@
 package com.didiglobal.knowframework.observability.exporter;
 
 import com.alibaba.fastjson.JSON;
+import com.didiglobal.knowframework.observability.Observability;
 import com.didiglobal.knowframework.observability.common.bean.LogEvent;
 import com.didiglobal.knowframework.observability.common.bean.Span;
 import com.didiglobal.knowframework.observability.common.enums.LogEventType;
@@ -30,6 +31,9 @@ public class LoggingSpanExporter implements SpanExporter {
     }
 
     public CompletableResultCode export(Collection<SpanData> spans) {
+        if (!isEnable()) {
+            return CompletableResultCode.ofSuccess();
+        }
         for (SpanData span : spans) {
             /*
              * span info
@@ -76,4 +80,7 @@ public class LoggingSpanExporter implements SpanExporter {
         return this.flush();
     }
 
+    public boolean isEnable() {
+        return Observability.exporterExist(this.getClass().getSimpleName());
+    }
 }

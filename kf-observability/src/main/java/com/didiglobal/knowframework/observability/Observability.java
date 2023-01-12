@@ -1,5 +1,6 @@
 package com.didiglobal.knowframework.observability;
 
+import cn.hutool.core.collection.ConcurrentHashSet;
 import com.didiglobal.knowframework.observability.common.util.PropertiesUtil;
 import com.didiglobal.knowframework.observability.conponent.metrics.PlatformMetricsInitializer;
 import com.didiglobal.knowframework.observability.conponent.thread.ContextExecutorService;
@@ -23,9 +24,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import java.time.Duration;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Properties;
+import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.ScheduledExecutorService;
 
@@ -50,9 +49,19 @@ public class Observability {
      */
     private static String observabilityInitializerClasses;
 
+    /**
+     * 已开启的exporter
+     */
+    private static Set<String> exporterNameSet;
+
     private static final String PROPERTIES_KEY_APPLICATION_NAME = "application.name";
     private static final String PROPERTIES_KEY_METRIC_EXPORT_INTERVAL_MS = "metric.export.interval.ms";
     private static final String PROPERTIES_KEY_OBSERVABILITY_INITIALIZER_CLASSES = "observability.initializer.classes";
+
+    /**
+     * 配置开启哪些支持的exporter
+     */
+    private static final String PROPERTIES_KEY_OBSERVABILITY_EXPORTERS_SWITCH = "observability.exporter.names";
     private static final String APPLICATION_NAME_DEFAULT_VALUE = "application.default";
     private static final Long METRIC_EXPORT_INTERVAL_MS_DEFAULT_VALUE = 1000 * 60L;
     private static final String OBSERVABILITY_INITIALIZER_CLASSES_DEFAULT_VALUE = "";
@@ -131,6 +140,14 @@ public class Observability {
         observabilityInitializerClasses = properties.getProperty(PROPERTIES_KEY_OBSERVABILITY_INITIALIZER_CLASSES);
         if(StringUtils.isBlank(observabilityInitializerClasses)) {
             observabilityInitializerClasses = OBSERVABILITY_INITIALIZER_CLASSES_DEFAULT_VALUE;
+        }
+        /*
+         * load open exporters
+         */
+        exporterNameSet = new ConcurrentHashSet<>();
+        String exporters = properties.getProperty(PROPERTIES_KEY_OBSERVABILITY_EXPORTERS_SWITCH);
+        if(StringUtils.isNotBlank(exporters)) {
+            exporterNameSet.addAll(Arrays.asList(exporters.split(",")));
         }
     }
 
@@ -231,6 +248,10 @@ public class Observability {
 
     public static String getApplicationName() {
         return applicationName;
+    }
+
+    public static boolean exporterExist(String exporterName) {
+        return exporterNameSet.contains(exporterName);
     }
 
 }

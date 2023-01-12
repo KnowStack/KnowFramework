@@ -1,6 +1,7 @@
 package com.didiglobal.knowframework.observability.exporter;
 
 import com.alibaba.fastjson.JSON;
+import com.didiglobal.knowframework.observability.Observability;
 import com.didiglobal.knowframework.observability.common.bean.LogEvent;
 import com.didiglobal.knowframework.observability.common.bean.Metric;
 import com.didiglobal.knowframework.observability.common.enums.LogEventType;
@@ -49,6 +50,9 @@ public class LoggingMetricExporter implements MetricExporter {
     }
 
     public CompletableResultCode export(Collection<MetricData> metrics) {
+        if (!isEnable()) {
+            return CompletableResultCode.ofSuccess();
+        }
         for (MetricData metricData : metrics) {
             Collection<PointData> points = (Collection<PointData>) metricData.getData().getPoints();
             for (PointData pointData : points) {
@@ -106,4 +110,7 @@ public class LoggingMetricExporter implements MetricExporter {
         return this.flush();
     }
 
+    public boolean isEnable() {
+        return Observability.exporterExist(this.getClass().getSimpleName());
+    }
 }
