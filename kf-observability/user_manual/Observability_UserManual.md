@@ -6,7 +6,7 @@
 <dependency>
 	<groupId>io.github.zqrferrari</groupId>
 	<artifactId>logi-observability</artifactId>
-	<version>1.0.0</version>
+	<version>1.0.2</version>
 </dependency>
 ```
 
@@ -408,6 +408,8 @@ application.name=logi-job-test
 metric.export.interval.ms=60000
 observability.initializer.classes=com.didiglobal.logi.job.examples.MyMetricinitializer
 pointcut=execution(* com.didiglobal..*.*(..)) || execution(* com.didichuxing..*.*(..))
+# 配置当前启用的exporter：LoggingMetricExporter,LoggingSpanExporter
+observability.exporter.names=LoggingMetricExporter,LoggingSpanExporter
 ```
 
 ## 1. Spring AOP 串联自定义包下的类的方法
@@ -465,3 +467,7 @@ public class MyMetricInitializer extends BaseMetricInitializer {
 ## 4. 调整Metric/Log/Trace上报时的应用名
 
 修改配置文件 observability.properties 中配置项 `application.name` 的值，该配置项默认值为 application.default。
+
+## 5. 调整Metric/Trace 是否上报
+
+修改配置文件 observability.properties 中配置项 `observability.exporter.names` 的值，该配置项默认值为空，可选 `LoggingMetricExporter`、`LoggingSpanExporter`多个用逗号隔开。

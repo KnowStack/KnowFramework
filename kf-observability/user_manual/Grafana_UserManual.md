@@ -31,4 +31,4 @@ Grafana 8.5.9+.
 
 # 导入模板
 
-在菜单栏点击`import`链接，导入kf-observability工程中grafana/template下的模板文件，即可使用。
+在菜单栏点击`import`链接，导入kf-observability工程中[grafana/template](../grafana/template/)下的模板文件，即可使用。

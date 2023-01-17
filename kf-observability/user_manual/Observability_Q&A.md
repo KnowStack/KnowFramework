@@ -1,6 +1,7 @@
 # 问题一
 
 引入 kf-observability 依赖的项目中没用到关系数据库，报如下错误：
+```
 
  INFO 3699 --- [           main] ConditionEvaluationReportLoggingListener : 
 
@@ -23,6 +24,7 @@ Action:
 Consider the following:
 	If you want an embedded database (H2, HSQL or Derby), please put it on the classpath.
 	If you have database settings to be loaded from a particular profile you may need to activate it (no profiles are currently active).
+```
 
 **解决方案**
 

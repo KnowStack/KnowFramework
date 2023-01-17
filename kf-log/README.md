@@ -75,7 +75,7 @@ kf-log-log4j2，是基于log4j2 2.9.1封装的，支持日志发送到kafka，�
 
 #### 3.3.3 日志发送到 Elasticsearch
 
-```
+```xml
 <Appenders>
 		<ElasticsearchAppender name="esAppender" address="localhost" port="9200" user="admin" password="admin" indexName="index_observability" typeName="type" threshold="all" bufferSize="1000" numberOfShards="1" numberOfReplicas="1">
 		</ElasticsearchAppender>
