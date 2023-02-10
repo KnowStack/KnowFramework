@@ -1,21 +1,22 @@
-## 2.kf-job
-### 2.1 介绍
-是分布式的定时调度服务。
-### 2.2 功能支持
+# kf-job
+kf-job是基于quarz+mysql构建的分布式定时调度服务。
+## 功能支持
 主要提供：分布式定时调度服务、任务管理、分布式锁等功能
 - 分布式定时调度服务：添加指定注解，并实现规定的接口，编写待调度的方法；
 - 任务管理模块：提供查看任务列表、任务详情、手动执行任务、手动添加执行任务、指定任务执行 node、变更任务状态、任务日志等功能；
 - 分布式锁机制：确保多系统下，对于临界资源的保护，和调节调度秩序，防饿死。
-### 2.3 使用方式
-#### 2.3.1 添加Maven
+
+## 使用方式
+项目pom中增对应maven依赖，并在配置文件中配置kf-job所需的配置项，最后编写任务实现代码，启动项目后调度框架将会自动调度执行任务。
+### 1.添加Maven
 ```xml
 <dependency>
     <groupId>io.github.knowstack</groupId>
     <artifactId>kf-job-spring-boot-starter</artifactId>
-    <version>1.0.0</version>
+    <version>2.0.2</version>
 </dependency>
 ```
-#### 2.3.2 配置信息
+### 2.配置信息
 kf-job基于springBoot框架开发，在使用的时候需要在配置文件中增加几项配置信息，如下：
 ```yaml
 spring:
@@ -40,7 +41,7 @@ spring:
     elasticsearch-index-name: index_observability # 存储 job log 的 elasticsearch index
     elasticsearch-type-name: type # 存储 job log 的 elasticsearch type
 ```
-#### 2.3.3 使用样例
+### 3.使用样例
 ```java
 package com.didichuxing.datachannel.arius.admin.task.metadata;
 
@@ -60,7 +61,7 @@ public class ESMonitorJobTask implements Job {
 
     @Autowired
     private MonitorJobHandler monitorJobHandler;
-
+    //任务执行实现方法
     @Override
     public TaskResult execute(JobContext jobContext) throws Exception {
         LOGGER.info("class=ESMonitorJobTask||method=execute||msg=start");
@@ -69,10 +70,10 @@ public class ESMonitorJobTask implements Job {
     }
 }
 ```
-#### 2.3.4 动态添加调度任务
+### 4.动态添加调度任务
 
 ```
-URL：localhost:8088/v1/kf-job/task
+URL：localhost:8088/v1/logi-job/task
 Http Method：Post
 Request Body：{
     "name": "带参数的定时任务",
@@ -85,9 +86,9 @@ Request Body：{
 }
 ```
 
-#### 2.3.5 查看任务执行相关上下文日志、trace信息
+### 5.查看任务执行相关上下文日志、trace信息
 
 ```
-URL：localhost:8088/v1/kf-job/logs/{jobLogId}
+URL：localhost:8088/v1/logi-job/logs/{jobLogId}
 Http Method：GET
 ```
