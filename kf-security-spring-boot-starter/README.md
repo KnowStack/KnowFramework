@@ -11,11 +11,11 @@
 - 消息通知模块：用户拥有的角色、拥有的资源权限变更等通知。
 ## 设计概要
 ### ER图
-![kf-security-ER图.png](https://note.youdao.com/yws/res/2065/WEBRESOURCE8ff999c533ed9517238af9609eb481c7)
+![kf-security-ER图.png](docs/img/kf-security-ER图.png)
 ### 表结构
-![kf_security_表结构.png](https://note.youdao.com/yws/res/2062/WEBRESOURCEb84c30888df0a44232736de124c2362a)
+![kf_security_表结构.png](docs/img/kf-security-表结构.png)
 ### 接口文档
-[kf-security接口文档](./kd-security-api-docs.md)
+[kf-security接口文档](docs/kd-security-api-docs.md)
 
 ## 接入方式
 ### 1.添加Maven
