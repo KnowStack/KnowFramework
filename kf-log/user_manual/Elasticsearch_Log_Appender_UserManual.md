@@ -79,4 +79,4 @@
 
 # 3. 添加 ElasticsearchAppender 监控指标配置
 
-在 observability.properties 配置文件的`observability.initializer.classes`配置项设置配置值为`com.didiglobal.knowframework.log.log4j2.appender.ElasticsearchAppenderMetricsInitializer`。
+在 observability.properties 配置文件的`observability.initializer.classes`配置项设置配置值为`com.didiglobal.knowframework.log.metrics.ElasticsearchAppenderMetricsInitializer`。

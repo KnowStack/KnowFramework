@@ -1,4 +1,4 @@
-package com.didiglobal.knowframework.log.log4j2.appender;
+package com.didiglobal.knowframework.log.metrics;
 
 import com.didiglobal.knowframework.observability.conponent.metrics.BaseMetricInitializer;
 import com.didiglobal.knowframework.observability.conponent.metrics.Meter;

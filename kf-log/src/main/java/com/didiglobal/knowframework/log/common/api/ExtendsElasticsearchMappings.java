@@ -1,4 +1,4 @@
-package com.didiglobal.knowframework.log.log4j2.appender;
+package com.didiglobal.knowframework.log.common.api;
 
 import java.util.Map;
 

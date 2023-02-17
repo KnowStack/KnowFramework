@@ -3,6 +3,8 @@ package com.didiglobal.knowframework.log.log4j2.appender;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.serializer.SerializerFeature;
+import com.didiglobal.knowframework.log.common.api.ExtendsElasticsearchMappings;
+import com.didiglobal.knowframework.log.metrics.ElasticsearchAppenderMetricsInitializer;
 import com.didiglobal.knowframework.observability.common.bean.Log;
 import com.didiglobal.knowframework.observability.common.bean.Metric;
 import com.didiglobal.knowframework.observability.common.bean.Span;
