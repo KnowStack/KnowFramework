@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration debug="false" scan="true" scanPeriod="1 seconds">
+    <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>INFO</level>
+        </filter>
+        <encoder>
+            <pattern>%msg%n
+            </pattern>
+        </encoder>
+    </appender>
+    <appender name="esAppender"
+              class="com.didiglobal.knowframework.log.logback.appender.ElasticsearchAppender">
+        <address>10.96.75.19</address>
+        <indexName>index_observability_logback</indexName>
+        <port>18242</port>
+        <user></user>
+        <password></password>
+        <typeName>_doc</typeName>
+        <threshold>all</threshold> <!-- optional (default false) -->
+        <bufferSize>10000</bufferSize> <!-- optional (default 104857600) -->
+        <numberOfShards>5</numberOfShards> <!-- optional (default 3) -->
+        <numberOfReplicas>0</numberOfReplicas> <!-- optional (in ms, default 30000) -->
+        <logExpire>1</logExpire> <!-- optional (in ms, default 250) -->
+        <extendsMappingClass>false</extendsMappingClass> <!-- optional (default false) -->
+        <requestTimeoutMillis>3000</requestTimeoutMillis> <!-- optional (default false) -->
+        <discardWhenBufferIsFull>true</discardWhenBufferIsFull> <!-- optional (default -1 -->
+    </appender>
+
+    <root level="debug">
+        <appender-ref ref="console" />
+        <appender-ref ref="esAppender" />
+    </root>
+</configuration>

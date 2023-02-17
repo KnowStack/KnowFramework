@@ -4,6 +4,8 @@ import com.alibaba.fastjson.JSON;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.didiglobal.knowframework.log.ILog;
+import com.didiglobal.knowframework.log.LogFactory;
 import com.didiglobal.knowframework.security.common.dto.permission.PermissionDTO;
 import com.didiglobal.knowframework.security.service.UserProjectService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +13,7 @@ import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.ConfigurableApplicationContext;
 
 /**
@@ -19,11 +22,18 @@ import org.springframework.context.ConfigurableApplicationContext;
 @SpringBootApplication
 public class SecurityTestApplication implements ApplicationRunner {
 
-    public static void main(String[] args) {
-        //test();
-        final ConfigurableApplicationContext run = SpringApplication.run(
-            SecurityTestApplication.class, args);
-        //run.close();
+    private static final ILog LOGGER = LogFactory.getLog(SecurityTestApplication.class);
+
+    public static void main(String[] args) throws Exception {
+        try {
+            LOGGER.info("SecurityTestApplication init starting!");
+            //test();
+            ApplicationContext run = SpringApplication.run(SecurityTestApplication.class);
+            //run.close();
+            LOGGER.info("class=SecurityTestApplication||method=main||AriusAdminApplication started");
+        } catch (Exception e) {
+            LOGGER.error("class=SecurityTestApplication||method=main||AriusAdminApplication start failed", e);
+        }
     }
     @Autowired
     private UserProjectService userProjectService;
