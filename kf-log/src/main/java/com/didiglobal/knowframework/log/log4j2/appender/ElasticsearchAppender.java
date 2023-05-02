@@ -25,6 +25,8 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.concurrent.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Plugin(name = ElasticsearchAppender.PLUGIN_NAME, category = Core.CATEGORY_NAME, elementType = Appender.ELEMENT_TYPE, printObject = true)
 public class ElasticsearchAppender extends AbstractAppender {
@@ -39,6 +41,11 @@ public class ElasticsearchAppender extends AbstractAppender {
     private static final Integer NUMBER_OF_REPLICAS_DEFAULT_VALUE = 1;
     private static final Integer LOG_EXPIRE_DEFAULT_VALUE = 7;
     private static final Integer REQUEST_TIME_OUT_MILLIS_DEFAULT_VALUE = 3000;
+
+    /**
+     * ${} 正则表达式，用于获取 ${} 内容
+     */
+    private static final Pattern pattern = Pattern.compile("\\$\\{([^}]*)\\}");
 
     /**
      * elasticsearch address
@@ -124,7 +131,7 @@ public class ElasticsearchAppender extends AbstractAppender {
             Filter filter,
             Layout<? extends Serializable> layout,
             String address,
-            Integer port,
+            String port,
             String user,
             String password,
             String indexName,
@@ -139,23 +146,36 @@ public class ElasticsearchAppender extends AbstractAppender {
             Boolean discardWhenBufferIsFull
     ) {
         super(name, filter, layout);
-        this.address = address;
-        this.port = port;
-        this.user = user;
-        this.password = password;
-        this.indexName = indexName;
-        this.typeName = getTypeName(typeName);
-        this.numberOfShards = getNumberOfShards(numberOfShards);
-        this.numberOfReplicas = getNumberOfReplicas(numberOfReplicas);
-        this.threshold = getThreshold(threshold);
-        this.bufferSize = getBufferSize(bufferSize);
-        this.logExpire = getLogExpire(logExpire);
-        this.extendsMappingClass = extendsMappingClass;
-        this.requestTimeoutMillis = getRequestTimeoutMillis(requestTimeoutMillis);
-        this.discardWhenBufferIsFull = getDiscardWhenBufferIsFull(discardWhenBufferIsFull);
+        try {
+            this.address = parseAndGet(address);
+            this.port = Integer.valueOf(parseAndGet(port));
+            this.user = parseAndGet(user);
+            this.password = parseAndGet(password);
+            this.indexName = parseAndGet(indexName);
+            this.typeName = parseAndGet(getTypeName(typeName));
+            this.numberOfShards = Integer.valueOf(parseAndGet(getNumberOfShards(numberOfShards).toString()));
+            this.numberOfReplicas = Integer.valueOf(parseAndGet(getNumberOfReplicas(numberOfReplicas).toString()));
+            this.threshold = parseAndGet(getThreshold(threshold));
+            this.bufferSize = Integer.valueOf(parseAndGet(getBufferSize(bufferSize).toString()));
+            this.logExpire = Integer.valueOf(parseAndGet(getLogExpire(logExpire).toString()));
+            this.extendsMappingClass = parseAndGet(extendsMappingClass);
+            this.requestTimeoutMillis = Integer.valueOf(parseAndGet(getRequestTimeoutMillis(requestTimeoutMillis).toString()));
+            this.discardWhenBufferIsFull = Boolean.valueOf(parseAndGet(getDiscardWhenBufferIsFull(discardWhenBufferIsFull).toString()));
+        } catch (Exception ex) {
+            //餐数解析错误，elasticsearch appender 实例化流程终止
+            LOGGER.error(
+                    String.format(
+                            "class=%s||method=%s||msg=%s",
+                            this.getClass().getName(),
+                            "ElasticsearchAppender()",
+                            "input parameter parse failed, cause by:" + ex.getMessage()
+                    )
+            );
+            return;
+        }
         //初始化缓冲区
-        this.buffer = new LinkedBlockingQueue<>(bufferSize);
-        this.httpUtils = HttpUtils.getInstance(requestTimeoutMillis);
+        this.buffer = new LinkedBlockingQueue<>(this.bufferSize);
+        this.httpUtils = HttpUtils.getInstance(this.requestTimeoutMillis);
         //初始化 requestUrlPrefix
         this.requestUrlPrefix = String.format("http://%s:%d", this.address, this.port);
         //校验 index 是否已创建，如未创建，则进行创建 创建 时 采用 给 定 elasticsearch mappings.
@@ -187,6 +207,48 @@ public class ElasticsearchAppender extends AbstractAppender {
             elasticsearchLogCleanRunnableSwitch = Boolean.TRUE;
             threadPool.execute(new SendLogEvent2ElasticsearchRunnable());
             threadPool.execute(new ElasticsearchLogCleanRunnable(this.indexName, this.requestUrlPrefix, this.user, this.password, this.httpUtils));
+        }
+    }
+
+    /**
+     * 判断 value 是否为 ${} 格式，如是，获取 ${} 内容，并以内容作为 key，从系统属性获取 key 对应 value，如不是，直接返回 value
+     * @param value 给定 value
+     * @return 判断 value 是否为 ${} 格式，如是，获取 ${} 内容，并以内容作为 key，从系统属性获取 key 对应 value，如不是，直接返回 value
+     * @throws Exception 解析过程出现异常
+     */
+    private String parseAndGet(String value) throws Exception {
+        if(StringUtils.isBlank(value)) {
+            return value;
+        }
+        if(value.startsWith("${") && value.endsWith("}")) {
+            String innerContent = getInnerContent(value);
+            return System.getProperty(innerContent);
+        } else {
+            return value;
+        }
+    }
+
+    /**
+     * 获取 ${} 中表达式内容
+     * @param value 待获取表达式内容字符串
+     * @return 获取到的 ${} 中表达式内容
+     * @throws Exception 解析过程出现异常
+     */
+    private String getInnerContent(String value) throws Exception {
+        try {
+            Matcher matcher = pattern.matcher(value);
+            StringBuilder result = new StringBuilder();
+            while(matcher.find()) {
+                result.append(matcher.group(1)+",");
+            }
+            if (result.length() > 0) {
+                result.deleteCharAt(result.length() - 1);
+            }
+            return result.toString();
+        } catch (Exception ex) {
+            throw new Exception(
+                    String.format("parse %s failed, pattern expression is %s", value, pattern.pattern())
+            );
         }
     }
 
@@ -489,7 +551,7 @@ public class ElasticsearchAppender extends AbstractAppender {
     public static ElasticsearchAppender createAppender(
             @PluginAttribute("name") String name,
             @PluginAttribute("address") String address,
-            @PluginAttribute("port") Integer port,
+            @PluginAttribute("port") String port,
             @PluginAttribute("user") String user,
             @PluginAttribute("password") String password,
             @PluginAttribute("indexName") String indexName,
