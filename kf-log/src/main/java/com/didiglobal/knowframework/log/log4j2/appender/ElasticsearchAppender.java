@@ -136,14 +136,14 @@ public class ElasticsearchAppender extends AbstractAppender {
             String password,
             String indexName,
             String typeName,
-            Integer numberOfShards,
-            Integer numberOfReplicas,
+            String numberOfShards,
+            String numberOfReplicas,
             String threshold,
-            Integer bufferSize,
-            Integer logExpire,
+            String bufferSize,
+            String logExpire,
             String extendsMappingClass,
-            Integer requestTimeoutMillis,
-            Boolean discardWhenBufferIsFull
+            String requestTimeoutMillis,
+            String discardWhenBufferIsFull
     ) {
         super(name, filter, layout);
         try {
@@ -153,14 +153,14 @@ public class ElasticsearchAppender extends AbstractAppender {
             this.password = parseAndGet(password);
             this.indexName = parseAndGet(indexName);
             this.typeName = parseAndGet(getTypeName(typeName));
-            this.numberOfShards = Integer.valueOf(parseAndGet(getNumberOfShards(numberOfShards).toString()));
-            this.numberOfReplicas = Integer.valueOf(parseAndGet(getNumberOfReplicas(numberOfReplicas).toString()));
-            this.threshold = parseAndGet(getThreshold(threshold));
-            this.bufferSize = Integer.valueOf(parseAndGet(getBufferSize(bufferSize).toString()));
-            this.logExpire = Integer.valueOf(parseAndGet(getLogExpire(logExpire).toString()));
+            this.numberOfShards = getNumberOfShards(Integer.valueOf(parseAndGet(numberOfShards)));
+            this.numberOfReplicas = getNumberOfReplicas(Integer.valueOf(parseAndGet(numberOfReplicas)));
+            this.threshold = getThreshold(parseAndGet(threshold));
+            this.bufferSize = getBufferSize(Integer.valueOf(parseAndGet(bufferSize)));
+            this.logExpire = getLogExpire(Integer.valueOf(parseAndGet(logExpire)));
             this.extendsMappingClass = parseAndGet(extendsMappingClass);
-            this.requestTimeoutMillis = Integer.valueOf(parseAndGet(getRequestTimeoutMillis(requestTimeoutMillis).toString()));
-            this.discardWhenBufferIsFull = Boolean.valueOf(parseAndGet(getDiscardWhenBufferIsFull(discardWhenBufferIsFull).toString()));
+            this.requestTimeoutMillis = getRequestTimeoutMillis(Integer.valueOf(parseAndGet(requestTimeoutMillis)));
+            this.discardWhenBufferIsFull = getDiscardWhenBufferIsFull(Boolean.valueOf(parseAndGet(discardWhenBufferIsFull)));
         } catch (Exception ex) {
             //餐数解析错误，elasticsearch appender 实例化流程终止
             LOGGER.error(
@@ -556,14 +556,14 @@ public class ElasticsearchAppender extends AbstractAppender {
             @PluginAttribute("password") String password,
             @PluginAttribute("indexName") String indexName,
             @PluginAttribute("typeName") String typeName,
-            @PluginAttribute("numberOfShards") int numberOfShards,
-            @PluginAttribute("numberOfReplicas") int numberOfReplicas,
+            @PluginAttribute("numberOfShards") String numberOfShards,
+            @PluginAttribute("numberOfReplicas") String numberOfReplicas,
             @PluginAttribute("threshold") String threshold,
-            @PluginAttribute("bufferSize") int bufferSize,
-            @PluginAttribute("logExpire") int logExpire,
+            @PluginAttribute("bufferSize") String bufferSize,
+            @PluginAttribute("logExpire") String logExpire,
             @PluginAttribute("extendsMappingClass") String extendsMappingClass,
-            @PluginAttribute("requestTimeoutMillis") int requestTimeoutMillis,
-            @PluginAttribute("discardWhenBufferIsFull") boolean discardWhenBufferIsFull,
+            @PluginAttribute("requestTimeoutMillis") String requestTimeoutMillis,
+            @PluginAttribute("discardWhenBufferIsFull") String discardWhenBufferIsFull,
             @PluginElement("Filter") final Filter filter,
             @PluginElement("Layout") Layout<? extends Serializable> layout
     ) {
