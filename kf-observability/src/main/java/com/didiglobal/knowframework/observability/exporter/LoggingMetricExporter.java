@@ -17,7 +17,7 @@ import java.util.List;
 
 public class LoggingMetricExporter implements MetricExporter {
 
-    private static final Logger logger = LoggerFactory.getLogger(LoggingSpanExporter.class.getName());
+    private static final Logger logger = LoggerFactory.getLogger(LoggingMetricExporter.class.getName());
 
     private final AggregationTemporality aggregationTemporality;
 
