@@ -1,6 +1,8 @@
 package com.didiglobal.knowframework.observability;
 
 import cn.hutool.core.collection.ConcurrentHashSet;
+import com.didiglobal.knowframework.observability.common.DefaultOpenTelemetryExpandFactory;
+import com.didiglobal.knowframework.observability.common.OpenTelemetryExpandFactory;
 import com.didiglobal.knowframework.observability.common.util.PropertiesUtil;
 import com.didiglobal.knowframework.observability.conponent.metrics.PlatformMetricsInitializer;
 import com.didiglobal.knowframework.observability.conponent.thread.ContextExecutorService;
@@ -18,11 +20,15 @@ import io.opentelemetry.sdk.OpenTelemetrySdk;
 import io.opentelemetry.sdk.metrics.SdkMeterProvider;
 import io.opentelemetry.sdk.metrics.export.MetricReader;
 import io.opentelemetry.sdk.metrics.export.PeriodicMetricReader;
+import io.opentelemetry.sdk.resources.Resource;
 import io.opentelemetry.sdk.trace.SdkTracerProvider;
+import io.opentelemetry.sdk.trace.SdkTracerProviderBuilder;
+import io.opentelemetry.sdk.trace.SpanProcessor;
 import io.opentelemetry.sdk.trace.export.BatchSpanProcessor;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import java.time.Duration;
 import java.util.*;
 import java.util.concurrent.ExecutorService;
@@ -48,15 +54,19 @@ public class Observability {
      * 初始化器类（集）默认值：""
      */
     private static String observabilityInitializerClasses;
-
+    /**
+     * openTelemetry拓展工厂
+     */
+    private static String openTelemetryExpandSpanFactoryClass;
     /**
      * 已开启的exporter
      */
     private static Set<String> exporterNameSet;
-
+    private static final Set<SpanProcessor> expandSpanProcessorSet = new HashSet<>();
     private static final String PROPERTIES_KEY_APPLICATION_NAME = "application.name";
     private static final String PROPERTIES_KEY_METRIC_EXPORT_INTERVAL_MS = "metric.export.interval.ms";
     private static final String PROPERTIES_KEY_OBSERVABILITY_INITIALIZER_CLASSES = "observability.initializer.classes";
+    private static final String OPEN_TELEMETRY_EXPAND_FACTORY_CLASS = "observability.open.telemetry.expand.factory";
 
     /**
      * 配置开启哪些支持的exporter
@@ -79,7 +89,7 @@ public class Observability {
          * 加载外部初始化器
          */
         try {
-            if(StringUtils.isNotBlank(observabilityInitializerClasses)) {
+            if (StringUtils.isNotBlank(observabilityInitializerClasses)) {
                 String[] observabilityInitializerClassArray = observabilityInitializerClasses.split(",");
                 for (String observabilityInitializerClass : observabilityInitializerClassArray) {
                     observabilityInitializerList.add(
@@ -118,14 +128,14 @@ public class Observability {
          * load applicationName
          */
         applicationName = properties.getProperty(PROPERTIES_KEY_APPLICATION_NAME);
-        if(StringUtils.isBlank(applicationName)) {
+        if (StringUtils.isBlank(applicationName)) {
             applicationName = APPLICATION_NAME_DEFAULT_VALUE;
         }
         /*
          * load metricExportIntervalMs
          */
         String metricExportIntervalMsStr = properties.getProperty(PROPERTIES_KEY_METRIC_EXPORT_INTERVAL_MS);
-        if(StringUtils.isBlank(metricExportIntervalMsStr)) {
+        if (StringUtils.isBlank(metricExportIntervalMsStr)) {
             metricExportIntervalMs = METRIC_EXPORT_INTERVAL_MS_DEFAULT_VALUE;
         } else {
             try {
@@ -138,7 +148,7 @@ public class Observability {
          * load observabilityInitializerClasses
          */
         observabilityInitializerClasses = properties.getProperty(PROPERTIES_KEY_OBSERVABILITY_INITIALIZER_CLASSES);
-        if(StringUtils.isBlank(observabilityInitializerClasses)) {
+        if (StringUtils.isBlank(observabilityInitializerClasses)) {
             observabilityInitializerClasses = OBSERVABILITY_INITIALIZER_CLASSES_DEFAULT_VALUE;
         }
         /*
@@ -146,9 +156,13 @@ public class Observability {
          */
         exporterNameSet = new ConcurrentHashSet<>();
         String exporters = properties.getProperty(PROPERTIES_KEY_OBSERVABILITY_EXPORTERS_SWITCH);
-        if(StringUtils.isNotBlank(exporters)) {
+        if (StringUtils.isNotBlank(exporters)) {
             exporterNameSet.addAll(Arrays.asList(exporters.split(",")));
         }
+        /*
+         * 加载拓展的spanProcessFactory
+         */
+        openTelemetryExpandSpanFactoryClass = properties.getProperty(OPEN_TELEMETRY_EXPAND_FACTORY_CLASS);
     }
 
     /**
@@ -165,13 +179,29 @@ public class Observability {
         // This will be used to create instruments
         SdkMeterProvider meterProvider =
                 SdkMeterProvider.builder().registerMetricReader(periodicReader).build();
-
+        Resource resource = Resource.getDefault();
+        try {
+            OpenTelemetryExpandFactory factory;
+            if (StringUtils.isNotBlank(openTelemetryExpandSpanFactoryClass)) {
+                factory = (OpenTelemetryExpandFactory) Class.forName(openTelemetryExpandSpanFactoryClass).newInstance();
+            } else {
+                factory = DefaultOpenTelemetryExpandFactory.class.newInstance();
+            }
+            expandSpanProcessorSet.addAll(factory.getSpanProcessorList());
+            resource = factory.getResource();
+        } catch (Exception ex) {
+            LOGGER.error(
+                    String.format(
+                            "class=Observability||method=initOpenTelemetry||message=加载配置的OpenTelemetry拓展工厂%s失败",
+                            openTelemetryExpandSpanFactoryClass
+                    )
+            );
+        }
         // Tracer provider configured to export spans with SimpleSpanProcessor using
         // the logging exporter.
-        SdkTracerProvider tracerProvider =
-                SdkTracerProvider.builder()
-                        .addSpanProcessor(BatchSpanProcessor.builder(LoggingSpanExporter.create()).build())
-                        .build();
+        SdkTracerProviderBuilder builder = SdkTracerProvider.builder().addSpanProcessor(BatchSpanProcessor.builder(LoggingSpanExporter.create()).build());
+        expandSpanProcessorSet.forEach(builder::addSpanProcessor);
+        SdkTracerProvider tracerProvider = builder.setResource(resource).build();
         OpenTelemetrySdk sdk = OpenTelemetrySdk.builder()
                 .setMeterProvider(meterProvider)
                 .setTracerProvider(tracerProvider)
@@ -203,7 +233,7 @@ public class Observability {
      */
     public static String getCurrentSpanId() {
         Span span = Span.current();
-        if(Span.getInvalid() != span && span.getSpanContext().isValid()) {
+        if (Span.getInvalid() != span && span.getSpanContext().isValid()) {
             String spanId = span.getSpanContext().getSpanId();
             return spanId;
         } else {
@@ -217,7 +247,7 @@ public class Observability {
      */
     public static String getCurrentTraceId() {
         Span span = Span.current();
-        if(Span.getInvalid() != span && span.getSpanContext().isValid()) {
+        if (Span.getInvalid() != span && span.getSpanContext().isValid()) {
             String tracerId = span.getSpanContext().getTraceId();
             return tracerId;
         } else {

@@ -11,7 +11,7 @@
     <dependency>
     	<groupId>io.github.knowstack</groupId>
     	<artifactId>kf-observability</artifactId>
-    	<version>1.0.2</version>
+    	<version>1.0.3</version>
     </dependency>
 ```
 
@@ -795,3 +795,10 @@ public class MyMetricInitializer extends BaseMetricInitializer {
 ## 5. 调整Metric/Trace 是否上报
 
 修改配置文件`observability.properties`中配置项`observability.exporter.names`的值，该配置项默认值为空，可选`LoggingMetricExporter`、`LoggingSpanExporter`多个用逗号隔开。
+
+## 6. 配置拓展的OpenTelemetryExpandFactory在OpenTelemetry中注册多个SpanProcessor或者实现自定义Resource
+修改配置文件`observability.properties`中配置项`observability.open.telemetry.expand.factory`的值，将工厂类的完整名（含：包名）作为该配置项的值填入，使用示例：
+
+`observability.open.telemetry.expand.factory=com.didiglobal.knowframework.observability.common.DefaultOpenTelemetryExpandSpanFactory`
+
+需要注意的是该配置项支持配置多个类，多个类之间采用逗号分隔。
