@@ -1,7 +1,8 @@
 package com.didiglobal.knowframework.observability.conponent.mybatis;
 
-import com.didiglobal.knowframework.observability.common.constant.Constant;
 import com.didiglobal.knowframework.observability.Observability;
+import com.didiglobal.knowframework.observability.common.constant.Constant;
+import com.didiglobal.knowframework.observability.common.util.MDCUtil;
 import io.opentelemetry.api.trace.Span;
 import io.opentelemetry.api.trace.StatusCode;
 import io.opentelemetry.api.trace.Tracer;
@@ -14,8 +15,12 @@ import org.apache.ibatis.plugin.*;
 import org.apache.ibatis.session.ResultHandler;
 import org.apache.ibatis.session.RowBounds;
 import org.springframework.stereotype.Component;
+
 import java.util.Properties;
 
+/**
+ * @author slhu
+ */
 @Slf4j
 @Intercepts(
         {
@@ -42,13 +47,14 @@ import java.util.Properties;
 @Component
 public class ObservabilityInterceptor implements Interceptor {
 
-    private Tracer tracer = Observability.getTracer(ObservabilityInterceptor.class.getName());
+    private final Tracer tracer = Observability.getTracer(ObservabilityInterceptor.class.getName());
 
     @Override
     public Object intercept(Invocation invocation) throws Throwable {
         String clazzName = invocation.getTarget().getClass().getName();
         String methodName = invocation.getMethod().getName();
         Span span = tracer.spanBuilder(String.format("%s.%s", clazzName, methodName)).startSpan();
+        MDCUtil.putSpan(span);
         try (Scope scope = span.makeCurrent()) {
             // 根据签名指定的args顺序获取具体的实现类
             // 1. 获取MappedStatement实例, 并获取当前SQL命令类型
@@ -72,14 +78,15 @@ public class ObservabilityInterceptor implements Interceptor {
             span.end();
         }
     }
- 
+
     @Override
     public Object plugin(Object target) {
         return Plugin.wrap(target, this);
     }
- 
+
     @Override
     public void setProperties(Properties properties) {
+        // process
     }
 
 }

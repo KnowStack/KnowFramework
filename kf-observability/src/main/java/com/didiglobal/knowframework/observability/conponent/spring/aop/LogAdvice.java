@@ -1,6 +1,7 @@
 package com.didiglobal.knowframework.observability.conponent.spring.aop;
 
 import com.didiglobal.knowframework.observability.Observability;
+import com.didiglobal.knowframework.observability.common.util.MDCUtil;
 import io.opentelemetry.api.trace.Span;
 import io.opentelemetry.api.trace.StatusCode;
 import io.opentelemetry.api.trace.Tracer;
@@ -17,6 +18,7 @@ public class LogAdvice implements MethodInterceptor {
         String clazzName = methodInvocation.getMethod().getDeclaringClass().getName();
         String methodName = methodInvocation.getMethod().getName();
         Span span = tracer.spanBuilder(String.format("%s.%s", clazzName, methodName)).startSpan();
+        MDCUtil.putSpan(span);
         try (Scope scope = span.makeCurrent()) {
             Object result = methodInvocation.proceed();
             span.setStatus(StatusCode.OK);

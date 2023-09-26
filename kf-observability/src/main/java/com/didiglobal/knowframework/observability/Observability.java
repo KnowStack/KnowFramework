@@ -1,13 +1,12 @@
 package com.didiglobal.knowframework.observability;
 
 import cn.hutool.core.collection.ConcurrentHashSet;
-import com.didiglobal.knowframework.observability.common.DefaultOpenTelemetryExpandFactory;
-import com.didiglobal.knowframework.observability.common.OpenTelemetryExpandFactory;
 import com.didiglobal.knowframework.observability.common.util.PropertiesUtil;
 import com.didiglobal.knowframework.observability.conponent.metrics.PlatformMetricsInitializer;
 import com.didiglobal.knowframework.observability.conponent.thread.ContextExecutorService;
 import com.didiglobal.knowframework.observability.conponent.thread.ContextScheduledExecutorService;
-import com.didiglobal.knowframework.observability.exporter.LoggingMetricExporter;
+import com.didiglobal.knowframework.observability.expand.DefaultOpenTelemetryExpandFactory;
+import com.didiglobal.knowframework.observability.expand.OpenTelemetryExpandFactory;
 import com.didiglobal.knowframework.observability.exporter.LoggingSpanExporter;
 import io.opentelemetry.api.OpenTelemetry;
 import io.opentelemetry.api.metrics.Meter;
@@ -57,7 +56,7 @@ public class Observability {
     /**
      * openTelemetry拓展工厂
      */
-    private static String openTelemetryExpandSpanFactoryClass;
+    private static OpenTelemetryExpandFactory factory;
     /**
      * 已开启的exporter
      */
@@ -78,7 +77,7 @@ public class Observability {
 
     static {
         initParams();
-        delegate = initOpenTelemetry();
+        delegate = factory.initOpenTelemetry();
         init();
     }
 
@@ -123,6 +122,7 @@ public class Observability {
     }
 
     private static void initParams() {
+        String openTelemetryExpandSpanFactoryClass;
         Properties properties = PropertiesUtil.getProperties();
         /*
          * load applicationName
@@ -163,32 +163,13 @@ public class Observability {
          * 加载拓展的spanProcessFactory
          */
         openTelemetryExpandSpanFactoryClass = properties.getProperty(OPEN_TELEMETRY_EXPAND_FACTORY_CLASS);
-    }
-
-    /**
-     * @return 初始化 OpenTelemetry 对象
-     */
-    private static OpenTelemetry initOpenTelemetry() {
-
-        // Create an instance of PeriodicMetricReader and configure it
-        // to export via the logging exporter
-        MetricReader periodicReader =
-                PeriodicMetricReader.builder(LoggingMetricExporter.create())
-                        .setInterval(Duration.ofMillis(metricExportIntervalMs))
-                        .build();
-        // This will be used to create instruments
-        SdkMeterProvider meterProvider =
-                SdkMeterProvider.builder().registerMetricReader(periodicReader).build();
-        Resource resource = Resource.getDefault();
         try {
-            OpenTelemetryExpandFactory factory;
             if (StringUtils.isNotBlank(openTelemetryExpandSpanFactoryClass)) {
                 factory = (OpenTelemetryExpandFactory) Class.forName(openTelemetryExpandSpanFactoryClass).newInstance();
             } else {
                 factory = DefaultOpenTelemetryExpandFactory.class.newInstance();
             }
             expandSpanProcessorSet.addAll(factory.getSpanProcessorList());
-            resource = factory.getResource();
         } catch (Exception ex) {
             LOGGER.error(
                     String.format(
@@ -197,6 +178,23 @@ public class Observability {
                     )
             );
         }
+    }
+
+    /**
+     * @return 初始化 OpenTelemetry 对象
+     */
+    public static OpenTelemetry initOpenTelemetry() {
+
+        // Create an instance of PeriodicMetricReader and configure it
+        // to export via the logging exporter
+        Resource resource = factory.getResource();
+        MetricReader periodicReader =
+                PeriodicMetricReader.builder(factory.getMetricExporter())
+                        .setInterval(Duration.ofMillis(metricExportIntervalMs))
+                        .build();
+        // This will be used to create instruments
+        SdkMeterProvider meterProvider =
+                SdkMeterProvider.builder().registerMetricReader(periodicReader).setResource(resource).build();
         // Tracer provider configured to export spans with SimpleSpanProcessor using
         // the logging exporter.
         SdkTracerProviderBuilder builder = SdkTracerProvider.builder().addSpanProcessor(BatchSpanProcessor.builder(LoggingSpanExporter.create()).build());
@@ -234,8 +232,7 @@ public class Observability {
     public static String getCurrentSpanId() {
         Span span = Span.current();
         if (Span.getInvalid() != span && span.getSpanContext().isValid()) {
-            String spanId = span.getSpanContext().getSpanId();
-            return spanId;
+            return span.getSpanContext().getSpanId();
         } else {
             //当前上下文不存在于任何span中
             return StringUtils.EMPTY;
@@ -248,8 +245,7 @@ public class Observability {
     public static String getCurrentTraceId() {
         Span span = Span.current();
         if (Span.getInvalid() != span && span.getSpanContext().isValid()) {
-            String tracerId = span.getSpanContext().getTraceId();
-            return tracerId;
+            return span.getSpanContext().getTraceId();
         } else {
             //当前上下文不存在于任何span中
             return StringUtils.EMPTY;
