@@ -75,6 +75,7 @@ public class ObservabilityInterceptor implements Interceptor {
             span.setStatus(StatusCode.ERROR, ex.getMessage());
             throw ex;
         } finally {
+            MDCUtil.removeSpanId(span);
             span.end();
         }
     }

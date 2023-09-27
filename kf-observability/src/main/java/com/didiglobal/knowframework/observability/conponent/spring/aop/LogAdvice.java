@@ -27,6 +27,7 @@ public class LogAdvice implements MethodInterceptor {
             span.setStatus(StatusCode.ERROR, ex.getMessage());
             throw ex;
         } finally {
+            MDCUtil.removeSpanId(span);
             span.end();
         }
     }

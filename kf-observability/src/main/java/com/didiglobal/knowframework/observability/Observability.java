@@ -7,32 +7,24 @@ import com.didiglobal.knowframework.observability.conponent.thread.ContextExecut
 import com.didiglobal.knowframework.observability.conponent.thread.ContextScheduledExecutorService;
 import com.didiglobal.knowframework.observability.expand.DefaultOpenTelemetryExpandFactory;
 import com.didiglobal.knowframework.observability.expand.OpenTelemetryExpandFactory;
-import com.didiglobal.knowframework.observability.exporter.LoggingSpanExporter;
 import io.opentelemetry.api.OpenTelemetry;
 import io.opentelemetry.api.metrics.Meter;
 import io.opentelemetry.api.trace.Span;
 import io.opentelemetry.api.trace.Tracer;
-import io.opentelemetry.api.trace.propagation.W3CTraceContextPropagator;
-import io.opentelemetry.context.propagation.ContextPropagators;
 import io.opentelemetry.context.propagation.TextMapPropagator;
-import io.opentelemetry.sdk.OpenTelemetrySdk;
-import io.opentelemetry.sdk.metrics.SdkMeterProvider;
-import io.opentelemetry.sdk.metrics.export.MetricReader;
-import io.opentelemetry.sdk.metrics.export.PeriodicMetricReader;
-import io.opentelemetry.sdk.resources.Resource;
-import io.opentelemetry.sdk.trace.SdkTracerProvider;
-import io.opentelemetry.sdk.trace.SdkTracerProviderBuilder;
 import io.opentelemetry.sdk.trace.SpanProcessor;
-import io.opentelemetry.sdk.trace.export.BatchSpanProcessor;
+import lombok.Getter;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.time.Duration;
 import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.ScheduledExecutorService;
 
+/**
+ * @author slhu
+ */
 public class Observability {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(Observability.class);
@@ -44,10 +36,12 @@ public class Observability {
     /**
      * 指标数据输出间隔时间 默认值：1 s
      */
+    @Getter
     private static Long metricExportIntervalMs;
     /**
      * 应用名 默认值：""
      */
+    @Getter
     private static String applicationName;
     /**
      * 初始化器类（集）默认值：""
@@ -61,7 +55,8 @@ public class Observability {
      * 已开启的exporter
      */
     private static Set<String> exporterNameSet;
-    private static final Set<SpanProcessor> expandSpanProcessorSet = new HashSet<>();
+    @Getter
+    private static Set<SpanProcessor> expandSpanProcessorSet = new HashSet<>();
     private static final String PROPERTIES_KEY_APPLICATION_NAME = "application.name";
     private static final String PROPERTIES_KEY_METRIC_EXPORT_INTERVAL_MS = "metric.export.interval.ms";
     private static final String PROPERTIES_KEY_OBSERVABILITY_INITIALIZER_CLASSES = "observability.initializer.classes";
@@ -181,36 +176,6 @@ public class Observability {
     }
 
     /**
-     * @return 初始化 OpenTelemetry 对象
-     */
-    public static OpenTelemetry initOpenTelemetry() {
-
-        // Create an instance of PeriodicMetricReader and configure it
-        // to export via the logging exporter
-        Resource resource = factory.getResource();
-        MetricReader periodicReader =
-                PeriodicMetricReader.builder(factory.getMetricExporter())
-                        .setInterval(Duration.ofMillis(metricExportIntervalMs))
-                        .build();
-        // This will be used to create instruments
-        SdkMeterProvider meterProvider =
-                SdkMeterProvider.builder().registerMetricReader(periodicReader).setResource(resource).build();
-        // Tracer provider configured to export spans with SimpleSpanProcessor using
-        // the logging exporter.
-        SdkTracerProviderBuilder builder = SdkTracerProvider.builder().addSpanProcessor(BatchSpanProcessor.builder(LoggingSpanExporter.create()).build());
-        expandSpanProcessorSet.forEach(builder::addSpanProcessor);
-        SdkTracerProvider tracerProvider = builder.setResource(resource).build();
-        OpenTelemetrySdk sdk = OpenTelemetrySdk.builder()
-                .setMeterProvider(meterProvider)
-                .setTracerProvider(tracerProvider)
-                .setPropagators(ContextPropagators.create(W3CTraceContextPropagator.getInstance()))
-                .buildAndRegisterGlobal();
-        Runtime.getRuntime().addShutdownHook(new Thread(tracerProvider::close));
-        Runtime.getRuntime().addShutdownHook(new Thread(meterProvider::close));
-        return sdk;
-    }
-
-    /**
      * @param instrumentationScopeName 域名
      * @return 获取给定域名对应 meter 对象
      */
@@ -270,10 +235,6 @@ public class Observability {
 
     public static TextMapPropagator getTextMapPropagator() {
         return delegate.getPropagators().getTextMapPropagator();
-    }
-
-    public static String getApplicationName() {
-        return applicationName;
     }
 
     public static boolean exporterExist(String exporterName) {

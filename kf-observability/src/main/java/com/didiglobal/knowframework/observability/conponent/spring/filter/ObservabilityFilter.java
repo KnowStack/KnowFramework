@@ -111,10 +111,14 @@ public class ObservabilityFilter implements Ordered, Filter {
             span.setStatus(StatusCode.ERROR, ex.getMessage());
         } finally {
             // Close the span
+            MDCUtil.removeSpanId(span);
             span.end();
         }
     }
 
+    public void destroy() {
+        MDCUtil.removeTraceId();
+    }
     @Override
     public int getOrder() {
         return Ordered.HIGHEST_PRECEDENCE;

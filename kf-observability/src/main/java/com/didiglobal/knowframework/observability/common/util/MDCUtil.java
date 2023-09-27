@@ -2,6 +2,7 @@ package com.didiglobal.knowframework.observability.common.util;
 
 
 import io.opentelemetry.api.trace.Span;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.MDC;
 
 /**
@@ -21,5 +22,15 @@ public class MDCUtil {
             MDC.put(SPAN_ID, span.getSpanContext().getSpanId());
             MDC.put(TRACE_ID, span.getSpanContext().getTraceId());
         }
+    }
+
+    public static void removeSpanId(Span span) {
+        if (StringUtils.equals(MDC.get(SPAN_ID), span.getSpanContext().getSpanId())) {
+            MDC.remove(SPAN_ID);
+        }
+    }
+
+    public static void removeTraceId() {
+        MDC.remove(TRACE_ID);
     }
 }
