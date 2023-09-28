@@ -101,56 +101,44 @@ public class PlatformMetricsInitializer implements ObservabilityInitializer {
         //disk info
         Map<String, Long> path2BytesFreeMap = diskMetricsService.getBytesFree();
         Map<String, Long> path2BytesTotalMap = diskMetricsService.getBytesTotal();
-        if(MapUtils.isNotEmpty(path2BytesFreeMap)) {
-            for (Map.Entry<String, Long> path2BytesFreeEntry : path2BytesFreeMap.entrySet()) {
-                String path = path2BytesFreeEntry.getKey();
-                Long bytesFree = path2BytesFreeEntry.getValue();
-                platformMeter
-                        .gaugeBuilder("system.disk.free")
-                        .setDescription("磁盘分区余量大小（单位：Byte）")
-                        .setUnit(MetricUnit.METRIC_UNIT_BYTES)
-                        .buildWithCallback(
-                                result -> result.record(
-                                        bytesFree,
-                                        Attributes.of(stringKey(Constant.METRIC_FIELD_NAME_DISK_PATH), path)
-                                )
-                        );
-            }
+        if (MapUtils.isNotEmpty(path2BytesFreeMap)) {
+            path2BytesFreeMap.forEach((path, bytesFree) -> platformMeter
+                    .gaugeBuilder("system.disk.free")
+                    .setDescription("磁盘分区余量大小（单位：Byte）")
+                    .setUnit(MetricUnit.METRIC_UNIT_BYTES)
+                    .buildWithCallback(
+                            result -> result.record(
+                                    bytesFree,
+                                    Attributes.of(stringKey(Constant.METRIC_FIELD_NAME_DISK_PATH), path)
+                            )
+                    ));
         }
-        if(MapUtils.isNotEmpty(path2BytesTotalMap)) {
-            for (Map.Entry<String, Long> path2BytesTotalEntry : path2BytesTotalMap.entrySet()) {
-                String path = path2BytesTotalEntry.getKey();
-                Long bytesTotal = path2BytesTotalEntry.getValue();
-                platformMeter
-                        .gaugeBuilder("system.disk.total")
-                        .setDescription("磁盘分区总量大小（单位：Byte）")
-                        .setUnit(MetricUnit.METRIC_UNIT_BYTES)
-                        .buildWithCallback(
-                                result -> result.record(
-                                        bytesTotal,
-                                        Attributes.of(stringKey(Constant.METRIC_FIELD_NAME_DISK_PATH), path)
-                                )
-                        );
-            }
+        if (MapUtils.isNotEmpty(path2BytesTotalMap)) {
+            path2BytesTotalMap.forEach((path, bytesTotal) -> platformMeter
+                    .gaugeBuilder("system.disk.total")
+                    .setDescription("磁盘分区总量大小（单位：Byte）")
+                    .setUnit(MetricUnit.METRIC_UNIT_BYTES)
+                    .buildWithCallback(
+                            result -> result.record(
+                                    bytesTotal,
+                                    Attributes.of(stringKey(Constant.METRIC_FIELD_NAME_DISK_PATH), path)
+                            )
+                    ));
         }
 
         //disk io info
         Map<String, Double> device2IOUtilMap = diskIOMetricsService.getIOUtil();
-        if(MapUtils.isNotEmpty(device2IOUtilMap)) {
-            for (Map.Entry<String, Double> entry : device2IOUtilMap.entrySet()) {
-                String deviceName = entry.getKey();
-                Double ioUtil = entry.getValue();
-                platformMeter
-                        .gaugeBuilder("system.io.util")
-                        .setDescription("设备I/O请求的时间百分比（单位：%）")
-                        .setUnit(MetricUnit.METRIC_UNIT_PERCENT)
-                        .buildWithCallback(
-                                result -> result.record(
-                                        ioUtil,
-                                        Attributes.of(stringKey(Constant.METRIC_FIELD_NAME_DEVICE_NAME), deviceName)
-                                )
-                        );
-            }
+        if (MapUtils.isNotEmpty(device2IOUtilMap)) {
+            device2IOUtilMap.forEach((deviceName, ioUtil) -> platformMeter
+                    .gaugeBuilder("system.io.util")
+                    .setDescription("设备I/O请求的时间百分比（单位：%）")
+                    .setUnit(MetricUnit.METRIC_UNIT_PERCENT)
+                    .buildWithCallback(
+                            result -> result.record(
+                                    ioUtil,
+                                    Attributes.of(stringKey(Constant.METRIC_FIELD_NAME_DEVICE_NAME), deviceName)
+                            )
+                    ));
         }
         Map<String, Double> device2AvgQuSzMap = diskIOMetricsService.getAvgQuSz();
         if(MapUtils.isNotEmpty(device2AvgQuSzMap)) {

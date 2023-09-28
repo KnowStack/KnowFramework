@@ -29,8 +29,6 @@ public class LoggingMetricExporter implements MetricExporter {
         return new LoggingMetricExporter(aggregationTemporality);
     }
 
-    /** @deprecated */
-    @Deprecated
     public LoggingMetricExporter() {
         this(AggregationTemporality.CUMULATIVE);
     }
@@ -39,8 +37,6 @@ public class LoggingMetricExporter implements MetricExporter {
         this.aggregationTemporality = aggregationTemporality;
     }
 
-    /** @deprecated */
-    @Deprecated
     public AggregationTemporality getPreferredTemporality() {
         return this.aggregationTemporality;
     }

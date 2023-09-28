@@ -116,6 +116,7 @@ public class ObservabilityFilter implements Ordered, Filter {
         }
     }
 
+    @Override
     public void destroy() {
         MDCUtil.removeTraceId();
     }

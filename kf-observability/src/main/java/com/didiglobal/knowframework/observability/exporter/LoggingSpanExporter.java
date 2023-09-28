@@ -25,9 +25,8 @@ public class LoggingSpanExporter implements SpanExporter {
         return new LoggingSpanExporter();
     }
 
-    /** @deprecated */
-    @Deprecated
     public LoggingSpanExporter() {
+        // pass
     }
 
     public CompletableResultCode export(Collection<SpanData> spans) {
@@ -35,35 +34,11 @@ public class LoggingSpanExporter implements SpanExporter {
             return CompletableResultCode.ofSuccess();
         }
         for (SpanData span : spans) {
-            /*
-             * span info
-             */
-            String spanName = span.getName();
-            String traceId = span.getTraceId();
-            String spanId = span.getSpanId();
-            SpanKind spanKind = span.getKind();
-            String parentSpanId = span.getParentSpanId();
-            Long startEpochNanos = span.getStartEpochNanos();
-            Long endEpochNanos = span.getEndEpochNanos();
-            StatusCode statusData = span.getStatus().getStatusCode();
-
-            /*
-             * tracer info
-             */
-            InstrumentationScopeInfo instrumentationScopeInfo = span.getInstrumentationScopeInfo();
-            String tracerName = instrumentationScopeInfo.getName();
-            String tracerVersion = instrumentationScopeInfo.getVersion();
-            /*
-             * attributes
-             */
-            Map<AttributeKey<?>, Object> attributes = span.getAttributes().asMap();
             logger.info(
                     JSON.toJSONString(
                             new LogEvent(
                                     LogEventType.TRACE,
-                                    new Span(
-                                            spanName, traceId, spanId, spanKind, parentSpanId, startEpochNanos, endEpochNanos, statusData, tracerName, tracerVersion, attributes
-                                    )
+                                    new Span(span)
                             )
                     )
             );

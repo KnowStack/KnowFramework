@@ -12,14 +12,14 @@ import io.opentelemetry.context.propagation.TextMapPropagator;
 import io.opentelemetry.context.propagation.TextMapSetter;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.http.client.HttpClient;
-import org.apache.http.impl.client.HttpClients;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
+import java.nio.charset.StandardCharsets;
 import java.util.Map;
 
 public class HttpUtils {
@@ -27,21 +27,15 @@ public class HttpUtils {
     private static final Logger LOGGER = LoggerFactory.getLogger(HttpUtils.class);
 
     // 连接超时时间, 单位: ms
-    private static int CONNECT_TIME_OUT = 15000;
+    private static final int CONNECT_TIME_OUT = 15000;
 
     // 读取超时时间, 单位: ms
-    private static int READ_TIME_OUT = 3000;
+    private static final int READ_TIME_OUT = 3000;
 
     private static final String METHOD_GET = "GET";
     private static final String METHOD_POST = "POST";
     private static final String METHOD_PUT = "PUT";
     private static final String METHOD_DELETE = "DELETE";
-
-    private static final String CHARSET_UTF8 = "UTF-8";
-
-    private static final String FILE_PARAM = "filecontent";
-
-    private static final HttpClient HTTP_CLIENT = HttpClients.createDefault();
 
     private static final Tracer tracer = Observability.getTracer(HttpUtils.class.getName());
 
@@ -63,48 +57,32 @@ public class HttpUtils {
 
     public static String get(String url, Map<String, String> params, Map<String, String> headers, String content, String userName, String password) throws Exception {
         InputStream in = null;
-        try {
-            if (content != null && !content.isEmpty()) {
-                in = new ByteArrayInputStream(content.getBytes(CHARSET_UTF8));
-            }
-        } catch (UnsupportedEncodingException e) {
-            throw new RuntimeException(e);
+        if (content != null && !content.isEmpty()) {
+            in = new ByteArrayInputStream(content.getBytes(StandardCharsets.UTF_8));
         }
         return sendRequest(url, METHOD_GET, params, headers, in, userName, password);
     }
 
     public static String postForString(String url, String content, Map<String, String> headers, String userName, String password) throws Exception {
         InputStream in = null;
-        try {
-            if (content != null && !content.isEmpty()) {
-                in = new ByteArrayInputStream(content.getBytes(CHARSET_UTF8));
-            }
-        } catch (UnsupportedEncodingException e) {
-            throw new RuntimeException(e);
+        if (content != null && !content.isEmpty()) {
+            in = new ByteArrayInputStream(content.getBytes(StandardCharsets.UTF_8));
         }
         return sendRequest(url, METHOD_POST, null, headers, in, userName, password);
     }
 
     public static String putForString(String url, String content, Map<String, String> headers, String user, String password) throws Exception {
         InputStream in = null;
-        try {
-            if (content != null && !content.isEmpty()) {
-                in = new ByteArrayInputStream(content.getBytes(CHARSET_UTF8));
-            }
-        } catch (UnsupportedEncodingException e) {
-            throw new RuntimeException(e);
+        if (content != null && !content.isEmpty()) {
+            in = new ByteArrayInputStream(content.getBytes(StandardCharsets.UTF_8));
         }
         return sendRequest(url, METHOD_PUT, null, headers, in, user, password);
     }
 
     public static String deleteForString(String url, String content, Map<String, String> headers) throws Exception {
         InputStream in = null;
-        try {
-            if (content != null && !content.isEmpty()) {
-                in = new ByteArrayInputStream(content.getBytes(CHARSET_UTF8));
-            }
-        } catch (UnsupportedEncodingException e) {
-            throw new RuntimeException(e);
+        if (content != null && !content.isEmpty()) {
+            in = new ByteArrayInputStream(content.getBytes(StandardCharsets.UTF_8));
         }
         return sendRequest(url, METHOD_DELETE, null, headers, in, null, null);
     }
@@ -138,7 +116,7 @@ public class HttpUtils {
             String paramUrl = setUrlParams(url, params);
             // 打开链接
             URL urlObj = new URL(paramUrl);
-            span.setAttribute(Constant.ATTRIBUTE_KEY_HTTP_URL, url.toString());
+            span.setAttribute(Constant.ATTRIBUTE_KEY_HTTP_URL, url);
 
             conn = (HttpURLConnection) urlObj.openConnection();
 
@@ -211,8 +189,8 @@ public class HttpUtils {
         conn.setRequestProperty("Content-Type", "application/json;charset=UTF-8");
 
         //设置 authorization
-        if(StringUtils.isNotBlank(userName) && StringUtils.isNotBlank(password)) {
-            conn.setRequestProperty("Authorization","Basic "+(encryptBASE64(userName,password)));
+        if (StringUtils.isNotBlank(userName) && StringUtils.isNotBlank(password)) {
+            conn.setRequestProperty("Authorization", String.format("Basic %s", (encryptBASE64(userName, password))));
         }
 
         if (headers == null || headers.isEmpty()) {
@@ -226,19 +204,15 @@ public class HttpUtils {
     /**
      * BASE64编码
      */
-    private static String encryptBASE64(String username,String password) {
-        byte[] key = (username+":"+password).getBytes();
-        return  new String(Base64.encodeBase64(key));
+    private static String encryptBASE64(String username, String password) {
+        byte[] key = (username + ":" + password).getBytes();
+        return new String(Base64.encodeBase64(key));
     }
 
     private static String handleResponseBodyToString(InputStream in) throws Exception {
-        ByteArrayOutputStream bytesOut = null;
-        try {
-            bytesOut = new ByteArrayOutputStream();
+        try (ByteArrayOutputStream bytesOut = new ByteArrayOutputStream();) {
             copyStreamAndClose(in, bytesOut);
-            return new String(bytesOut.toByteArray(), CHARSET_UTF8);
-        } finally {
-            closeStream(bytesOut);
+            return new String(bytesOut.toByteArray(), StandardCharsets.UTF_8);
         }
     }
 

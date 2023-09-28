@@ -5,20 +5,19 @@ import com.didiglobal.knowframework.observability.ObservabilityInitializer;
 import io.opentelemetry.api.common.Attributes;
 import io.opentelemetry.api.common.AttributesBuilder;
 import io.opentelemetry.api.metrics.Meter;
-import io.opentelemetry.api.metrics.ObservableDoubleMeasurement;
 import org.apache.commons.collections4.MapUtils;
+
 import java.util.Map;
-import java.util.function.Consumer;
 
 public abstract class BaseMetricInitializer implements ObservabilityInitializer {
 
     private Meter meter;
 
-    public BaseMetricInitializer() {
+    protected BaseMetricInitializer() {
         this("metrics.custom");
     }
 
-    public BaseMetricInitializer(String instrumentationScopeName) {
+    protected BaseMetricInitializer(String instrumentationScopeName) {
         this.meter = Observability.getMeter(instrumentationScopeName);
     }
 
@@ -34,23 +33,20 @@ public abstract class BaseMetricInitializer implements ObservabilityInitializer 
                 .setDescription(metricDescription)
                 .setUnit(metricUnit)
                 .buildWithCallback(
-                        new Consumer<ObservableDoubleMeasurement>() {
-                            @Override
-                            public void accept(ObservableDoubleMeasurement observableDoubleMeasurement) {
-                                Metric metric = meter.getMetric();
-                                Double metricValue = metric.getValue();
-                                Map<String, String> tags = metric.getTags();
-                                if(MapUtils.isNotEmpty(tags)) {
-                                    AttributesBuilder attributesBuilder = Attributes.builder();
-                                    for(Map.Entry<String, String> entry : tags.entrySet()) {
-                                        String key = entry.getKey();
-                                        String value = entry.getValue();
-                                        attributesBuilder.put(key, value);
-                                    }
-                                    observableDoubleMeasurement.record(metricValue, attributesBuilder.build());
-                                } else {
-                                    observableDoubleMeasurement.record(metricValue);
+                        observableDoubleMeasurement -> {
+                            Metric metric = meter.getMetric();
+                            Double metricValue = metric.getValue();
+                            Map<String, String> tags = metric.getTags();
+                            if(MapUtils.isNotEmpty(tags)) {
+                                AttributesBuilder attributesBuilder = Attributes.builder();
+                                for(Map.Entry<String, String> entry : tags.entrySet()) {
+                                    String key = entry.getKey();
+                                    String value = entry.getValue();
+                                    attributesBuilder.put(key, value);
                                 }
+                                observableDoubleMeasurement.record(metricValue, attributesBuilder.build());
+                            } else {
+                                observableDoubleMeasurement.record(metricValue);
                             }
                         }
                 );

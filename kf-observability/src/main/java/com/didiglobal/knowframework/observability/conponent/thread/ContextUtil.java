@@ -8,10 +8,10 @@ public class ContextUtil {
     public static <T> Context getContext(Callable<T> task) {
         Context context = null;
         if(task instanceof CrossThreadCallableWithContextFuture) {
-            CrossThreadCallableWithContextFuture crossThreadCallable = (CrossThreadCallableWithContextFuture) task;
+            CrossThreadCallableWithContextFuture<T> crossThreadCallable = (CrossThreadCallableWithContextFuture) task;
             context = crossThreadCallable.getContext();
         } else if(task instanceof CrossThreadCallableWithContextScheduledFuture) {
-            CrossThreadCallableWithContextScheduledFuture crossThreadCallable = (CrossThreadCallableWithContextScheduledFuture) task;
+            CrossThreadCallableWithContextScheduledFuture<T> crossThreadCallable = (CrossThreadCallableWithContextScheduledFuture) task;
             context = crossThreadCallable.getContext();
         } else {
             context = Context.current();

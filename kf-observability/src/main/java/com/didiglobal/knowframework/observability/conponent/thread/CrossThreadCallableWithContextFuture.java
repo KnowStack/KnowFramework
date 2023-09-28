@@ -7,22 +7,22 @@ import java.util.concurrent.Future;
 
 public abstract class CrossThreadCallableWithContextFuture<T> implements Callable<T> {
 
-    private Future future;
+    private Future<T> future;
 
-    public CrossThreadCallableWithContextFuture(Future future) {
+    protected CrossThreadCallableWithContextFuture(Future<T> future) {
         this.future = future;
     }
 
     public Context getContext() {
-        if(this.future instanceof ContextFuture) {
-            ContextFuture contextFuture = (ContextFuture) this.future;
+        if (this.future instanceof ContextFuture) {
+            ContextFuture<T> contextFuture = (ContextFuture) this.future;
             return contextFuture.getContext();
         } else {
             return Context.current();
         }
     }
 
-    public Future getFuture() {
+    public Future<T> getFuture() {
         return future;
     }
 

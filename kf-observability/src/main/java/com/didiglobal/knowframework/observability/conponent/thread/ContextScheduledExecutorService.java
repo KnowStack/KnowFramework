@@ -15,6 +15,7 @@ public class ContextScheduledExecutorService extends ContextExecutorService impl
         super(delegate);
     }
 
+    @Override
     ScheduledExecutorService delegate() {
         return (ScheduledExecutorService) super.delegate();
     }
@@ -27,13 +28,13 @@ public class ContextScheduledExecutorService extends ContextExecutorService impl
             try (Scope scope = span.makeCurrent()) {
                 context = Context.current();
                 ScheduledFuture<?> scheduledFuture = this.delegate().schedule(super.wrap(command, context), delay, unit);
-                return new ContextScheduledFuture(scheduledFuture, context);
+                return new ContextScheduledFuture<>(scheduledFuture, context);
             } finally {
                 span.end();
             }
         } else {
             ScheduledFuture<?> scheduledFuture = this.delegate().schedule(super.wrap(command, context), delay, unit);
-            return new ContextScheduledFuture(scheduledFuture, context);
+            return new ContextScheduledFuture<>(scheduledFuture, context);
         }
     }
 
@@ -63,13 +64,13 @@ public class ContextScheduledExecutorService extends ContextExecutorService impl
             try (Scope scope = span.makeCurrent()) {
                 context = Context.current();
                 ScheduledFuture<?> scheduledFuture = this.delegate().scheduleAtFixedRate(super.wrap(command, context), initialDelay, period, unit);
-                return new ContextScheduledFuture(scheduledFuture, context);
+                return new ContextScheduledFuture<>(scheduledFuture, context);
             } finally {
                 span.end();
             }
         } else {
             ScheduledFuture<?> scheduledFuture = this.delegate().scheduleAtFixedRate(super.wrap(command, context), initialDelay, period, unit);
-            return new ContextScheduledFuture(scheduledFuture, context);
+            return new ContextScheduledFuture<>(scheduledFuture, context);
         }
     }
 
@@ -81,13 +82,13 @@ public class ContextScheduledExecutorService extends ContextExecutorService impl
             try (Scope scope = span.makeCurrent()) {
                 context = Context.current();
                 ScheduledFuture<?> scheduledFuture = this.delegate().scheduleWithFixedDelay(super.wrap(command, context), initialDelay, delay, unit);
-                return new ContextScheduledFuture(scheduledFuture, context);
+                return new ContextScheduledFuture<>(scheduledFuture, context);
             } finally {
                 span.end();
             }
         } else {
             ScheduledFuture<?> scheduledFuture = this.delegate().scheduleWithFixedDelay(super.wrap(command, context), initialDelay, delay, unit);
-            return new ContextScheduledFuture(scheduledFuture, context);
+            return new ContextScheduledFuture<>(scheduledFuture, context);
         }
     }
 

@@ -10,7 +10,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 @Service
 public class ApplicationMybatisInjectionListener implements ApplicationListener<ContextRefreshedEvent> {
 
-    private volatile AtomicBoolean isInit = new AtomicBoolean(false);
+    private final AtomicBoolean isInit = new AtomicBoolean(false);
 
     @Override
     public void onApplicationEvent(ContextRefreshedEvent contextRefreshedEvent) {

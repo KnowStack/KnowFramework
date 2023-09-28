@@ -4,24 +4,24 @@ import io.opentelemetry.context.Context;
 
 import java.util.concurrent.ScheduledFuture;
 
-public abstract class CrossThreadRunnableWithContextScheduledFuture implements Runnable {
+public abstract class CrossThreadRunnableWithContextScheduledFuture<T> implements Runnable {
 
-    private ScheduledFuture scheduledFuture;
+    private ScheduledFuture<T> scheduledFuture;
 
-    public CrossThreadRunnableWithContextScheduledFuture(ScheduledFuture scheduledFuture) {
+    protected CrossThreadRunnableWithContextScheduledFuture(ScheduledFuture<T> scheduledFuture) {
         this.scheduledFuture = scheduledFuture;
     }
 
     public Context getContext() {
         if(this.scheduledFuture instanceof ContextScheduledFuture) {
-            ContextScheduledFuture contextScheduledFuture = (ContextScheduledFuture) this.scheduledFuture;
+            ContextScheduledFuture<T> contextScheduledFuture = (ContextScheduledFuture) this.scheduledFuture;
             return contextScheduledFuture.getContext();
         } else {
             return Context.current();
         }
     }
 
-    public ScheduledFuture getScheduledFuture() {
+    public ScheduledFuture<T> getScheduledFuture() {
         return scheduledFuture;
     }
 

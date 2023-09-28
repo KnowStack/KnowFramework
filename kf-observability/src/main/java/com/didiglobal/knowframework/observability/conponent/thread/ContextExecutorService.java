@@ -58,13 +58,13 @@ public class ContextExecutorService implements ExecutorService {
             try (Scope scope = span.makeCurrent()) {
                 context = Context.current();
                 Future<T> future = this.delegate().submit(wrap(task, context));
-                return new ContextFuture(future, context);
+                return new ContextFuture<>(future, context);
             } finally {
                 span.end();
             }
         } else {
             Future<T> future = this.delegate().submit(wrap(task, context));
-            return new ContextFuture(future, context);
+            return new ContextFuture<>(future, context);
         }
     }
 
@@ -76,13 +76,13 @@ public class ContextExecutorService implements ExecutorService {
             try (Scope scope = span.makeCurrent()) {
                 context = Context.current();
                 Future<T> future = this.delegate().submit(wrap(task, context), result);
-                return new ContextFuture(future, context);
+                return new ContextFuture<>(future, context);
             } finally {
                 span.end();
             }
         } else {
             Future<T> future = this.delegate().submit(wrap(task, context), result);
-            return new ContextFuture(future, context);
+            return new ContextFuture<>(future, context);
         }
     }
 
@@ -94,13 +94,13 @@ public class ContextExecutorService implements ExecutorService {
             try (Scope scope = span.makeCurrent()) {
                 context = Context.current();
                 Future<?> future = this.delegate().submit(wrap(task, context));
-                return new ContextFuture(future, context);
+                return new ContextFuture<>(future, context);
             } finally {
                 span.end();
             }
         } else {
             Future<?> future = this.delegate().submit(wrap(task, context));
-            return new ContextFuture(future, context);
+            return new ContextFuture<>(future, context);
         }
     }
 
@@ -155,8 +155,7 @@ public class ContextExecutorService implements ExecutorService {
     protected  <T> Callable<T> wrap(Callable<T> callable, Context context) {
         return () -> {
             try (Scope scope = context.makeCurrent()) {
-                T value = invokeCall(callable);
-                return value;
+                return invokeCall(callable);
             } finally {
                 //do nothing.
             }
@@ -173,11 +172,11 @@ public class ContextExecutorService implements ExecutorService {
         };
     }
 
-    protected <T> Collection<? extends Callable<T>> wrap(Context context, Collection<? extends Callable<T>> tasks) {
-        List<Callable<T>> wrapped = new ArrayList();
-        Iterator iterator = tasks.iterator();
+    protected <T> Collection<Callable<T>> wrap(Context context, Collection<? extends Callable<T>> tasks) {
+        List<Callable<T>> wrapped = new ArrayList<>();
+        Iterator<? extends Callable<T>> iterator = tasks.iterator();
         while(iterator.hasNext()) {
-            Callable<T> task = (Callable) iterator.next();
+            Callable<T> task = iterator.next();
             wrapped.add(wrap(task, context));
         }
         return wrapped;

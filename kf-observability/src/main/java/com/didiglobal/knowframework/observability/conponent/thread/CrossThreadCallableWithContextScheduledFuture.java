@@ -7,22 +7,22 @@ import java.util.concurrent.ScheduledFuture;
 
 public abstract class CrossThreadCallableWithContextScheduledFuture<T> implements Callable<T> {
 
-    private ScheduledFuture scheduledFuture;
+    private ScheduledFuture<T> scheduledFuture;
 
-    public CrossThreadCallableWithContextScheduledFuture(ScheduledFuture scheduledFuture) {
+    protected CrossThreadCallableWithContextScheduledFuture(ScheduledFuture<T> scheduledFuture) {
         this.scheduledFuture = scheduledFuture;
     }
 
     public Context getContext() {
         if(this.scheduledFuture instanceof ContextScheduledFuture) {
-            ContextScheduledFuture contextScheduledFuture = (ContextScheduledFuture) this.scheduledFuture;
+            ContextScheduledFuture<T> contextScheduledFuture = (ContextScheduledFuture) this.scheduledFuture;
             return contextScheduledFuture.getContext();
         } else {
             return Context.current();
         }
     }
 
-    public ScheduledFuture getScheduledFuture() {
+    public ScheduledFuture<T> getScheduledFuture() {
         return scheduledFuture;
     }
 
